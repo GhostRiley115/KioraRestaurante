@@ -1,4 +1,15 @@
+using KioraRestaurante.Data;
+using Microsoft.EntityFrameworkCore;
+using KioraRestaurante.Data;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// pega a string de conxão do arquivo appsettings.json
+var connectionString = builder.Configuration.GetConnectionString("ConexaoNuvem");
+
+// avisa ao sistema para utilizar o myqsl
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
