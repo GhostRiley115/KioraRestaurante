@@ -1,31 +1,4872 @@
+/* =========================================================
+   CONFIGURAÇÕES GERAIS
+   ========================================================= */
+
+/* Define configurações básicas do elemento HTML */
 html {
-  font-size: 14px;
+    /* Define o tamanho base da fonte da página */
+    font-size: 14px;
+    /* Garante que o elemento HTML ocupe pelo menos toda a altura da tela */
+    min-height: 100%;
 }
 
+/* =========================================================
+   RESPONSIVIDADE DO HTML
+   ========================================================= */
+
+/* Aplica estas regras em telas com largura mínima de 768px */
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+
+    /* Configurações do HTML em telas maiores */
+    html {
+        /* Aumenta o tamanho base da fonte para telas maiores */
+        font-size: 16px;
+    }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
+/* =========================================================
+   CORPO DA PÁGINA
+   ========================================================= */
 
-html {
-  position: relative;
-  min-height: 100%;
-}
-
+/* Define as configurações gerais do corpo da página */
 body {
-  margin-bottom: 60px;
+    /* Remove a margem padrão aplicada pelo navegador */
+    margin: 0;
+    /* Garante que o corpo ocupe pelo menos toda a altura da janela */
+    min-height: 100vh;
+    /* Cria espaço superior para compensar a navbar fixa */
+    padding-top: 90px;
+    /* Define o fundo principal escuro do site */
+    background-color: #0E0E0E;
+    /* Define a cor padrão dos textos como branca */
+    color: #FFFFFF;
+    /* Define a fonte padrão utilizada no site */
+    font-family: 'Lato', sans-serif;
+    /* Define o peso padrão dos textos */
+    font-weight: 400;
+    /* Define o espaçamento entre as linhas */
+    line-height: 1.6;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+/* =========================================================
+   ESTADOS DE FOCO DOS ELEMENTOS
+   ========================================================= */
+
+/* Define o efeito visual quando elementos recebem foco */
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+    /* Cria uma borda externa branca e dourada para destacar o elemento */
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #D9B27A;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+/* =========================================================
+   TIPOGRAFIA
+   ========================================================= */
+
+/*
+    PLAYFAIR DISPLAY
+    ---------------------------------------------------------
+    Utilizada principalmente em:
+    - Títulos
+    - Subtítulos de destaque
+    - Títulos de seções
+    - Títulos dos cards
+
+    LATO
+    ---------------------------------------------------------
+    Utilizada principalmente em:
+    - Textos
+    - Menus
+    - Botões
+    - Informações
+    - Footer
+*/
+
+/* Define a tipografia dos títulos */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    /* Define Playfair Display como fonte dos títulos */
+    font-family: 'Playfair Display', serif;
+    /* Define o peso dos títulos */
+    font-weight: 600;
+    /* Define o espaçamento entre as linhas */
+    line-height: 1.2;
+}
+
+/* Define a configuração dos parágrafos */
+p {
+    /* Define Lato como fonte dos parágrafos */
+    font-family: 'Lato', sans-serif;
+    /* Define o peso normal da fonte */
+    font-weight: 400;
+}
+
+/* Define a configuração geral dos links */
+a {
+    /* Define Lato como fonte dos links */
+    font-family: 'Lato', sans-serif;
+}
+
+/* Define a configuração geral dos botões */
+button,
+.btn {
+    /* Define Lato como fonte dos botões */
+    font-family: 'Lato', sans-serif;
+    /* Deixa o texto dos botões levemente destacado */
+    font-weight: 600;
+}
+
+/* Define a fonte dos links da navegação */
+.nav-link {
+    /* Utiliza Lato nos links do menu */
+    font-family: 'Lato', sans-serif;
+}
+
+
+/* =========================================================
+   NAVBAR
+   ========================================================= */
+
+/* Define a aparência principal da navbar */
+.navbar-kiora {
+    /* Define o fundo preto da navbar */
+    background-color: #0E0E0E;
+    /* Define a altura mínima da navbar */
+    min-height: 90px;
+    /* Cria uma linha dourada na parte inferior */
+    border-bottom: 1px solid #D9B27A;
+    /* Mantém a navbar fixa na tela */
+    position: fixed;
+    /* Posiciona a navbar no topo */
+    top: 0;
+    /* Alinha a navbar ao lado esquerdo */
+    left: 0;
+    /* Faz a navbar ocupar toda a largura */
+    width: 100%;
+    /* Mantém a navbar acima dos demais elementos */
+    z-index: 1030;
+}
+
+/* =========================================================
+   LOGO DA NAVBAR
+   ========================================================= */
+
+/* Configura o tamanho do logo */
+.logo-navbar {
+    /* Define a largura do logo */
+    width: 250px;
+    /* Mantém a proporção original da imagem */
+    height: auto;
+    /* Garante que a imagem se ajuste corretamente */
+    object-fit: contain;
+}
+
+/* =========================================================
+   ITENS DO MENU
+   ========================================================= */
+
+/* Configura o espaçamento entre os itens da navegação */
+.navbar-kiora .navbar-nav {
+    /* Define o espaço entre os links */
+    gap: 8px;
+}
+
+/* Configura os links da navbar */
+.navbar-kiora .nav-link {
+    /* Define os links como brancos */
+    color: #FFFFFF !important;
+    /* Define a fonte do menu */
+    font-family: 'Lato', sans-serif;
+    /* Define o tamanho da fonte */
+    font-size: 16px;
+    /* Define o peso da fonte */
+    font-weight: 500;
+    /* Define o espaçamento interno dos links */
+    padding: 8px 10px;
+    /* Remove o sublinhado padrão */
+    text-decoration: none;
+    /* Cria uma transição suave */
+    transition: all 0.3s ease;
+}
+
+    /* Efeito ao passar o mouse sobre os links */
+    .navbar-kiora .nav-link:hover {
+        /* Muda o texto para dourado */
+        color: #D9B27A !important;
+        /* Adiciona sublinhado */
+        text-decoration: underline;
+        /* Define a cor do sublinhado */
+        text-decoration-color: #D9B27A;
+        /* Define a espessura do sublinhado */
+        text-decoration-thickness: 2px;
+        /* Afasta o sublinhado do texto */
+        text-underline-offset: 6px;
+    }
+
+    /* Define a aparência do link atualmente ativo */
+    .navbar-kiora .nav-link.active {
+        /* Mantém o link ativo branco */
+        color: #FFFFFF !important;
+    }
+
+        /* Efeito hover sobre o link ativo */
+        .navbar-kiora .nav-link.active:hover {
+            /* Muda o link ativo para dourado */
+            color: #D9B27A !important;
+        }
+
+
+/* =========================================================
+   BOTÃO RESERVA
+   ========================================================= */
+
+/* Configura o botão de reserva */
+.btn-reserva {
+    /* Define o fundo vinho */
+    background-color: #7D1F1F;
+    /* Define o texto branco */
+    color: #FFFFFF !important;
+    /* Define a borda dourada */
+    border: 1px solid #D9B27A;
+    /* Define o espaçamento interno */
+    padding: 10px 22px;
+    /* Define a fonte do botão */
+    font-family: 'Lato', sans-serif;
+    /* Define o peso da fonte */
+    font-weight: 600;
+    /* Arredonda levemente os cantos */
+    border-radius: 3px;
+    /* Impede a quebra do texto */
+    white-space: nowrap;
+    /* Remove o sublinhado */
+    text-decoration: none;
+    /* Cria transição suave */
+    transition: all 0.3s ease;
+}
+
+    /* Efeito hover do botão de reserva */
+    .btn-reserva:hover {
+        /* Troca o fundo para dourado */
+        background-color: #D9B27A;
+        /* Troca o texto para preto */
+        color: #0E0E0E !important;
+        /* Mantém a borda dourada */
+        border-color: #D9B27A;
+    }
+
+
+/* =========================================================
+   BOTÃO DO USUÁRIO
+   ========================================================= */
+
+/* Configura o ícone do usuário */
+.login-icon {
+    /* Define a cor branca */
+    color: #FFFFFF !important;
+    /* Define o tamanho do ícone */
+    font-size: 28px;
+    /* Remove o sublinhado */
+    text-decoration: none;
+    /* Cria uma transição suave */
+    transition: color 0.3s ease, transform 0.3s ease;
+    /* Permite controlar o alinhamento do ícone */
+    display: inline-flex;
+    /* Centraliza verticalmente */
+    align-items: center;
+    /* Centraliza horizontalmente */
+    justify-content: center;
+}
+
+    /* Efeito hover do ícone do usuário */
+    .login-icon:hover {
+        /* Muda a cor para dourado */
+        color: #D9B27A !important;
+        /* Aumenta levemente o ícone */
+        transform: scale(1.08);
+    }
+
+    /* Efeito durante o clique */
+    .login-icon:active {
+        /* Reduz levemente o tamanho */
+        transform: scale(0.95);
+    }
+
+
+/* =========================================================
+   MENU SUSPENSO DO USUÁRIO
+   ========================================================= */
+
+/* Configura o menu suspenso */
+.menu-usuario {
+    /* Define o fundo escuro */
+    background-color: #151515;
+    /* Define a borda dourada */
+    border: 1px solid #D9B27A;
+    /* Arredonda os cantos */
+    border-radius: 6px;
+    /* Define a largura mínima */
+    min-width: 190px;
+    /* Define o espaçamento interno */
+    padding: 8px 0;
+    /* Cria espaço entre o botão e o menu */
+    margin-top: 12px !important;
+    /* Cria uma sombra ao redor do menu */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    /* Mantém o menu acima de outros elementos */
+    z-index: 1050;
+    /* Define a origem da animação */
+    transform-origin: top right;
+}
+
+
+    /* =========================================================
+   ANIMAÇÃO DE ABERTURA DO MENU
+   ========================================================= */
+
+    /* Aplica a animação quando o Bootstrap adiciona a classe show */
+    .menu-usuario.show {
+        /* Executa a animação de abertura */
+        animation: menuUsuarioAbrir 0.25s ease forwards;
+    }
+
+/* Define a animação do menu */
+@keyframes menuUsuarioAbrir {
+    /* Estado inicial */
+    from {
+        /* Começa deslocado para cima */
+        transform: translateY(-8px);
+        /* Começa transparente */
+        opacity: 0;
+    }
+    /* Estado final */
+    to {
+        /* Retorna para a posição original */
+        transform: translateY(0);
+        /* Torna-se totalmente visível */
+        opacity: 1;
+    }
+}
+
+
+/* =========================================================
+   ITENS DO MENU
+   ========================================================= */
+
+/* Configura cada item do menu */
+.menu-usuario .dropdown-item {
+    /* Define o texto branco */
+    color: #FFFFFF;
+    /* Define a fonte */
+    font-family: 'Lato', sans-serif;
+    /* Define o tamanho */
+    font-size: 14px;
+    /* Define o peso */
+    font-weight: 500;
+    /* Define o espaçamento interno */
+    padding: 11px 18px;
+    /* Cria transições suaves */
+    transition: background-color 0.25s ease, color 0.25s ease, padding-left 0.25s ease;
+}
+
+
+    /* =========================================================
+   ÍCONES DOS ITENS DO MENU
+   ========================================================= */
+
+    /* Configura os ícones dentro dos itens */
+    .menu-usuario .dropdown-item i {
+        /* Define a cor dourada */
+        color: #D9B27A;
+        /* Define o tamanho */
+        font-size: 16px;
+        /* Cria espaço entre ícone e texto */
+        margin-right: 10px;
+        /* Cria transição suave */
+        transition: color 0.25s ease, transform 0.25s ease;
+    }
+
+
+    /* =========================================================
+   HOVER DOS ITENS
+   ========================================================= */
+
+    /* Aplica o efeito ao passar o mouse ou receber foco */
+    .menu-usuario .dropdown-item:hover,
+    .menu-usuario .dropdown-item:focus {
+        /* Define o fundo vinho */
+        background-color: #7D1F1F;
+        /* Mantém o texto branco */
+        color: #FFFFFF;
+        /* Move o texto levemente para a direita */
+        padding-left: 22px;
+    }
+
+
+        /* =========================================================
+   ÍCONE DURANTE O HOVER
+   ========================================================= */
+
+        /* Altera o ícone durante hover ou foco */
+        .menu-usuario .dropdown-item:hover i,
+        .menu-usuario .dropdown-item:focus i {
+            /* Muda o ícone para branco */
+            color: #FFFFFF;
+            /* Move o ícone levemente para a direita */
+            transform: translateX(2px);
+        }
+
+
+/* =========================================================
+   DIVISOR DO MENU
+   ========================================================= */
+
+/* Configura a linha divisória */
+.menu-usuario .dropdown-divider {
+    /* Define a cor da linha */
+    border-top: 1px solid #7D1F1F;
+    /* Define o espaçamento */
+    margin: 6px 12px;
+}
+
+
+/* =========================================================
+   REMOVE A SETA DO BOOTSTRAP
+   ========================================================= */
+
+/* Remove a seta padrão do dropdown */
+.login-icon.dropdown-toggle::after {
+    /* Esconde a seta */
+    display: none;
+}
+
+
+/* =========================================================
+   RESPONSIVIDADE DO MENU - CELULARES
+   ========================================================= */
+
+/* Aplica regras em telas de até 767px */
+@media (max-width: 767px) {
+
+    /* Ajusta o menu do usuário */
+    .menu-usuario {
+        /* Reduz a largura mínima */
+        min-width: 175px;
+        /* Impede que ultrapasse a largura da tela */
+        max-width: calc(100vw - 30px);
+        /* Reduz o espaçamento interno */
+        padding: 6px 0;
+        /* Reduz o espaço superior */
+        margin-top: 8px !important;
+        /* Mantém a origem da animação */
+        transform-origin: top right;
+    }
+
+        /* Ajusta os itens do menu */
+        .menu-usuario .dropdown-item {
+            /* Reduz o tamanho da fonte */
+            font-size: 13px;
+            /* Reduz o espaçamento interno */
+            padding: 10px 15px;
+        }
+
+            /* Ajusta os ícones */
+            .menu-usuario .dropdown-item i {
+                /* Define o tamanho do ícone */
+                font-size: 15px;
+                /* Reduz o espaço entre ícone e texto */
+                margin-right: 8px;
+            }
+
+            /* Ajusta o hover e foco */
+            .menu-usuario .dropdown-item:hover,
+            .menu-usuario .dropdown-item:focus {
+                /* Reduz o deslocamento */
+                padding-left: 18px;
+            }
+
+    /* Reduz o tamanho do ícone principal */
+    .login-icon {
+        /* Define tamanho menor */
+        font-size: 25px;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVIDADE - CELULARES MUITO PEQUENOS
+   ========================================================= */
+
+/* Aplica regras em telas de até 400px */
+@media (max-width: 400px) {
+
+    /* Ajusta a largura do menu */
+    .menu-usuario {
+        /* Define largura mínima */
+        min-width: 165px;
+        /* Impede que ultrapasse a tela */
+        max-width: calc(100vw - 20px);
+        /* Reduz o espaço superior */
+        margin-top: 6px !important;
+    }
+
+        /* Ajusta os itens */
+        .menu-usuario .dropdown-item {
+            /* Mantém fonte pequena */
+            font-size: 13px;
+            /* Reduz espaçamento */
+            padding: 9px 13px;
+        }
+}
+
+
+/* =========================================================
+   CARRINHO
+   ========================================================= */
+
+/* Configura o ícone do carrinho */
+.navbar-kiora .carrinho-kiora {
+    /* Define a cor dourada */
+    color: #D9B27A !important;
+    /* Define o tamanho */
+    font-size: 25px;
+    /* Remove o sublinhado */
+    text-decoration: none;
+    /* Ativa Flexbox */
+    display: flex;
+    /* Centraliza verticalmente */
+    align-items: center;
+    /* Cria transição */
+    transition: all 0.3s ease;
+}
+
+    /* Efeito hover do carrinho */
+    .navbar-kiora .carrinho-kiora:hover {
+        /* Muda para branco */
+        color: #FFFFFF !important;
+        /* Aumenta levemente */
+        transform: scale(1.1);
+    }
+
+/* Configura o contador do carrinho */
+.navbar-kiora .contador-carrinho {
+    /* Define o fundo vermelho */
+    background-color: #7D1F1F !important;
+    /* Define o texto branco */
+    color: #FFFFFF !important;
+    /* Define o tamanho do número */
+    font-size: 10px;
+    /* Define a largura mínima */
+    min-width: 18px;
+    /* Define a altura */
+    height: 18px;
+    /* Ativa Flexbox */
+    display: flex;
+    /* Centraliza verticalmente */
+    align-items: center;
+    /* Centraliza horizontalmente */
+    justify-content: center;
+    /* Remove espaçamento interno */
+    padding: 0;
+}
+
+
+/* =========================================================
+   MENU MOBILE
+   ========================================================= */
+
+/* Configura o botão do menu mobile */
+.navbar-kiora .navbar-toggler {
+    /* Define a borda dourada */
+    border-color: #D9B27A;
+}
+
+    /* Define o foco do botão mobile */
+    .navbar-kiora .navbar-toggler:focus {
+        /* Cria um brilho dourado suave */
+        box-shadow: 0 0 0 0.15rem rgba(217, 178, 122, 0.3);
+    }
+
+
+/* =========================================================
+   HOME - HERO
+   ========================================================= */
+
+/* Configura a seção principal da Home */
+.hero-kiora {
+    /* Permite posicionar elementos internos */
+    position: relative;
+    /* Faz a seção ocupar toda a largura */
+    width: 100%;
+    /* Define altura mínima */
+    min-height: 650px;
+    /* Define a imagem de fundo */
+    background-image: url('/imagens/fundo-kiora1.png');
+    /* Faz a imagem cobrir toda a seção */
+    background-size: cover;
+    /* Centraliza a imagem */
+    background-position: center;
+    /* Impede repetição */
+    background-repeat: no-repeat;
+    /* Esconde conteúdos que ultrapassem a seção */
+    overflow: hidden;
+}
+
+
+    /* =========================================================
+   OVERLAY ESCURO DA HERO
+   ========================================================= */
+
+    /* Cria a camada escura sobre a imagem */
+    .hero-kiora::before {
+        /* Permite criar o pseudo-elemento */
+        content: "";
+        /* Posiciona a camada */
+        position: absolute;
+        /* Faz a camada ocupar todos os lados */
+        inset: 0;
+        /* Define a camada preta transparente */
+        background: rgba(0, 0, 0, 0.55);
+        /* Coloca a camada acima da imagem */
+        z-index: 1;
+        /* Permite que os cliques atravessem a camada */
+        pointer-events: none;
+    }
+
+
+/* =========================================================
+   CONTEÚDO DA HERO
+   ========================================================= */
+
+/* Configura o conteúdo da Hero */
+.hero-content {
+    /* Permite posicionamento */
+    position: relative;
+    /* Mantém o conteúdo acima do overlay */
+    z-index: 2;
+}
+
+
+/* =========================================================
+   OVERLAY GRADIENTE DA HERO
+   ========================================================= */
+
+/* Configura o overlay lateral */
+.hero-overlay {
+    /* Permite posicionamento absoluto */
+    position: absolute;
+    /* Ocupa toda a seção */
+    inset: 0;
+    /* Cria degradê escuro */
+    background: linear-gradient( 90deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.60) 50%, rgba(0, 0, 0, 0.30) 100% );
+    /* Mantém o overlay acima da imagem */
+    z-index: 1;
+}
+
+
+/* =========================================================
+   TÍTULO DA HERO
+   ========================================================= */
+
+/* Configura o título principal */
+.hero-conteudo h1 {
+    /* Define a fonte elegante */
+    font-family: 'Playfair Display', serif;
+    /* Define a cor branca */
+    color: #FFFFFF;
+    /* Define o tamanho */
+    font-size: 58px;
+    /* Define o peso */
+    font-weight: 600;
+    /* Define espaçamento entre linhas */
+    line-height: 1.15;
+    /* Cria espaço abaixo */
+    margin-bottom: 20px;
+}
+
+
+/* =========================================================
+   CONTEÚDO PRINCIPAL DA HERO
+   ========================================================= */
+
+/* Configura o container de conteúdo */
+.hero-conteudo {
+    /* Permite posicionamento */
+    position: relative;
+    /* Coloca o conteúdo acima do overlay */
+    z-index: 2;
+    /* Define altura mínima */
+    min-height: 650px;
+    /* Ativa Flexbox */
+    display: flex;
+    /* Centraliza verticalmente */
+    align-items: center;
+    /* Define texto branco */
+    color: #FFFFFF;
+}
+
+    /* Configura o container interno */
+    .hero-conteudo .container {
+        /* Cria espaço superior */
+        padding-top: 40px;
+        /* Cria espaço inferior */
+        padding-bottom: 40px;
+    }
+
+
+/* =========================================================
+   SUBTÍTULO DA HERO
+   ========================================================= */
+
+/* Configura o subtítulo */
+.hero-subtitulo {
+    /* Permite controlar tamanho e espaçamento */
+    display: inline-block;
+    /* Define cor dourada */
+    color: #D9B27A;
+    /* Define a fonte */
+    font-family: 'Lato', sans-serif;
+    /* Define tamanho */
+    font-size: 14px;
+    /* Define peso */
+    font-weight: 600;
+    /* Aumenta espaçamento entre letras */
+    letter-spacing: 3px;
+    /* Cria espaço abaixo */
+    margin-bottom: 15px;
+}
+
+
+/* =========================================================
+   PARÁGRAFOS DA HERO
+   ========================================================= */
+
+/* Configura os parágrafos */
+.hero-conteudo p {
+    /* Define fonte */
+    font-family: 'Lato', sans-serif;
+    /* Define cor */
+    color: #E5E5E5;
+    /* Define tamanho */
+    font-size: 18px;
+    /* Define espaçamento entre linhas */
+    line-height: 1.7;
+    /* Limita a largura */
+    max-width: 520px;
+    /* Cria espaço abaixo */
+    margin-bottom: 30px;
+}
+
+
+/* =========================================================
+   BOTÕES DA HERO
+   ========================================================= */
+
+/* Organiza os botões */
+.hero-botoes {
+    /* Ativa Flexbox */
+    display: flex;
+    /* Centraliza verticalmente */
+    align-items: center;
+    /* Define espaço entre os botões */
+    gap: 15px;
+    /* Cria espaço acima */
+    margin-top: 25px;
+}
+
+
+/* =========================================================
+   BOTÃO LOGIN
+   ========================================================= */
+
+/* Configura o botão de login */
+.btn-login {
+    /* Define fundo vinho */
+    background-color: #7D1F1F;
+    /* Define texto branco */
+    color: #FFFFFF !important;
+    /* Define borda dourada */
+    border: 1px solid #D9B27A;
+    /* Define espaçamento interno */
+    padding: 12px 28px;
+    /* Define fonte */
+    font-family: 'Lato', sans-serif;
+    /* Define tamanho */
+    font-size: 15px;
+    /* Define peso */
+    font-weight: 600;
+    /* Arredonda os cantos */
+    border-radius: 3px;
+    /* Remove sublinhado */
+    text-decoration: none;
+    /* Cria transição */
+    transition: all 0.3s ease;
+}
+
+    /* Hover do botão de login */
+    .btn-login:hover {
+        /* Troca fundo para dourado */
+        background-color: #D9B27A;
+        /* Troca texto para preto */
+        color: #0E0E0E !important;
+    }
+
+
+/* =========================================================
+   BOTÃO CADASTRO
+   ========================================================= */
+
+/* Configura o botão de cadastro */
+.btn-cadastrar {
+    /* Mantém fundo transparente */
+    background-color: transparent;
+    /* Define texto branco */
+    color: #FFFFFF !important;
+    /* Define borda branca */
+    border: 1px solid #FFFFFF;
+    /* Define espaçamento interno */
+    padding: 12px 28px;
+    /* Define fonte */
+    font-family: 'Lato', sans-serif;
+    /* Define tamanho */
+    font-size: 15px;
+    /* Define peso */
+    font-weight: 600;
+    /* Arredonda os cantos */
+    border-radius: 3px;
+    /* Remove sublinhado */
+    text-decoration: none;
+    /* Cria transição */
+    transition: all 0.3s ease;
+}
+
+    /* Hover do botão de cadastro */
+    .btn-cadastrar:hover {
+        /* Troca fundo para dourado */
+        background-color: #D9B27A;
+        /* Troca texto para preto */
+        color: #0E0E0E !important;
+        /* Troca borda para dourada */
+        border-color: #D9B27A;
+    }
+
+
+/* =========================================================
+   CARDS DE DESTAQUE DA HOME
+   ========================================================= */
+
+/* Define a seção dos cards */
+.kiora-destaques {
+    /* Faz a seção ocupar toda a largura */
+    width: 100%;
+    /* Define espaçamento vertical */
+    padding: 50px 0;
+    /* Define fundo preto */
+    background: #0E0E0E;
+}
+
+
+/* =========================================================
+   CARD DE DESTAQUE
+   ========================================================= */
+
+/* Configura cada card */
+.destaque-card {
+    /* Permite posicionar elementos internos */
+    position: relative;
+    /* Faz o link ocupar sua própria área */
+    display: block;
+    /* Define a altura */
+    height: 180px;
+    /* Esconde conteúdos excedentes */
+    overflow: hidden;
+    /* Define o fundo */
+    background: #111111;
+    /* Define borda dourada transparente */
+    border: 1px solid rgba(217, 178, 122, 0.35);
+    /* Remove sublinhado */
+    text-decoration: none;
+    /* Define cor padrão */
+    color: #FFFFFF;
+    /* Cria transições suaves */
+    transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease, background 0.4s ease;
+}
+
+
+    /* =========================================================
+   LINHA DECORATIVA SUPERIOR
+   ========================================================= */
+
+    /* Cria uma linha decorativa no topo */
+    .destaque-card::before {
+        /* Permite criar o pseudo-elemento */
+        content: "";
+        /* Posiciona a linha */
+        position: absolute;
+        /* Coloca a linha no topo */
+        top: 0;
+        /* Começa no centro */
+        left: 50%;
+        /* Começa sem largura */
+        width: 0;
+        /* Define a altura */
+        height: 2px;
+        /* Define corretamente a cor dourada */
+        background-color: #D9B27A;
+        /* Centraliza horizontalmente */
+        transform: translateX(-50%);
+        /* Cria animação */
+        transition: width 0.4s ease;
+        /* Mantém a linha acima dos elementos */
+        z-index: 5;
+    }
+
+
+    /* =========================================================
+   DETALHE DECORATIVO DO CANTO
+   ========================================================= */
+
+    /* Cria detalhe no canto superior direito */
+    .destaque-card::after {
+        /* Permite criar o pseudo-elemento */
+        content: "";
+        /* Posiciona o detalhe */
+        position: absolute;
+        /* Define distância superior */
+        top: 15px;
+        /* Define distância direita */
+        right: 15px;
+        /* Define largura */
+        width: 25px;
+        /* Define altura */
+        height: 25px;
+        /* Define linha superior */
+        border-top: 1px solid rgba(217, 178, 122, 0.45);
+        /* Define linha direita */
+        border-right: 1px solid rgba(217, 178, 122, 0.45);
+        /* Cria transição */
+        transition: all 0.4s ease;
+        /* Mantém o detalhe acima da imagem */
+        z-index: 5;
+    }
+
+
+/* =========================================================
+   IMAGEM DOS CARDS
+   ========================================================= */
+
+/* Configura a imagem de fundo */
+.destaque-imagem {
+    /* Posiciona a imagem */
+    position: absolute;
+    /* Ocupa todo o card */
+    inset: 0;
+    /* Faz a imagem preencher o espaço */
+    background-size: cover;
+    /* Centraliza a imagem */
+    background-position: center;
+    /* Impede repetição */
+    background-repeat: no-repeat;
+    /* Cria transição de zoom e brilho */
+    transition: transform 0.5s ease, filter 0.5s ease;
+}
+
+
+/* =========================================================
+   OVERLAY DOS CARDS
+   ========================================================= */
+
+/* Cria uma camada escura sobre a imagem */
+.destaque-overlay {
+    /* Posiciona o overlay */
+    position: absolute;
+    /* Ocupa todo o card */
+    inset: 0;
+    /* Cria degradê escuro */
+    background: linear-gradient( 90deg, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.72) 45%, rgba(0, 0, 0, 0.30) 100% );
+    /* Cria transição */
+    transition: background 0.4s ease;
+    /* Coloca acima da imagem */
+    z-index: 1;
+}
+
+
+/* =========================================================
+   CONTEÚDO DOS CARDS
+   ========================================================= */
+
+/* Configura o conteúdo textual */
+.destaque-conteudo {
+    /* Permite controlar a posição */
+    position: relative;
+    /* Mantém o conteúdo acima do overlay */
+    z-index: 3;
+    /* Ocupa toda a altura */
+    height: 100%;
+    /* Define espaçamento interno */
+    padding: 22px 25px;
+    /* Ativa Flexbox */
+    display: flex;
+    /* Organiza verticalmente */
+    flex-direction: column;
+    /* Alinha à esquerda */
+    align-items: flex-start;
+    /* Centraliza verticalmente */
+    justify-content: center;
+}
+
+
+/* =========================================================
+   SUBTÍTULO DOS CARDS
+   ========================================================= */
+
+/* Configura o subtítulo */
+.destaque-subtitulo {
+    /* Cria espaço abaixo */
+    margin-bottom: 8px;
+    /* Define cor dourada */
+    color: #D9B27A;
+    /* Define fonte */
+    font-family: 'Lato', sans-serif;
+    /* Define tamanho */
+    font-size: 0.72rem;
+    /* Define peso */
+    font-weight: 600;
+    /* Define espaçamento entre letras */
+    letter-spacing: 1px;
+    /* Cria transição */
+    transition: color 0.3s ease, transform 0.4s ease;
+}
+
+
+/* =========================================================
+   TÍTULO DOS CARDS
+   ========================================================= */
+
+/* Configura o título */
+.destaque-conteudo h3 {
+    /* Remove margem superior e cria espaço abaixo */
+    margin: 0 0 8px;
+    /* Define cor branca */
+    color: #FFFFFF;
+    /* Define Playfair Display */
+    font-family: 'Playfair Display', serif;
+    /* Define tamanho */
+    font-size: 1.25rem;
+    /* Define peso */
+    font-weight: 600;
+    /* Cria transição */
+    transition: color 0.3s ease, transform 0.4s ease;
+}
+
+
+/* =========================================================
+   TEXTO DOS CARDS
+   ========================================================= */
+
+/* Configura a descrição */
+.destaque-conteudo p {
+    /* Limita largura */
+    max-width: 260px;
+    /* Remove margem superior e cria espaço inferior */
+    margin: 0 0 12px;
+    /* Define cor cinza */
+    color: #BDBDBD;
+    /* Define fonte */
+    font-family: 'Lato', sans-serif;
+    /* Define tamanho */
+    font-size: 0.75rem;
+    /* Define espaçamento entre linhas */
+    line-height: 1.5;
+    /* Cria transição */
+    transition: color 0.3s ease, transform 0.4s ease;
+}
+
+
+/* =========================================================
+   LINK DOS CARDS
+   ========================================================= */
+
+/* Configura o link de ação */
+.destaque-link {
+    /* Define vermelho */
+    color: #D22D24;
+    /* Define fonte */
+    font-family: 'Lato', sans-serif;
+    /* Define tamanho */
+    font-size: 0.68rem;
+    /* Define peso */
+    font-weight: 600;
+    /* Define espaçamento */
+    letter-spacing: 0.5px;
+    /* Cria transição */
+    transition: color 0.3s ease, transform 0.4s ease;
+}
+
+
+/* =========================================================
+   HOVER DOS CARDS
+   ========================================================= */
+
+/* Define o comportamento do card no hover */
+.destaque-card:hover {
+    /* Mantém o texto branco */
+    color: #FFFFFF;
+    /* Move o card para cima */
+    transform: translateY(-10px);
+    /* Torna a borda dourada */
+    border-color: #D9B27A;
+    /* Cria sombra */
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45), 0 0 20px rgba(217, 178, 122, 0.08);
+    /* Altera levemente o fundo */
+    background: linear-gradient( 145deg, #1C1C1C 0%, #111111 100% );
+}
+
+
+    /* Aumenta a linha superior */
+    .destaque-card:hover::before {
+        /* Define a largura da linha */
+        width: 70%;
+    }
+
+
+    /* Aumenta o detalhe do canto */
+    .destaque-card:hover::after {
+        /* Aumenta a largura */
+        width: 35px;
+        /* Aumenta a altura */
+        height: 35px;
+        /* Torna a borda dourada */
+        border-color: #D9B27A;
+    }
+
+
+    /* Aplica zoom na imagem */
+    .destaque-card:hover .destaque-imagem {
+        /* Aumenta a imagem em 6% */
+        transform: scale(1.06);
+        /* Reduz levemente o brilho */
+        filter: brightness(0.85);
+    }
+
+
+    /* Anima o subtítulo */
+    .destaque-card:hover .destaque-subtitulo {
+        /* Deixa o dourado mais claro */
+        color: #E0AD54;
+        /* Move para cima */
+        transform: translateY(-2px);
+    }
+
+
+    /* Anima o título */
+    .destaque-card:hover h3 {
+        /* Muda o título para dourado */
+        color: #D9B27A;
+        /* Move para cima */
+        transform: translateY(-2px);
+    }
+
+
+    /* Anima o texto */
+    .destaque-card:hover p {
+        /* Clareia o texto */
+        color: #D5D5D5;
+        /* Move para cima */
+        transform: translateY(-2px);
+    }
+
+
+    /* Anima o link */
+    .destaque-card:hover .destaque-link {
+        /* Muda para dourado */
+        color: #E0AD54;
+        /* Move para a direita */
+        transform: translateX(4px);
+    }
+
+
+/* =========================================================
+   CARDS - MOBILE
+   ========================================================= */
+
+/* Aplica regras em telas de até 767px */
+@media (max-width: 767px) {
+
+    /* Reduz o espaçamento da seção */
+    .kiora-destaques {
+        /* Define espaçamento menor */
+        padding: 12px 0;
+    }
+
+    /* Reduz a altura dos cards */
+    .destaque-card {
+        /* Define altura menor */
+        height: 165px;
+    }
+
+    /* Reduz o espaçamento interno */
+    .destaque-conteudo {
+        /* Define padding menor */
+        padding: 20px;
+    }
+
+        /* Reduz o título */
+        .destaque-conteudo h3 {
+            /* Define tamanho menor */
+            font-size: 1.15rem;
+        }
+
+        /* Reduz o texto */
+        .destaque-conteudo p {
+            /* Define tamanho menor */
+            font-size: 0.72rem;
+        }
+}
+
+
+/* =========================================================
+   PÁGINA SOBRE - HERO
+   ========================================================= */
+
+/* Configura a Hero da página Sobre */
+.sobre-hero {
+    /* Permite posicionamento dos elementos */
+    position: relative;
+    /* Define altura mínima */
+    min-height: 560px;
+    /* Define imagem de fundo */
+    background-image: url('/imagens/fundo-sobre1.png');
+    /* Faz a imagem preencher a seção */
+    background-size: cover;
+    /* Centraliza a imagem */
+    background-position: center;
+    /* Impede repetição */
+    background-repeat: no-repeat;
+    /* Ativa Flexbox */
+    display: flex;
+    /* Centraliza verticalmente */
+    align-items: center;
+}
+
+
+/* Overlay da Hero Sobre */
+.sobre-hero-overlay {
+    /* Posiciona o overlay */
+    position: absolute;
+    /* Ocupa toda a seção */
+    inset: 0;
+    /* Cria degradê escuro */
+    background: linear-gradient( 90deg, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.62) 55%, rgba(0, 0, 0, 0.35) 100% );
+}
+
+
+/* Conteúdo da Hero Sobre */
+.sobre-hero-conteudo {
+    /* Permite posicionamento */
+    position: relative;
+    /* Mantém acima do overlay */
+    z-index: 2;
+    /* Define texto branco */
+    color: #FFFFFF;
+    /* Cria espaço superior */
+    padding-top: 60px;
+    /* Cria espaço inferior */
+    padding-bottom: 60px;
+}
+
+
+/* Subtítulos da página Sobre */
+.sobre-subtitulo,
+.sobre-secao-subtitulo {
+    /* Permite controlar tamanho */
+    display: inline-block;
+    /* Define dourado */
+    color: #D9B27A;
+    /* Define fonte */
+    font-family: 'Lato', sans-serif;
+    /* Define tamanho */
+    font-size: 13px;
+    /* Define peso */
+    font-weight: 600;
+    /* Aumenta espaçamento */
+    letter-spacing: 3px;
+    /* Cria espaço inferior */
+    margin-bottom: 15px;
+}
+
+
+/* Título da Hero Sobre */
+.sobre-hero h1 {
+    /* Define Playfair Display */
+    font-family: 'Playfair Display', serif;
+    /* Define branco */
+    color: #FFFFFF;
+    /* Define tamanho */
+    font-size: 56px;
+    /* Define peso */
+    font-weight: 600;
+    /* Define espaçamento */
+    line-height: 1.15;
+}
+
+
+/* Parágrafo da Hero Sobre */
+.sobre-hero p {
+    /* Define fonte */
+    font-family: 'Lato', sans-serif;
+    /* Define cor */
+    color: #E5E5E5;
+    /* Define tamanho */
+    font-size: 18px;
+    /* Define peso */
+    font-weight: 400;
+    /* Define espaçamento */
+    line-height: 1.7;
+    /* Limita largura */
+    max-width: 600px;
+}
+
+
+/* =========================================================
+   HISTÓRIA E ESSÊNCIA
+   ========================================================= */
+
+/* Define estrutura compartilhada */
+.sobre-historia,
+.sobre-essencia {
+    /* Define altura mínima */
+    min-height: 520px;
+    /* Define espaçamento */
+    padding: 50px 0;
+    /* Ativa Flexbox */
+    display: flex;
+    /* Centraliza verticalmente */
+    align-items: center;
+}
+
+
+    /* Títulos das seções Sobre */
+    .sobre-historia h2,
+    .sobre-essencia h2,
+    .sobre-experiencia h2,
+    .sobre-diferenciais h2,
+    .sobre-missao h2,
+    .sobre-valores h2,
+    .sobre-reserva h2 {
+        /* Define fonte dos títulos */
+        font-family: 'Playfair Display', serif;
+        /* Define peso */
+        font-weight: 600;
+    }
+
+
+    /* Textos das seções Sobre */
+    .sobre-historia p,
+    .sobre-essencia p,
+    .sobre-experiencia p,
+    .sobre-diferenciais p,
+    .sobre-missao p,
+    .sobre-valores p,
+    .sobre-reserva p {
+        /* Define fonte */
+        font-family: 'Lato', sans-serif;
+        /* Define peso normal */
+        font-weight: 400;
+    }
+
+
+/* =========================================================
+   IMAGENS DA PÁGINA SOBRE
+   ========================================================= */
+
+/* Container da imagem */
+.sobre-imagem {
+    /* Permite posicionar elementos */
+    position: relative;
+    /* Esconde conteúdos excedentes */
+    overflow: hidden;
+    /* Cria borda vinho */
+    border: 1px solid #7D1F1F;
+}
+
+
+    /* Moldura interna da imagem */
+    .sobre-imagem::after {
+        /* Cria o pseudo-elemento */
+        content: "";
+        /* Posiciona a moldura */
+        position: absolute;
+        /* Define distância das bordas */
+        inset: 12px;
+        /* Cria borda dourada transparente */
+        border: 1px solid rgba(217, 178, 122, 0.5);
+        /* Impede que interfira nos cliques */
+        pointer-events: none;
+    }
+
+
+    /* Configura a imagem */
+    .sobre-imagem img {
+        /* Ocupa toda a largura */
+        width: 100%;
+        /* Define altura */
+        height: 420px;
+        /* Preenche sem distorção */
+        object-fit: cover;
+        /* Remove espaços abaixo da imagem */
+        display: block;
+    }
+
+
+/* =========================================================
+   EXPERIÊNCIA
+   ========================================================= */
+
+/* Configura a seção de experiência */
+.sobre-experiencia {
+    /* Define fundo escuro */
+    background-color: #0E0E0E;
+    /* Define espaçamento vertical */
+    padding: 100px 0;
+    /* Cria linha superior */
+    border-top: 1px solid #1F1F1F;
+}
+
+
+/* Espaço abaixo do título */
+.sobre-titulo-secao {
+    /* Define margem inferior */
+    margin-bottom: 50px;
+}
+
+
+/* Títulos da experiência e diferenciais */
+.sobre-experiencia h2,
+.sobre-diferenciais h2 {
+    /* Define cor branca */
+    color: #FFFFFF;
+    /* Define fonte */
+    font-family: 'Playfair Display', serif;
+    /* Define tamanho */
+    font-size: 42px;
+    /* Define peso */
+    font-weight: 600;
+    /* Cria espaço inferior */
+    margin-bottom: 12px;
+}
+
+
+/* Texto introdutório */
+.sobre-experiencia .sobre-titulo-secao p,
+.sobre-diferenciais .sobre-titulo-secao p {
+    /* Define cor cinza */
+    color: #BDBDBD;
+    /* Define fonte */
+    font-family: 'Lato', sans-serif;
+    /* Define tamanho */
+    font-size: 16px;
+    /* Define peso */
+    font-weight: 400;
+}
+
+
+/* =========================================================
+   CARDS DA PÁGINA SOBRE
+   ========================================================= */
+
+/* Configura os cards */
+.sobre-card {
+    /* Permite posicionamento */
+    position: relative;
+    /* Ocupa toda a altura disponível */
+    height: 100%;
+    /* Cria fundo em degradê */
+    background: linear-gradient( 145deg, #171717 0%, #101010 100% );
+    /* Cria borda dourada transparente */
+    border: 1px solid rgba(217, 178, 122, 0.35);
+    /* Define espaçamento interno */
+    padding: 45px 30px;
+    /* Centraliza o conteúdo */
+    text-align: center;
+    /* Cria transição */
+    transition: all 0.4s ease;
+    /* Esconde conteúdos excedentes */
+    overflow: hidden;
+}
+
+
+    /* Linha decorativa superior */
+    .sobre-card::before {
+        /* Cria o pseudo-elemento */
+        content: "";
+        /* Posiciona */
+        position: absolute;
+        /* Coloca no topo */
+        top: 0;
+        /* Começa no centro */
+        left: 50%;
+        /* Começa sem largura */
+        width: 0;
+        /* Define altura */
+        height: 2px;
+        /* Define cor dourada */
+        background-color: #D9B27A;
+        /* Centraliza */
+        transform: translateX(-50%);
+        /* Cria animação */
+        transition: width 0.4s ease;
+    }
+
+
+    /* Detalhe decorativo */
+    .sobre-card::after {
+        /* Cria pseudo-elemento */
+        content: "";
+        /* Posiciona */
+        position: absolute;
+        /* Distância superior */
+        top: 15px;
+        /* Distância direita */
+        right: 15px;
+        /* Define largura */
+        width: 25px;
+        /* Define altura */
+        height: 25px;
+        /* Cria borda superior */
+        border-top: 1px solid rgba(217, 178, 122, 0.45);
+        /* Cria borda direita */
+        border-right: 1px solid rgba(217, 178, 122, 0.45);
+        /* Cria transição */
+        transition: all 0.4s ease;
+    }
+
+
+    /* Hover do card */
+    .sobre-card:hover {
+        /* Move o card para cima */
+        transform: translateY(-10px);
+        /* Torna a borda dourada */
+        border-color: #D9B27A;
+        /* Cria sombra */
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45), 0 0 20px rgba(217, 178, 122, 0.08);
+        /* Altera o fundo */
+        background: linear-gradient( 145deg, #1C1C1C 0%, #111111 100% );
+    }
+
+
+        /* Aumenta a linha no hover */
+        .sobre-card:hover::before {
+            /* Define largura */
+            width: 70%;
+        }
+
+
+        /* Aumenta o detalhe no hover */
+        .sobre-card:hover::after {
+            /* Aumenta largura */
+            width: 35px;
+            /* Aumenta altura */
+            height: 35px;
+            /* Torna dourado */
+            border-color: #D9B27A;
+        }
+
+
+    /* =========================================================
+   ÍCONES DOS CARDS
+   ========================================================= */
+
+    /* Configura os ícones */
+    .sobre-card i {
+        /* Define cor dourada */
+        color: #D9B27A;
+        /* Define tamanho */
+        font-size: 38px;
+        /* Faz ocupar uma linha */
+        display: block;
+        /* Cria espaço inferior */
+        margin-bottom: 22px;
+        /* Cria transição */
+        transition: all 0.4s ease;
+    }
+
+
+    /* Hover dos ícones */
+    .sobre-card:hover i {
+        /* Move e aumenta o ícone */
+        transform: translateY(-4px) scale(1.05);
+        /* Cria brilho */
+        text-shadow: 0 0 12px rgba(217, 178, 122, 0.35);
+    }
+
+
+    /* Título dos cards */
+    .sobre-card h3 {
+        /* Define branco */
+        color: #FFFFFF;
+        /* Define fonte */
+        font-family: 'Playfair Display', serif;
+        /* Define tamanho */
+        font-size: 22px;
+        /* Define peso */
+        font-weight: 600;
+        /* Cria espaço inferior */
+        margin-bottom: 15px;
+        /* Cria transição */
+        transition: color 0.3s ease;
+    }
+
+
+    /* Hover do título */
+    .sobre-card:hover h3 {
+        /* Muda para dourado */
+        color: #D9B27A;
+    }
+
+
+    /* Texto dos cards */
+    .sobre-card p {
+        /* Define cinza */
+        color: #BDBDBD;
+        /* Define fonte */
+        font-family: 'Lato', sans-serif;
+        /* Define tamanho */
+        font-size: 15px;
+        /* Define peso */
+        font-weight: 400;
+        /* Define espaçamento */
+        line-height: 1.7;
+        /* Remove margem */
+        margin: 0;
+    }
+
+
+/* =========================================================
+   NOSSA ESSÊNCIA
+   ========================================================= */
+
+/* Configura o fundo da seção */
+.sobre-essencia {
+    /* Define fundo */
+    background-color: #0E0E0E;
+    /* Cria linha superior */
+    border-top: 1px solid #1F1F1F;
+}
+
+
+/* =========================================================
+   DIFERENCIAIS
+   ========================================================= */
+
+/* Configura a seção */
+.sobre-diferenciais {
+    /* Define fundo */
+    background-color: #0E0E0E;
+    /* Define espaçamento */
+    padding: 100px 0;
+    /* Cria linha superior */
+    border-top: 1px solid #1F1F1F;
+}
+
+
+    /* Define fundo específico dos cards */
+    .sobre-diferenciais .sobre-card {
+        /* Define fundo um pouco mais claro */
+        background-color: #151515;
+    }
+
+
+/* =========================================================
+   MISSÃO
+   ========================================================= */
+
+/* Configura a seção de missão */
+.sobre-missao {
+    /* Define fundo vinho */
+    background-color: #7D1F1F;
+    /* Define texto branco */
+    color: #FFFFFF;
+    /* Define espaçamento */
+    padding: 90px 0;
+}
+
+
+    /* Subtítulo da missão */
+    .sobre-missao .sobre-secao-subtitulo {
+        /* Define dourado */
+        color: #D9B27A;
+    }
+
+
+    /* Título da missão */
+    .sobre-missao h2 {
+        /* Define branco */
+        color: #FFFFFF;
+        /* Define fonte */
+        font-family: 'Playfair Display', serif;
+        /* Define tamanho */
+        font-size: 42px;
+        /* Define peso */
+        font-weight: 600;
+        /* Define espaçamento */
+        line-height: 1.2;
+        /* Cria espaço inferior */
+        margin-bottom: 18px;
+    }
+
+
+    /* Texto da missão */
+    .sobre-missao p {
+        /* Limita largura */
+        max-width: 700px;
+        /* Centraliza */
+        margin: 0 auto;
+        /* Define cor */
+        color: #F1F1F1;
+        /* Define fonte */
+        font-family: 'Lato', sans-serif;
+        /* Define tamanho */
+        font-size: 17px;
+        /* Define peso */
+        font-weight: 400;
+        /* Define espaçamento */
+        line-height: 1.7;
+    }
+
+
+/* =========================================================
+   VISÃO E VALORES
+   ========================================================= */
+
+/* Configura a seção */
+.sobre-valores {
+    /* Define fundo */
+    background-color: #0E0E0E;
+    /* Define texto branco */
+    color: #FFFFFF;
+    /* Define espaçamento */
+    padding: 100px 0;
+    /* Cria linha superior */
+    border-top: 1px solid #1F1F1F;
+}
+
+
+    /* Título dos valores */
+    .sobre-valores h2 {
+        /* Define branco */
+        color: #FFFFFF;
+        /* Define fonte */
+        font-family: 'Playfair Display', serif;
+        /* Define tamanho */
+        font-size: 36px;
+        /* Define peso */
+        font-weight: 600;
+        /* Define espaçamento */
+        line-height: 1.25;
+        /* Cria espaço abaixo */
+        margin-bottom: 18px;
+    }
+
+
+    /* Texto dos valores */
+    .sobre-valores p {
+        /* Define cor cinza */
+        color: #BDBDBD;
+        /* Define fonte */
+        font-family: 'Lato', sans-serif;
+        /* Define tamanho */
+        font-size: 16px;
+        /* Define peso */
+        font-weight: 400;
+        /* Define espaçamento */
+        line-height: 1.8;
+        /* Limita largura */
+        max-width: 550px;
+    }
+
+
+/* =========================================================
+   LISTA DE VALORES
+   ========================================================= */
+
+/* Organiza os valores */
+.valores-lista {
+    /* Ativa Flexbox */
+    display: flex;
+    /* Permite quebra de linha */
+    flex-wrap: wrap;
+    /* Define espaço entre os itens */
+    gap: 10px;
+    /* Cria espaço superior */
+    margin-top: 25px;
+}
+
+
+    /* Configura cada valor */
+    .valores-lista span {
+        /* Define texto branco */
+        color: #FFFFFF;
+        /* Define fundo escuro */
+        background-color: #151515;
+        /* Define borda vinho */
+        border: 1px solid #7D1F1F;
+        /* Define fonte */
+        font-family: 'Lato', sans-serif;
+        /* Define espaçamento */
+        padding: 9px 16px;
+        /* Define tamanho */
+        font-size: 14px;
+        /* Define peso */
+        font-weight: 500;
+        /* Cria transição */
+        transition: all 0.3s ease;
+    }
+
+
+        /* Hover dos valores */
+        .valores-lista span:hover {
+            /* Muda fundo para vinho */
+            background-color: #7D1F1F;
+            /* Muda borda para dourada */
+            border-color: #D9B27A;
+        }
+
+
+/* =========================================================
+   SEÇÃO FINAL / RESERVA
+   ========================================================= */
+
+/* Configura a seção final */
+.sobre-reserva {
+    /* Define fundo vinho */
+    background-color: #7D1F1F;
+    /* Define espaçamento */
+    padding: 80px 0;
+    /* Define texto branco */
+    color: #FFFFFF;
+}
+
+
+    /* Subtítulo final */
+    .sobre-reserva .sobre-secao-subtitulo {
+        /* Define dourado */
+        color: #D9B27A;
+    }
+
+
+    /* Título final */
+    .sobre-reserva h2 {
+        /* Define branco */
+        color: #FFFFFF;
+        /* Define fonte */
+        font-family: 'Playfair Display', serif;
+        /* Define tamanho */
+        font-size: 42px;
+        /* Define peso */
+        font-weight: 600;
+        /* Cria espaço abaixo */
+        margin-bottom: 15px;
+    }
+
+
+    /* Texto final */
+    .sobre-reserva p {
+        /* Define cor */
+        color: #F1F1F1;
+        /* Define fonte */
+        font-family: 'Lato', sans-serif;
+        /* Define tamanho */
+        font-size: 17px;
+        /* Define peso */
+        font-weight: 400;
+        /* Cria espaço abaixo */
+        margin-bottom: 30px;
+    }
+
+
+/* =========================================================
+   BOTÃO RESERVA - PÁGINA SOBRE
+   ========================================================= */
+
+/* Configura o botão */
+.btn-reserva-sobre {
+    /* Define fundo escuro */
+    background-color: #0E0E0E;
+    /* Define texto branco */
+    color: #FFFFFF !important;
+    /* Define borda dourada */
+    border: 1px solid #D9B27A;
+    /* Define espaçamento */
+    padding: 12px 28px;
+    /* Define fonte */
+    font-family: 'Lato', sans-serif;
+    /* Define peso */
+    font-weight: 600;
+    /* Arredonda os cantos */
+    border-radius: 3px;
+    /* Remove sublinhado */
+    text-decoration: none;
+    /* Cria transição */
+    transition: all 0.3s ease;
+}
+
+
+    /* Hover do botão */
+    .btn-reserva-sobre:hover {
+        /* Muda fundo para dourado */
+        background-color: #D9B27A;
+        /* Muda texto para preto */
+        color: #0E0E0E !important;
+    }
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+/* Configura o footer */
+.footer-kiora {
+    /* Define fundo preto */
+    background-color: #0E0E0E;
+    /* Define texto branco */
+    color: #FFFFFF;
+    /* Ocupa toda a largura */
+    width: 100%;
+    /* Cria borda superior vinho */
+    border-top: 1px solid #7D1F1F;
+}
+
+
+/* Área principal do footer */
+.footer-content {
+    /* Define altura mínima */
+    min-height: 120px;
+    /* Ativa Flexbox */
+    display: flex;
+    /* Centraliza verticalmente */
+    align-items: center;
+    /* Distribui os elementos */
+    justify-content: space-between;
+}
+
+
+/* Área do logo */
+.footer-logo-area {
+    /* Ativa Flexbox */
+    display: flex;
+    /* Centraliza verticalmente */
+    align-items: center;
+    /* Cria espaço à direita */
+    padding-right: 25px;
+}
+
+
+/* Logo do footer */
+.logo-footer {
+    /* Define largura */
+    width: 165px;
+    /* Mantém proporção */
+    height: auto;
+    /* Remove espaços extras */
+    display: block;
+}
+
+
+/* Frase do footer */
+.footer-frase {
+    /* Cria linha divisória */
+    border-left: 1px solid #7D1F1F;
+    /* Define espaço esquerdo */
+    padding-left: 25px;
+    /* Define espaço direito */
+    padding-right: 30px;
+}
+
+
+    /* Texto da frase */
+    .footer-frase p {
+        /* Define cor dourada */
+        color: #D9B27A;
+        /* Define fonte */
+        font-family: 'Lato', sans-serif;
+        /* Define tamanho */
+        font-size: 11px;
+        /* Define peso */
+        font-weight: 600;
+        /* Define espaçamento entre linhas */
+        line-height: 1.5;
+        /* Remove margem */
+        margin: 0;
+        /* Define pequeno espaçamento entre letras */
+        letter-spacing: 0.3px;
+    }
+
+
+/* =========================================================
+   ITENS DO FOOTER
+   ========================================================= */
+
+/* Configura cada item */
+.footer-item {
+    /* Define altura mínima */
+    min-height: 55px;
+    /* Cria divisória */
+    border-left: 1px solid #7D1F1F;
+    /* Ativa Flexbox */
+    display: flex;
+    /* Centraliza verticalmente */
+    align-items: center;
+    /* Define espaço interno esquerdo */
+    padding-left: 25px;
+    /* Define espaço interno direito */
+    padding-right: 25px;
+}
+
+
+    /* Conteúdo interno */
+    .footer-item > div {
+        /* Ativa Flexbox */
+        display: flex;
+        /* Organiza verticalmente */
+        flex-direction: column;
+    }
+
+
+/* Ícones */
+.footer-icon {
+    /* Define cor dourada */
+    color: #D9B27A !important;
+    /* Define tamanho */
+    font-size: 17px;
+    /* Cria espaço à direita */
+    margin-right: 10px;
+}
+
+
+/* Textos */
+.footer-item span {
+    /* Define cor cinza */
+    color: #BDBDBD;
+    /* Define fonte */
+    font-family: 'Lato', sans-serif;
+    /* Define tamanho */
+    font-size: 10px;
+    /* Define espaçamento */
+    line-height: 1.45;
+}
+
+
+/* Telefones */
+.footer-telefones {
+    /* Define espaço entre os telefones */
+    gap: 5px;
+}
+
+
+    /* Cada telefone */
+    .footer-telefones div {
+        /* Ativa Flexbox */
+        display: flex;
+        /* Centraliza verticalmente */
+        align-items: center;
+    }
+
+
+    /* Ícones dos telefones */
+    .footer-telefones .footer-icon {
+        /* Define tamanho menor */
+        font-size: 15px;
+    }
+
+
+/* Impede quebra do e-mail */
+.footer-email {
+    /* Mantém o e-mail em uma única linha */
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   REDES SOCIAIS
+   ========================================================= */
+
+/* Área das redes sociais */
+.footer-social {
+    /* Define espaço esquerdo */
+    padding-left: 30px;
+    /* Define espaço direito */
+    padding-right: 25px;
+}
+
+
+/* Título das redes sociais */
+.footer-social-title {
+    /* Define cor dourada */
+    color: #D9B27A !important;
+    /* Define fonte */
+    font-family: 'Lato', sans-serif;
+    /* Define tamanho */
+    font-size: 10px !important;
+    /* Faz ocupar sua linha */
+    display: block;
+    /* Cria espaço abaixo */
+    margin-bottom: 8px;
+    /* Centraliza o texto */
+    text-align: center;
+}
+
+
+/* Links sociais */
+.footer-social-links {
+    /* Ativa Flexbox */
+    display: flex;
+    /* Centraliza verticalmente */
+    align-items: center;
+    /* Centraliza horizontalmente */
+    justify-content: center;
+    /* Define espaço entre links */
+    gap: 13px;
+}
+
+
+    /* Cada link social */
+    .footer-social-links a {
+        /* Define dourado */
+        color: #D9B27A !important;
+        /* Define fonte */
+        font-family: 'Lato', sans-serif;
+        /* Define tamanho */
+        font-size: 15px;
+        /* Remove sublinhado */
+        text-decoration: none;
+        /* Cria transição */
+        transition: all 0.3s ease;
+    }
+
+
+        /* Hover das redes */
+        .footer-social-links a:hover {
+            /* Muda para branco */
+            color: #FFFFFF !important;
+            /* Move o ícone para cima */
+            transform: translateY(-2px);
+        }
+
+
+/* =========================================================
+   LINK DO ENDEREÇO
+   ========================================================= */
+
+/* Torna o endereço inteiro clicável */
+.footer-address-link {
+    /* Faz o link ocupar a área */
+    display: block;
+    /* Mantém as cores internas */
+    color: inherit;
+    /* Remove sublinhado */
+    text-decoration: none;
+}
+
+
+    /* Hover do endereço */
+    .footer-address-link:hover .footer-item {
+        /* Cria destaque suave */
+        background-color: rgba(217, 178, 122, 0.04);
+    }
+
+
+        /* Texto do endereço no hover */
+        .footer-address-link:hover .footer-item span {
+            /* Muda para dourado */
+            color: #D9B27A;
+        }
+
+
+    /* Ícone do endereço no hover */
+    .footer-address-link:hover .footer-icon {
+        /* Muda para branco */
+        color: #FFFFFF !important;
+        /* Aumenta levemente */
+        transform: scale(1.1);
+    }
+
+
+    /* Transições do endereço */
+    .footer-address-link .footer-item,
+    .footer-address-link .footer-item span,
+    .footer-address-link .footer-icon {
+        /* Cria transição suave */
+        transition: all 0.3s ease;
+    }
+
+
+/* =========================================================
+   DIREITOS AUTORAIS
+   ========================================================= */
+
+/* Área dos direitos */
+.footer-direitos {
+    /* Cria divisória */
+    border-left: 1px solid #7D1F1F;
+    /* Define altura mínima */
+    min-height: 55px;
+    /* Define espaço esquerdo */
+    padding-left: 25px;
+    /* Ativa Flexbox */
+    display: flex;
+    /* Organiza verticalmente */
+    flex-direction: column;
+    /* Centraliza verticalmente */
+    justify-content: center;
+}
+
+
+    /* Nome da empresa */
+    .footer-direitos strong {
+        /* Define dourado */
+        color: #D9B27A;
+        /* Define fonte */
+        font-family: 'Lato', sans-serif;
+        /* Define tamanho */
+        font-size: 13px;
+        /* Define peso */
+        font-weight: 500;
+        /* Cria espaço inferior */
+        margin-bottom: 3px;
+    }
+
+
+    /* Texto secundário */
+    .footer-direitos span {
+        /* Define cinza */
+        color: #777777;
+        /* Define fonte */
+        font-family: 'Lato', sans-serif;
+        /* Define tamanho */
+        font-size: 9px;
+        /* Impede quebra */
+        white-space: nowrap;
+    }
+
+
+/* =========================================================
+   POLÍTICAS
+   ========================================================= */
+
+/* Organiza os links de políticas */
+.footer-politicas {
+    /* Ativa Flexbox */
+    display: flex;
+    /* Centraliza verticalmente */
+    align-items: center;
+    /* Define espaço entre itens */
+    gap: 7px;
+    /* Cria espaço superior */
+    margin-top: 4px;
+}
+
+
+    /* Links e textos das políticas */
+    .footer-politicas a,
+    .footer-politicas span {
+        /* Define cor cinza */
+        color: #777777;
+        /* Define fonte */
+        font-family: 'Lato', sans-serif;
+        /* Define tamanho */
+        font-size: 8px;
+        /* Remove sublinhado */
+        text-decoration: none;
+    }
+
+
+        /* Hover dos links */
+        .footer-politicas a:hover {
+            /* Muda para dourado */
+            color: #D9B27A;
+        }
+
+
+/* =========================================================
+   RESPONSIVIDADE - TABLET
+   ========================================================= */
+
+/* Aplica regras em telas de até 991px */
+@media (max-width: 991px) {
+
+    /* Ajusta espaço superior do body */
+    body {
+        /* Reduz o espaço reservado para navbar */
+        padding-top: 75px;
+    }
+
+    /* Reduz altura da navbar */
+    .navbar-kiora {
+        /* Define altura menor */
+        min-height: 75px;
+    }
+
+    /* Reduz o logo */
+    .logo-navbar {
+        /* Define largura menor */
+        width: 145px;
+    }
+
+    /* Ajusta menu aberto */
+    .navbar-kiora .navbar-collapse {
+        /* Cria espaço superior */
+        padding-top: 20px;
+        /* Cria espaço inferior */
+        padding-bottom: 15px;
+    }
+
+    /* Organiza o menu */
+    .navbar-kiora .navbar-nav {
+        /* Remove espaçamento entre itens */
+        gap: 0;
+        /* Centraliza o texto */
+        text-align: center;
+    }
+
+    /* Ajusta os links */
+    .navbar-kiora .nav-link {
+        /* Aumenta a área clicável */
+        padding: 12px 0;
+    }
+
+    /* Ajusta botão de reserva */
+    .btn-reserva {
+        /* Permite definir margens */
+        display: inline-block;
+        /* Cria espaço superior */
+        margin-top: 10px;
+        /* Cria pequeno espaço inferior */
+        margin-bottom: 5px;
+    }
+
+    /* Ajusta Hero */
+    .hero-kiora {
+        /* Ocupa praticamente toda a altura da tela */
+        min-height: 100vh;
+        /* Centraliza a imagem */
+        background-position: center;
+    }
+
+    /* Ajusta conteúdo da Hero */
+    .hero-conteudo {
+        /* Cria espaço superior */
+        padding-top: 130px;
+        /* Cria espaço inferior */
+        padding-bottom: 60px;
+    }
+
+    /* Ajusta Hero Sobre */
+    .sobre-hero {
+        /* Reduz altura */
+        min-height: 500px;
+    }
+
+        /* Ajusta título */
+        .sobre-hero h1 {
+            /* Reduz tamanho */
+            font-size: 44px;
+        }
+
+    /* Ajusta espaçamento das seções */
+    .sobre-historia,
+    .sobre-experiencia,
+    .sobre-essencia,
+    .sobre-diferenciais,
+    .sobre-valores {
+        /* Define espaçamento menor */
+        padding: 75px 0;
+    }
+
+        /* Ajusta títulos */
+        .sobre-historia h2,
+        .sobre-essencia h2,
+        .sobre-experiencia h2,
+        .sobre-diferenciais h2,
+        .sobre-missao h2,
+        .sobre-reserva h2 {
+            /* Reduz tamanho */
+            font-size: 36px;
+        }
+
+        /* Ajusta título dos valores */
+        .sobre-valores h2 {
+            /* Define tamanho menor */
+            font-size: 32px;
+        }
+
+    /* Reduz imagens */
+    .sobre-imagem img {
+        /* Define altura menor */
+        height: 380px;
+    }
+
+    /* Ajusta missão */
+    .sobre-missao {
+        /* Reduz espaçamento */
+        padding: 75px 20px;
+    }
+
+
+    /* =====================================================
+       FOOTER - TABLET
+       ===================================================== */
+
+    /* Permite quebra dos elementos */
+    .footer-content {
+        /* Permite quebra de linha */
+        flex-wrap: wrap;
+        /* Cria espaço superior */
+        padding-top: 20px;
+        /* Cria espaço inferior */
+        padding-bottom: 20px;
+        /* Define espaçamento */
+        gap: 15px 0;
+    }
+
+    /* Divide os elementos em quatro partes */
+    .footer-logo-area,
+    .footer-frase,
+    .footer-item,
+    .footer-social {
+        /* Cada elemento ocupa 25% */
+        width: 25%;
+    }
+
+    /* Direitos ocupam uma linha inteira */
+    .footer-direitos {
+        /* Ocupa toda a largura */
+        width: 100%;
+        /* Remove borda lateral */
+        border-left: none;
+        /* Cria borda superior */
+        border-top: 1px solid #7D1F1F;
+        /* Cria espaço superior */
+        padding-top: 15px;
+        /* Remove espaço lateral */
+        padding-left: 0;
+        /* Centraliza texto */
+        text-align: center;
+        /* Centraliza elementos */
+        align-items: center;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVIDADE - CELULARES
+   ========================================================= */
+
+/* Aplica regras em telas de até 767px */
+@media (max-width: 767px) {
+
+    /* Ajusta posição da imagem da Hero */
+    .hero-kiora {
+        /* Move a imagem levemente para a direita */
+        background-position: 60% center;
+    }
+
+    /* Centraliza o conteúdo */
+    .hero-conteudo {
+        /* Centraliza textos */
+        text-align: center;
+        /* Define espaçamento */
+        padding: 140px 20px 60px;
+    }
+
+    /* Reduz subtítulo */
+    .hero-subtitulo {
+        /* Define tamanho menor */
+        font-size: 11px;
+        /* Reduz espaçamento entre letras */
+        letter-spacing: 2px;
+    }
+
+    /* Reduz título */
+    .hero-conteudo h1 {
+        /* Define tamanho menor */
+        font-size: 38px;
+    }
+
+    /* Reduz texto */
+    .hero-conteudo p {
+        /* Define tamanho menor */
+        font-size: 15px;
+        /* Centraliza horizontalmente */
+        margin-left: auto;
+        /* Centraliza horizontalmente */
+        margin-right: auto;
+    }
+
+    /* Organiza os botões verticalmente */
+    .hero-botoes {
+        /* Organiza em coluna */
+        flex-direction: column;
+        /* Centraliza */
+        justify-content: center;
+    }
+
+    /* Define largura dos botões */
+    .btn-login,
+    .btn-cadastrar {
+        /* Define largura fixa */
+        width: 220px;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVIDADE - CELULARES PEQUENOS
+   ========================================================= */
+
+/* Aplica regras em telas de até 575px */
+@media (max-width: 575px) {
+
+    /* Ajusta Hero Sobre */
+    .sobre-hero {
+        /* Define altura */
+        min-height: 500px;
+        /* Ajusta posição da imagem */
+        background-position: 60% center;
+    }
+
+    /* Centraliza conteúdo */
+    .sobre-hero-conteudo {
+        /* Centraliza texto */
+        text-align: center;
+        /* Define espaçamento */
+        padding: 60px 20px;
+    }
+
+    /* Reduz título */
+    .sobre-hero h1 {
+        /* Define tamanho menor */
+        font-size: 34px;
+    }
+
+    /* Reduz texto */
+    .sobre-hero p {
+        /* Define tamanho menor */
+        font-size: 15px;
+        /* Centraliza */
+        margin-left: auto;
+        /* Centraliza */
+        margin-right: auto;
+    }
+
+    /* Reduz espaçamento das seções */
+    .sobre-historia,
+    .sobre-experiencia,
+    .sobre-essencia,
+    .sobre-diferenciais,
+    .sobre-valores {
+        /* Define espaçamento */
+        padding: 60px 20px;
+    }
+
+        /* Reduz títulos */
+        .sobre-historia h2,
+        .sobre-essencia h2,
+        .sobre-experiencia h2,
+        .sobre-diferenciais h2,
+        .sobre-missao h2,
+        .sobre-reserva h2 {
+            /* Define tamanho menor */
+            font-size: 30px;
+        }
+
+        /* Ajusta textos */
+        .sobre-historia p,
+        .sobre-essencia p {
+            /* Define tamanho */
+            font-size: 15px;
+        }
+
+    /* Reduz imagens */
+    .sobre-imagem img {
+        /* Define altura */
+        height: 300px;
+    }
+
+    /* Reduz padding dos cards */
+    .sobre-card {
+        /* Define espaçamento menor */
+        padding: 35px 25px;
+    }
+
+    /* Ajusta missão */
+    .sobre-missao {
+        /* Define espaçamento */
+        padding: 60px 20px;
+    }
+
+    /* Reduz título dos valores */
+    .sobre-valores h2 {
+        /* Define tamanho */
+        font-size: 30px;
+    }
+
+    /* Centraliza valores */
+    .valores-lista {
+        /* Centraliza os itens */
+        justify-content: center;
+    }
+
+        /* Ajusta itens */
+        .valores-lista span {
+            /* Define tamanho menor */
+            font-size: 13px;
+            /* Define espaçamento menor */
+            padding: 8px 13px;
+        }
+
+    /* Ajusta seção final */
+    .sobre-reserva {
+        /* Define espaçamento */
+        padding: 60px 20px;
+    }
+
+
+    /* =====================================================
+       FOOTER - CELULAR
+       ===================================================== */
+
+    /* Organiza o footer verticalmente */
+    .footer-content {
+        /* Organiza em coluna */
+        flex-direction: column;
+        /* Centraliza elementos */
+        align-items: center;
+        /* Define espaçamento */
+        padding: 30px 20px;
+    }
+
+    /* Faz cada bloco ocupar toda a largura */
+    .footer-logo-area,
+    .footer-frase,
+    .footer-item,
+    .footer-social {
+        /* Ocupa toda a largura */
+        width: 100%;
+        /* Remove borda lateral */
+        border-left: none;
+        /* Cria separação horizontal */
+        border-bottom: 1px solid #333;
+        /* Define espaçamento vertical */
+        padding: 15px 0;
+        /* Centraliza conteúdo */
+        justify-content: center;
+        /* Centraliza texto */
+        text-align: center;
+    }
+
+    /* Ajusta espaço abaixo do logo */
+    .footer-logo-area {
+        /* Cria espaço inferior */
+        padding-bottom: 20px;
+    }
+
+    /* Remove altura mínima dos itens */
+    .footer-item {
+        /* Permite altura automática */
+        min-height: auto;
+    }
+
+    /* Centraliza o e-mail */
+    .footer-email {
+        /* Centraliza conteúdo */
+        justify-content: center;
+    }
+
+    /* Mantém separação das redes */
+    .footer-social {
+        /* Define linha inferior */
+        border-bottom: 1px solid #333;
+    }
+
+    /* Ajusta direitos autorais */
+    .footer-direitos {
+        /* Ocupa toda a largura */
+        width: 100%;
+        /* Remove borda superior */
+        border-top: none;
+        /* Define espaçamento */
+        padding: 20px 0 0;
+    }
+
+        /* Permite quebra do texto */
+        .footer-direitos span {
+            /* Permite quebra */
+            white-space: normal;
+        }
+}
+
+
+/* =========================================================
+   MODAL DE LOGIN KIORA
+   ========================================================= */
+
+/* =========================================================
+   FUNDO DO MODAL
+   ========================================================= */
+
+/* Configura o container principal do modal */
+.modal-login-kiora {
+    /* Permite posicionamento dos elementos internos */
+    position: relative;
+    /* Define o fundo preto */
+    background-color: #0E0E0E;
+    /* Cria borda dourada */
+    border: 1px solid #D9B27A;
+    /* Arredonda os cantos */
+    border-radius: 5px;
+    /* Define texto branco */
+    color: #FFFFFF;
+    /* Esconde conteúdos excedentes */
+    overflow: hidden;
+    /* Cria sombra externa */
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.75);
+}
+
+
+    /* =========================================================
+   EFEITO DOURADO SUPERIOR
+   ========================================================= */
+
+    /* Cria a linha dourada superior */
+    .modal-login-kiora::before {
+        /* Cria pseudo-elemento */
+        content: "";
+        /* Posiciona */
+        position: absolute;
+        /* Coloca no topo */
+        top: 0;
+        /* Começa no centro */
+        left: 50%;
+        /* Define largura */
+        width: 100px;
+        /* Define altura */
+        height: 2px;
+        /* Define dourado */
+        background-color: #D9B27A;
+        /* Centraliza */
+        transform: translateX(-50%);
+        /* Mantém acima */
+        z-index: 2;
+    }
+
+
+/* =========================================================
+   TAMANHO DO MODAL
+   ========================================================= */
+
+/* Define o tamanho máximo do diálogo */
+.modal-login-dialog {
+    /* Define largura máxima */
+    max-width: 500px;
+    /* Cria espaço ao redor */
+    padding: 15px;
+}
+
+
+/* =========================================================
+   CORPO DO MODAL
+   ========================================================= */
+
+/* Configura o corpo */
+.modal-login-body {
+    /* Define espaçamento interno */
+    padding: 42px 48px 40px;
+}
+
+
+/* =========================================================
+   BOTÃO FECHAR
+   ========================================================= */
+
+/* Configura o botão de fechar */
+.modal-login-fechar {
+    /* Posiciona */
+    position: absolute;
+    /* Distância superior */
+    top: 18px;
+    /* Distância direita */
+    right: 18px;
+    /* Define largura */
+    width: 34px;
+    /* Define altura */
+    height: 34px;
+    /* Remove padding */
+    padding: 0;
+    /* Remove borda */
+    border: none;
+    /* Mantém fundo transparente */
+    background: transparent;
+    /* Mantém opacidade */
+    opacity: 1;
+    /* Define dourado */
+    color: #D9B27A;
+    /* Mantém acima dos elementos */
+    z-index: 10;
+    /* Ativa Flexbox */
+    display: flex;
+    /* Centraliza verticalmente */
+    align-items: center;
+    /* Centraliza horizontalmente */
+    justify-content: center;
+    /* Cria transição */
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+
+    /* Remove aparência padrão */
+    .modal-login-fechar::before,
+    .modal-login-fechar::after {
+        /* Esconde pseudo-elementos */
+        display: none;
+    }
+
+
+    /* Ícone do botão */
+    .modal-login-fechar i {
+        /* Define tamanho */
+        font-size: 18px;
+        /* Define dourado */
+        color: #D9B27A;
+    }
+
+
+    /* Hover do botão */
+    .modal-login-fechar:hover {
+        /* Mantém opacidade */
+        opacity: 1;
+        /* Gira o botão */
+        transform: rotate(90deg);
+    }
+
+
+        /* Ícone no hover */
+        .modal-login-fechar:hover i {
+            /* Muda para branco */
+            color: #FFFFFF;
+        }
+
+
+/* =========================================================
+   LOGO DO MODAL
+   ========================================================= */
+
+/* Configura área do logo */
+.modal-login-logo {
+    /* Centraliza */
+    text-align: center;
+    /* Cria espaço inferior */
+    margin-bottom: 20px;
+}
+
+
+    /* Imagem do logo */
+    .modal-login-logo img {
+        /* Define largura */
+        width: 175px;
+        /* Mantém proporção */
+        height: auto;
+        /* Mantém imagem proporcional */
+        object-fit: contain;
+    }
+
+
+/* =========================================================
+   CABEÇALHO DO LOGIN
+   ========================================================= */
+
+/* Configura cabeçalho */
+.modal-login-header {
+    /* Centraliza */
+    text-align: center;
+    /* Cria espaço inferior */
+    margin-bottom: 30px;
+}
+
+
+/* Subtítulo */
+.modal-login-subtitulo {
+    /* Faz ocupar sua própria linha */
+    display: block;
+    /* Define dourado */
+    color: #D9B27A;
+    /* Define fonte */
+    font-family: 'Lato', sans-serif;
+    /* Define tamanho */
+    font-size: 11px;
+    /* Define peso */
+    font-weight: 600;
+    /* Define espaçamento */
+    letter-spacing: 3px;
+    /* Cria espaço inferior */
+    margin-bottom: 10px;
+}
+
+
+/* Título */
+.modal-login-header h2 {
+    /* Define branco */
+    color: #FFFFFF;
+    /* Define fonte */
+    font-family: 'Playfair Display', serif;
+    /* Define tamanho */
+    font-size: 34px;
+    /* Define peso */
+    font-weight: 600;
+    /* Remove margem superior */
+    margin: 0 0 10px;
+}
+
+
+    /* Primeira letra do título */
+    .modal-login-header h2::first-letter {
+        /* Mantém primeira letra branca */
+        color: #FFFFFF;
+    }
+
+
+/* Descrição */
+.modal-login-header p {
+    /* Define cinza */
+    color: #999999;
+    /* Define fonte */
+    font-family: 'Lato', sans-serif;
+    /* Define tamanho */
+    font-size: 14px;
+    /* Remove margem */
+    margin: 0;
+    /* Define espaçamento */
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   GRUPOS DO FORMULÁRIO
+   ========================================================= */
+
+/* Configura grupo */
+.modal-login-grupo {
+    /* Cria espaço inferior */
+    margin-bottom: 20px;
+}
+
+
+    /* Label */
+    .modal-login-grupo label {
+        /* Ocupa sua linha */
+        display: block;
+        /* Define branco */
+        color: #FFFFFF;
+        /* Define fonte */
+        font-family: 'Lato', sans-serif;
+        /* Define tamanho */
+        font-size: 14px;
+        /* Define peso */
+        font-weight: 600;
+        /* Cria espaço inferior */
+        margin-bottom: 7px;
+    }
+
+
+/* =========================================================
+   CAMPO DE LOGIN
+   ========================================================= */
+
+/* Container do campo */
+.modal-login-input {
+    /* Permite posicionar ícone */
+    position: relative;
+    /* Ocupa toda a largura */
+    width: 100%;
+}
+
+
+    /* Ícone do campo */
+    .modal-login-input > i {
+        /* Posiciona */
+        position: absolute;
+        /* Distância esquerda */
+        left: 15px;
+        /* Centraliza verticalmente */
+        top: 50%;
+        /* Ajusta centralização */
+        transform: translateY(-50%);
+        /* Define dourado */
+        color: #D9B27A;
+        /* Define tamanho */
+        font-size: 17px;
+        /* Impede interferência nos cliques */
+        pointer-events: none;
+        /* Mantém acima do input */
+        z-index: 2;
+    }
+
+
+    /* Input */
+    .modal-login-input input {
+        /* Ocupa toda a largura */
+        width: 100%;
+        /* Define altura */
+        height: 50px;
+        /* Define fundo */
+        background-color: #111111;
+        /* Define borda */
+        border: 1px solid #383838;
+        /* Arredonda */
+        border-radius: 3px;
+        /* Define texto branco */
+        color: #FFFFFF;
+        /* Define fonte */
+        font-family: 'Lato', sans-serif;
+        /* Define tamanho */
+        font-size: 14px;
+        /* Cria espaço para os ícones */
+        padding: 0 45px;
+        /* Remove outline padrão */
+        outline: none;
+        /* Cria transições */
+        transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    }
+
+
+        /* Placeholder */
+        .modal-login-input input::placeholder {
+            /* Define cor do placeholder */
+            color: #777777;
+        }
+
+
+        /* Campo em foco */
+        .modal-login-input input:focus {
+            /* Clareia levemente o fundo */
+            background-color: #151515;
+            /* Torna a borda dourada */
+            border-color: #D9B27A;
+            /* Cria brilho sutil */
+            box-shadow: 0 0 0 2px rgba(217, 178, 122, 0.10);
+        }
+
+
+/* =========================================================
+   BOTÃO MOSTRAR SENHA
+   ========================================================= */
+
+/* Configura botão do olho */
+.modal-login-olho {
+    /* Posiciona */
+    position: absolute;
+    /* Distância direita */
+    right: 10px;
+    /* Centraliza verticalmente */
+    top: 50%;
+    /* Ajusta posição */
+    transform: translateY(-50%);
+    /* Define largura */
+    width: 35px;
+    /* Define altura */
+    height: 35px;
+    /* Remove padding */
+    padding: 0;
+    /* Remove borda */
+    border: none;
+    /* Mantém fundo transparente */
+    background: transparent;
+    /* Define cinza */
+    color: #777777;
+    /* Mostra cursor */
+    cursor: pointer;
+    /* Ativa Flexbox */
+    display: flex;
+    /* Centraliza verticalmente */
+    align-items: center;
+    /* Centraliza horizontalmente */
+    justify-content: center;
+    /* Cria transição */
+    transition: color 0.3s ease;
+}
+
+
+    /* Hover do botão */
+    .modal-login-olho:hover {
+        /* Muda para dourado */
+        color: #D9B27A;
+    }
+
+
+    /* Ícone do botão */
+    .modal-login-olho i {
+        /* Define tamanho */
+        font-size: 18px;
+    }
+
+
+/* =========================================================
+   ESQUECI A SENHA
+   ========================================================= */
+
+/* Configura área */
+.modal-login-opcoes {
+    /* Ativa Flexbox */
+    display: flex;
+    /* Alinha à direita */
+    justify-content: flex-end;
+    /* Ajusta margem superior */
+    margin-top: -5px;
+    /* Cria espaço inferior */
+    margin-bottom: 22px;
+}
+
+
+    /* Link de recuperação */
+    .modal-login-opcoes a {
+        /* Define dourado */
+        color: #D9B27A;
+        /* Define fonte */
+        font-family: 'Lato', sans-serif;
+        /* Define tamanho */
+        font-size: 13px;
+        /* Remove sublinhado */
+        text-decoration: none;
+        /* Cria transição */
+        transition: color 0.3s ease;
+    }
+
+
+        /* Hover do link */
+        .modal-login-opcoes a:hover {
+            /* Muda para branco */
+            color: #FFFFFF;
+            /* Adiciona sublinhado */
+            text-decoration: underline;
+            /* Afasta sublinhado */
+            text-underline-offset: 3px;
+        }
+
+
+/* =========================================================
+   BOTÃO ENTRAR
+   ========================================================= */
+
+/* Configura botão */
+.btn-modal-login {
+    /* Ocupa toda a largura */
+    width: 100%;
+    /* Define altura */
+    height: 50px;
+    /* Define borda */
+    border: 1px solid #D9B27A;
+    /* Arredonda */
+    border-radius: 3px;
+    /* Define fundo */
+    background-color: #7D1F1F;
+    /* Define texto */
+    color: #FFFFFF;
+    /* Define fonte */
+    font-family: 'Lato', sans-serif;
+    /* Define tamanho */
+    font-size: 14px;
+    /* Define peso */
+    font-weight: 600;
+    /* Aumenta espaçamento */
+    letter-spacing: 1px;
+    /* Define cursor */
+    cursor: pointer;
+    /* Cria transição */
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+
+
+    /* Hover */
+    .btn-modal-login:hover {
+        /* Muda fundo para dourado */
+        background-color: #D9B27A;
+        /* Muda texto para preto */
+        color: #0E0E0E;
+    }
+
+
+    /* Clique */
+    .btn-modal-login:active {
+        /* Reduz levemente */
+        transform: scale(0.98);
+    }
+
+
+/* =========================================================
+   DIVISOR
+   ========================================================= */
+
+/* Configura divisor */
+.modal-login-divisor {
+    /* Ativa Flexbox */
+    display: flex;
+    /* Centraliza verticalmente */
+    align-items: center;
+    /* Define espaço */
+    gap: 15px;
+    /* Define margens */
+    margin: 27px 0 22px;
+}
+
+
+    /* Linhas do divisor */
+    .modal-login-divisor::before,
+    .modal-login-divisor::after {
+        /* Cria pseudo-elementos */
+        content: "";
+        /* Faz ocupar espaço disponível */
+        flex: 1;
+        /* Define altura */
+        height: 1px;
+        /* Define cor */
+        background-color: #333333;
+    }
+
+
+    /* Texto do divisor */
+    .modal-login-divisor span {
+        /* Define cor */
+        color: #777777;
+        /* Define fonte */
+        font-family: 'Lato', sans-serif;
+        /* Define tamanho */
+        font-size: 12px;
+        /* Converte para maiúsculas */
+        text-transform: uppercase;
+    }
+
+
+/* =========================================================
+   CRIAR CONTA
+   ========================================================= */
+
+/* Centraliza área */
+.modal-login-cadastro {
+    /* Centraliza texto */
+    text-align: center;
+}
+
+
+    /* Texto */
+    .modal-login-cadastro p {
+        /* Permite ficar na mesma linha */
+        display: inline;
+        /* Define cor */
+        color: #999999;
+        /* Define fonte */
+        font-family: 'Lato', sans-serif;
+        /* Define tamanho */
+        font-size: 13px;
+        /* Remove margem */
+        margin: 0;
+    }
+
+
+    /* Link */
+    .modal-login-cadastro a {
+        /* Define dourado */
+        color: #D9B27A;
+        /* Define fonte */
+        font-family: 'Lato', sans-serif;
+        /* Define tamanho */
+        font-size: 13px;
+        /* Define peso */
+        font-weight: 600;
+        /* Cria espaço à esquerda */
+        margin-left: 5px;
+        /* Remove sublinhado */
+        text-decoration: none;
+        /* Cria transição */
+        transition: color 0.3s ease;
+    }
+
+
+        /* Hover */
+        .modal-login-cadastro a:hover {
+            /* Muda para branco */
+            color: #FFFFFF;
+            /* Adiciona sublinhado */
+            text-decoration: underline;
+            /* Afasta o sublinhado */
+            text-underline-offset: 3px;
+        }
+
+
+/* =========================================================
+   OVERLAY DO MODAL
+   ========================================================= */
+
+/* Configura backdrop do Bootstrap */
+.modal-backdrop.show {
+    /* Define opacidade */
+    opacity: 0.82;
+    /* Define fundo preto */
+    background-color: #000000;
+}
+
+
+/* =========================================================
+   ANIMAÇÃO DO MODAL
+   ========================================================= */
+
+/* Estado inicial */
+.modal.fade .modal-dialog {
+    /* Começa levemente acima e menor */
+    transform: translateY(-20px) scale(0.98);
+    /* Cria transição */
+    transition: transform 0.3s ease-out;
+}
+
+
+/* Estado aberto */
+.modal.show .modal-dialog {
+    /* Retorna à posição e tamanho normais */
+    transform: translateY(0) scale(1);
+}
+
+
+/* =========================================================
+   RESPONSIVIDADE DO MODAL DE LOGIN
+   ========================================================= */
+
+/* Aplica em telas de até 767px */
+@media (max-width: 767px) {
+
+    /* Ajusta diálogo */
+    .modal-login-dialog {
+        /* Cria margem */
+        margin: 15px;
+        /* Permite ocupar a largura disponível */
+        max-width: none;
+    }
+
+    /* Ajusta corpo */
+    .modal-login-body {
+        /* Reduz espaçamento */
+        padding: 38px 30px 32px;
+    }
+
+    /* Reduz logo */
+    .modal-login-logo img {
+        /* Define largura menor */
+        width: 155px;
+    }
+
+    /* Reduz título */
+    .modal-login-header h2 {
+        /* Define tamanho menor */
+        font-size: 30px;
+    }
+}
+
+
+/* =========================================================
+   LOGIN - CELULARES PEQUENOS
+   ========================================================= */
+
+/* Aplica em telas de até 400px */
+@media (max-width: 400px) {
+
+    /* Ajusta diálogo */
+    .modal-login-dialog {
+        /* Reduz margem */
+        margin: 10px;
+    }
+
+    /* Reduz corpo */
+    .modal-login-body {
+        /* Define espaçamento menor */
+        padding: 35px 22px 28px;
+    }
+
+    /* Reduz logo */
+    .modal-login-logo img {
+        /* Define largura */
+        width: 140px;
+    }
+
+    /* Reduz margem do cabeçalho */
+    .modal-login-header {
+        /* Define margem menor */
+        margin-bottom: 25px;
+    }
+
+        /* Reduz título */
+        .modal-login-header h2 {
+            /* Define tamanho menor */
+            font-size: 27px;
+        }
+
+        /* Reduz descrição */
+        .modal-login-header p {
+            /* Define tamanho */
+            font-size: 13px;
+        }
+
+    /* Reduz subtítulo */
+    .modal-login-subtitulo {
+        /* Define tamanho menor */
+        font-size: 10px;
+        /* Reduz espaçamento */
+        letter-spacing: 2px;
+    }
+}
+
+
+/* =========================================================
+   MODAL DE CADASTRO KIORA
+   ========================================================= */
+
+/* =========================================================
+   FUNDO DO MODAL
+   ========================================================= */
+
+/* Configura o modal de cadastro */
+.modal-cadastro-kiora {
+    /* Permite posicionamento */
+    position: relative;
+    /* Define fundo */
+    background-color: #0E0E0E;
+    /* Define borda */
+    border: 1px solid #D9B27A;
+    /* Arredonda */
+    border-radius: 5px;
+    /* Define texto branco */
+    color: #FFFFFF;
+    /* Esconde excedentes */
+    overflow: hidden;
+    /* Cria sombra */
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.75);
+}
+
+
+    /* =========================================================
+   LINHA DOURADA SUPERIOR
+   ========================================================= */
+
+    /* Cria linha superior */
+    .modal-cadastro-kiora::before {
+        /* Cria pseudo-elemento */
+        content: "";
+        /* Posiciona */
+        position: absolute;
+        /* Coloca no topo */
+        top: 0;
+        /* Começa no centro */
+        left: 50%;
+        /* Define largura */
+        width: 100px;
+        /* Define altura */
+        height: 2px;
+        /* Define dourado */
+        background-color: #D9B27A;
+        /* Centraliza */
+        transform: translateX(-50%);
+        /* Mantém acima */
+        z-index: 2;
+    }
+
+
+/* =========================================================
+   TAMANHO DO MODAL
+   ========================================================= */
+
+/* Configura o diálogo */
+.modal-cadastro-dialog {
+    /* Define largura máxima */
+    max-width: 520px;
+    /* Cria espaçamento */
+    padding: 15px;
+}
+
+
+/* =========================================================
+   CORPO
+   ========================================================= */
+
+/* Configura corpo */
+.modal-cadastro-body {
+    /* Define espaçamento */
+    padding: 38px 48px 35px;
+}
+
+
+/* =========================================================
+   BOTÃO FECHAR
+   ========================================================= */
+
+/* Configura botão */
+.modal-cadastro-fechar {
+    /* Posiciona */
+    position: absolute;
+    /* Distância superior */
+    top: 18px;
+    /* Distância direita */
+    right: 18px;
+    /* Define largura */
+    width: 34px;
+    /* Define altura */
+    height: 34px;
+    /* Remove padding */
+    padding: 0;
+    /* Remove borda */
+    border: none;
+    /* Mantém fundo transparente */
+    background: transparent;
+    /* Mantém opacidade */
+    opacity: 1;
+    /* Define cor */
+    color: #D9B27A;
+    /* Mantém acima */
+    z-index: 10;
+    /* Ativa Flexbox */
+    display: flex;
+    /* Centraliza verticalmente */
+    align-items: center;
+    /* Centraliza horizontalmente */
+    justify-content: center;
+    /* Cria transição */
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+
+    /* Remove pseudo-elementos padrão */
+    .modal-cadastro-fechar::before,
+    .modal-cadastro-fechar::after {
+        /* Esconde */
+        display: none;
+    }
+
+
+    /* Ícone */
+    .modal-cadastro-fechar i {
+        /* Define tamanho */
+        font-size: 18px;
+        /* Define dourado */
+        color: #D9B27A;
+    }
+
+
+    /* Hover */
+    .modal-cadastro-fechar:hover {
+        /* Mantém opacidade */
+        opacity: 1;
+        /* Gira */
+        transform: rotate(90deg);
+    }
+
+
+        /* Ícone no hover */
+        .modal-cadastro-fechar:hover i {
+            /* Muda para branco */
+            color: #FFFFFF;
+        }
+
+
+/* =========================================================
+   LOGO
+   ========================================================= */
+
+/* Área do logo */
+.modal-cadastro-logo {
+    /* Centraliza */
+    text-align: center;
+    /* Cria espaço */
+    margin-bottom: 15px;
+}
+
+
+    /* Imagem */
+    .modal-cadastro-logo img {
+        /* Define largura */
+        width: 155px;
+        /* Mantém proporção */
+        height: auto;
+        /* Ajusta imagem */
+        object-fit: contain;
+    }
+
+
+/* =========================================================
+   CABEÇALHO
+   ========================================================= */
+
+/* Configura cabeçalho */
+.modal-cadastro-header {
+    /* Centraliza */
+    text-align: center;
+    /* Cria espaço */
+    margin-bottom: 25px;
+}
+
+
+/* Subtítulo */
+.modal-cadastro-subtitulo {
+    /* Ocupa linha */
+    display: block;
+    /* Define dourado */
+    color: #D9B27A;
+    /* Define fonte */
+    font-family: 'Lato', sans-serif;
+    /* Define tamanho */
+    font-size: 11px;
+    /* Define peso */
+    font-weight: 600;
+    /* Define espaçamento */
+    letter-spacing: 3px;
+    /* Cria espaço */
+    margin-bottom: 8px;
+}
+
+
+/* Título */
+.modal-cadastro-header h2 {
+    /* Define branco */
+    color: #FFFFFF;
+    /* Define fonte */
+    font-family: 'Playfair Display', serif;
+    /* Define tamanho */
+    font-size: 32px;
+    /* Define peso */
+    font-weight: 600;
+    /* Define margem */
+    margin: 0 0 8px;
+}
+
+
+/* Descrição */
+.modal-cadastro-header p {
+    /* Define cinza */
+    color: #999999;
+    /* Define fonte */
+    font-family: 'Lato', sans-serif;
+    /* Define tamanho */
+    font-size: 13px;
+    /* Remove margem */
+    margin: 0;
+    /* Define espaçamento */
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   GRUPO DO FORMULÁRIO
+   ========================================================= */
+
+/* Configura grupo */
+.modal-cadastro-grupo {
+    /* Cria espaço inferior */
+    margin-bottom: 15px;
+}
+
+
+    /* Label */
+    .modal-cadastro-grupo label {
+        /* Ocupa linha */
+        display: block;
+        /* Define branco */
+        color: #FFFFFF;
+        /* Define fonte */
+        font-family: 'Lato', sans-serif;
+        /* Define tamanho */
+        font-size: 13px;
+        /* Define peso */
+        font-weight: 600;
+        /* Cria espaço */
+        margin-bottom: 6px;
+    }
+
+
+/* =========================================================
+   INPUT DO CADASTRO
+   ========================================================= */
+
+/* Container do input */
+.modal-cadastro-input {
+    /* Permite posicionar ícone */
+    position: relative;
+    /* Ocupa toda a largura */
+    width: 100%;
+}
+
+
+    /* Ícone */
+    .modal-cadastro-input > i {
+        /* Posiciona */
+        position: absolute;
+        /* Distância esquerda */
+        left: 15px;
+        /* Centraliza verticalmente */
+        top: 50%;
+        /* Ajusta posição */
+        transform: translateY(-50%);
+        /* Define dourado */
+        color: #D9B27A;
+        /* Define tamanho */
+        font-size: 16px;
+        /* Impede cliques */
+        pointer-events: none;
+        /* Mantém acima */
+        z-index: 2;
+    }
+
+
+    /* Input */
+    .modal-cadastro-input input {
+        /* Ocupa largura */
+        width: 100%;
+        /* Define altura */
+        height: 46px;
+        /* Define fundo */
+        background-color: #111111;
+        /* Define borda */
+        border: 1px solid #383838;
+        /* Arredonda */
+        border-radius: 3px;
+        /* Define texto branco */
+        color: #FFFFFF;
+        /* Define fonte */
+        font-family: 'Lato', sans-serif;
+        /* Define tamanho */
+        font-size: 13px;
+        /* Cria espaço para ícones */
+        padding: 0 45px;
+        /* Remove outline */
+        outline: none;
+        /* Cria transições */
+        transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    }
+
+
+        /* Placeholder */
+        .modal-cadastro-input input::placeholder {
+            /* Define cor */
+            color: #777777;
+        }
+
+
+        /* Foco */
+        .modal-cadastro-input input:focus {
+            /* Clareia fundo */
+            background-color: #151515;
+            /* Torna borda dourada */
+            border-color: #D9B27A;
+            /* Cria brilho */
+            box-shadow: 0 0 0 2px rgba(217, 178, 122, 0.10);
+        }
+
+
+/* =========================================================
+   MOSTRAR / OCULTAR SENHA
+   ========================================================= */
+
+/* Configura botão */
+.modal-cadastro-olho {
+    /* Posiciona */
+    position: absolute;
+    /* Distância direita */
+    right: 10px;
+    /* Centraliza verticalmente */
+    top: 50%;
+    /* Ajusta posição */
+    transform: translateY(-50%);
+    /* Define largura */
+    width: 35px;
+    /* Define altura */
+    height: 35px;
+    /* Remove padding */
+    padding: 0;
+    /* Remove borda */
+    border: none;
+    /* Mantém fundo transparente */
+    background: transparent;
+    /* Define cinza */
+    color: #777777;
+    /* Define cursor */
+    cursor: pointer;
+    /* Ativa Flexbox */
+    display: flex;
+    /* Centraliza */
+    align-items: center;
+    /* Centraliza */
+    justify-content: center;
+    /* Cria transição */
+    transition: color 0.3s ease;
+}
+
+
+    /* Hover */
+    .modal-cadastro-olho:hover {
+        /* Muda para dourado */
+        color: #D9B27A;
+    }
+
+
+    /* Ícone */
+    .modal-cadastro-olho i {
+        /* Define tamanho */
+        font-size: 17px;
+    }
+
+
+/* =========================================================
+   BOTÃO CRIAR CONTA
+   ========================================================= */
+
+/* Configura botão */
+.btn-modal-cadastro {
+    /* Ocupa toda a largura */
+    width: 100%;
+    /* Define altura */
+    height: 48px;
+    /* Cria espaço superior */
+    margin-top: 5px;
+    /* Define borda */
+    border: 1px solid #D9B27A;
+    /* Arredonda */
+    border-radius: 3px;
+    /* Define fundo */
+    background-color: #7D1F1F;
+    /* Define texto */
+    color: #FFFFFF;
+    /* Define fonte */
+    font-family: 'Lato', sans-serif;
+    /* Define tamanho */
+    font-size: 13px;
+    /* Define peso */
+    font-weight: 600;
+    /* Define espaçamento */
+    letter-spacing: 1px;
+    /* Define cursor */
+    cursor: pointer;
+    /* Cria transição */
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+
+
+    /* Hover */
+    .btn-modal-cadastro:hover {
+        /* Muda fundo */
+        background-color: #D9B27A;
+        /* Muda texto */
+        color: #0E0E0E;
+    }
+
+
+    /* Clique */
+    .btn-modal-cadastro:active {
+        /* Reduz levemente */
+        transform: scale(0.98);
+    }
+
+
+/* =========================================================
+   JÁ POSSUI CONTA
+   ========================================================= */
+
+/* Configura área */
+.modal-cadastro-login {
+    /* Centraliza */
+    text-align: center;
+    /* Cria espaço superior */
+    margin-top: 22px;
+}
+
+
+    /* Texto */
+    .modal-cadastro-login p {
+        /* Permite ficar na mesma linha */
+        display: inline;
+        /* Define cor */
+        color: #999999;
+        /* Define fonte */
+        font-family: 'Lato', sans-serif;
+        /* Define tamanho */
+        font-size: 13px;
+        /* Remove margem */
+        margin: 0;
+    }
+
+
+    /* Link */
+    .modal-cadastro-login a {
+        /* Define dourado */
+        color: #D9B27A;
+        /* Define fonte */
+        font-family: 'Lato', sans-serif;
+        /* Define tamanho */
+        font-size: 13px;
+        /* Define peso */
+        font-weight: 600;
+        /* Cria espaço */
+        margin-left: 5px;
+        /* Remove sublinhado */
+        text-decoration: none;
+        /* Cria transição */
+        transition: color 0.3s ease;
+    }
+
+
+        /* Hover */
+        .modal-cadastro-login a:hover {
+            /* Muda para branco */
+            color: #FFFFFF;
+            /* Adiciona sublinhado */
+            text-decoration: underline;
+            /* Afasta sublinhado */
+            text-underline-offset: 3px;
+        }
+
+
+/* =========================================================
+   RESPONSIVIDADE - MODAL DE CADASTRO
+   ========================================================= */
+
+/* Aplica em telas de até 767px */
+@media (max-width: 767px) {
+
+    /* Ajusta diálogo */
+    .modal-cadastro-dialog {
+        /* Cria margem */
+        margin: 15px;
+        /* Permite ocupar espaço disponível */
+        max-width: none;
+    }
+
+    /* Ajusta corpo */
+    .modal-cadastro-body {
+        /* Reduz espaçamento */
+        padding: 35px 30px 30px;
+    }
+
+    /* Reduz logo */
+    .modal-cadastro-logo img {
+        /* Define largura */
+        width: 140px;
+    }
+
+    /* Reduz título */
+    .modal-cadastro-header h2 {
+        /* Define tamanho */
+        font-size: 29px;
+    }
+}
+
+
+/* =========================================================
+   MODAL CADASTRO - CELULARES PEQUENOS
+   ========================================================= */
+
+/* Aplica em telas de até 400px */
+@media (max-width: 400px) {
+
+    /* Ajusta diálogo */
+    .modal-cadastro-dialog {
+        /* Reduz margem */
+        margin: 10px;
+    }
+
+    /* Reduz corpo */
+    .modal-cadastro-body {
+        /* Define espaçamento */
+        padding: 32px 22px 27px;
+    }
+
+    /* Reduz logo */
+    .modal-cadastro-logo img {
+        /* Define largura */
+        width: 130px;
+    }
+
+    /* Reduz título */
+    .modal-cadastro-header h2 {
+        /* Define tamanho */
+        font-size: 26px;
+    }
+
+    /* Reduz descrição */
+    .modal-cadastro-header p {
+        /* Define tamanho */
+        font-size: 12px;
+    }
+}
+
+/* ================================================================
+   MODAL DE LOCALIZAÇÃO KIORA
+   ================================================================ */
+
+
+/* ================================================================
+   FUNDO ESCURO ATRÁS DO MODAL
+   ================================================================ */
+
+/* Seleciona o backdrop relacionado ao modal de localização. */
+#modalLocalizacao .modal-backdrop {
+    /* Define a cor preta para o fundo atrás do modal. */
+    background-color: #000;
+}
+
+
+/* ================================================================
+   CONTAINER DO MODAL
+   ================================================================ */
+
+/* Define o estilo do container externo do modal de localização. */
+.modal-localizacao-dialog {
+    /* Define a largura máxima do modal em pixels. */
+    max-width: 1220px;
+    /* Define a largura como 100% menos 40px de margem lateral. */
+    width: calc(100% - 40px);
+    /* Centraliza o modal horizontalmente e cria 20px de margem vertical. */
+    margin: 20px auto;
+}
+
+
+/* ================================================================
+   CONTEÚDO PRINCIPAL DO MODAL
+   ================================================================ */
+
+/* Define o painel principal interno do modal. */
+.modal-localizacao-kiora {
+    /* Permite posicionar elementos internos de forma absoluta. */
+    position: relative;
+    /* Define o fundo preto principal da identidade KIORA. */
+    background: #0e0e0e;
+    /* Define a cor padrão dos textos dentro do modal. */
+    color: #f8f5f2;
+    /* Cria a borda dourada externa do modal. */
+    border: 1px solid rgba(217, 178, 122, 0.45);
+    /* Arredonda os quatro cantos do modal. */
+    border-radius: 14px;
+    /* Impede que elementos internos ultrapassem os cantos arredondados. */
+    overflow: hidden;
+    /* Cria sombra externa para destacar o modal da página. */
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(217, 178, 122, 0.08);
+}
+
+
+/* ================================================================
+   CABEÇALHO SUPERIOR
+   ================================================================ */
+
+/* Define a área superior onde fica a logo e o botão fechar. */
+.modal-localizacao-topo {
+    /* Permite posicionar o botão fechar em relação ao cabeçalho. */
+    position: relative;
+    /* Define a altura do cabeçalho superior. */
+    height: 125px;
+    /* Ativa o Flexbox para organizar os elementos. */
+    display: flex;
+    /* Centraliza verticalmente a logo. */
+    align-items: center;
+    /* Centraliza horizontalmente a logo. */
+    justify-content: center;
+    /* Mantém o fundo preto do cabeçalho. */
+    background: #0e0e0e;
+    /* Cria a linha dourada inferior do cabeçalho. */
+    border-bottom: 1px solid rgba(217, 178, 122, 0.35);
+}
+
+
+/* ================================================================
+   LOGO
+   ================================================================ */
+
+/* Define a área responsável pelo posicionamento da logo. */
+.modal-localizacao-logo {
+    /* Ativa o Flexbox para o container da logo. */
+    display: flex;
+    /* Centraliza a logo verticalmente. */
+    align-items: center;
+    /* Centraliza a logo horizontalmente. */
+    justify-content: center;
+}
+
+
+    /* Seleciona a imagem da logo dentro do modal. */
+    .modal-localizacao-logo img {
+        /* Faz a imagem ocupar sua própria linha corretamente. */
+        display: block;
+        /* Define a largura padrão da logo. */
+        width: 235px;
+        /* Impede que a logo ultrapasse 80% do espaço disponível. */
+        max-width: 80%;
+        /* Mantém a proporção original da imagem. */
+        height: auto;
+    }
+
+
+/* ================================================================
+   BOTÃO FECHAR
+   ================================================================ */
+
+/* Define o estilo do botão X do modal. */
+.modal-localizacao-fechar {
+    /* Permite posicionar o botão livremente dentro do cabeçalho. */
+    position: absolute;
+    /* Posiciona o centro do botão verticalmente. */
+    top: 50%;
+    /* Define a distância do botão em relação à borda direita. */
+    right: 38px;
+    /* Ajusta o botão para que fique centralizado verticalmente. */
+    transform: translateY(-50%);
+    /* Define a largura do botão. */
+    width: 48px;
+    /* Define a altura do botão. */
+    height: 48px;
+    /* Remove o espaçamento interno padrão do botão. */
+    padding: 0;
+    /* Ativa o Flexbox dentro do botão. */
+    display: flex;
+    /* Centraliza o ícone verticalmente. */
+    align-items: center;
+    /* Centraliza o ícone horizontalmente. */
+    justify-content: center;
+    /* Remove a cor de fundo padrão do botão. */
+    background: transparent;
+    /* Remove a borda padrão do botão. */
+    border: 0;
+    /* Define a cor dourada do botão. */
+    color: #d9b27a;
+    /* Define o tamanho padrão do texto/ícone. */
+    font-size: 32px;
+    /* Define a altura da linha do botão. */
+    line-height: 1;
+    /* Mostra o cursor de clique ao passar sobre o botão. */
+    cursor: pointer;
+    /* Cria uma transição suave para os efeitos do botão. */
+    transition: color 0.25s ease, transform 0.25s ease;
+}
+
+
+    /* Seleciona o ícone X dentro do botão. */
+    .modal-localizacao-fechar i {
+        /* Define o tamanho específico do ícone. */
+        font-size: 31px;
+        /* Define uma espessura visual mais fina para o ícone. */
+        font-weight: 300;
+    }
+
+
+    /* Define o efeito visual quando o mouse passa sobre o botão fechar. */
+    .modal-localizacao-fechar:hover {
+        /* Clareia a cor do X quando o mouse passa sobre ele. */
+        color: #f8f5f2;
+        /* Aumenta levemente o botão mantendo sua posição vertical. */
+        transform: translateY(-50%) scale(1.08);
+    }
+
+
+    /* Remove o contorno padrão quando o botão recebe foco. */
+    .modal-localizacao-fechar:focus {
+        /* Remove o outline padrão do navegador. */
+        outline: none;
+        /* Remove qualquer sombra de foco do Bootstrap. */
+        box-shadow: none;
+    }
+
+
+/* ================================================================
+   CORPO
+   ================================================================ */
+
+/* Define o espaçamento interno da área principal do modal. */
+.modal-localizacao-body {
+    /* Define 20px no topo, 60px nas laterais e 42px embaixo. */
+    padding: 20px 60px 42px;
+}
+
+
+/* ================================================================
+   CABEÇALHO INSTITUCIONAL
+   ================================================================ */
+
+/* Define a área dos textos "KIORA RAMEN HOUSE", "Onde estamos" e descrição. */
+.modal-localizacao-header {
+    /* Centraliza todos os textos horizontalmente. */
+    text-align: center;
+    /* Cria 25px de espaço abaixo do cabeçalho. */
+    margin-bottom: 25px;
+}
+
+
+/* Define o subtítulo "KIORA RAMEN HOUSE". */
+.modal-localizacao-subtitulo {
+    /* Faz o elemento ocupar uma linha inteira. */
+    display: block;
+    /* Cria espaço abaixo do subtítulo. */
+    margin-bottom: 8px;
+    /* Define a cor dourada da identidade KIORA. */
+    color: #d9b27a;
+    /* Define a fonte utilizada nos textos. */
+    font-family: "Lato", sans-serif;
+    /* Define o tamanho do subtítulo. */
+    font-size: 19px;
+    /* Define a espessura da fonte. */
+    font-weight: 600;
+    /* Aumenta o espaçamento entre as letras. */
+    letter-spacing: 4px;
+    /* Transforma o texto em letras maiúsculas. */
+    text-transform: uppercase;
+}
+
+
+/* Seleciona o título principal "Onde estamos". */
+.modal-localizacao-header h2 {
+    /* Remove a margem padrão do título. */
+    margin: 0;
+    /* Define a cor clara do título. */
+    color: #f8f5f2;
+    /* Utiliza Playfair Display para o título. */
+    font-family: "Playfair Display", serif;
+    /* Define o tamanho do título. */
+    font-size: 52px;
+    /* Define a espessura do título. */
+    font-weight: 600;
+    /* Controla a altura das linhas do título. */
+    line-height: 1.1;
+}
+
+
+/* Seleciona o texto abaixo do título. */
+.modal-localizacao-header p {
+    /* Cria 12px de espaço acima e remove margens laterais e inferiores. */
+    margin: 12px 0 0;
+    /* Define a cor branca com transparência. */
+    color: rgba(248, 245, 242, 0.75);
+    /* Utiliza Lato para o texto descritivo. */
+    font-family: "Lato", sans-serif;
+    /* Define o tamanho da descrição. */
+    font-size: 23px;
+    /* Deixa o texto mais leve. */
+    font-weight: 300;
+}
+
+
+/* ================================================================
+   BLOCO DO ENDEREÇO
+   ================================================================ */
+
+/* Define o bloco que contém o ícone e as informações do endereço. */
+.modal-localizacao-endereco {
+    /* Ativa o Flexbox para organizar ícone e texto lado a lado. */
+    display: flex;
+    /* Centraliza verticalmente os elementos. */
+    align-items: center;
+    /* Define 32px de espaço entre o ícone e o texto. */
+    gap: 32px;
+    /* Define uma altura mínima para o bloco. */
+    min-height: 155px;
+    /* Define o espaçamento interno do bloco. */
+    padding: 28px 45px;
+    /* Remove margem inferior para conectar o bloco ao mapa. */
+    margin-bottom: 0;
+    /* Define um fundo preto levemente diferente do modal. */
+    background: #101010;
+    /* Cria a borda dourada do bloco. */
+    border: 1px solid rgba(217, 178, 122, 0.75);
+    /* Remove a borda inferior porque ela será compartilhada com o mapa. */
+    border-bottom: 0;
+    /* Arredonda somente os cantos superiores. */
+    border-radius: 14px 14px 0 0;
+}
+
+
+/* ================================================================
+   ÍCONE DE LOCALIZAÇÃO
+   ================================================================ */
+
+/* Define o círculo que envolve o ícone de localização. */
+.modal-localizacao-icone {
+    /* Impede que o círculo seja reduzido pelo Flexbox. */
+    flex: 0 0 82px;
+    /* Define a largura do círculo. */
+    width: 82px;
+    /* Define a altura do círculo. */
+    height: 82px;
+    /* Ativa o Flexbox dentro do círculo. */
+    display: flex;
+    /* Centraliza o ícone verticalmente. */
+    align-items: center;
+    /* Centraliza o ícone horizontalmente. */
+    justify-content: center;
+    /* Cria a borda dourada do círculo. */
+    border: 1px solid #d9b27a;
+    /* Transforma o quadrado em círculo. */
+    border-radius: 50%;
+    /* Define a cor dourada do ícone. */
+    color: #d9b27a;
+}
+
+
+    /* Seleciona o ícone de localização. */
+    .modal-localizacao-icone i {
+        /* Define o tamanho do ícone. */
+        font-size: 39px;
+    }
+
+
+/* ================================================================
+   INFORMAÇÕES DO ENDEREÇO
+   ================================================================ */
+
+/* Define o container dos textos do endereço. */
+.modal-localizacao-info {
+    /* Ativa o Flexbox vertical. */
+    display: flex;
+    /* Organiza os elementos em coluna. */
+    flex-direction: column;
+    /* Centraliza verticalmente o conteúdo. */
+    justify-content: center;
+}
+
+
+/* Define o texto "NOSSO ENDEREÇO". */
+.modal-localizacao-label {
+    /* Cria 6px de espaço abaixo do rótulo. */
+    margin-bottom: 6px;
+    /* Define a cor dourada. */
+    color: #d9b27a;
+    /* Utiliza Lato. */
+    font-family: "Lato", sans-serif;
+    /* Define o tamanho do rótulo. */
+    font-size: 17px;
+    /* Define a espessura do rótulo. */
+    font-weight: 700;
+    /* Aumenta o espaçamento entre as letras. */
+    letter-spacing: 3px;
+}
+
+
+/* Seleciona o nome da rua. */
+.modal-localizacao-info h3 {
+    /* Remove a margem padrão do título. */
+    margin: 0;
+    /* Define a cor clara do endereço. */
+    color: #f8f5f2;
+    /* Utiliza Lato. */
+    font-family: "Lato", sans-serif;
+    /* Define o tamanho do endereço. */
+    font-size: 25px;
+    /* Define a espessura da fonte. */
+    font-weight: 500;
+    /* Define a altura da linha. */
+    line-height: 1.35;
+}
+
+
+/* Seleciona a cidade e o estado. */
+.modal-localizacao-info p {
+    /* Define 2px de espaço acima e remove as demais margens. */
+    margin: 2px 0 0;
+    /* Define a cor branca com transparência. */
+    color: rgba(248, 245, 242, 0.72);
+    /* Utiliza Lato. */
+    font-family: "Lato", sans-serif;
+    /* Define o tamanho do texto. */
+    font-size: 21px;
+    /* Define a altura das linhas. */
+    line-height: 1.4;
+}
+
+
+/* Seleciona o CEP. */
+.modal-localizacao-cep {
+    /* Define a cor branca levemente transparente. */
+    color: rgba(248, 245, 242, 0.72);
+    /* Utiliza Lato. */
+    font-family: "Lato", sans-serif;
+    /* Define o tamanho do CEP. */
+    font-size: 20px;
+}
+
+
+/* ================================================================
+   MAPA
+   ================================================================ */
+
+/* Define a área onde o mapa será exibido. */
+.modal-localizacao-mapa {
+    /* Permite controlar elementos internos posicionados. */
+    position: relative;
+    /* Faz o mapa ocupar toda a largura disponível. */
+    width: 100%;
+    /* Define a altura do mapa. */
+    height: 510px;
+    /* Impede que o conteúdo do mapa ultrapasse a área. */
+    overflow: hidden;
+    /* Cria a borda dourada esquerda. */
+    border-left: 1px solid rgba(217, 178, 122, 0.75);
+    /* Cria a borda dourada direita. */
+    border-right: 1px solid rgba(217, 178, 122, 0.75);
+    /* Cria a borda dourada inferior. */
+    border-bottom: 1px solid rgba(217, 178, 122, 0.75);
+}
+
+
+    /* Seleciona o iframe que contém o Google Maps. */
+    .modal-localizacao-mapa iframe {
+        /* Remove espaços residuais abaixo do iframe. */
+        display: block;
+        /* Faz o mapa ocupar 100% da largura. */
+        width: 100%;
+        /* Faz o mapa ocupar 100% da altura. */
+        height: 100%;
+        /* Remove a borda padrão do iframe. */
+        border: 0;
+    }
+
+
+/* ================================================================
+   ÁREA DO BOTÃO
+   ================================================================ */
+
+/* Define o espaço entre o mapa e o botão. */
+.modal-localizacao-acoes {
+    /* Cria 28px de espaço acima do botão. */
+    padding: 28px 0 0;
+}
+
+
+/* ================================================================
+   BOTÃO COMO CHEGAR
+   ================================================================ */
+
+/* Define o estilo principal do botão "Como chegar". */
+.btn-localizacao {
+    /* Permite posicionar elementos internos do botão. */
+    position: relative;
+    /* Faz o botão ocupar toda a largura disponível. */
+    width: 100%;
+    /* Define a altura mínima do botão. */
+    min-height: 74px;
+    /* Ativa o sistema Flexbox. */
+    display: flex;
+    /* Centraliza o conteúdo verticalmente. */
+    align-items: center;
+    /* Centraliza o conteúdo horizontalmente. */
+    justify-content: center;
+    /* Define o espaço entre o ícone e o texto. */
+    gap: 22px;
+    /* Define o fundo vermelho principal da identidade KIORA. */
+    background-color: #7D1F1F;
+    /* Define a cor branca/off-white do texto. */
+    color: #F8F5F2 !important;
+    /* Define a borda dourada da identidade KIORA. */
+    border: 1px solid #D9B27A;
+    /* Arredonda levemente os cantos do botão. */
+    border-radius: 4px;
+    /* Define a fonte utilizada no botão. */
+    font-family: "Lato", sans-serif;
+    /* Define o tamanho do texto. */
+    font-size: 21px;
+    /* Define a espessura do texto. */
+    font-weight: 700;
+    /* Define um espaçamento discreto entre as letras. */
+    letter-spacing: 1px;
+    /* Remove o sublinhado padrão do link. */
+    text-decoration: none;
+    /* Define o cursor de clique. */
+    cursor: pointer;
+    /* Cria uma transição suave entre os estados normal e hover. */
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+
+    /* ================================================================
+   ÍCONE DO BOTÃO COMO CHEGAR
+   ================================================================ */
+
+    /* Seleciona o ícone utilizado dentro do botão. */
+    .btn-localizacao i {
+        /* Define o tamanho do ícone. */
+        font-size: 30px;
+        /* Mantém o ícone na mesma cor do texto. */
+        color: #F8F5F2;
+        /* Cria uma transição suave para a mudança de cor. */
+        transition: color 0.3s ease;
+    }
+
+
+    /* ================================================================
+   EFEITO AO PASSAR O MOUSE
+   ================================================================ */
+
+    /* Aplica estas alterações quando o mouse estiver sobre o botão. */
+    .btn-localizacao:hover {
+        /* Troca o fundo vermelho pelo dourado. */
+        background-color: #D9B27A;
+        /* Troca o texto para preto. */
+        color: #0E0E0E !important;
+        /* Mantém a borda dourada. */
+        border-color: #D9B27A;
+        /* Cria um brilho dourado discreto. */
+        box-shadow: 0 0 20px rgba(217, 178, 122, 0.20);
+    }
+
+
+        /* ================================================================
+   ÍCONE AO PASSAR O MOUSE
+   ================================================================ */
+
+        /* Altera a cor do ícone durante o efeito hover. */
+        .btn-localizacao:hover i {
+            /* Deixa o ícone preto junto com o texto. */
+            color: #0E0E0E;
+        }
+
+
+/* ================================================================
+   RESPONSIVIDADE
+   ================================================================ */
+
+
+/* ================================================================
+   TABLETS E TELAS MÉDIAS
+   ================================================================ */
+
+/* Aplica estas regras em telas de até 992px. */
+@media (max-width: 992px) {
+
+
+    /* Ajusta a largura do modal. */
+    .modal-localizacao-dialog {
+        /* Mantém 15px de espaço em cada lateral. */
+        width: calc(100% - 30px);
+    }
+
+
+    /* Ajusta o espaçamento interno do corpo do modal. */
+    .modal-localizacao-body {
+        /* Define 20px no topo, 35px nas laterais e 35px embaixo. */
+        padding: 20px 35px 35px;
+    }
+
+
+    /* Reduz o tamanho do título principal. */
+    .modal-localizacao-header h2 {
+        /* Define o título com 44px. */
+        font-size: 44px;
+    }
+
+
+    /* Reduz o tamanho da descrição. */
+    .modal-localizacao-header p {
+        /* Define o texto com 20px. */
+        font-size: 20px;
+    }
+
+
+    /* Reduz a altura do mapa. */
+    .modal-localizacao-mapa {
+        /* Define o mapa com 430px de altura. */
+        height: 430px;
+    }
+}
+
+
+/* ================================================================
+   TABLETS PEQUENOS E CELULARES
+   ================================================================ */
+
+/* Aplica estas regras em telas de até 768px. */
+@media (max-width: 768px) {
+
+
+    /* Ajusta o tamanho e a margem do modal. */
+    .modal-localizacao-dialog {
+        /* Reduz o espaço lateral do modal. */
+        width: calc(100% - 20px);
+        /* Define uma margem vertical menor. */
+        margin: 10px auto;
+    }
+
+
+    /* Reduz a altura do cabeçalho superior. */
+    .modal-localizacao-topo {
+        /* Define o cabeçalho com 100px de altura. */
+        height: 100px;
+    }
+
+
+    /* Reduz o tamanho da logo. */
+    .modal-localizacao-logo img {
+        /* Define a largura da logo. */
+        width: 190px;
+    }
+
+
+    /* Ajusta o botão de fechar. */
+    .modal-localizacao-fechar {
+        /* Reduz a distância da borda direita. */
+        right: 20px;
+        /* Define a largura do botão. */
+        width: 40px;
+        /* Define a altura do botão. */
+        height: 40px;
+    }
+
+
+        /* Ajusta o ícone X do botão fechar. */
+        .modal-localizacao-fechar i {
+            /* Reduz o tamanho do X. */
+            font-size: 27px;
+        }
+
+
+    /* Reduz o espaçamento interno do corpo do modal. */
+    .modal-localizacao-body {
+        /* Define o espaçamento para telas menores. */
+        padding: 18px 20px 28px;
+    }
+
+
+    /* Reduz o tamanho do subtítulo. */
+    .modal-localizacao-subtitulo {
+        /* Define o subtítulo com 14px. */
+        font-size: 14px;
+        /* Reduz o espaçamento entre as letras. */
+        letter-spacing: 3px;
+    }
+
+
+    /* Reduz o tamanho do título principal. */
+    .modal-localizacao-header h2 {
+        /* Define o título com 38px. */
+        font-size: 38px;
+    }
+
+
+    /* Reduz o tamanho da descrição. */
+    .modal-localizacao-header p {
+        /* Define a descrição com 18px. */
+        font-size: 18px;
+    }
+
+
+    /* Ajusta o bloco do endereço. */
+    .modal-localizacao-endereco {
+        /* Reduz o espaço entre o ícone e as informações. */
+        gap: 20px;
+        /* Reduz o espaçamento interno. */
+        padding: 25px;
+    }
+
+
+    /* Reduz o tamanho do círculo de localização. */
+    .modal-localizacao-icone {
+        /* Impede que o círculo seja comprimido. */
+        flex: 0 0 65px;
+        /* Define a largura do círculo. */
+        width: 65px;
+        /* Define a altura do círculo. */
+        height: 65px;
+    }
+
+
+        /* Reduz o tamanho do ícone de localização. */
+        .modal-localizacao-icone i {
+            /* Define o ícone com 30px. */
+            font-size: 30px;
+        }
+
+
+    /* Reduz o tamanho do rótulo "NOSSO ENDEREÇO". */
+    .modal-localizacao-label {
+        /* Define o tamanho do rótulo. */
+        font-size: 13px;
+        /* Reduz o espaçamento entre as letras. */
+        letter-spacing: 2px;
+    }
+
+
+    /* Reduz o tamanho do endereço principal. */
+    .modal-localizacao-info h3 {
+        /* Define o endereço com 19px. */
+        font-size: 19px;
+    }
+
+
+    /* Reduz o tamanho da cidade e estado. */
+    .modal-localizacao-info p {
+        /* Define o texto com 16px. */
+        font-size: 16px;
+    }
+
+
+    /* Reduz o tamanho do CEP. */
+    .modal-localizacao-cep {
+        /* Define o CEP com 16px. */
+        font-size: 16px;
+    }
+
+
+    /* Reduz a altura do mapa. */
+    .modal-localizacao-mapa {
+        /* Define o mapa com 360px de altura. */
+        height: 360px;
+    }
+
+
+    /* Ajusta o botão "Como chegar". */
+    .btn-localizacao {
+        /* Reduz a altura do botão. */
+        min-height: 65px;
+        /* Reduz o tamanho do texto. */
+        font-size: 17px;
+        /* Reduz o espaçamento entre as letras. */
+        letter-spacing: 1px;
+    }
+
+
+        /* Ajusta o ícone do botão. */
+        .btn-localizacao i {
+            /* Reduz o tamanho do ícone. */
+            font-size: 25px;
+        }
+}
+
+
+/* ================================================================
+   CELULARES PEQUENOS
+   ================================================================ */
+
+/* Aplica estas regras em telas de até 480px. */
+@media (max-width: 480px) {
+
+
+    /* Reduz ainda mais o cabeçalho. */
+    .modal-localizacao-topo {
+        /* Define 85px de altura. */
+        height: 85px;
+    }
+
+
+    /* Reduz a largura da logo. */
+    .modal-localizacao-logo img {
+        /* Define a logo com 165px. */
+        width: 165px;
+    }
+
+
+    /* Aproxima o botão fechar da borda. */
+    .modal-localizacao-fechar {
+        /* Define 10px de distância da direita. */
+        right: 10px;
+    }
+
+
+    /* Ajusta o cabeçalho do conteúdo. */
+    .modal-localizacao-header {
+        /* Define uma margem inferior menor. */
+        margin-bottom: 20px;
+    }
+
+
+        /* Reduz o título principal. */
+        .modal-localizacao-header h2 {
+            /* Define o título com 32px. */
+            font-size: 32px;
+        }
+
+
+        /* Reduz o texto descritivo. */
+        .modal-localizacao-header p {
+            /* Define a descrição com 16px. */
+            font-size: 16px;
+        }
+
+
+    /* Ajusta o bloco de endereço. */
+    .modal-localizacao-endereco {
+        /* Alinha o conteúdo pelo topo. */
+        align-items: flex-start;
+        /* Reduz o espaço entre o ícone e o texto. */
+        gap: 15px;
+        /* Reduz o espaçamento interno. */
+        padding: 20px;
+    }
+
+
+    /* Reduz o círculo de localização. */
+    .modal-localizacao-icone {
+        /* Impede que o círculo seja comprimido. */
+        flex: 0 0 55px;
+        /* Define a largura do círculo. */
+        width: 55px;
+        /* Define a altura do círculo. */
+        height: 55px;
+    }
+
+
+        /* Reduz o ícone de localização. */
+        .modal-localizacao-icone i {
+            /* Define o tamanho do ícone. */
+            font-size: 25px;
+        }
+
+
+    /* Reduz o endereço principal. */
+    .modal-localizacao-info h3 {
+        /* Define o tamanho do endereço. */
+        font-size: 17px;
+    }
+
+
+    /* Reduz o texto da cidade e estado. */
+    .modal-localizacao-info p {
+        /* Define o tamanho do texto. */
+        font-size: 14px;
+    }
+
+
+    /* Reduz o tamanho do CEP. */
+    .modal-localizacao-cep {
+        /* Define o tamanho do CEP. */
+        font-size: 14px;
+    }
+
+
+    /* Reduz a altura do mapa. */
+    .modal-localizacao-mapa {
+        /* Define o mapa com 300px. */
+        height: 300px;
+    }
+
+
+    /* Ajusta o botão "Como chegar" em celulares pequenos. */
+    .btn-localizacao {
+        /* Reduz o espaço entre o ícone e o texto. */
+        gap: 12px;
+        /* Reduz o tamanho da fonte. */
+        font-size: 14px;
+        /* Reduz o espaçamento entre as letras. */
+        letter-spacing: 1px;
+        /* Mantém a altura confortável para toque. */
+        min-height: 60px;
+    }
+
+
+        /* Ajusta o ícone do botão em celulares pequenos. */
+        .btn-localizacao i {
+            /* Define o tamanho reduzido do ícone. */
+            background-image: url('../imagens/cardapio-card.png');
+            font-size: 22px;
+        }
 }

@@ -1,50 +1,1476 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
+
 <head>
+
+    <!--
+        ================================================================
+        CONFIGURAÇÕES BÁSICAS DO DOCUMENTO
+        ================================================================
+    -->
+
+    <!--
+        Define a codificação de caracteres da página.
+
+        UTF-8 permite a utilização correta de caracteres especiais
+        da língua portuguesa.
+    -->
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - KioraRestaurante</title>
+
+    <!--
+        Configuração de responsividade.
+
+        width=device-width:
+        utiliza a largura real do dispositivo.
+
+        initial-scale=1.0:
+        define o nível inicial de zoom.
+    -->
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <!--
+        Título da página.
+
+        Cada View pode definir seu próprio título através
+        de ViewData["Title"].
+    -->
+    <title>@ViewData["Title"] - Kiora</title>
+
+
+    <!--
+        ================================================================
+        IMPORT MAP
+        ================================================================
+    -->
+
     <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/KioraRestaurante.styles.css" asp-append-version="true" />
+
+
+    <!--
+        ================================================================
+        BOOTSTRAP CSS
+        ================================================================
+    -->
+
+    <link rel="stylesheet"
+          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+
+    <!--
+        ================================================================
+        GOOGLE FONTS
+        ================================================================
+    -->
+
+    <!-- Preconexão com o servidor do Google Fonts -->
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <!-- Conexão segura com o servidor de fontes -->
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <!--
+        Fontes utilizadas na identidade visual da KIORA.
+
+        Lato:
+        textos, menus e botões.
+
+        Playfair Display:
+        títulos e elementos de destaque.
+    -->
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+          rel="stylesheet">
+
+
+    <!--
+        ================================================================
+        BOOTSTRAP ICONS
+        ================================================================
+    -->
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+
+    <!--
+        ================================================================
+        CSS PERSONALIZADO
+        ================================================================
+    -->
+
+    <link rel="stylesheet"
+          href="~/css/site.css"
+          asp-append-version="true" />
+
+
+    <!--
+        ================================================================
+        CSS GERADO PELO ASP.NET
+        ================================================================
+    -->
+
+    <link rel="stylesheet"
+          href="~/Kiora.styles.css"
+          asp-append-version="true" />
+
 </head>
-<body>
+
+
+<body class="d-flex flex-column min-vh-100 @(ViewData["HomePage"] != null ? "pagina-home" : "")">
+
+
+    <!--
+        ================================================================
+        HEADER
+        ================================================================
+    -->
+
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">KioraRestaurante</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+
+
+        <!--
+            ============================================================
+            NAVBAR KIORA
+            ============================================================
+        -->
+
+        <nav class="navbar navbar-expand-lg navbar-dark navbar-kiora">
+
+
+            <div class="container">
+
+
+                <!--
+                    ====================================================
+                    LOGO
+                    ====================================================
+                -->
+
+                <a class="navbar-brand"
+                   asp-controller="Home"
+                   asp-action="Index">
+
+                    <img src="~/imagens/logo-kiora-v.png"
+                         alt="Kiora Japanese Cuisine"
+                         class="logo-navbar">
+
+                </a>
+
+
+                <!--
+                    ====================================================
+                    BOTÃO DO MENU MOBILE
+                    ====================================================
+                -->
+
+                <button class="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navbarKiora"
+                        aria-controls="navbarKiora"
+                        aria-expanded="false"
+                        aria-label="Alternar navegação">
+
                     <span class="navbar-toggler-icon"></span>
+
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+
+
+                <!--
+                    ====================================================
+                    MENU PRINCIPAL
+                    ====================================================
+                -->
+
+                <div class="collapse navbar-collapse"
+                     id="navbarKiora">
+
+
+                    <ul class="navbar-nav mx-auto align-items-lg-center">
+
+
+                        <!-- INÍCIO -->
+
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+
+                            <a class="nav-link"
+                               asp-controller="Home"
+                               asp-action="Index">
+
+                                Início
+
+                            </a>
+
                         </li>
+
+
+                        <!-- CARDÁPIO -->
+
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+
+                            <a class="nav-link"
+                               href="#">
+
+                                Cardápio
+
+                            </a>
+
                         </li>
+
+
+                        <!-- SOBRE -->
+
+                        <li class="nav-item">
+
+                            <a class="nav-link"
+                               asp-controller="Home"
+                               asp-action="Sobre">
+
+                                Sobre Nós
+
+                            </a>
+
+                        </li>
+
+
+                        <!-- GALERIA -->
+
+                        <li class="nav-item">
+
+                            <a class="nav-link"
+                               href="#">
+
+                                Galeria
+
+                            </a>
+
+                        </li>
+
+
+                        <!--
+                            LOCALIZAÇÃO
+
+                            Agora abre o modal de localização
+                            em vez de utilizar um link placeholder.
+                        -->
+
+                        <li class="nav-item">
+
+                            <a class="nav-link"
+                               href="#"
+                               data-bs-toggle="modal"
+                               data-bs-target="#modalLocalizacao">
+
+                                Localização
+
+                            </a>
+
+                        </li>
+
+
+                        <!-- CONTATO -->
+
+                        <li class="nav-item">
+
+                            <a class="nav-link"
+                               href="#">
+
+                                Contato
+
+                            </a>
+
+                        </li>
+
                     </ul>
+
+
+                    <!--
+                        =================================================
+                        ÁREA DE AÇÕES
+                        =================================================
+                    -->
+
+                    <div class="d-flex justify-content-center align-items-center gap-3 mt-3 mt-lg-0">
+
+
+                        <!--
+                            =================================================
+                            MENU DO USUÁRIO
+                            =================================================
+                        -->
+
+                        <div class="dropdown">
+
+
+                            <a href="#"
+                               class="login-icon dropdown-toggle"
+                               id="menuUsuario"
+                               role="button"
+                               data-bs-toggle="dropdown"
+                               aria-expanded="false"
+                               aria-label="Menu do usuário"
+                               title="Conta">
+
+                                <i class="bi bi-person-circle"></i>
+
+                            </a>
+
+
+                            <!-- MENU DO USUÁRIO -->
+
+                            <ul class="dropdown-menu dropdown-menu-end menu-usuario"
+                                aria-labelledby="menuUsuario">
+
+
+                                <!-- ENTRAR -->
+
+                                <li>
+
+                                    <a class="dropdown-item"
+                                       href="#"
+                                       data-bs-toggle="modal"
+                                       data-bs-target="#modalLogin">
+
+                                        <i class="bi bi-box-arrow-in-right"></i>
+
+                                        Entrar
+
+                                    </a>
+
+                                </li>
+
+
+                                <!-- CRIAR CONTA -->
+
+                                <li>
+
+                                    <a class="dropdown-item"
+                                       href="#"
+                                       data-bs-toggle="modal"
+                                       data-bs-target="#modalCadastro">
+
+                                        <i class="bi bi-person-plus"></i>
+
+                                        Criar conta
+
+                                    </a>
+
+                                </li>
+
+
+                                <!-- MEU PERFIL -->
+
+                                <li>
+
+                                    <a class="dropdown-item"
+                                       href="#">
+
+                                        <i class="bi bi-person"></i>
+
+                                        Meu perfil
+
+                                    </a>
+
+                                </li>
+
+
+                                <!-- DIVISOR -->
+
+                                <li>
+
+                                    <hr class="dropdown-divider">
+
+                                </li>
+
+
+                                <!-- SAIR -->
+
+                                <li>
+
+                                    <a class="dropdown-item"
+                                       href="#">
+
+                                        <i class="bi bi-box-arrow-right"></i>
+
+                                        Sair
+
+                                    </a>
+
+                                </li>
+
+                            </ul>
+
+                        </div>
+
+
+                        <!--
+                            =================================================
+                            CARRINHO
+                            =================================================
+                        -->
+
+                        <a href="#"
+                           class="carrinho-kiora position-relative"
+                           aria-label="Carrinho">
+
+                            <i class="bi bi-cart3"></i>
+
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill contador-carrinho">
+
+                                0
+
+                            </span>
+
+                        </a>
+
+
+                        <!--
+                            =================================================
+                            RESERVAR MESA
+                            =================================================
+                        -->
+
+                        <a class="btn btn-reserva"
+                           href="#">
+
+                            Reservar Mesa
+
+                        </a>
+
+                    </div>
+
                 </div>
+
             </div>
+
         </nav>
+
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+
+
+    <!--
+        ================================================================
+        CONTEÚDO PRINCIPAL
+        ================================================================
+    -->
+
+    <main role="main">
+
+        @RenderBody()
+
+    </main>
+
+
+    <!--
+        ================================================================
+        MODAL DE LOGIN KIORA
+        ================================================================
+    -->
+
+    <div class="modal fade"
+         id="modalLogin"
+         tabindex="-1"
+         aria-labelledby="modalLoginTitulo"
+         aria-hidden="true">
+
+
+        <div class="modal-dialog modal-dialog-centered modal-login-dialog">
+
+
+            <div class="modal-content modal-login-kiora">
+
+
+                <!-- BOTÃO FECHAR -->
+
+                <button type="button"
+                        class="btn-close modal-login-fechar"
+                        data-bs-dismiss="modal"
+                        aria-label="Fechar">
+
+                    <i class="bi bi-x-lg"></i>
+
+                </button>
+
+
+                <!-- CONTEÚDO -->
+
+                <div class="modal-body modal-login-body">
+
+
+                    <!-- LOGO -->
+
+                    <div class="modal-login-logo">
+
+                        <img src="~/imagens/logo-kiora-v.png"
+                             alt="Kiora Japanese Cuisine">
+
+                    </div>
+
+
+                    <!-- CABEÇALHO -->
+
+                    <div class="modal-login-header">
+
+                        <span class="modal-login-subtitulo">
+
+                            BEM-VINDO À KIORA
+
+                        </span>
+
+                        <h2 id="modalLoginTitulo">
+
+                            Entre na sua conta
+
+                        </h2>
+
+                        <p>
+
+                            Acesse para continuar sua experiência.
+
+                        </p>
+
+                    </div>
+
+
+                    <!-- FORMULÁRIO -->
+
+                    <form id="formLogin">
+
+
+                        <!-- E-MAIL -->
+
+                        <div class="modal-login-grupo">
+
+                            <label for="loginEmail">
+
+                                E-mail
+
+                            </label>
+
+                            <div class="modal-login-input">
+
+                                <i class="bi bi-envelope"></i>
+
+                                <input type="email"
+                                       id="loginEmail"
+                                       name="email"
+                                       placeholder="Digite seu e-mail"
+                                       autocomplete="email"
+                                       required>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- SENHA -->
+
+                        <div class="modal-login-grupo">
+
+                            <label for="loginSenha">
+
+                                Senha
+
+                            </label>
+
+                            <div class="modal-login-input">
+
+                                <i class="bi bi-lock"></i>
+
+                                <input type="password"
+                                       id="loginSenha"
+                                       name="senha"
+                                       placeholder="Digite sua senha"
+                                       autocomplete="current-password"
+                                       required>
+
+                                <button type="button"
+                                        class="modal-login-olho"
+                                        id="btnMostrarSenha"
+                                        aria-label="Mostrar senha">
+
+                                    <i class="bi bi-eye"
+                                       id="iconeSenha"></i>
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ESQUECI SENHA -->
+
+                        <div class="modal-login-opcoes">
+
+                            <a href="#">
+
+                                Esqueci minha senha
+
+                            </a>
+
+                        </div>
+
+
+                        <!-- ENTRAR -->
+
+                        <button type="submit"
+                                class="btn-modal-login">
+
+                            ENTRAR
+
+                        </button>
+
+
+                        <!-- DIVISOR -->
+
+                        <div class="modal-login-divisor">
+
+                            <span>
+
+                                ou
+
+                            </span>
+
+                        </div>
+
+
+                        <!-- CADASTRO -->
+
+                        <div class="modal-login-cadastro">
+
+                            <p>
+
+                                Ainda não possui uma conta?
+
+                            </p>
+
+                            <a href="#"
+                               data-bs-dismiss="modal"
+                               data-bs-toggle="modal"
+                               data-bs-target="#modalCadastro">
+
+                                Criar conta
+
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - KioraRestaurante - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+
+    <!--
+        ================================================================
+        MODAL DE CADASTRO KIORA
+        ================================================================
+    -->
+
+    <div class="modal fade"
+         id="modalCadastro"
+         tabindex="-1"
+         aria-labelledby="modalCadastroTitulo"
+         aria-hidden="true">
+
+
+        <div class="modal-dialog modal-dialog-centered modal-cadastro-dialog">
+
+
+            <div class="modal-content modal-cadastro-kiora">
+
+
+                <!-- BOTÃO FECHAR -->
+
+                <button type="button"
+                        class="btn-close modal-cadastro-fechar"
+                        data-bs-dismiss="modal"
+                        aria-label="Fechar">
+
+                    <i class="bi bi-x-lg"></i>
+
+                </button>
+
+
+                <div class="modal-body modal-cadastro-body">
+
+
+                    <!-- LOGO -->
+
+                    <div class="modal-cadastro-logo">
+
+                        <img src="~/imagens/logo-kiora-v.png"
+                             alt="Kiora Japanese Cuisine">
+
+                    </div>
+
+
+                    <!-- CABEÇALHO -->
+
+                    <div class="modal-cadastro-header">
+
+                        <span class="modal-cadastro-subtitulo">
+
+                            BEM-VINDO À KIORA
+
+                        </span>
+
+                        <h2 id="modalCadastroTitulo">
+
+                            Crie sua conta
+
+                        </h2>
+
+                        <p>
+
+                            Cadastre-se para aproveitar sua experiência KIORA.
+
+                        </p>
+
+                    </div>
+
+
+                    <!-- FORMULÁRIO -->
+
+                    <form id="formCadastro">
+
+
+                        <!-- NOME -->
+
+                        <div class="modal-cadastro-grupo">
+
+                            <label for="cadastroNome">
+
+                                Nome
+
+                            </label>
+
+                            <div class="modal-cadastro-input">
+
+                                <i class="bi bi-person"></i>
+
+                                <input type="text"
+                                       id="cadastroNome"
+                                       name="nome"
+                                       placeholder="Digite seu nome"
+                                       autocomplete="name"
+                                       required>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- E-MAIL -->
+
+                        <div class="modal-cadastro-grupo">
+
+                            <label for="cadastroEmail">
+
+                                E-mail
+
+                            </label>
+
+                            <div class="modal-cadastro-input">
+
+                                <i class="bi bi-envelope"></i>
+
+                                <input type="email"
+                                       id="cadastroEmail"
+                                       name="email"
+                                       placeholder="Digite seu e-mail"
+                                       autocomplete="email"
+                                       required>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- TELEFONE -->
+
+                        <div class="modal-cadastro-grupo">
+
+                            <label for="cadastroTelefone">
+
+                                Telefone
+
+                            </label>
+
+                            <div class="modal-cadastro-input">
+
+                                <i class="bi bi-telephone"></i>
+
+                                <input type="tel"
+                                       id="cadastroTelefone"
+                                       name="telefone"
+                                       placeholder="(00) 00000-0000"
+                                       autocomplete="tel"
+                                       required>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- SENHA -->
+
+                        <div class="modal-cadastro-grupo">
+
+                            <label for="cadastroSenha">
+
+                                Senha
+
+                            </label>
+
+                            <div class="modal-cadastro-input">
+
+                                <i class="bi bi-lock"></i>
+
+                                <input type="password"
+                                       id="cadastroSenha"
+                                       name="senha"
+                                       placeholder="Digite sua senha"
+                                       autocomplete="new-password"
+                                       required>
+
+                                <button type="button"
+                                        class="modal-cadastro-olho"
+                                        id="btnMostrarCadastroSenha"
+                                        aria-label="Mostrar senha">
+
+                                    <i class="bi bi-eye"
+                                       id="iconeCadastroSenha"></i>
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- CONFIRMAR SENHA -->
+
+                        <div class="modal-cadastro-grupo">
+
+                            <label for="cadastroConfirmarSenha">
+
+                                Confirmar senha
+
+                            </label>
+
+                            <div class="modal-cadastro-input">
+
+                                <i class="bi bi-lock-fill"></i>
+
+                                <input type="password"
+                                       id="cadastroConfirmarSenha"
+                                       name="confirmarSenha"
+                                       placeholder="Confirme sua senha"
+                                       autocomplete="new-password"
+                                       required>
+
+                                <button type="button"
+                                        class="modal-cadastro-olho"
+                                        id="btnMostrarConfirmarSenha"
+                                        aria-label="Mostrar senha">
+
+                                    <i class="bi bi-eye"
+                                       id="iconeConfirmarSenha"></i>
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- CADASTRAR -->
+
+                        <button type="submit"
+                                class="btn-modal-cadastro">
+
+                            CRIAR CONTA
+
+                        </button>
+
+
+                        <!-- LOGIN -->
+
+                        <div class="modal-cadastro-login">
+
+                            <p>
+
+                                Já possui uma conta?
+
+                            </p>
+
+                            <a href="#"
+                               data-bs-dismiss="modal"
+                               data-bs-toggle="modal"
+                               data-bs-target="#modalLogin">
+
+                                Entrar
+
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
         </div>
+
+    </div>
+
+
+    <!--
+        ================================================================
+        MODAL DE LOCALIZAÇÃO KIORA
+        ================================================================
+    -->
+
+    <div class="modal fade"
+         id="modalLocalizacao"
+         tabindex="-1"
+         aria-labelledby="modalLocalizacaoTitulo"
+         aria-hidden="true">
+
+
+        <div class="modal-dialog modal-dialog-centered modal-localizacao-dialog">
+
+
+            <div class="modal-content modal-localizacao-kiora">
+
+
+                <!--
+                    ========================================================
+                    CABEÇALHO DO MODAL
+                    ========================================================
+                -->
+
+                <div class="modal-localizacao-topo">
+
+
+                    <!-- LOGO -->
+
+                    <div class="modal-localizacao-logo">
+
+                        <img src="~/imagens/logo-kiora-v.png"
+                             alt="Kiora Japanese Cuisine">
+
+                    </div>
+
+
+                    <!-- BOTÃO FECHAR -->
+
+                    <button type="button"
+                            class="modal-localizacao-fechar"
+                            data-bs-dismiss="modal"
+                            aria-label="Fechar">
+
+                        <i class="bi bi-x-lg"></i>
+
+                    </button>
+
+                </div>
+
+
+                <!--
+                    ========================================================
+                    CONTEÚDO DO MODAL
+                    ========================================================
+                -->
+
+                <div class="modal-body modal-localizacao-body">
+
+
+                    <!--
+                        ====================================================
+                        CABEÇALHO INSTITUCIONAL
+                        ====================================================
+                    -->
+
+                    <div class="modal-localizacao-header">
+
+
+                        <span class="modal-localizacao-subtitulo">
+
+                            KIORA RAMEN HOUSE
+
+                        </span>
+
+
+                        <h2 id="modalLocalizacaoTitulo">
+
+                            Onde estamos
+
+                        </h2>
+
+
+                        <p>
+
+                            Venha viver uma experiência além do sabor.
+
+                        </p>
+
+
+                    </div>
+
+
+                    <!--
+                        ====================================================
+                        BLOCO DE ENDEREÇO
+                        ====================================================
+                    -->
+
+                    <div class="modal-localizacao-endereco">
+
+
+                        <!-- ÍCONE -->
+
+                        <div class="modal-localizacao-icone">
+
+                            <i class="bi bi-geo-alt-fill"></i>
+
+                        </div>
+
+
+                        <!-- INFORMAÇÕES -->
+
+                        <div class="modal-localizacao-info">
+
+
+                            <span class="modal-localizacao-label">
+
+                                NOSSO ENDEREÇO
+
+                            </span>
+
+
+                            <h3>
+
+                                R. dos Pinheiros, 1234
+
+                            </h3>
+
+
+                            <p>
+
+                                Pinheiros, São Paulo - SP
+
+                            </p>
+
+
+                            <span class="modal-localizacao-cep">
+
+                                01445-000
+
+                            </span>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                    <!--
+                        ====================================================
+                        MAPA
+                        ====================================================
+                    -->
+
+                    <div class="modal-localizacao-mapa">
+
+
+                        <iframe
+                            src="https://www.google.com/maps?q=Rua+dos+Pinheiros,+1234,+Pinheiros,+São+Paulo,+SP&output=embed"
+                            title="Mapa com a localização da KIORA"
+                            loading="lazy"
+                            allowfullscreen
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+
+
+                    </div>
+
+
+                    <!--
+                        ====================================================
+                        BOTÃO COMO CHEGAR
+                        ====================================================
+                    -->
+
+                    <div class="modal-localizacao-acoes">
+
+
+                        <a href="https://www.google.com/maps/search/?api=1&query=Rua+dos+Pinheiros,+1234,+Pinheiros,+São+Paulo,+SP"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="btn-localizacao">
+
+
+                            <i class="bi bi-sign-turn-right-fill"></i>
+
+
+                            <span>
+
+                                COMO CHEGAR
+
+                            </span>
+
+
+                        </a>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!--
+        ================================================================
+        FOOTER
+        ================================================================
+    -->
+
+    <footer class="footer-kiora">
+
+
+        <div class="container-fluid">
+
+
+            <div class="footer-content">
+
+
+                <!--
+                    =====================================================
+                    LOGO
+                    =====================================================
+                -->
+
+                <div class="footer-logo-area">
+
+                    <img src="~/imagens/logo-kiora-v.png"
+                         alt="Kiora Japanese Cuisine"
+                         class="logo-footer">
+
+                </div>
+
+
+                <!--
+                    =====================================================
+                    FRASE INSTITUCIONAL
+                    =====================================================
+                -->
+
+                <div class="footer-frase">
+
+                    <p>
+
+                        Uma experiência além do sabor.
+
+                    </p>
+
+                </div>
+
+
+                <!--
+                    =====================================================
+                    ENDEREÇO
+                    =====================================================
+
+                    O endereço abre o modal de localização.
+                -->
+
+                <a href="#"
+                   class="footer-address-link"
+                   data-bs-toggle="modal"
+                   data-bs-target="#modalLocalizacao">
+
+
+                    <div class="footer-item">
+
+
+                        <i class="bi bi-geo-alt footer-icon"></i>
+
+
+                        <div>
+
+                            <span>
+
+                                Rua dos Pinheiros, 1234
+
+                            </span>
+
+                            <span>
+
+                                Pinheiros, São Paulo - SP
+
+                            </span>
+
+                            <span>
+
+                                01445-000
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </a>
+
+
+                <!--
+                    =====================================================
+                    TELEFONES
+                    =====================================================
+                -->
+
+                <div class="footer-item">
+
+
+                    <div class="footer-telefones">
+
+
+                        <!-- TELEFONE -->
+
+                        <div>
+
+                            <i class="bi bi-telephone footer-icon"></i>
+
+                            <span>
+
+                                (11) 90000-1234
+
+                            </span>
+
+                        </div>
+
+
+                        <!-- WHATSAPP -->
+
+                        <div>
+
+                            <i class="bi bi-whatsapp footer-icon"></i>
+
+                            <span>
+
+                                (11) 90000-1234
+
+                            </span>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+                <!--
+                    =====================================================
+                    E-MAIL
+                    =====================================================
+                -->
+
+                <div class="footer-item footer-email">
+
+
+                    <i class="bi bi-envelope footer-icon"></i>
+
+
+                    <span>
+
+                        kiora_restaurante@gmail.com
+
+                    </span>
+
+                </div>
+
+
+                <!--
+                    =====================================================
+                    REDES SOCIAIS
+                    =====================================================
+                -->
+
+                <div class="footer-item footer-social">
+
+
+                    <div>
+
+
+                        <span class="footer-social-title">
+
+                            SIGA-NOS
+
+                        </span>
+
+
+                        <div class="footer-social-links">
+
+
+                            <!-- INSTAGRAM -->
+
+                            <a href="#"
+                               aria-label="Instagram">
+
+                                <i class="bi bi-instagram"></i>
+
+                            </a>
+
+
+                            <!-- FACEBOOK -->
+
+                            <a href="#"
+                               aria-label="Facebook">
+
+                                <i class="bi bi-facebook"></i>
+
+                            </a>
+
+
+                            <!-- WHATSAPP -->
+
+                            <a href="#"
+                               aria-label="WhatsApp">
+
+                                <i class="bi bi-whatsapp"></i>
+
+                            </a>
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!--
+                    =====================================================
+                    DIREITOS AUTORAIS
+                    =====================================================
+                -->
+
+                <div class="footer-direitos">
+
+
+                    <strong>
+
+                        KIORA
+
+                    </strong>
+
+
+                    <span>
+
+                        © 2026. Todos os direitos reservados.
+
+                    </span>
+
+
+                    <!-- POLÍTICAS -->
+
+                    <div class="footer-politicas">
+
+
+                        <!-- POLÍTICA DE PRIVACIDADE -->
+
+                        <a asp-area=""
+                           asp-controller="Home"
+                           asp-action="Privacy">
+
+                            Política de Privacidade
+
+                        </a>
+
+
+                        <span>
+
+                            |
+
+                        </span>
+
+
+                        <!-- TERMOS DE USO -->
+
+                        <a href="#">
+
+                            Termos de Uso
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
     </footer>
+
+
+    <!--
+        ================================================================
+        JAVASCRIPT
+        ================================================================
+    -->
+
+
+    <!-- jQuery -->
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+
+    <!--
+        Bootstrap Bundle
+
+        Inclui o Popper.js necessário para Dropdown,
+        Navbar, Modal e outros componentes.
+    -->
+
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+
+
+    <!-- JavaScript personalizado -->
+
+    <script src="~/js/site.js"
+            asp-append-version="true"></script>
+
+
+    <!--
+        ================================================================
+        SCRIPTS ESPECÍFICOS DAS VIEWS
+        ================================================================
+    -->
+
     @await RenderSectionAsync("Scripts", required: false)
+
 </body>
+
 </html>

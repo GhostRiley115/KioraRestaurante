@@ -11,6 +11,11 @@ namespace KioraRestaurante.Controllers
             return View();
         }
 
+        public IActionResult Sobre()
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();

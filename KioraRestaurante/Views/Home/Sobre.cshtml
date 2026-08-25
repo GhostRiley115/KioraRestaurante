@@ -1,0 +1,707 @@
+﻿@{
+    /*
+        Define o título da página.
+
+        Esse valor pode ser utilizado pelo arquivo _Layout.cshtml através de: @ViewData["Title"]
+
+        O título será exibido na aba do navegador.
+    */
+    ViewData["Title"] = "Sobre Nós";
+}
+
+
+<!-- 
+     HERO — SOBRE A KIORA 
+
+     Seção principal da página "Sobre Nós".
+
+     Apresenta uma imagem de destaque, uma camada de sobreposição e o texto principal da marca.
+
+     A classe "sobre-hero" será responsável pelo estilo visual dessa seção através do arquivo CSS.
+-->
+
+<section class="sobre-hero">
+
+    <!--
+        Camada de sobreposição sobre a imagem de fundo.
+
+        É utilizada para escurecer a imagem e melhorar a leitura dos textos posicionados sobre ela.
+    -->
+    <div class="sobre-hero-overlay"></div>
+
+
+    <!--
+        Container Bootstrap responsável por limitar a largura do conteúdo e manter o alinhamento da página.
+    -->
+    <div class="container sobre-hero-conteudo">
+
+        <!--
+            Subtítulo de identificação da seção.
+        -->
+        <span class="sobre-subtitulo">
+            SOBRE A KIORA
+        </span>
+
+
+        <!--
+            Título principal da página.
+
+            A quebra de linha é utilizada para manter a composição visual definida para o layout.
+        -->
+        <h1>
+            Uma experiência<br />
+            além do sabor.
+        </h1>
+
+
+        <!--
+            Texto introdutório da página.
+        -->
+        <p>
+            Gastronomia japonesa contemporânea,
+            inspirada na tradição e pensada para os hábitos de hoje.
+        </p>
+
+    </div>
+
+</section>
+
+
+<!--  
+     NOSSA HISTÓRIA 
+
+     Seção destinada a apresentar a história e o conceito da KIORA.
+
+     O conteúdo é dividido em duas colunas:
+
+     - Texto sobre a história;
+     - Imagem representativa da marca.
+
+     O Bootstrap reorganiza as colunas automaticamente em dispositivos menores.
+-->
+
+<section class="sobre-historia">
+
+    <div class="container">
+
+        <div class="row align-items-center g-5">
+
+
+            <!-- 
+                 COLUNA DE TEXTO
+            -->
+
+            <div class="col-lg-6">
+
+                <!--
+                    Identificação da seção.
+                -->
+                <span class="sobre-secao-subtitulo">
+                    NOSSA HISTÓRIA
+                </span>
+
+
+                <!--
+                    Título da seção.
+                -->
+                <h2>
+                    Uma paixão pelo lámen.
+                </h2>
+
+
+                <!--
+                    Primeiro parágrafo sobre a origem da proposta.
+                -->
+                <p>
+                    A KIORA nasceu da paixão pela gastronomia japonesa
+                    e pelo lámen, prato que reúne sabores, ingredientes
+                    e texturas em uma única experiência.
+                </p>
+
+
+                <!--
+                    Segundo parágrafo contextualizando a presença da marca no ambiente digital e no delivery.
+                -->
+                <p>
+                    Com o crescimento do delivery, a experiência KIORA
+                    também passou a acontecer no ambiente digital,
+                    aproximando a marca de seus clientes.
+                </p>
+
+            </div>
+
+
+            <!-- 
+                 COLUNA DA IMAGEM
+            -->
+
+            <div class="col-lg-6">
+
+                <div class="sobre-imagem">
+
+                    <!--
+                        Imagem relacionada à gastronomia da KIORA.
+
+                        A classe "img-fluid" pertence ao Bootstrap e torna a imagem responsiva.
+                    -->
+                    <img src="~/imagens/experiencia-kiora.png"
+                         alt="Gastronomia japonesa da KIORA"
+                         class="img-fluid">
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- 
+     EXPERIÊNCIA KIORA
+
+     Apresenta três pilares relacionados à experiência proporcionada pela marca:
+
+     - Tradição;
+     - Qualidade;
+     - Experiência.
+
+     Os cards utilizam o sistema de grid do Bootstrap.
+-->
+
+<section class="sobre-experiencia">
+
+    <div class="container">
+
+
+        <!-- 
+             TÍTULO DA SEÇÃO
+        -->
+
+        <div class="text-center sobre-titulo-secao">
+
+            <span class="sobre-secao-subtitulo">
+                EXPERIÊNCIA KIORA
+            </span>
+
+            <h2>
+                Muito além do sabor.
+            </h2>
+
+            <p>
+                Uma experiência que começa na marca e continua em cada pedido.
+            </p>
+
+        </div>
+
+
+        <!-- 
+             CARDS DA EXPERIÊNCIA
+        -->
+
+        <div class="row g-4">
+
+
+            <!-- 
+                 CARD — TRADIÇÃO
+            -->
+
+            <div class="col-md-4">
+
+                <div class="sobre-card">
+
+                    <!--
+                        Ícone decorativo relacionado à natureza e às referências visuais japonesas.
+
+                        aria-hidden="true" informa aos leitores de tela que o ícone é apenas decorativo.
+                    -->
+                    <i class="bi bi-flower1" aria-hidden="true"></i>
+
+
+                    <h3>
+                        Tradição
+                    </h3>
+
+
+                    <p>
+                        Referências da gastronomia japonesa
+                        que fazem parte da identidade KIORA.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- 
+                 CARD — QUALIDADE
+            -->
+
+            <div class="col-md-4">
+
+                <div class="sobre-card">
+
+                    <!--
+                        Ícone decorativo relacionado à qualidade e sofisticação.
+                    -->
+                    <i class="bi bi-gem" aria-hidden="true"></i>
+
+
+                    <h3>
+                        Qualidade
+                    </h3>
+
+
+                    <p>
+                        Lámen, bebidas e sobremesas pensados
+                        para proporcionar uma experiência especial.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- 
+                 CARD — EXPERIÊNCIA
+            -->
+
+            <div class="col-md-4">
+
+                <div class="sobre-card">
+
+                    <!--
+                        Ícone decorativo relacionado à experiência e aos detalhes da marca.
+                    -->
+                    <i class="bi bi-stars" aria-hidden="true"></i>
+
+
+                    <h3>
+                        Experiência
+                    </h3>
+
+
+                    <p>
+                        Do primeiro contato com a marca ao
+                        recebimento do pedido, cada detalhe importa.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- 
+     NOSSA ESSÊNCIA
+
+     Apresenta o conceito central da KIORA:
+
+     tradição japonesa combinada com uma identidade
+     contemporânea.
+
+     Em telas grandes, a posição das colunas é invertida
+     através das classes "order-lg-1" e "order-lg-2".
+-->
+
+<section class="sobre-essencia">
+
+    <div class="container">
+
+        <div class="row align-items-center g-5">
+
+
+            <!-- 
+                 COLUNA DE TEXTO
+            -->
+
+            <div class="col-lg-6 order-lg-2">
+
+                <span class="sobre-secao-subtitulo">
+                    NOSSA ESSÊNCIA
+                </span>
+
+
+                <h2>
+                    Tradição que encontra o presente.
+                </h2>
+
+
+                <p>
+                    A KIORA une referências da gastronomia japonesa
+                    a uma identidade contemporânea.
+                </p>
+
+
+                <p>
+                    O resultado é uma experiência pensada para os
+                    hábitos atuais, sem deixar de lado a essência
+                    da culinária japonesa.
+                </p>
+
+            </div>
+
+
+            <!-- 
+                 COLUNA DA IMAGEM
+            -->
+
+            <div class="col-lg-6 order-lg-1">
+
+                <div class="sobre-imagem">
+
+                    <!--
+                        Imagem utilizada para representar a essência e a experiência da KIORA.
+                    -->
+                    <img src="~/imagens/sobre-kiora.png"
+                         alt="Experiência gastronômica da KIORA"
+                         class="img-fluid">
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- 
+     DIFERENCIAIS
+
+     Apresenta os principais diferenciais da KIORA:
+
+     - Especialização em lámen;
+     - Experiência além do produto;
+     - Tradição e inovação.
+-->
+
+<section class="sobre-diferenciais">
+
+    <div class="container">
+
+
+        <!-- 
+             TÍTULO DA SEÇÃO
+        -->
+
+        <div class="text-center sobre-titulo-secao">
+
+            <span class="sobre-secao-subtitulo">
+                DIFERENCIAIS
+            </span>
+
+            <h2>
+                O jeito KIORA de fazer.
+            </h2>
+
+            <p>
+                Uma proposta que une gastronomia, experiência e praticidade.
+            </p>
+
+        </div>
+
+
+        <!-- 
+             CARDS DOS DIFERENCIAIS
+        -->
+
+        <div class="row g-4">
+
+
+            <!-- 
+                 CARD — ESPECIALIZAÇÃO EM LÁMEN
+            -->
+
+            <div class="col-md-4">
+
+                <div class="sobre-card">
+
+                    <!--
+                        Ícone relacionado ao lámen e à gastronomia.
+                    -->
+                    <i class="bi bi-cup-hot" aria-hidden="true"></i>
+
+
+                    <h3>
+                        Especialização em lámen
+                    </h3>
+
+
+                    <p>
+                        O lámen é o centro da nossa proposta
+                        e da identidade gastronômica KIORA.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- 
+                 CARD — ALÉM DO PRODUTO
+            -->
+
+            <div class="col-md-4">
+
+                <div class="sobre-card">
+
+                    <!--
+                        Ícone relacionado ao cuidado e acolhimento.
+                    -->
+                    <i class="bi bi-heart" aria-hidden="true"></i>
+
+
+                    <h3>
+                        Além do produto
+                    </h3>
+
+
+                    <p>
+                        Cada contato com a marca faz parte
+                        da experiência que queremos oferecer.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- 
+                 CARD — TRADIÇÃO E INOVAÇÃO
+            -->
+
+            <div class="col-md-4">
+
+                <div class="sobre-card">
+
+                    <!--
+                        Ícone relacionado à inovação e criatividade.
+                    -->
+                    <i class="bi bi-lightbulb" aria-hidden="true"></i>
+
+
+                    <h3>
+                        Tradição e inovação
+                    </h3>
+
+
+                    <p>
+                        A cultura japonesa encontra uma experiência
+                        moderna, prática e conectada ao presente.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- 
+     MISSÃO
+
+     Apresenta a missão institucional da KIORA.
+-->
+
+<section class="sobre-missao">
+
+    <div class="container text-center">
+
+        <!--
+            Identificação da seção.
+        -->
+        <span class="sobre-secao-subtitulo">
+            NOSSA MISSÃO
+        </span>
+
+
+        <!--
+            Título principal da missão.
+        -->
+        <h2>
+            Levar uma experiência japonesa até você.
+        </h2>
+
+
+        <!--
+            Descrição da missão da marca.
+        -->
+        <p>
+            Oferecer lámen de qualidade, bebidas e sobremesas,
+            unindo tradição, sabor e cuidado em cada detalhe.
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- 
+     VISÃO E VALORES
+
+     Seção dividida em duas partes:
+
+     - Visão da KIORA;
+     - Valores da marca.
+-->
+
+<section class="sobre-valores">
+
+    <div class="container">
+
+        <div class="row g-5">
+
+
+            <!-- 
+                 VISÃO
+            -->
+
+            <div class="col-lg-6">
+
+                <!--
+                    Identificação da seção de visão.
+                -->
+                <span class="sobre-secao-subtitulo">
+                    NOSSA VISÃO
+                </span>
+
+
+                <h2>
+                    Ser referência em delivery de lámen.
+                </h2>
+
+
+                <p>
+                    Destacar-se pela qualidade, pela experiência
+                    do cliente e pela união entre tradição japonesa
+                    e inovação.
+                </p>
+
+            </div>
+
+
+            <!--
+                 VALORES
+            -->
+
+            <div class="col-lg-6">
+
+                <!--
+                    Identificação da seção de valores.
+                -->
+                <span class="sobre-secao-subtitulo">
+                    NOSSOS VALORES
+                </span>
+
+
+                <!--
+                    Lista visual dos valores que fazem parte da identidade institucional da KIORA.
+                -->
+                <div class="valores-lista">
+
+                    <span>Qualidade</span>
+
+                    <span>Tradição</span>
+
+                    <span>Experiência</span>
+
+                    <span>Acolhimento</span>
+
+                    <span>Equilíbrio</span>
+
+                    <span>Inovação</span>
+
+                    <span>Cuidado</span>
+
+                    <span>Respeito</span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- 
+     CHAMADA FINAL
+
+     Última seção da página.
+
+     Tem como objetivo reforçar o conceito da KIORA e apresentar uma chamada para ação relacionada ao cardápio.
+
+     Como a página de cardápio ainda não foi criada, o botão permanece temporariamente com "#".
+
+     Quando o cardápio estiver pronto, esse botão poderá receber a rota correta através dos Tag Helpers do ASP.NET Core.
+-->
+
+<section class="sobre-reserva">
+
+    <div class="container text-center">
+
+        <!--
+            Pequeno texto de destaque.
+        -->
+        <span class="sobre-secao-subtitulo">
+            VIVA A EXPERIÊNCIA
+        </span>
+
+
+        <!--
+            Título final da página.
+        -->
+        <h2>
+            Viva a experiência KIORA.
+        </h2>
+
+
+        <!--
+            Texto de encerramento.
+        -->
+        <p>
+            Lámen, tradição e sabor em uma experiência além do sabor.
+        </p>
+
+
+        <!--
+            Botão de chamada para o cardápio.
+
+            A página de cardápio ainda não está criada, portanto o link não possui uma rota definida.
+
+            O "#" evita que seja necessário criar uma página inexistente neste momento.
+
+            Quando o cardápio estiver pronto, o botão poderá ser alterado para:
+
+            <a asp-controller="Menu"
+               asp-action="Index"
+               class="btn btn-reserva-sobre">
+
+                Conheça nosso Cardápio
+
+            </a>
+        -->
+        <a href="#"
+           class="btn btn-reserva-sobre">
+            Conheça nosso Cardápio
+        </a>
+
+    </div>
+
+</section>
