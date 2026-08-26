@@ -1,8 +1,444 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    // Identifica esta View como a página inicial do site.
+    // O _Layout.cshtml pode utilizar esta informação
+    // para aplicar comportamentos ou estilos específicos da Home.
+    ViewData["HomePage"] = true;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+
+<!--
+    HERO - PÁGINA INICIAL
+
+    Área principal da página inicial da KIORA.
+
+    Contém:
+    - Subtítulo;
+    - Título principal;
+    - Descrição;
+    - Botões de Login e Cadastro.
+-->
+
+<section class="hero-kiora">
+
+    <!--
+        Overlay escuro sobre a imagem de fundo.
+
+        Sua função é melhorar a leitura dos textos apresentados sobre a imagem.
+    -->
+    <div class="hero-overlay"></div>
+
+
+    <!--
+        Conteúdo principal da Hero.
+    -->
+    <div class="hero-conteudo">
+
+        <div class="container">
+
+            <!--
+                Subtítulo da página.
+            -->
+            <span class="hero-subtitulo">
+                EXPERIÊNCIA JAPONESA
+            </span>
+
+
+            <!--
+                Título principal da página inicial.
+
+                A tag <br /> cria uma quebra de linha entre "sabor" e "e sofisticação".
+            -->
+            <h1>
+                Tradição, sabor<br />
+                e sofisticação.
+            </h1>
+
+
+            <!--
+                Texto de apresentação da KIORA.
+            -->
+            <p>
+                Uma experiência única da culinária japonesa,
+                preparada com qualidade, tradição e sofisticação.
+            </p>
+
+
+            <!--
+                BOTÕES DA HERO 
+            -->
+            <div class="hero-botoes">
+
+                <!--
+                    BOTÃO LOGIN 
+
+                    Ao clicar, abre o Modal de Login.
+
+                    O modal deverá possuir: id="modalLogin"
+                -->
+                <a href="#"
+                   class="btn btn-login"
+                   data-bs-toggle="modal"
+                   data-bs-target="#modalLogin">
+
+                    Fazer Login
+
+                </a>
+
+
+                <!--
+                    BOTÃO CADASTRO 
+
+                    Ao clicar, abre o Modal de Cadastro.
+
+                    O modal deverá possuir: id="modalCadastro"
+                -->
+                <a href="#"
+                   class="btn btn-cadastrar"
+                   data-bs-toggle="modal"
+                   data-bs-target="#modalCadastro">
+
+                    Cadastrar
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!--
+    CARDS DE DESTAQUE DA PÁGINA INICIAL 
+
+    IMPORTANTE:
+
+    Esta seção pertence SOMENTE à página inicial.
+
+    Ela está dentro do Index.cshtml e NÃO deve ser colocada
+    no _Layout.cshtml.
+
+    Dessa forma, os quatro cards aparecerão somente na Home.
+
+    Cards:
+    1. Cardápio
+    2. Mais vendidos
+    3. Promoções
+    4. Produtos KIORA
+-->
+
+<section class="kiora-destaques">
+
+
+    <!--
+        Container de largura total.
+
+        px-3: Define espaçamento lateral em telas pequenas.
+
+        px-lg-4: Define espaçamento lateral maior em telas grandes.
+    -->
+    <div class="container-fluid px-3 px-lg-4">
+
+
+        <!--
+            Linha responsável pela organização dos quatro cards.
+
+            g-2: Define o espaçamento entre os cards.
+        -->
+        <div class="row g-2">
+
+
+            <!--
+                CARD 1 - CARDÁPIO 
+            -->
+
+            <!--
+                col-12: Ocupa toda a largura em telas pequenas.
+
+                col-md-6: Ocupa metade da largura em telas médias.
+
+                col-lg-3: Ocupa 1/4 da largura em telas grandes.
+            -->
+            <div class="col-12 col-md-6 col-lg-3">
+
+
+                <!--
+                    O card inteiro funciona como área clicável.
+
+                    Por enquanto, href="#" é utilizado como placeholder.
+
+                    Posteriormente podemos substituir pelo endereço da página real do Cardápio.
+                -->
+                <a href="#"
+                   class="destaque-card">
+
+
+                    <!--
+                        Imagem de fundo do card.
+
+                        Arquivo: wwwroot/imagens/cardapio-card.png
+                    -->
+                    <div class="destaque-imagem"
+                         style="background-image: url('/imagens/cardapio-card.png');">
+                    </div>
+
+
+                    <!--
+                        Overlay escuro sobre a imagem.
+                    -->
+                    <div class="destaque-overlay"></div>
+
+
+                    <!--
+                        Conteúdo textual do card.
+                    -->
+                    <div class="destaque-conteudo">
+
+
+                        <!-- Categoria do card -->
+                        <span class="destaque-subtitulo">
+                            CARDÁPIO
+                        </span>
+
+
+                        <!-- Título do card -->
+                        <h3>
+                            Sabores que conquistam.
+                        </h3>
+
+
+                        <!-- Descrição do card -->
+                        <p>
+                            Descubra nossos lámens, acompanhamentos
+                            e sobremesas.
+                        </p>
+
+
+                        <!-- Ação do card -->
+                        <span class="destaque-link">
+                            → VER CARDÁPIO
+                        </span>
+
+
+                    </div>
+
+                </a>
+
+            </div>
+
+
+
+            <!--
+                CARD 2 - MAIS VENDIDOS 
+            -->
+
+            <div class="col-12 col-md-6 col-lg-3">
+
+
+                <!--
+                    Área clicável de todo o card.
+                -->
+                <a href="#"
+                   class="destaque-card">
+
+
+                    <!--
+                        Imagem de fundo do card.
+
+                        Arquivo: wwwroot/imagens/mais-vendido.png
+                    -->
+                    <div class="destaque-imagem"
+                         style="background-image: url('/imagens/mais-vendido.png');">
+                    </div>
+
+
+                    <!--
+                        Overlay escuro sobre a imagem.
+                    -->
+                    <div class="destaque-overlay"></div>
+
+
+                    <!--
+                        Conteúdo textual do card.
+                    -->
+                    <div class="destaque-conteudo">
+
+
+                        <!-- Categoria do card -->
+                        <span class="destaque-subtitulo">
+                            MAIS VENDIDOS
+                        </span>
+
+
+                        <!-- Título do card -->
+                        <h3>
+                            Os favoritos da Kiora.
+                        </h3>
+
+
+                        <!-- Descrição do card -->
+                        <p>
+                            Conheça os pratos que conquistaram
+                            nossos clientes.
+                        </p>
+
+
+                        <!-- Ação do card -->
+                        <span class="destaque-link">
+                            → CONHECER
+                        </span>
+
+
+                    </div>
+
+                </a>
+
+            </div>
+
+
+
+            <!--
+                CARD 3 - PROMOÇÕES  
+            -->
+
+            <div class="col-12 col-md-6 col-lg-3">
+
+
+                <!--
+                    Área clicável de todo o card.
+                -->
+                <a href="#"
+                   class="destaque-card">
+
+
+                    <!--
+                        Imagem de fundo do card.
+
+                        Arquivo: wwwroot/imagens/promocao.png
+                    -->
+                    <div class="destaque-imagem"
+                         style="background-image: url('/imagens/promocao.png');">
+                    </div>
+
+
+                    <!--
+                        Overlay escuro sobre a imagem.
+                    -->
+                    <div class="destaque-overlay"></div>
+
+
+                    <!--
+                        Conteúdo textual do card.
+                    -->
+                    <div class="destaque-conteudo">
+
+
+                        <!-- Categoria do card -->
+                        <span class="destaque-subtitulo">
+                            PROMOÇÕES
+                        </span>
+
+
+                        <!-- Título do card -->
+                        <h3>
+                            Uma experiência ainda melhor.
+                        </h3>
+
+
+                        <!-- Descrição do card -->
+                        <p>
+                            Aproveite nossas combinações e ofertas
+                            especiais.
+                        </p>
+
+
+                        <!-- Ação do card -->
+                        <span class="destaque-link">
+                            → VER OFERTAS
+                        </span>
+
+
+                    </div>
+
+                </a>
+
+            </div>
+
+
+
+            <!--
+                CARD 4 - PRODUTOS KIORA 
+            -->
+
+            <div class="col-12 col-md-6 col-lg-3">
+
+
+                <!--
+                    Área clicável de todo o card.
+                -->
+                <a href="#"
+                   class="destaque-card">
+
+
+                    <!--
+                        Imagem de fundo do card.
+
+                        Arquivo: wwwroot/imagens/produtos.png
+                    -->
+                    <div class="destaque-imagem"
+                         style="background-image: url('/imagens/produtos.png');">
+                    </div>
+
+
+                    <!--
+                        Overlay escuro sobre a imagem.
+                    -->
+                    <div class="destaque-overlay"></div>
+
+
+                    <!--
+                        Conteúdo textual do card.
+                    -->
+                    <div class="destaque-conteudo">
+
+
+                        <!-- Categoria do card -->
+                        <span class="destaque-subtitulo">
+                            PRODUTOS KIORA
+                        </span>
+
+
+                        <!-- Título do card -->
+                        <h3>
+                            Muito além do lámen.
+                        </h3>
+
+
+                        <!-- Descrição do card -->
+                        <p>
+                            Conheça nossa linha de produtos.
+                        </p>
+
+
+                        <!-- Ação do card -->
+                        <span class="destaque-link">
+                            → CONHECER PRODUTOS
+                        </span>
+
+
+                    </div>
+
+                </a>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+
