@@ -1,4 +1,5 @@
-﻿namespace KioraRestaurante.Models
+﻿using KioraRestaurante.Models;
+namespace KioraRestaurante.Models
 {
     public class Usuario
     {
