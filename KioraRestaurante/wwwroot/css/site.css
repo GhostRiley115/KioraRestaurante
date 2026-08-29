@@ -4009,864 +4009,401 @@ button,
 
 /* ================================================================
    MODAL DE LOCALIZAÇÃO KIORA
+   Mesmo padrão visual do Modal Login
    ================================================================ */
 
 
-/* ================================================================
-   FUNDO ESCURO ATRÁS DO MODAL
-   ================================================================ */
-
-/* Seleciona o backdrop relacionado ao modal de localização. */
-#modalLocalizacao .modal-backdrop {
-    /* Define a cor preta para o fundo atrás do modal. */
-    background-color: #000;
-}
-
-
-/* ================================================================
+/* ----------------------------------------------------------------
    CONTAINER DO MODAL
-   ================================================================ */
+   ---------------------------------------------------------------- */
 
-/* Define o estilo do container externo do modal de localização. */
 .modal-localizacao-dialog {
-    /* Define a largura máxima do modal em pixels. */
-    max-width: 1220px;
-    /* Define a largura como 100% menos 40px de margem lateral. */
-    width: calc(100% - 40px);
-    /* Centraliza o modal horizontalmente e cria 20px de margem vertical. */
-    margin: 20px auto;
+    max-width: 587px;
+    width: calc(100% - 24px);
+    margin: 1.75rem auto;
 }
 
 
-/* ================================================================
-   CONTEÚDO PRINCIPAL DO MODAL
-   ================================================================ */
+/* ----------------------------------------------------------------
+   CONTEÚDO PRINCIPAL
+   ---------------------------------------------------------------- */
 
-/* Define o painel principal interno do modal. */
 .modal-localizacao-kiora {
-    /* Permite posicionar elementos internos de forma absoluta. */
     position: relative;
-    /* Define o fundo preto principal da identidade KIORA. */
-    background: #0e0e0e;
-    /* Define a cor padrão dos textos dentro do modal. */
-    color: #f8f5f2;
-    /* Cria a borda dourada externa do modal. */
-    border: 1px solid rgba(217, 178, 122, 0.45);
-    /* Arredonda os quatro cantos do modal. */
-    border-radius: 14px;
-    /* Impede que elementos internos ultrapassem os cantos arredondados. */
+    background-color: #0E0E0E;
+    border: 1px solid #D9B27A;
+    border-radius: 6px;
+    color: #F8F5F2;
     overflow: hidden;
-    /* Cria sombra externa para destacar o modal da página. */
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(217, 178, 122, 0.08);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.55);
 }
 
 
-/* ================================================================
-   CABEÇALHO SUPERIOR
-   ================================================================ */
+    /* ----------------------------------------------------------------
+   DETALHE DOURADO NO TOPO
+   Igual ao modal Login
+   ---------------------------------------------------------------- */
 
-/* Define a área superior onde fica a logo e o botão fechar. */
+    .modal-localizacao-kiora::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 125px;
+        height: 3px;
+        background-color: #D9B27A;
+        z-index: 10;
+    }
+
+
+/* ----------------------------------------------------------------
+   CABEÇALHO
+   ---------------------------------------------------------------- */
+
 .modal-localizacao-topo {
-    /* Permite posicionar o botão fechar em relação ao cabeçalho. */
     position: relative;
-    /* Define a altura do cabeçalho superior. */
-    height: 125px;
-    /* Ativa o Flexbox para organizar os elementos. */
+    width: 100%;
     display: flex;
-    /* Centraliza verticalmente a logo. */
-    align-items: center;
-    /* Centraliza horizontalmente a logo. */
     justify-content: center;
-    /* Mantém o fundo preto do cabeçalho. */
-    background: #0e0e0e;
-    /* Cria a linha dourada inferior do cabeçalho. */
-    border-bottom: 1px solid rgba(217, 178, 122, 0.35);
+    align-items: center;
+    padding-top: 58px;
 }
 
 
-/* ================================================================
+/* ----------------------------------------------------------------
    LOGO
-   ================================================================ */
+   ---------------------------------------------------------------- */
 
-/* Define a área responsável pelo posicionamento da logo. */
 .modal-localizacao-logo {
-    /* Ativa o Flexbox para o container da logo. */
     display: flex;
-    /* Centraliza a logo verticalmente. */
-    align-items: center;
-    /* Centraliza a logo horizontalmente. */
     justify-content: center;
+    align-items: center;
+    width: 100%;
 }
 
-
-    /* Seleciona a imagem da logo dentro do modal. */
     .modal-localizacao-logo img {
-        /* Faz a imagem ocupar sua própria linha corretamente. */
         display: block;
-        /* Define a largura padrão da logo. */
-        width: 235px;
-        /* Impede que a logo ultrapasse 80% do espaço disponível. */
-        max-width: 80%;
-        /* Mantém a proporção original da imagem. */
+        width: 180px;
+        max-width: 70%;
         height: auto;
     }
 
 
-/* ================================================================
+/* ----------------------------------------------------------------
    BOTÃO FECHAR
-   ================================================================ */
+   ---------------------------------------------------------------- */
 
-/* Define o estilo do botão X do modal. */
 .modal-localizacao-fechar {
-    /* Permite posicionar o botão livremente dentro do cabeçalho. */
     position: absolute;
-    /* Posiciona o centro do botão verticalmente. */
-    top: 50%;
-    /* Define a distância do botão em relação à borda direita. */
-    right: 38px;
-    /* Ajusta o botão para que fique centralizado verticalmente. */
-    transform: translateY(-50%);
-    /* Define a largura do botão. */
-    width: 48px;
-    /* Define a altura do botão. */
-    height: 48px;
-    /* Remove o espaçamento interno padrão do botão. */
+    top: 25px;
+    right: 27px;
+    width: 32px;
+    height: 32px;
     padding: 0;
-    /* Ativa o Flexbox dentro do botão. */
     display: flex;
-    /* Centraliza o ícone verticalmente. */
-    align-items: center;
-    /* Centraliza o ícone horizontalmente. */
     justify-content: center;
-    /* Remove a cor de fundo padrão do botão. */
+    align-items: center;
     background: transparent;
-    /* Remove a borda padrão do botão. */
-    border: 0;
-    /* Define a cor dourada do botão. */
-    color: #d9b27a;
-    /* Define o tamanho padrão do texto/ícone. */
-    font-size: 32px;
-    /* Define a altura da linha do botão. */
-    line-height: 1;
-    /* Mostra o cursor de clique ao passar sobre o botão. */
+    border: none;
+    color: #D9B27A;
     cursor: pointer;
-    /* Cria uma transição suave para os efeitos do botão. */
-    transition: color 0.25s ease, transform 0.25s ease;
+    z-index: 20;
+    transition: all 0.3s ease;
 }
 
-
-    /* Seleciona o ícone X dentro do botão. */
     .modal-localizacao-fechar i {
-        /* Define o tamanho específico do ícone. */
-        font-size: 31px;
-        /* Define uma espessura visual mais fina para o ícone. */
+        font-size: 24px;
         font-weight: 300;
     }
 
-
-    /* Define o efeito visual quando o mouse passa sobre o botão fechar. */
     .modal-localizacao-fechar:hover {
-        /* Clareia a cor do X quando o mouse passa sobre ele. */
-        color: #f8f5f2;
-        /* Aumenta levemente o botão mantendo sua posição vertical. */
-        transform: translateY(-50%) scale(1.08);
+        color: #F8F5F2;
+        transform: rotate(90deg);
     }
 
 
-    /* Remove o contorno padrão quando o botão recebe foco. */
-    .modal-localizacao-fechar:focus {
-        /* Remove o outline padrão do navegador. */
-        outline: none;
-        /* Remove qualquer sombra de foco do Bootstrap. */
-        box-shadow: none;
-    }
-
-
-/* ================================================================
+/* ----------------------------------------------------------------
    CORPO
-   ================================================================ */
+   ---------------------------------------------------------------- */
 
-/* Define o espaçamento interno da área principal do modal. */
 .modal-localizacao-body {
-    /* Define 20px no topo, 60px nas laterais e 42px embaixo. */
-    padding: 20px 60px 42px;
+    padding: 30px 60px 52px;
 }
 
 
-/* ================================================================
+/* ----------------------------------------------------------------
    CABEÇALHO INSTITUCIONAL
-   ================================================================ */
+   ---------------------------------------------------------------- */
 
-/* Define a área dos textos "KIORA RAMEN HOUSE", "Onde estamos" e descrição. */
 .modal-localizacao-header {
-    /* Centraliza todos os textos horizontalmente. */
     text-align: center;
-    /* Cria 25px de espaço abaixo do cabeçalho. */
-    margin-bottom: 25px;
+    margin-bottom: 30px;
 }
 
 
-/* Define o subtítulo "KIORA RAMEN HOUSE". */
+/* SUBTÍTULO */
+
 .modal-localizacao-subtitulo {
-    /* Faz o elemento ocupar uma linha inteira. */
     display: block;
-    /* Cria espaço abaixo do subtítulo. */
-    margin-bottom: 8px;
-    /* Define a cor dourada da identidade KIORA. */
-    color: #d9b27a;
-    /* Define a fonte utilizada nos textos. */
+    margin-bottom: 18px;
+    color: #D9B27A;
     font-family: "Lato", sans-serif;
-    /* Define o tamanho do subtítulo. */
-    font-size: 19px;
-    /* Define a espessura da fonte. */
-    font-weight: 600;
-    /* Aumenta o espaçamento entre as letras. */
-    letter-spacing: 4px;
-    /* Transforma o texto em letras maiúsculas. */
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 3px;
     text-transform: uppercase;
 }
 
 
-/* Seleciona o título principal "Onde estamos". */
+/* TÍTULO */
+
 .modal-localizacao-header h2 {
-    /* Remove a margem padrão do título. */
-    margin: 0;
-    /* Define a cor clara do título. */
-    color: #f8f5f2;
-    /* Utiliza Playfair Display para o título. */
+    margin: 0 0 10px;
+    color: #F8F5F2;
     font-family: "Playfair Display", serif;
-    /* Define o tamanho do título. */
-    font-size: 52px;
-    /* Define a espessura do título. */
+    font-size: 38px;
     font-weight: 600;
-    /* Controla a altura das linhas do título. */
-    line-height: 1.1;
+    line-height: 1.15;
 }
 
 
-/* Seleciona o texto abaixo do título. */
+/* DESCRIÇÃO */
+
 .modal-localizacao-header p {
-    /* Cria 12px de espaço acima e remove margens laterais e inferiores. */
-    margin: 12px 0 0;
-    /* Define a cor branca com transparência. */
-    color: rgba(248, 245, 242, 0.75);
-    /* Utiliza Lato para o texto descritivo. */
-    font-family: "Lato", sans-serif;
-    /* Define o tamanho da descrição. */
-    font-size: 23px;
-    /* Deixa o texto mais leve. */
-    font-weight: 300;
-}
-
-
-/* ================================================================
-   BLOCO DO ENDEREÇO
-   ================================================================ */
-
-/* Define o bloco que contém o ícone e as informações do endereço. */
-.modal-localizacao-endereco {
-    /* Ativa o Flexbox para organizar ícone e texto lado a lado. */
-    display: flex;
-    /* Centraliza verticalmente os elementos. */
-    align-items: center;
-    /* Define 32px de espaço entre o ícone e o texto. */
-    gap: 32px;
-    /* Define uma altura mínima para o bloco. */
-    min-height: 155px;
-    /* Define o espaçamento interno do bloco. */
-    padding: 28px 45px;
-    /* Remove margem inferior para conectar o bloco ao mapa. */
-    margin-bottom: 0;
-    /* Define um fundo preto levemente diferente do modal. */
-    background: #101010;
-    /* Cria a borda dourada do bloco. */
-    border: 1px solid rgba(217, 178, 122, 0.75);
-    /* Remove a borda inferior porque ela será compartilhada com o mapa. */
-    border-bottom: 0;
-    /* Arredonda somente os cantos superiores. */
-    border-radius: 14px 14px 0 0;
-}
-
-
-/* ================================================================
-   ÍCONE DE LOCALIZAÇÃO
-   ================================================================ */
-
-/* Define o círculo que envolve o ícone de localização. */
-.modal-localizacao-icone {
-    /* Impede que o círculo seja reduzido pelo Flexbox. */
-    flex: 0 0 82px;
-    /* Define a largura do círculo. */
-    width: 82px;
-    /* Define a altura do círculo. */
-    height: 82px;
-    /* Ativa o Flexbox dentro do círculo. */
-    display: flex;
-    /* Centraliza o ícone verticalmente. */
-    align-items: center;
-    /* Centraliza o ícone horizontalmente. */
-    justify-content: center;
-    /* Cria a borda dourada do círculo. */
-    border: 1px solid #d9b27a;
-    /* Transforma o quadrado em círculo. */
-    border-radius: 50%;
-    /* Define a cor dourada do ícone. */
-    color: #d9b27a;
-}
-
-
-    /* Seleciona o ícone de localização. */
-    .modal-localizacao-icone i {
-        /* Define o tamanho do ícone. */
-        font-size: 39px;
-    }
-
-
-/* ================================================================
-   INFORMAÇÕES DO ENDEREÇO
-   ================================================================ */
-
-/* Define o container dos textos do endereço. */
-.modal-localizacao-info {
-    /* Ativa o Flexbox vertical. */
-    display: flex;
-    /* Organiza os elementos em coluna. */
-    flex-direction: column;
-    /* Centraliza verticalmente o conteúdo. */
-    justify-content: center;
-}
-
-
-/* Define o texto "NOSSO ENDEREÇO". */
-.modal-localizacao-label {
-    /* Cria 6px de espaço abaixo do rótulo. */
-    margin-bottom: 6px;
-    /* Define a cor dourada. */
-    color: #d9b27a;
-    /* Utiliza Lato. */
-    font-family: "Lato", sans-serif;
-    /* Define o tamanho do rótulo. */
-    font-size: 17px;
-    /* Define a espessura do rótulo. */
-    font-weight: 700;
-    /* Aumenta o espaçamento entre as letras. */
-    letter-spacing: 3px;
-}
-
-
-/* Seleciona o nome da rua. */
-.modal-localizacao-info h3 {
-    /* Remove a margem padrão do título. */
     margin: 0;
-    /* Define a cor clara do endereço. */
-    color: #f8f5f2;
-    /* Utiliza Lato. */
+    color: #999999;
     font-family: "Lato", sans-serif;
-    /* Define o tamanho do endereço. */
-    font-size: 25px;
-    /* Define a espessura da fonte. */
-    font-weight: 500;
-    /* Define a altura da linha. */
-    line-height: 1.35;
+    font-size: 16px;
+    font-weight: 400;
 }
 
 
-/* Seleciona a cidade e o estado. */
-.modal-localizacao-info p {
-    /* Define 2px de espaço acima e remove as demais margens. */
-    margin: 2px 0 0;
-    /* Define a cor branca com transparência. */
-    color: rgba(248, 245, 242, 0.72);
-    /* Utiliza Lato. */
-    font-family: "Lato", sans-serif;
-    /* Define o tamanho do texto. */
-    font-size: 21px;
-    /* Define a altura das linhas. */
-    line-height: 1.4;
-}
+/* ----------------------------------------------------------------
+   BLOCO DE ENDEREÇO
+   ---------------------------------------------------------------- */
 
-
-/* Seleciona o CEP. */
-.modal-localizacao-cep {
-    /* Define a cor branca levemente transparente. */
-    color: rgba(248, 245, 242, 0.72);
-    /* Utiliza Lato. */
-    font-family: "Lato", sans-serif;
-    /* Define o tamanho do CEP. */
-    font-size: 20px;
-}
-
-
-/* ================================================================
-   MAPA
-   ================================================================ */
-
-/* Define a área onde o mapa será exibido. */
-.modal-localizacao-mapa {
-    /* Permite controlar elementos internos posicionados. */
-    position: relative;
-    /* Faz o mapa ocupar toda a largura disponível. */
-    width: 100%;
-    /* Define a altura do mapa. */
-    height: 510px;
-    /* Impede que o conteúdo do mapa ultrapasse a área. */
-    overflow: hidden;
-    /* Cria a borda dourada esquerda. */
-    border-left: 1px solid rgba(217, 178, 122, 0.75);
-    /* Cria a borda dourada direita. */
-    border-right: 1px solid rgba(217, 178, 122, 0.75);
-    /* Cria a borda dourada inferior. */
-    border-bottom: 1px solid rgba(217, 178, 122, 0.75);
-}
-
-
-    /* Seleciona o iframe que contém o Google Maps. */
-    .modal-localizacao-mapa iframe {
-        /* Remove espaços residuais abaixo do iframe. */
-        display: block;
-        /* Faz o mapa ocupar 100% da largura. */
-        width: 100%;
-        /* Faz o mapa ocupar 100% da altura. */
-        height: 100%;
-        /* Remove a borda padrão do iframe. */
-        border: 0;
-    }
-
-
-/* ================================================================
-   ÁREA DO BOTÃO
-   ================================================================ */
-
-/* Define o espaço entre o mapa e o botão. */
-.modal-localizacao-acoes {
-    /* Cria 28px de espaço acima do botão. */
-    padding: 28px 0 0;
-}
-
-
-/* ================================================================
-   BOTÃO COMO CHEGAR
-   ================================================================ */
-
-/* Define o estilo principal do botão "Como chegar". */
-.btn-localizacao {
-    /* Permite posicionar elementos internos do botão. */
-    position: relative;
-    /* Faz o botão ocupar toda a largura disponível. */
-    width: 100%;
-    /* Define a altura mínima do botão. */
-    min-height: 74px;
-    /* Ativa o sistema Flexbox. */
+.modal-localizacao-endereco {
     display: flex;
-    /* Centraliza o conteúdo verticalmente. */
     align-items: center;
-    /* Centraliza o conteúdo horizontalmente. */
-    justify-content: center;
-    /* Define o espaço entre o ícone e o texto. */
-    gap: 22px;
-    /* Define o fundo vermelho principal da identidade KIORA. */
-    background-color: #7D1F1F;
-    /* Define a cor branca/off-white do texto. */
-    color: #F8F5F2 !important;
-    /* Define a borda dourada da identidade KIORA. */
-    border: 1px solid #D9B27A;
-    /* Arredonda levemente os cantos do botão. */
+    gap: 16px;
+    margin-bottom: 22px;
+    padding: 18px;
+    background-color: #111111;
+    border: 1px solid #292929;
     border-radius: 4px;
-    /* Define a fonte utilizada no botão. */
-    font-family: "Lato", sans-serif;
-    /* Define o tamanho do texto. */
-    font-size: 21px;
-    /* Define a espessura do texto. */
-    font-weight: 700;
-    /* Define um espaçamento discreto entre as letras. */
-    letter-spacing: 1px;
-    /* Remove o sublinhado padrão do link. */
-    text-decoration: none;
-    /* Define o cursor de clique. */
-    cursor: pointer;
-    /* Cria uma transição suave entre os estados normal e hover. */
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 
-    /* ================================================================
-   ÍCONE DO BOTÃO COMO CHEGAR
-   ================================================================ */
+/* ----------------------------------------------------------------
+   ÍCONE
+   ---------------------------------------------------------------- */
 
-    /* Seleciona o ícone utilizado dentro do botão. */
-    .btn-localizacao i {
-        /* Define o tamanho do ícone. */
-        font-size: 30px;
-        /* Mantém o ícone na mesma cor do texto. */
-        color: #F8F5F2;
-        /* Cria uma transição suave para a mudança de cor. */
-        transition: color 0.3s ease;
-    }
+.modal-localizacao-icone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+    border: 1px solid #D9B27A;
+    border-radius: 4px;
+    color: #D9B27A;
+}
 
-
-    /* ================================================================
-   EFEITO AO PASSAR O MOUSE
-   ================================================================ */
-
-    /* Aplica estas alterações quando o mouse estiver sobre o botão. */
-    .btn-localizacao:hover {
-        /* Troca o fundo vermelho pelo dourado. */
-        background-color: #D9B27A;
-        /* Troca o texto para preto. */
-        color: #0E0E0E !important;
-        /* Mantém a borda dourada. */
-        border-color: #D9B27A;
-        /* Cria um brilho dourado discreto. */
-        box-shadow: 0 0 20px rgba(217, 178, 122, 0.20);
-    }
-
-
-        /* ================================================================
-   ÍCONE AO PASSAR O MOUSE
-   ================================================================ */
-
-        /* Altera a cor do ícone durante o efeito hover. */
-        .btn-localizacao:hover i {
-            /* Deixa o ícone preto junto com o texto. */
-            color: #0E0E0E;
-        }
-
-
-/* ================================================================
-   RESPONSIVIDADE
-   ================================================================ */
-
-
-/* ================================================================
-   TABLETS E TELAS MÉDIAS
-   ================================================================ */
-
-/* Aplica estas regras em telas de até 992px. */
-@media (max-width: 992px) {
-
-
-    /* Ajusta a largura do modal. */
-    .modal-localizacao-dialog {
-        /* Mantém 15px de espaço em cada lateral. */
-        width: calc(100% - 30px);
-    }
-
-
-    /* Ajusta o espaçamento interno do corpo do modal. */
-    .modal-localizacao-body {
-        /* Define 20px no topo, 35px nas laterais e 35px embaixo. */
-        padding: 20px 35px 35px;
-    }
-
-
-    /* Reduz o tamanho do título principal. */
-    .modal-localizacao-header h2 {
-        /* Define o título com 44px. */
-        font-size: 44px;
-    }
-
-
-    /* Reduz o tamanho da descrição. */
-    .modal-localizacao-header p {
-        /* Define o texto com 20px. */
+    .modal-localizacao-icone i {
         font-size: 20px;
     }
 
 
-    /* Reduz a altura do mapa. */
-    .modal-localizacao-mapa {
-        /* Define o mapa com 430px de altura. */
-        height: 430px;
-    }
+/* ----------------------------------------------------------------
+   INFORMAÇÕES DO ENDEREÇO
+   ---------------------------------------------------------------- */
+
+.modal-localizacao-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
 }
 
 
-/* ================================================================
-   TABLETS PEQUENOS E CELULARES
-   ================================================================ */
+/* LABEL */
 
-/* Aplica estas regras em telas de até 768px. */
-@media (max-width: 768px) {
+.modal-localizacao-label {
+    color: #D9B27A;
+    font-family: "Lato", sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+}
 
 
-    /* Ajusta o tamanho e a margem do modal. */
-    .modal-localizacao-dialog {
-        /* Reduz o espaço lateral do modal. */
-        width: calc(100% - 20px);
-        /* Define uma margem vertical menor. */
-        margin: 10px auto;
+/* RUA */
+
+.modal-localizacao-info h3 {
+    margin: 0;
+    color: #F8F5F2;
+    font-family: "Lato", sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+
+/* CIDADE */
+
+.modal-localizacao-info p {
+    margin: 0;
+    color: #999999;
+    font-family: "Lato", sans-serif;
+    font-size: 14px;
+}
+
+
+/* CEP */
+
+.modal-localizacao-cep {
+    color: #777777;
+    font-family: "Lato", sans-serif;
+    font-size: 12px;
+}
+
+
+/* ----------------------------------------------------------------
+   MAPA
+   ---------------------------------------------------------------- */
+
+.modal-localizacao-mapa {
+    width: 100%;
+    margin-bottom: 22px;
+    border: 1px solid #333333;
+    border-radius: 4px;
+    overflow: hidden;
+    background-color: #111111;
+}
+
+
+    /* IFRAME */
+
+    .modal-localizacao-mapa iframe {
+        display: block;
+        width: 100%;
+        height: 220px;
+        border: 0;
+        filter: none !important;
     }
 
 
-    /* Reduz a altura do cabeçalho superior. */
-    .modal-localizacao-topo {
-        /* Define o cabeçalho com 100px de altura. */
-        height: 100px;
-    }
+/* ----------------------------------------------------------------
+   ÁREA DO BOTÃO
+   ---------------------------------------------------------------- */
+
+.modal-localizacao-acoes {
+    width: 100%;
+}
 
 
-    /* Reduz o tamanho da logo. */
-    .modal-localizacao-logo img {
-        /* Define a largura da logo. */
-        width: 190px;
-    }
+/* ----------------------------------------------------------------
+   BOTÃO COMO CHEGAR
+   ---------------------------------------------------------------- */
+
+.btn-localizacao {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    height: 63px;
+    background-color: #7D1F1F;
+    border: 1px solid #D9B27A;
+    border-radius: 4px;
+    color: #F8F5F2;
+    font-family: "Lato", sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
 
 
-    /* Ajusta o botão de fechar. */
-    .modal-localizacao-fechar {
-        /* Reduz a distância da borda direita. */
-        right: 20px;
-        /* Define a largura do botão. */
-        width: 40px;
-        /* Define a altura do botão. */
-        height: 40px;
-    }
+    /* ÍCONE DO BOTÃO */
 
-
-        /* Ajusta o ícone X do botão fechar. */
-        .modal-localizacao-fechar i {
-            /* Reduz o tamanho do X. */
-            font-size: 27px;
-        }
-
-
-    /* Reduz o espaçamento interno do corpo do modal. */
-    .modal-localizacao-body {
-        /* Define o espaçamento para telas menores. */
-        padding: 18px 20px 28px;
-    }
-
-
-    /* Reduz o tamanho do subtítulo. */
-    .modal-localizacao-subtitulo {
-        /* Define o subtítulo com 14px. */
-        font-size: 14px;
-        /* Reduz o espaçamento entre as letras. */
-        letter-spacing: 3px;
-    }
-
-
-    /* Reduz o tamanho do título principal. */
-    .modal-localizacao-header h2 {
-        /* Define o título com 38px. */
-        font-size: 38px;
-    }
-
-
-    /* Reduz o tamanho da descrição. */
-    .modal-localizacao-header p {
-        /* Define a descrição com 18px. */
-        font-size: 18px;
-    }
-
-
-    /* Ajusta o bloco do endereço. */
-    .modal-localizacao-endereco {
-        /* Reduz o espaço entre o ícone e as informações. */
-        gap: 20px;
-        /* Reduz o espaçamento interno. */
-        padding: 25px;
-    }
-
-
-    /* Reduz o tamanho do círculo de localização. */
-    .modal-localizacao-icone {
-        /* Impede que o círculo seja comprimido. */
-        flex: 0 0 65px;
-        /* Define a largura do círculo. */
-        width: 65px;
-        /* Define a altura do círculo. */
-        height: 65px;
-    }
-
-
-        /* Reduz o tamanho do ícone de localização. */
-        .modal-localizacao-icone i {
-            /* Define o ícone com 30px. */
-            font-size: 30px;
-        }
-
-
-    /* Reduz o tamanho do rótulo "NOSSO ENDEREÇO". */
-    .modal-localizacao-label {
-        /* Define o tamanho do rótulo. */
-        font-size: 13px;
-        /* Reduz o espaçamento entre as letras. */
-        letter-spacing: 2px;
-    }
-
-
-    /* Reduz o tamanho do endereço principal. */
-    .modal-localizacao-info h3 {
-        /* Define o endereço com 19px. */
-        font-size: 19px;
-    }
-
-
-    /* Reduz o tamanho da cidade e estado. */
-    .modal-localizacao-info p {
-        /* Define o texto com 16px. */
-        font-size: 16px;
-    }
-
-
-    /* Reduz o tamanho do CEP. */
-    .modal-localizacao-cep {
-        /* Define o CEP com 16px. */
-        font-size: 16px;
-    }
-
-
-    /* Reduz a altura do mapa. */
-    .modal-localizacao-mapa {
-        /* Define o mapa com 360px de altura. */
-        height: 360px;
-    }
-
-
-    /* Ajusta o botão "Como chegar". */
-    .btn-localizacao {
-        /* Reduz a altura do botão. */
-        min-height: 65px;
-        /* Reduz o tamanho do texto. */
+    .btn-localizacao i {
         font-size: 17px;
-        /* Reduz o espaçamento entre as letras. */
-        letter-spacing: 1px;
+        color: #D9B27A;
     }
 
 
-        /* Ajusta o ícone do botão. */
-        .btn-localizacao i {
-            /* Reduz o tamanho do ícone. */
-            font-size: 25px;
-        }
-}
+    /* HOVER */
+
+    .btn-localizacao:hover {
+        background-color: #922525;
+        color: #F8F5F2;
+        transform: translateY(-1px);
+    }
 
 
-/* ================================================================
-   CELULARES PEQUENOS
-   ================================================================ */
+/* ----------------------------------------------------------------
+   RESPONSIVIDADE
+   ---------------------------------------------------------------- */
 
-/* Aplica estas regras em telas de até 480px. */
-@media (max-width: 480px) {
+@media (max-width: 600px) {
+
+    .modal-localizacao-dialog {
+        width: calc(100% - 20px);
+    }
 
 
-    /* Reduz ainda mais o cabeçalho. */
     .modal-localizacao-topo {
-        /* Define 85px de altura. */
-        height: 85px;
+        padding-top: 50px;
     }
 
 
-    /* Reduz a largura da logo. */
     .modal-localizacao-logo img {
-        /* Define a logo com 165px. */
-        width: 165px;
+        width: 155px;
     }
 
 
-    /* Aproxima o botão fechar da borda. */
     .modal-localizacao-fechar {
-        /* Define 10px de distância da direita. */
-        right: 10px;
+        top: 20px;
+        right: 20px;
     }
 
 
-    /* Ajusta o cabeçalho do conteúdo. */
+    .modal-localizacao-body {
+        padding: 25px 25px 30px;
+    }
+
+
     .modal-localizacao-header {
-        /* Define uma margem inferior menor. */
-        margin-bottom: 20px;
+        margin-bottom: 25px;
     }
 
 
-        /* Reduz o título principal. */
         .modal-localizacao-header h2 {
-            /* Define o título com 32px. */
             font-size: 32px;
         }
 
 
-        /* Reduz o texto descritivo. */
-        .modal-localizacao-header p {
-            /* Define a descrição com 16px. */
-            font-size: 16px;
-        }
+    .modal-localizacao-subtitulo {
+        font-size: 12px;
+        letter-spacing: 2px;
+    }
 
 
-    /* Ajusta o bloco de endereço. */
     .modal-localizacao-endereco {
-        /* Alinha o conteúdo pelo topo. */
-        align-items: flex-start;
-        /* Reduz o espaço entre o ícone e o texto. */
-        gap: 15px;
-        /* Reduz o espaçamento interno. */
-        padding: 20px;
-    }
-
-
-    /* Reduz o círculo de localização. */
-    .modal-localizacao-icone {
-        /* Impede que o círculo seja comprimido. */
-        flex: 0 0 55px;
-        /* Define a largura do círculo. */
-        width: 55px;
-        /* Define a altura do círculo. */
-        height: 55px;
-    }
-
-
-        /* Reduz o ícone de localização. */
-        .modal-localizacao-icone i {
-            /* Define o tamanho do ícone. */
-            font-size: 25px;
-        }
-
-
-    /* Reduz o endereço principal. */
-    .modal-localizacao-info h3 {
-        /* Define o tamanho do endereço. */
-        font-size: 17px;
-    }
-
-
-    /* Reduz o texto da cidade e estado. */
-    .modal-localizacao-info p {
-        /* Define o tamanho do texto. */
-        font-size: 14px;
-    }
-
-
-    /* Reduz o tamanho do CEP. */
-    .modal-localizacao-cep {
-        /* Define o tamanho do CEP. */
-        font-size: 14px;
-    }
-
-
-    /* Reduz a altura do mapa. */
-    .modal-localizacao-mapa {
-        /* Define o mapa com 300px. */
-        height: 300px;
-    }
-
-
-    /* Ajusta o botão "Como chegar" em celulares pequenos. */
-    .btn-localizacao {
-        /* Reduz o espaço entre o ícone e o texto. */
+        padding: 15px;
         gap: 12px;
-        /* Reduz o tamanho da fonte. */
-        font-size: 14px;
-        /* Reduz o espaçamento entre as letras. */
-        letter-spacing: 1px;
-        /* Mantém a altura confortável para toque. */
-        min-height: 60px;
     }
 
 
-        /* Ajusta o ícone do botão em celulares pequenos. */
-        .btn-localizacao i {
-            /* Define o tamanho reduzido do ícone. */
-            background-image: url('../imagens/cardapio-card.png');
-            font-size: 22px;
-        }
+    .modal-localizacao-mapa iframe {
+        height: 190px;
+    }
+
+
+    .btn-localizacao {
+        height: 58px;
+        font-size: 15px;
+    }
 }
