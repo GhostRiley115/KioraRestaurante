@@ -1,6 +1,5 @@
 using KioraRestaurante.Data;
 using Microsoft.EntityFrameworkCore;
-using KioraRestaurante.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
