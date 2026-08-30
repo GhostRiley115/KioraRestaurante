@@ -4337,8 +4337,8 @@ button,
     /* HOVER */
 
     .btn-localizacao:hover {
-        background-color: #922525;
-        color: #F8F5F2;
+        background-color: #D9B27A;
+        color: #0E0E0E;
         transform: translateY(-1px);
     }
 
