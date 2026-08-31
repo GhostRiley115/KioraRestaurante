@@ -245,7 +245,7 @@ namespace KioraRestaurante.Controllers
                 new Claim(ClaimTypes.Email, usuario.Email),
 
                 // Guarda o tipo do usuário.
-                new Claim(ClaimTypes.Role, usuario.Tipo)
+                //new Claim(ClaimTypes.Role, usuario.Tipo)
             };
 
 
