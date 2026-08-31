@@ -20,6 +20,13 @@ namespace KioraRestaurante.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            // E-MAIL ÚNICO 
+            //Impede que dois usuários tenham o mesmo e-mail.
+
+            modelBuilder.Entity<Usuario>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+
             // Usuario 1 : 0..1 Carrinho
             modelBuilder.Entity<Carrinho>()
                 .HasOne(c => c.Usuario)
