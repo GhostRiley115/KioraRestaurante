@@ -1,4 +1,3 @@
-```csharp
 using KioraRestaurante.Data;
 using Microsoft.EntityFrameworkCore;
 using KioraRestaurante.Services;
@@ -145,4 +144,3 @@ app.MapControllerRoute(
 
 // Inicia o servidor.
 app.Run();
-```
