@@ -1,5 +1,7 @@
 using KioraRestaurante.Data;
 using Microsoft.EntityFrameworkCore;
+using KioraRestaurante.Services;
+using KioraRestaurante.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +14,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Registra o UsuarioService para injeção de dependência
+builder.Services.AddScoped<IUsuarioServices, UsuarioServices>();
 
 var app = builder.Build();
 
