@@ -2955,11 +2955,107 @@ button,
     line-height: 1.6;
 }
 
+/* =========================================================
+   MENSAGENS DO CADASTRO
+   ========================================================= */
+/* Configura a área geral da mensagem */
+.mensagem-cadastro {
+    /* Ocupa toda a largura disponível */
+    width: 100%;
+    /* Cria espaçamento interno */
+    padding: 11px 14px;
+    /* Cria espaço abaixo da mensagem */
+    margin-bottom: 18px;
+    /* Arredonda levemente os cantos */
+    border-radius: 3px;
+    /* Define o tamanho do texto */
+    font-size: 13px;
+    /* Define o peso do texto */
+    font-weight: 500;
+    /* Define a fonte */
+    font-family: 'Lato', sans-serif;
+    /* Define a altura das linhas */
+    line-height: 1.5;
+    /* Centraliza o texto */
+    text-align: center;
+    /* Garante que o padding não aumente a largura */
+    box-sizing: border-box;
+    /* Cria uma transição suave */
+    transition: all 0.3s ease;
+}
+
+
+/* =========================================================
+   MENSAGEM DE SUCESSO
+   ========================================================= */
+
+/* Configura a mensagem exibida quando o cadastro é realizado */
+.mensagem-cadastro-sucesso {
+    /* Define um fundo escuro levemente esverdeado */
+    background-color: rgba(46, 125, 50, 0.12);
+    /* Define a borda verde discreta */
+    border: 1px solid rgba(76, 175, 80, 0.45);
+    /* Define a cor do texto */
+    color: #A5D6A7;
+}
+
+
+/* =========================================================
+   MENSAGEM DE ERRO
+   ========================================================= */
+
+/* Configura a mensagem exibida quando ocorre um erro */
+.mensagem-cadastro-erro {
+    /* Define um fundo vinho transparente */
+    background-color: rgba(125, 31, 31, 0.18);
+    /* Define a borda vinho */
+    border: 1px solid rgba(217, 178, 122, 0.45);
+    /* Define a cor do texto */
+    color: #F0C7C7;
+}
+
+
+/* =========================================================
+   RESPONSIVIDADE - MENSAGEM DO CADASTRO
+   ========================================================= */
+
+/* Aplica ajustes em telas de até 767px */
+@media (max-width: 767px) {
+
+    /* Ajusta a mensagem em telas menores */
+    .mensagem-cadastro {
+        /* Reduz o espaçamento interno */
+        padding: 10px 12px;
+        /* Reduz levemente o tamanho da fonte */
+        font-size: 12px;
+        /* Reduz o espaço inferior */
+        margin-bottom: 16px;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVIDADE - CELULARES PEQUENOS
+   ========================================================= */
+
+/* Aplica ajustes em telas de até 400px */
+@media (max-width: 400px) {
+
+    /* Ajusta a mensagem em celulares pequenos */
+    .mensagem-cadastro {
+        /* Reduz ainda mais o espaçamento */
+        padding: 9px 10px;
+        /* Mantém o texto legível */
+        font-size: 12px;
+        /* Reduz o espaço inferior */
+        margin-bottom: 14px;
+    }
+}
+
 
 /* =========================================================
    GRUPOS DO FORMULÁRIO
    ========================================================= */
-
 /* Configura grupo */
 .modal-login-grupo {
     /* Cria espaço inferior */
