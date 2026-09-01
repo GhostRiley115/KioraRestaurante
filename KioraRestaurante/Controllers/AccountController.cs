@@ -70,10 +70,6 @@ namespace KioraRestaurante.Controllers
         public IActionResult Cadastro()
         {
             // Retorna a View de cadastro.
-            //
-            // Como não informamos o nome da View, o ASP.NET Core procurará por:
-            //
-            // Views/Account/Cadastro.cshtml
             return View();
         }
 
@@ -92,7 +88,7 @@ namespace KioraRestaurante.Controllers
             // ============================================================
 
             // Verifica se os dados enviados pelo formulário
-            // passaram pelas validações do CadastroUsuarioViewModel.
+            // passaram pelas validações do ViewModel.
             if (!ModelState.IsValid)
             {
                 // Retorna uma resposta de erro para o JavaScript.
@@ -128,13 +124,18 @@ namespace KioraRestaurante.Controllers
 
             // Cria uma nova entidade Usuario utilizando
             // os dados recebidos do formulário.
-            //
-            // ConfirmarSenha não é copiado porque existe somente
-            // no ViewModel para validação.
             var usuario = new Usuario
             {
+                // Define o nome do usuário.
                 Nome = model.Nome,
+
+                // Define o e-mail do usuário.
                 Email = model.Email,
+
+                // Define a senha recebida.
+                //
+                // O Service será responsável pelo tratamento
+                // da senha antes de salvá-la no banco.
                 Senha = model.Senha
             };
 
@@ -144,12 +145,6 @@ namespace KioraRestaurante.Controllers
             // ============================================================
 
             // Envia o usuário para o UsuarioServices.
-            //
-            // O Service será responsável por:
-            // - Normalizar o e-mail.
-            // - Gerar o hash da senha.
-            // - Definir o usuário como Cliente.
-            // - Salvar o usuário no banco.
             _usuarioServices.Cadastrar(usuario);
 
 
@@ -197,13 +192,7 @@ namespace KioraRestaurante.Controllers
             // AUTENTICAÇÃO
             // ============================================================
 
-            // Envia o e-mail e a senha para o UsuarioServices.
-            //
-            // O Service será responsável por:
-            // - Procurar o usuário pelo e-mail.
-            // - Verificar a senha utilizando o PasswordHasher.
-            // - Retornar o usuário caso os dados estejam corretos.
-            // - Retornar null caso os dados estejam incorretos.
+            // Procura o usuário pelo e-mail e verifica a senha.
             var usuario = _usuarioServices.Autenticar(
                 model.Email,
                 model.Senha
@@ -228,24 +217,33 @@ namespace KioraRestaurante.Controllers
 
 
             // ============================================================
-            // CRIAÇÃO DAS INFORMAÇÕES DO USUÁRIO
+            // INFORMAÇÕES DO USUÁRIO
             // ============================================================
 
-            // Cria uma lista de informações que serão armazenadas
+            // Cria as informações que serão armazenadas
             // no Cookie de autenticação.
             var claims = new List<Claim>
             {
-                // Guarda o ID do usuário autenticado.
-                new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
+                // Guarda o ID do usuário.
+                new Claim(
+                    ClaimTypes.NameIdentifier,
+                    usuario.Id.ToString()
+                ),
 
                 // Guarda o nome do usuário.
-                new Claim(ClaimTypes.Name, usuario.Nome),
+                //
+                // É esta informação que posteriormente
+                // poderemos utilizar no menu.
+                new Claim(
+                    ClaimTypes.Name,
+                    usuario.Nome
+                ),
 
                 // Guarda o e-mail do usuário.
-                new Claim(ClaimTypes.Email, usuario.Email),
-
-                // Guarda o tipo do usuário.
-                //new Claim(ClaimTypes.Role, usuario.Tipo)
+                new Claim(
+                    ClaimTypes.Email,
+                    usuario.Email
+                )
             };
 
 
@@ -253,8 +251,8 @@ namespace KioraRestaurante.Controllers
             // IDENTIDADE DO USUÁRIO
             // ============================================================
 
-            // Cria a identidade utilizando o esquema de autenticação
-            // configurado no Program.cs.
+            // Cria a identidade utilizando o esquema
+            // de autenticação por Cookie.
             var identidade = new ClaimsIdentity(
                 claims,
                 CookieAuthenticationDefaults.AuthenticationScheme
@@ -275,8 +273,8 @@ namespace KioraRestaurante.Controllers
 
             // Cria o Cookie de autenticação no navegador.
             //
-            // A partir deste momento, o ASP.NET Core poderá reconhecer
-            // que o usuário está conectado nas próximas requisições.
+            // A partir deste momento o ASP.NET Core poderá reconhecer
+            // o usuário nas próximas requisições.
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 principal
@@ -284,26 +282,30 @@ namespace KioraRestaurante.Controllers
 
 
             // ============================================================
-            // RESPOSTA DE SUCESSO
+            // LOGIN REALIZADO COM SUCESSO
             // ============================================================
 
-            // Retorna uma resposta informando que o login
-            // foi realizado corretamente.
+            // Retorna os dados para o JavaScript.
             return Ok(new
             {
+                // Informa que o login foi realizado com sucesso.
                 sucesso = true,
-                mensagem = $"Bem-vindo(a), {usuario.Nome}!"
+
+                // Mensagem exibida ao usuário.
+                mensagem = $"Bem-vindo(a), {usuario.Nome}!",
+
+                // Envia o nome do usuário para o JavaScript.
+                nome = usuario.Nome
             });
         }
 
 
         // ================================================================
-        // LOGOUT - POST
+        // LOGOUT - GET
         // ================================================================
 
-        // [HttpPost] indica que esta ação será executada
-        // através de uma requisição POST.
-        [HttpPost]
+        // [HttpGet] indica que esta ação responde a uma requisição GET.
+        [HttpGet]
         public async Task<IActionResult> Logout()
         {
             // ============================================================
@@ -317,16 +319,11 @@ namespace KioraRestaurante.Controllers
 
 
             // ============================================================
-            // RESPOSTA DE SUCESSO
+            // RETORNO
             // ============================================================
 
-            // Retorna uma resposta para o JavaScript.
-            return Ok(new
-            {
-                sucesso = true,
-                mensagem = "Você saiu da sua conta."
-            });
+            // Depois de sair, retorna para a página inicial.
+            return RedirectToAction("Index", "Home");
         }
     }
 }
-

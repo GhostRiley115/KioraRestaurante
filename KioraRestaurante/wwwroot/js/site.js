@@ -452,14 +452,24 @@ if (formLogin) {
 
 
                 // =================================================
-                // MENSAGEM TEMPORÁRIA
+                // ATUALIZAR A PÁGINA APÓS O LOGIN
                 // =================================================
 
-                // Por enquanto, exibimos a mensagem no console.
-                //
-                // Na próxima etapa podemos criar uma mensagem visual
-                // de boas-vindas no próprio site.
+                // Exibe no console a mensagem retornada pelo servidor.
                 console.log("Login realizado:", resultado.mensagem);
+
+
+                // Recarrega a página.
+
+                // Isso é necessário porque o menu do usuário é
+                // renderizado pelo Razor no servidor.
+
+                // Após o recarregamento, o ASP.NET irá identificar
+                // o cookie de autenticação criado durante o login.
+
+                // Com isso, User.Identity.IsAuthenticated será true
+                // e o menu autenticado será exibido.
+                window.location.reload();
 
             }
 
