@@ -1,586 +1,422 @@
 ﻿// ================================================================
-// CADASTRO DE USUÁRIO
+// CADASTRO
 // ================================================================
 
-// Localiza o formulário de cadastro pelo ID.
+// Obtém o formulário de cadastro.
 const formCadastro = document.getElementById("formCadastro");
 
-// Localiza a área onde serão exibidas as mensagens.
+// Obtém o elemento responsável por mostrar as mensagens do cadastro.
 const mensagemCadastro = document.getElementById("mensagemCadastro");
 
 
-// ================================================================
-// VERIFICAÇÃO DOS ELEMENTOS
-// ================================================================
+// Verifica se o formulário de cadastro existe na página.
+if (formCadastro) {
 
-// Verifica se o formulário e a área de mensagem existem.
-if (formCadastro && mensagemCadastro) {
-
-
-    // ============================================================
-    // ENVIO DO FORMULÁRIO
-    // ============================================================
-
+    // Captura o envio do formulário.
     formCadastro.addEventListener("submit", async function (event) {
 
-        // Impede o envio tradicional do formulário.
+        // Impede o formulário de recarregar a página.
         event.preventDefault();
 
-
-        // ========================================================
-        // LIMPAR MENSAGEM ANTERIOR
-        // ========================================================
-
-        mensagemCadastro.style.display = "none";
+        // Limpa mensagens anteriores.
         mensagemCadastro.textContent = "";
 
-
-        // ========================================================
-        // PEGAR DADOS DO FORMULÁRIO
-        // ========================================================
-
+        // Cria os dados do formulário.
         const dados = new FormData(formCadastro);
-
 
         try {
 
-            // ====================================================
-            // ENVIA OS DADOS PARA O ACCOUNTCONTROLLER
-            // ====================================================
-
+            // Envia os dados para o Controller.
             const resposta = await fetch("/Account/Cadastro", {
                 method: "POST",
                 body: dados
             });
 
+            // Converte a resposta para JSON.
+            const resultado = await resposta.json();
 
-            // ====================================================
-            // DEBUG - RESPOSTA DO SERVIDOR
-            // ====================================================
-
-            console.log("Status da resposta:", resposta.status);
-            console.log("Resposta OK:", resposta.ok);
-
-
-            // Lê a resposta como texto.
-            const textoResposta = await resposta.text();
-
-            console.log("Resposta do servidor:", textoResposta);
-
-
-            // ====================================================
-            // CONVERTER RESPOSTA PARA JSON
-            // ====================================================
-
-            let resultado;
-
-            try {
-
-                resultado = JSON.parse(textoResposta);
-
-            }
-            catch {
-
-                resultado = {
-                    sucesso: false,
-                    mensagem: "O servidor retornou uma resposta inesperada."
-                };
-
-            }
-
-
-            // ====================================================
-            // CADASTRO REALIZADO COM SUCESSO
-            // ====================================================
-
+            // Verifica se o cadastro foi realizado.
             if (resposta.ok && resultado.sucesso) {
 
+                // Mostra a mensagem de sucesso.
                 mensagemCadastro.textContent = resultado.mensagem;
 
-                mensagemCadastro.className =
-                    "mensagem-cadastro mensagem-cadastro-sucesso";
+                // Adiciona a classe de sucesso.
+                mensagemCadastro.className = "mensagem-cadastro mensagem-cadastro-sucesso";
 
+                // Garante que a mensagem fique visível.
                 mensagemCadastro.style.display = "block";
 
-
-                // Limpa o formulário somente após o cadastro.
+                // Limpa o formulário após o cadastro.
                 formCadastro.reset();
 
-            }
+            } else {
 
-
-            // ====================================================
-            // ERRO NO CADASTRO
-            // ====================================================
-
-            else {
-
+                // Mostra a mensagem de erro.
                 mensagemCadastro.textContent =
-                    resultado.mensagem ||
-                    "Não foi possível realizar o cadastro.";
+                    resultado.mensagem || "Não foi possível realizar o cadastro.";
 
-                mensagemCadastro.className =
-                    "mensagem-cadastro mensagem-cadastro-erro";
+                // Adiciona a classe de erro.
+                mensagemCadastro.className = "mensagem-cadastro mensagem-cadastro-erro";
 
+                // Garante que a mensagem fique visível.
                 mensagemCadastro.style.display = "block";
-
             }
 
-        }
-        catch (erro) {
+        } catch (erro) {
 
-            // ====================================================
-            // ERRO DE COMUNICAÇÃO
-            // ====================================================
+            // Mostra o erro no console.
+            console.error("Erro no cadastro:", erro);
 
+            // Mostra mensagem de erro para o usuário.
             mensagemCadastro.textContent =
                 "Não foi possível realizar o cadastro. Tente novamente.";
 
-            mensagemCadastro.className =
-                "mensagem-cadastro mensagem-cadastro-erro";
+            // Adiciona a classe de erro.
+            mensagemCadastro.className = "mensagem-cadastro mensagem-cadastro-erro";
 
+            // Garante que a mensagem fique visível.
             mensagemCadastro.style.display = "block";
-
-
-            console.error("Erro no cadastro:", erro);
-
         }
-
     });
-
 }
 
 
 // ================================================================
-// LIMPAR FORMULÁRIO AO FECHAR O MODAL
+// LIMPAR MODAL DE CADASTRO
 // ================================================================
 
-// Localiza o modal de cadastro pelo ID.
+// Obtém o modal de cadastro.
 const modalCadastro = document.getElementById("modalCadastro");
 
+// Verifica se o modal existe.
+if (modalCadastro) {
 
-// Verifica se o modal, o formulário e a mensagem existem na página.
-if (modalCadastro && formCadastro && mensagemCadastro) {
-
-
-    // Executa quando o modal terminar de ser fechado.
+    // Executa quando o modal termina de fechar.
     modalCadastro.addEventListener("hidden.bs.modal", function () {
 
+        // Limpa os campos do formulário.
+        if (formCadastro) {
+            formCadastro.reset();
+        }
 
-        // ========================================================
-        // LIMPAR CAMPOS DO FORMULÁRIO
-        // ========================================================
-
-        // Limpa todos os campos do formulário.
-        formCadastro.reset();
-
-
-        // ========================================================
-        // LIMPAR MENSAGEM
-        // ========================================================
-
-        // Remove o texto da mensagem.
-        mensagemCadastro.textContent = "";
-
-
-        // Esconde novamente a área da mensagem.
-        mensagemCadastro.style.display = "none";
-
-
-        // ========================================================
-        // RESTAURAR CLASSE ORIGINAL
-        // ========================================================
-
-        // Remove as classes de sucesso ou erro.
-        // Mantém somente a classe padrão da mensagem.
-        mensagemCadastro.className = "mensagem-cadastro";
-
+        // Limpa a mensagem.
+        if (mensagemCadastro) {
+            mensagemCadastro.textContent = "";
+            mensagemCadastro.className = "";
+            mensagemCadastro.style.display = "none";
+        }
     });
-
 }
 
+
 // ================================================================
-// VISUALIZAR SENHA - CADASTRO
+// MOSTRAR / OCULTAR SENHA DO CADASTRO
 // ================================================================
 
-// Localiza o botão responsável por mostrar/esconder a senha.
-const btnMostrarCadastroSenha = document.getElementById("btnMostrarCadastroSenha");
+// Obtém o botão de mostrar senha.
+const btnMostrarCadastroSenha =
+    document.getElementById("btnMostrarCadastroSenha");
 
-// Localiza o campo onde o usuário digita a senha.
-const cadastroSenha = document.getElementById("cadastroSenha");
+// Obtém o campo de senha.
+const cadastroSenha =
+    document.getElementById("cadastroSenha");
 
-// Localiza o ícone do olhinho da senha.
-const iconeCadastroSenha = document.getElementById("iconeCadastroSenha");
+// Obtém o ícone da senha.
+const iconeCadastroSenha =
+    document.getElementById("iconeCadastroSenha");
 
 
-// Verifica se os elementos existem na página antes de adicionar o evento.
+// Verifica se os elementos existem.
 if (btnMostrarCadastroSenha && cadastroSenha && iconeCadastroSenha) {
 
-    // Executa quando o usuário clicar no botão do olhinho.
+    // Captura o clique no botão.
     btnMostrarCadastroSenha.addEventListener("click", function () {
 
-        // Verifica se a senha está atualmente escondida.
+        // Verifica se a senha está escondida.
         if (cadastroSenha.type === "password") {
 
-            // Mostra a senha alterando o tipo do campo para texto.
+            // Mostra a senha.
             cadastroSenha.type = "text";
 
-            // Troca o ícone para indicar que a senha está visível.
+            // Altera o ícone.
             iconeCadastroSenha.classList.remove("bi-eye");
-
-            // Mostra o ícone de olho fechado.
             iconeCadastroSenha.classList.add("bi-eye-slash");
 
-            // Atualiza a descrição do botão para acessibilidade.
-            btnMostrarCadastroSenha.setAttribute("aria-label", "Ocultar senha");
+            // Atualiza a descrição do botão.
+            btnMostrarCadastroSenha.setAttribute(
+                "aria-label",
+                "Ocultar senha"
+            );
 
         } else {
 
-            // Esconde novamente a senha.
+            // Esconde a senha.
             cadastroSenha.type = "password";
 
-            // Volta o ícone para o olho aberto.
+            // Altera o ícone.
             iconeCadastroSenha.classList.remove("bi-eye-slash");
-
-            // Mostra novamente o ícone de olho aberto.
             iconeCadastroSenha.classList.add("bi-eye");
 
-            // Atualiza a descrição do botão para acessibilidade.
-            btnMostrarCadastroSenha.setAttribute("aria-label", "Mostrar senha");
+            // Atualiza a descrição do botão.
+            btnMostrarCadastroSenha.setAttribute(
+                "aria-label",
+                "Mostrar senha"
+            );
         }
-
     });
-
 }
 
 
 // ================================================================
-// VISUALIZAR SENHA - CONFIRMAR SENHA
+// MOSTRAR / OCULTAR CONFIRMAÇÃO DE SENHA
 // ================================================================
 
-// Localiza o botão responsável por mostrar/esconder a confirmação da senha.
-const btnMostrarConfirmarSenha = document.getElementById("btnMostrarConfirmarSenha");
+// Obtém o botão da confirmação de senha.
+const btnMostrarConfirmarSenha =
+    document.getElementById("btnMostrarConfirmarSenha");
 
-// Localiza o campo de confirmação da senha.
-const cadastroConfirmarSenha = document.getElementById("cadastroConfirmarSenha");
+// Obtém o campo de confirmação de senha.
+const cadastroConfirmarSenha =
+    document.getElementById("cadastroConfirmarSenha");
 
-// Localiza o ícone do olhinho da confirmação da senha.
-const iconeConfirmarSenha = document.getElementById("iconeConfirmarSenha");
+// Obtém o ícone da confirmação de senha.
+const iconeConfirmarSenha =
+    document.getElementById("iconeConfirmarSenha");
 
 
-// Verifica se os elementos existem na página antes de adicionar o evento.
-if (btnMostrarConfirmarSenha && cadastroConfirmarSenha && iconeConfirmarSenha) {
+// Verifica se os elementos existem.
+if (
+    btnMostrarConfirmarSenha &&
+    cadastroConfirmarSenha &&
+    iconeConfirmarSenha
+) {
 
-    // Executa quando o usuário clicar no botão do olhinho.
+    // Captura o clique no botão.
     btnMostrarConfirmarSenha.addEventListener("click", function () {
 
-        // Verifica se a senha está atualmente escondida.
+        // Verifica se a senha está escondida.
         if (cadastroConfirmarSenha.type === "password") {
 
-            // Mostra a senha alterando o tipo do campo para texto.
+            // Mostra a senha.
             cadastroConfirmarSenha.type = "text";
 
-            // Troca o ícone para indicar que a senha está visível.
+            // Altera o ícone.
             iconeConfirmarSenha.classList.remove("bi-eye");
-
-            // Mostra o ícone de olho fechado.
             iconeConfirmarSenha.classList.add("bi-eye-slash");
 
-            // Atualiza a descrição do botão para acessibilidade.
-            btnMostrarConfirmarSenha.setAttribute("aria-label", "Ocultar senha");
+            // Atualiza a descrição do botão.
+            btnMostrarConfirmarSenha.setAttribute(
+                "aria-label",
+                "Ocultar senha"
+            );
 
         } else {
 
-            // Esconde novamente a senha.
+            // Esconde a senha.
             cadastroConfirmarSenha.type = "password";
 
-            // Volta o ícone para o olho aberto.
+            // Altera o ícone.
             iconeConfirmarSenha.classList.remove("bi-eye-slash");
-
-            // Mostra novamente o ícone de olho aberto.
             iconeConfirmarSenha.classList.add("bi-eye");
 
-            // Atualiza a descrição do botão para acessibilidade.
-            btnMostrarConfirmarSenha.setAttribute("aria-label", "Mostrar senha");
+            // Atualiza o ícone.
+            iconeConfirmarSenha.classList.add("bi-eye");
+
+            // Atualiza a descrição do botão.
+            btnMostrarConfirmarSenha.setAttribute(
+                "aria-label",
+                "Mostrar senha"
+            );
         }
-
     });
-
 }
 
+
 // ================================================================
-// LOGIN DE USUÁRIO
+// LOGIN
 // ================================================================
 
-// Localiza o formulário de login pelo ID.
+// Obtém o formulário de login.
 const formLogin = document.getElementById("formLogin");
 
+// Obtém o elemento responsável pela mensagem de login.
+const mensagemLogin = document.getElementById("mensagemLogin");
 
-// ================================================================
-// VERIFICAÇÃO DO FORMULÁRIO
-// ================================================================
 
-// Verifica se o formulário de login existe na página.
+// Verifica se o formulário existe.
 if (formLogin) {
 
-
-    // ============================================================
-    // ENVIO DO FORMULÁRIO
-    // ============================================================
-
-    // Executa quando o usuário clicar no botão ENTRAR.
+    // Captura o envio do formulário.
     formLogin.addEventListener("submit", async function (event) {
 
-        // Impede o envio tradicional do formulário.
+        // Impede o comportamento padrão do formulário.
         event.preventDefault();
 
+        // Limpa mensagem anterior.
+        if (mensagemLogin) {
+            mensagemLogin.textContent = "";
+            mensagemLogin.className = "";
+            mensagemLogin.style.display = "none";
+        }
 
-        // ========================================================
-        // PEGAR DADOS DO FORMULÁRIO
-        // ========================================================
-
-        // Cria um FormData contendo os dados digitados pelo usuário.
+        // Cria os dados do formulário.
         const dados = new FormData(formLogin);
-
 
         try {
 
-            // ====================================================
-            // ENVIA OS DADOS PARA O ACCOUNTCONTROLLER
-            // ====================================================
-
-            // Envia o e-mail e a senha para a ação Login.
+            // Envia os dados para o Controller.
             const resposta = await fetch("/Account/Login", {
                 method: "POST",
                 body: dados
             });
 
-
-            // ====================================================
-            // DEBUG - RESPOSTA DO SERVIDOR
-            // ====================================================
-
-            // Exibe no console o status retornado pelo servidor.
+            // Mostra o status no console.
             console.log("Status do login:", resposta.status);
 
-            // Informa se a requisição foi concluída com sucesso.
-            console.log("Login OK:", resposta.ok);
-
-
-            // ====================================================
-            // LER RESPOSTA DO SERVIDOR
-            // ====================================================
-
-            // Lê a resposta enviada pelo AccountController.
+            // Lê a resposta como texto.
             const textoResposta = await resposta.text();
 
-            // Exibe a resposta no console para facilitar a identificação
-            // de possíveis problemas durante os testes.
+            // Mostra a resposta no console.
             console.log("Resposta do login:", textoResposta);
 
+            // Converte a resposta para JSON.
+            const resultado = JSON.parse(textoResposta);
 
-            // ====================================================
-            // CONVERTER RESPOSTA PARA JSON
-            // ====================================================
+            // Mostra o resultado no console.
+            console.log("Login OK:", resultado.sucesso);
 
-            // Cria uma variável para armazenar o resultado.
-            let resultado;
-
-
-            try {
-
-                // Tenta transformar a resposta do servidor em JSON.
-                resultado = JSON.parse(textoResposta);
-
-            }
-            catch {
-
-                // Caso o servidor retorne algo que não seja JSON,
-                // cria uma mensagem de erro padrão.
-                resultado = {
-                    sucesso: false,
-                    mensagem: "O servidor retornou uma resposta inesperada."
-                };
-
-            }
-
-
-            // ====================================================
-            // LOGIN REALIZADO COM SUCESSO
-            // ====================================================
-
-            // Verifica se o servidor informou que o login foi realizado.
+            // Verifica se o login foi realizado com sucesso.
             if (resposta.ok && resultado.sucesso) {
 
-                // Exibe a mensagem de boas-vindas no console.
-                console.log(resultado.mensagem);
+                // Mostra a mensagem no console.
+                console.log("Login realizado:", resultado.mensagem);
 
+                // Obtém o modal de login.
+                const modalLogin =
+                    document.getElementById("modalLogin");
 
-                // =================================================
-                // FECHAR MODAL DE LOGIN
-                // =================================================
+                // Verifica se o Bootstrap está disponível.
+                if (modalLogin && typeof bootstrap !== "undefined") {
 
-                // Localiza o modal de login.
-                const modalLogin = document.getElementById("modalLogin");
-
-
-                // Verifica se o modal existe.
-                if (modalLogin) {
-
-                    // Obtém a instância do modal do Bootstrap.
+                    // Obtém a instância do modal.
                     const instanciaModal =
                         bootstrap.Modal.getInstance(modalLogin);
 
-
-                    // Se existir uma instância aberta,
-                    // fecha o modal.
+                    // Fecha o modal.
                     if (instanciaModal) {
-
                         instanciaModal.hide();
-
                     }
-
                 }
 
-
-                // =================================================
-                // LIMPAR FORMULÁRIO
-                // =================================================
-
-                // Limpa os campos do formulário após o login.
+                // Limpa o formulário.
                 formLogin.reset();
 
+                // Recarrega a página para atualizar o menu.
+                window.location.reload();
 
-                // =================================================
-                // MENSAGEM TEMPORÁRIA
-                // =================================================
+            } else {
 
-                // Por enquanto, exibimos a mensagem no console.
-                //
-                // Na próxima etapa podemos criar uma mensagem visual
-                // de boas-vindas no próprio site.
-                console.log("Login realizado:", resultado.mensagem);
-
-            }
-
-
-            // ====================================================
-            // ERRO NO LOGIN
-            // ====================================================
-
-            else {
-
-                // Exibe a mensagem de erro no console.
-                console.error(
+                // Obtém a mensagem enviada pelo servidor.
+                const mensagemErro =
                     resultado.mensagem ||
-                    "E-mail ou senha incorretos."
-                );
+                    "E-mail ou senha incorretos.";
 
+                // Mostra o erro no console.
+                console.error(mensagemErro);
+
+                // Mostra a mensagem para o usuário.
+                if (mensagemLogin) {
+
+                    // Define o texto.
+                    mensagemLogin.textContent = mensagemErro;
+
+                    // Define as classes.
+                    mensagemLogin.className =
+                        "mensagem-login mensagem-login-erro";
+
+                    // Mostra a mensagem.
+                    mensagemLogin.style.display = "block";
+                }
             }
 
-        }
-        catch (erro) {
+        } catch (erro) {
 
-            // ====================================================
-            // ERRO DE COMUNICAÇÃO
-            // ====================================================
-
-            // Exibe o erro no console.
+            // Mostra o erro no console.
             console.error("Erro no login:", erro);
 
+            // Mostra mensagem de erro para o usuário.
+            if (mensagemLogin) {
+
+                // Define o texto.
+                mensagemLogin.textContent =
+                    "Não foi possível realizar o login. Tente novamente.";
+
+                // Define as classes.
+                mensagemLogin.className =
+                    "mensagem-login mensagem-login-erro";
+
+                // Mostra a mensagem.
+                mensagemLogin.style.display = "block";
+            }
         }
-
     });
-
 }
 
 
 // ================================================================
-// VISUALIZAR SENHA - LOGIN
+// MOSTRAR / OCULTAR SENHA DO LOGIN
 // ================================================================
 
-// Localiza o botão responsável por mostrar/esconder a senha.
-const btnMostrarSenha = document.getElementById("btnMostrarSenha");
+// Obtém o botão de mostrar senha.
+const btnMostrarSenha =
+    document.getElementById("btnMostrarSenha");
 
-// Localiza o campo de senha do login.
-const loginSenha = document.getElementById("loginSenha");
+// Obtém o campo de senha.
+const loginSenha =
+    document.getElementById("loginSenha");
 
-// Localiza o ícone do olhinho do login.
-const iconeSenha = document.getElementById("iconeSenha");
+// Obtém o ícone da senha.
+const iconeSenha =
+    document.getElementById("iconeSenha");
 
 
-// ================================================================
-// VERIFICAÇÃO DOS ELEMENTOS
-// ================================================================
-
-// Verifica se os três elementos existem antes de adicionar o evento.
+// Verifica se os elementos existem.
 if (btnMostrarSenha && loginSenha && iconeSenha) {
 
-
-    // ============================================================
-    // CLIQUE NO OLHINHO
-    // ============================================================
-
-    // Executa quando o usuário clicar no botão do olhinho.
+    // Captura o clique no botão.
     btnMostrarSenha.addEventListener("click", function () {
-
-
-        // ========================================================
-        // MOSTRAR SENHA
-        // ========================================================
 
         // Verifica se a senha está escondida.
         if (loginSenha.type === "password") {
 
-            // Altera o tipo do campo para texto.
+            // Mostra a senha.
             loginSenha.type = "text";
 
-
-            // Remove o ícone de olho aberto.
+            // Altera o ícone.
             iconeSenha.classList.remove("bi-eye");
-
-
-            // Adiciona o ícone de olho fechado.
             iconeSenha.classList.add("bi-eye-slash");
 
-
-            // Atualiza o texto de acessibilidade do botão.
+            // Atualiza a descrição do botão.
             btnMostrarSenha.setAttribute(
                 "aria-label",
                 "Ocultar senha"
             );
 
-        }
+        } else {
 
-
-        // ========================================================
-        // ESCONDER SENHA
-        // ========================================================
-
-        else {
-
-            // Altera novamente o tipo do campo para senha.
+            // Esconde a senha.
             loginSenha.type = "password";
 
-
-            // Remove o ícone de olho fechado.
+            // Altera o ícone.
             iconeSenha.classList.remove("bi-eye-slash");
-
-
-            // Adiciona novamente o ícone de olho aberto.
             iconeSenha.classList.add("bi-eye");
 
-
-            // Atualiza o texto de acessibilidade do botão.
+            // Atualiza a descrição do botão.
             btnMostrarSenha.setAttribute(
                 "aria-label",
                 "Mostrar senha"
             );
-
         }
-
     });
-
 }
-
-

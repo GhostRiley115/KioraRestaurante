@@ -4,7 +4,6 @@
 
 <head>
 
-```
 <!--
     ================================================================
     CONFIGURAÇÕES BÁSICAS DO DOCUMENTO
@@ -308,7 +307,16 @@
                            aria-label="Menu do usuário"
                            title="Conta">
 
-                            <i class="bi bi-person-circle"></i>
+                           <i class="bi bi-person-circle"></i>
+
+                           @if (User.Identity != null && User.Identity.IsAuthenticated)
+                           {
+                                <span class="nome-usuario-menu">
+
+                                    @User.Identity.Name
+
+                                </span>
+                            }
 
                         </a>
 
@@ -316,7 +324,78 @@
                         <!-- MENU DO USUÁRIO -->
 
                         <ul class="dropdown-menu dropdown-menu-end menu-usuario"
-                            aria-labelledby="menuUsuario">
+                        aria-labelledby="menuUsuario">
+
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            <!-- =====================================================
+                                 USUÁRIO AUTENTICADO
+                                 ===================================================== -->
+
+                            <li>
+
+                                <span class="dropdown-item-text usuario-logado">
+
+                                    <i class="bi bi-person-circle"></i>
+
+                                    Olá, @User.Identity.Name!
+
+                                </span>
+
+                            </li>
+
+                            <li>
+
+                                <hr class="dropdown-divider">
+
+                            </li>
+
+
+                            <!-- MEU PERFIL -->
+
+                            <li>
+
+                                <a class="dropdown-item"
+                                   href="#">
+
+                                    <i class="bi bi-person"></i>
+
+                                    Meu perfil
+
+                                </a>
+
+                            </li>
+
+
+                            <!-- DIVISOR -->
+
+                            <li>
+
+                                <hr class="dropdown-divider">
+
+                            </li>
+
+
+                            <!-- SAIR -->
+
+                            <li>
+
+                                <a class="dropdown-item"
+                                   href="/Account/Logout">
+
+                                    <i class="bi bi-box-arrow-right"></i>
+
+                                    Sair
+
+                                </a>
+
+                            </li>
+                        }
+                        else
+                        {
+                            <!-- =====================================================
+                                 USUÁRIO NÃO AUTENTICADO
+                                 ===================================================== -->
 
                             <!-- ENTRAR -->
 
@@ -352,49 +431,9 @@
                                 </a>
 
                             </li>
+                        }
 
-
-                            <!-- MEU PERFIL -->
-
-                            <li>
-
-                                <a class="dropdown-item"
-                                   href="#">
-
-                                    <i class="bi bi-person"></i>
-
-                                    Meu perfil
-
-                                </a>
-
-                            </li>
-
-
-                            <!-- DIVISOR -->
-
-                            <li>
-
-                                <hr class="dropdown-divider">
-
-                            </li>
-
-
-                            <!-- SAIR -->
-
-                            <li>
-
-                                <a class="dropdown-item"
-                                   href="#">
-
-                                    <i class="bi bi-box-arrow-right"></i>
-
-                                    Sair
-
-                                </a>
-
-                            </li>
-
-                        </ul>
+                    </ul>
 
                     </div>
 
@@ -527,6 +566,9 @@
                 <!-- FORMULÁRIO -->
 
                 <form id="formLogin">
+
+                    <!-- Mensagem de retorno do login -->
+                    <div id="mensagemLogin"></div>
 
                     <!-- E-MAIL -->
 
