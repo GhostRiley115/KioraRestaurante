@@ -32,6 +32,7 @@ namespace KioraRestaurante.Models
 
         [Required, MaxLength(9)]
         public string Cep { get; set; }
+        // fica guardado no proprio pedido, e nao é calculado a todo momento
         [Colum(TypeName = "decimal(10,2)")]
         public decimal ValorTotal { get; set; }
         public ICollection<ItemPedido> Itens { get; set; } = new List<ItemPedido>();
