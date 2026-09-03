@@ -91,11 +91,31 @@ namespace KioraRestaurante.Controllers
             // passaram pelas validações do ViewModel.
             if (!ModelState.IsValid)
             {
+                // Obtém a primeira mensagem de validação encontrada.
+                //
+                // Dessa forma, o sistema poderá apresentar ao usuário
+                // mensagens específicas como:
+                //
+                // "O nome é obrigatório."
+                // "O e-mail é obrigatório."
+                // "Digite um e-mail válido."
+                // "A senha é obrigatória."
+                // "As senhas não são iguais."
+                var mensagem = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .FirstOrDefault();
+
                 // Retorna uma resposta de erro para o JavaScript.
                 return BadRequest(new
                 {
                     sucesso = false,
-                    mensagem = "Verifique os dados informados."
+
+                    // Envia a mensagem específica para o JavaScript.
+                    //
+                    // Caso nenhuma mensagem seja encontrada,
+                    // utiliza uma mensagem padrão.
+                    mensagem = mensagem ?? "Verifique os dados informados."
                 });
             }
 
@@ -179,11 +199,29 @@ namespace KioraRestaurante.Controllers
             // pelas validações do LoginViewModel.
             if (!ModelState.IsValid)
             {
+                // Obtém a primeira mensagem de validação encontrada.
+                //
+                // Dessa forma, o sistema poderá apresentar ao usuário
+                // mensagens específicas como:
+                //
+                // "Informe seu e-mail."
+                // "Informe um e-mail válido."
+                // "Informe sua senha."
+                var mensagem = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .FirstOrDefault();
+
                 // Retorna uma resposta de erro para o JavaScript.
                 return BadRequest(new
                 {
                     sucesso = false,
-                    mensagem = "Informe seu e-mail e sua senha."
+
+                    // Envia a mensagem específica para o JavaScript.
+                    //
+                    // Caso nenhuma mensagem seja encontrada,
+                    // utiliza uma mensagem padrão.
+                    mensagem = mensagem ?? "Informe seu e-mail e sua senha."
                 });
             }
 
