@@ -12,6 +12,8 @@ using KioraRestaurante.ViewModels;
 // e outros recursos do ASP.NET Core MVC.
 using Microsoft.AspNetCore.Mvc;
 
+using Microsoft.AspNetCore.Authorization;
+
 // Permite utilizar os recursos de autenticação do ASP.NET Core.
 using Microsoft.AspNetCore.Authentication;
 
@@ -363,5 +365,43 @@ namespace KioraRestaurante.Controllers
             // Depois de sair, retorna para a página inicial.
             return RedirectToAction("Index", "Home");
         }
+
+
+        // ================================================================
+        // MEU PERFIL - GET
+        // ================================================================
+
+        // Permite acesso somente para usuários autenticados.
+        [Authorize]
+
+        // [HttpGet] indica que esta ação responde a uma requisição GET.
+        [HttpGet]
+        public IActionResult MeuPerfil()
+        {
+            // Obtém o e-mail do usuário que está logado.
+            var email = User.FindFirstValue(ClaimTypes.Email);
+
+            // Verifica se o e-mail foi encontrado no Cookie de autenticação.
+            if (string.IsNullOrEmpty(email))
+            {
+                // Caso não encontre o e-mail, retorna para a página inicial.
+                return RedirectToAction("Index", "Home");
+            }
+
+            // Procura o usuário no banco de dados utilizando o e-mail.
+            var usuario = _usuarioServices.BuscarPorEmail(email);
+
+            // Verifica se o usuário foi encontrado no banco.
+            if (usuario == null)
+            {
+                // Caso o usuário não exista mais no banco,
+                // retorna para a página inicial.
+                return RedirectToAction("Index", "Home");
+            }
+
+            // Envia o usuário encontrado para a View MeuPerfil.cshtml.
+            return View(usuario);
+        }
     }
+
 }

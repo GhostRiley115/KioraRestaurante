@@ -430,7 +430,7 @@ button,
 /* Configura a linha divisória */
 .menu-usuario .dropdown-divider {
     /* Define a cor da linha */
-    border-top: 1px solid #7D1F1F;
+    border-top: none;
     /* Define o espaçamento */
     margin: 6px 12px;
 }
@@ -4700,4 +4700,252 @@ button,
         font-size: 15px;
     }
 }
+
+/* ================================================================
+PÁGINA MEU PERFIL
+================================================================ */
+
+/* ================================================================
+CONTAINER PRINCIPAL DO PERFIL
+================================================================ */
+
+/* Define o espaçamento superior da página de perfil. */
+.perfil-kiora-container {
+    /* Adiciona espaço entre o menu e o conteúdo. */
+    margin-top: 60px;    
+    /* Adiciona espaço inferior antes do final da página. */
+    margin-bottom: 80px;
+  
+}
+
+/* ================================================================
+TÍTULO DO PERFIL
+================================================================ */
+
+/* Estiliza o título principal "Meu Perfil". */
+.perfil-kiora-titulo {
+    /* Utiliza a fonte Playfair Display do projeto. */
+    font-family: 'Playfair Display', serif;    
+    /* Define a cor dourada utilizada na identidade do Kiora. */
+    color: #D9B27A;
+    /* Define o tamanho do título. */
+    font-size: 38px;
+    /* Centraliza o título. */
+    text-align: center;
+    /* Adiciona espaço abaixo do título. */
+    margin-bottom: 35px;
+    
+}
+
+/* =========================================================
+   CARD DO MEU PERFIL
+   ========================================================= */
+
+/* Configura o card que apresenta os dados do usuário. */
+.perfil-kiora-card {
+    /* Permite posicionar os elementos decorativos internos. */
+    position: relative;
+    /* Define o fundo escuro seguindo o padrão dos cards da Home. */
+    background: #111111;
+    /* Define uma borda dourada inicialmente discreta. */
+    border: 1px solid rgba(217, 178, 122, 0.35);
+    /* Limita a largura máxima do card. */
+    max-width: 600px;
+    /* Centraliza o card horizontalmente. */
+    margin: 0 auto;
+    /* Define o espaçamento interno do card. */
+    padding: 35px;
+    /* Esconde qualquer conteúdo que ultrapasse os limites do card. */
+    overflow: hidden;
+    /* Cria transições suaves semelhantes às dos cards da Home. */
+    transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease, background 0.4s ease;
+}
+
+
+    /* =========================================================
+   LINHA DECORATIVA SUPERIOR
+   ========================================================= */
+
+    /* Cria a linha dourada decorativa no topo do card. */
+    .perfil-kiora-card::before {
+        /* Permite criar o elemento decorativo. */
+        content: "";
+        /* Posiciona a linha dentro do card. */
+        position: absolute;
+        /* Coloca a linha no topo do card. */
+        top: 0;
+        /* Começa a linha no centro do card. */
+        left: 50%;
+        /* Inicialmente a linha não possui largura. */
+        width: 0;
+        /* Define a altura da linha. */
+        height: 2px;
+        /* Define a cor dourada do Kiora. */
+        background-color: #D9B27A;
+        /* Centraliza a linha horizontalmente. */
+        transform: translateX(-50%);
+        /* Cria uma animação suave da largura. */
+        transition: width 0.4s ease;
+        /* Mantém a linha acima dos outros elementos. */
+        z-index: 5;
+    }
+
+
+    /* =========================================================
+   DETALHE DECORATIVO DO CANTO
+   ========================================================= */
+
+    /* Cria o detalhe dourado no canto superior direito. */
+    .perfil-kiora-card::after {
+        /* Permite criar o elemento decorativo. */
+        content: "";
+        /* Posiciona o detalhe dentro do card. */
+        position: absolute;
+        /* Define a distância em relação ao topo. */
+        top: 15px;
+        /* Define a distância em relação à direita. */
+        right: 15px;
+        /* Define a largura inicial do detalhe. */
+        width: 25px;
+        /* Define a altura inicial do detalhe. */
+        height: 25px;
+        /* Cria a linha superior do detalhe. */
+        border-top: 1px solid rgba(217, 178, 122, 0.45);
+        /* Cria a linha direita do detalhe. */
+        border-right: 1px solid rgba(217, 178, 122, 0.45);
+        /* Cria uma transição suave. */
+        transition: all 0.4s ease;
+        /* Mantém o detalhe acima dos demais elementos. */
+        z-index: 5;
+    }
+
+
+    /* =========================================================
+   HOVER DO CARD DO PERFIL
+   ========================================================= */
+
+    /* Define o comportamento do card quando o mouse passa sobre ele. */
+    .perfil-kiora-card:hover {
+        /* Move o card levemente para cima. */
+        transform: translateY(-10px);
+        /* Torna a borda completamente dourada. */
+        border-color: #D9B27A;
+        /* Cria a mesma sombra utilizada nos cards da Home. */
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45), 0 0 20px rgba(217, 178, 122, 0.08);
+        /* Aplica o mesmo gradiente utilizado nos cards da Home. */
+        background: linear-gradient(145deg, #1C1C1C 0%, #111111 100%);
+    }
+
+
+        /* =========================================================
+   ANIMAÇÃO DA LINHA SUPERIOR
+   ========================================================= */
+
+        /* Expande a linha dourada quando o mouse passa sobre o card. */
+        .perfil-kiora-card:hover::before {
+            /* Define a largura da linha durante o hover. */
+            width: 70%;
+        }
+
+
+        /* =========================================================
+   ANIMAÇÃO DO DETALHE DO CANTO
+   ========================================================= */
+
+        /* Aumenta o detalhe dourado durante o hover. */
+        .perfil-kiora-card:hover::after {
+            /* Aumenta a largura do detalhe. */
+            width: 35px;
+            /* Aumenta a altura do detalhe. */
+            height: 35px;
+            /* Torna as linhas completamente douradas. */
+            border-color: #D9B27A;
+        }
+
+/* ================================================================
+TÍTULO DAS INFORMAÇÕES
+================================================================ */
+
+/* Estiliza os títulos "Nome" e "E-mail". */
+.perfil-kiora-label {
+    /* Utiliza a fonte Lato do projeto. */
+    font-family: 'Lato', sans-serif;   
+    /* Define a cor dourada. */
+    color: #D9B27A;
+    /* Define o tamanho do texto. */
+    font-size: 16px;
+    /* Deixa o texto em negrito. */
+    font-weight: 700;
+    /* Remove margem superior. */
+    margin-top: 0;
+    /* Adiciona espaço abaixo do título. */
+    margin-bottom: 8px;
+    
+}
+
+/* ================================================================
+INFORMAÇÕES DO USUÁRIO
+================================================================ */
+
+/* Estiliza o nome e o e-mail exibidos no perfil. */
+.perfil-kiora-info {
+    /* Utiliza a fonte Lato do projeto. */
+    font-family: 'Lato', sans-serif;    
+    /* Define a cor branca para as informações. */
+    color: #FFFFFF;
+    /* Define o tamanho do texto. */
+    font-size: 18px;
+    /* Adiciona espaço abaixo de cada informação. */
+    margin-bottom: 25px;
+    
+}
+
+/* ================================================================
+BOTÃO EDITAR PERFIL
+================================================================ */
+
+/* Estiliza o botão de edição do perfil. */
+.btn-editar-perfil-kiora {
+    /* Define o fundo vinho padrão do Kiora. */
+    background-color: #7D1F1F;    
+    /* Define a borda dourada padrão do Kiora. */
+    border: 1px solid #D9B27A;
+    /* Define a cor branca para o texto. */
+    color: #FFFFFF;
+    /* Utiliza a fonte Lato do projeto. */
+    font-family: 'Lato', sans-serif;
+    /* Deixa o texto do botão em negrito. */
+    font-weight: 700;
+    /* Define o tamanho do texto. */
+    font-size: 16px;
+    /* Define o espaçamento interno do botão. */
+    padding: 10px 25px;
+    /* Arredonda os cantos do botão. */
+    border-radius: 5px;
+    /* Remove o sublinhado do link. */
+    text-decoration: none;
+    /* Permite controlar o tamanho e espaçamento do botão. */
+    display: inline-block;
+    /* Cria uma transição suave entre as cores. */
+    transition: all 0.3s ease;
+    
+}
+
+    /* ================================================================
+HOVER DO BOTÃO EDITAR PERFIL
+================================================================ */
+
+    /* Aplica o efeito quando o mouse passa sobre o botão. */
+    .btn-editar-perfil-kiora:hover {
+        /* Transforma o fundo do botão em dourado. */
+        background-color: #D9B27A;       
+        /* Mantém a borda dourada. */
+        border-color: #D9B27A;
+        /* Muda o texto para o fundo escuro do Kiora. */
+        color: #0E0E0E;
+        /* Remove o sublinhado do link. */
+        text-decoration: none;
+        
+    }
+
 
