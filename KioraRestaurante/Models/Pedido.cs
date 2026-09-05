@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponetModel.DataAnnottations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace KioraRestaurante.Models
 {
@@ -12,31 +11,10 @@ namespace KioraRestaurante.Models
 
         public StatusPedido Status { get; set; } = StatusPedido.Recebido;
         public FormaPagamento FormaPagamento { get; set; }
-        //Dados de entrega "Congelados" no pedido - não vem do perfil do usuario
-        [Required, MaxLength(150)]
-        public string Logradourou { get; set; }
 
-        [MaxLength(100)]
-        public string? Complemento { get; set; }
-
-        [Required, MaxLength(20)]
-        public string Numero { get; set; }
-
-        [Required, MaxLength(100)]
-        public string Bairro { get; set; }
-        [Required, MaxLength(100)]
-        public string Cidade { get; set; }
-
-        [Required, MaxLength(2)]
-        public string Estado { get; set; }
-
-        [Required, MaxLength(9)]
-        public string Cep { get; set; }
-        // fica guardado no proprio pedido, e nao é calculado a todo momento
-        [Colum(TypeName = "decimal(10,2)")]
+        [Column(TypeName = "decimal(10,2)")]
         public decimal ValorTotal { get; set; }
-        public ICollection<ItemPedido> Itens { get; set; } = new List<ItemPedido>();
-
+        public List<ItemPedido> Itens { get; set; } = new();
     }
 
     public enum StatusPedido
@@ -53,6 +31,5 @@ namespace KioraRestaurante.Models
         Pix,
         CartaoCredito,
         CartaoDebito
-
     }
 }
