@@ -96,6 +96,9 @@ app.UseHttpsRedirection();
 // ================================================================
 // ARQUIVOS ESTÁTICOS E ROTAS
 // ================================================================
+// Permite servir arquivos da pasta wwwroot,
+// como CSS, JavaScript e imagens.
+app.UseStaticFiles();
 
 // Ativa o sistema de roteamento.
 app.UseRouting();
