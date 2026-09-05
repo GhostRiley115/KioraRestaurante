@@ -1,0 +1,246 @@
+[33mcommit cd64c6ec95bc91f401e06f48ae2e8ac661fc5d6d[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mdevBru[m[33m, [m[1;31morigin/devBru[m[33m)[m
+Author: Clayton Brito <clayton.brito115@gmail.com>
+Date:   Fri Sep 4 23:03:10 2026 -0300
+
+    Fix: Arrumando alguns erros de sintaxe e imports das models
+
+[33mcommit 970c0e2e2426242348853f72f765ae94d4e0265d[m
+Author: OneBruno <ms2689992@gmail.com>
+Date:   Thu Sep 3 10:19:31 2026 -0300
+
+    Feat: Adcionando a Model ItemPedido, configurando e adcionando os comentarios
+
+[33mcommit 5e6d0a919a6c9e932e0f1f032542ed43e03b6315[m
+Author: OneBruno <ms2689992@gmail.com>
+Date:   Thu Sep 3 09:37:18 2026 -0300
+
+    Feat: adicionando a model Pedido e a configurando
+
+[33mcommit 36633e87f67aa9654238f0ea4fb534c378d062da[m
+Author: OneBruno <ms2689992@gmail.com>
+Date:   Wed Sep 2 11:38:20 2026 -0300
+
+    Chore: Configurando a Model Produto
+
+[33mcommit dd40fca344c78360072fd78d7c3e24352ac3f149[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m
+Merge: d7364a0 50205e0
+Author: Clayton Brito <61214041+GhostRiley115@users.noreply.github.com>
+Date:   Wed Sep 2 06:41:18 2026 -0300
+
+    Merge pull request #12 from GhostRiley115/Karina
+    
+    Karina
+
+[33mcommit 50205e080d3601b5973a4c7372200a6bf75cb1dd[m
+Author: Karina <karina.caetano.etec@gmail.com>
+Date:   Tue Sep 1 17:04:40 2026 -0300
+
+    fix: ajusta mensagem de erro do login
+
+[33mcommit adbe0236c24c01e1a18fc4a1f921df1c7bc0a1e0[m
+Author: Karina <karina.caetano.etec@gmail.com>
+Date:   Tue Sep 1 15:05:09 2026 -0300
+
+    fix: corrige login e atualização do menu do usuário
+
+[33mcommit d7364a0e25fc57938505a31a8a755a42b00aaf11[m
+Merge: 74ef376 b979a66
+Author: Clayton Brito <61214041+GhostRiley115@users.noreply.github.com>
+Date:   Mon Aug 31 11:59:27 2026 -0300
+
+    Merge pull request #11 from GhostRiley115/Clayton
+    
+    Fix: Arrumando alguns códigos que estavam dando problema no sistema, …
+
+[33mcommit b979a66cc67dee2a56755ab176c67cd3c4e58c36[m[33m ([m[1;31morigin/Clayton[m[33m)[m
+Author: Clayton Brito <clayton.brito115@gmail.com>
+Date:   Mon Aug 31 11:54:59 2026 -0300
+
+    Fix: Arrumando alguns códigos que estavam dando problema no sistema, tanto no program.cs quanto no AccountController
+
+[33mcommit 74ef37674f76585b8aacc6fb3bf40237e11a332c[m
+Merge: 079009f 589e682
+Author: Clayton Brito <61214041+GhostRiley115@users.noreply.github.com>
+Date:   Mon Aug 31 11:46:39 2026 -0300
+
+    Merge pull request #10 from GhostRiley115/Karina
+    
+    feat: completando o cadastro e implementando o login de usuarios
+
+[33mcommit 589e6828d83a7a4356bb280ba1b3bd52e3344ad9[m
+Author: Karina <karina.caetano.etec@gmail.com>
+Date:   Mon Aug 31 10:13:08 2026 -0300
+
+    feat: completando o cadastro e implementando o login de usuarios
+
+[33mcommit 079009fd771e290d3a1a7c437170228498dc413e[m
+Merge: 739b317 4495edd
+Author: Clayton Brito <61214041+GhostRiley115@users.noreply.github.com>
+Date:   Mon Aug 31 01:40:45 2026 -0300
+
+    Merge pull request #9 from GhostRiley115/Clayton
+    
+    Feat: Criando a interface de Carrinho e adicionando os contratos de s…
+
+[33mcommit 4495eddcd6f2ad68d5f17ff9fbccef7f8e6d87ba[m
+Author: Clayton Brito <clayton.brito115@gmail.com>
+Date:   Mon Aug 31 01:39:45 2026 -0300
+
+    Feat: Criando a interface de Carrinho e adicionando os contratos de seus metodos que deverão ser implementados no CarrinhoService.
+
+[33mcommit 739b317b15105509766a8a211cfdb09942167e6f[m
+Merge: b898b49 f9e83a8
+Author: Clayton Brito <61214041+GhostRiley115@users.noreply.github.com>
+Date:   Mon Aug 31 01:18:07 2026 -0300
+
+    Merge pull request #8 from GhostRiley115/Clayton
+    
+    Adicionando as DTO de response, update e create as models: ItemCarrin…
+
+[33mcommit f9e83a8063942bdc0e48bd4b282e08b2c6f31e41[m
+Author: Clayton Brito <clayton.brito115@gmail.com>
+Date:   Mon Aug 31 01:07:03 2026 -0300
+
+    Adicionando as DTO de response, update e create as models: ItemCarrinho e Carrinho
+
+[33mcommit b898b49c59f50cb3eaf87aad688f7780cb217d5c[m
+Merge: cb34fa1 52e076f
+Author: Clayton Brito <61214041+GhostRiley115@users.noreply.github.com>
+Date:   Mon Aug 31 01:02:35 2026 -0300
+
+    Merge pull request #7 from GhostRiley115/Karina
+    
+    feat: implementa cadastro de usuarios
+
+[33mcommit 52e076faead4364b224c03177de8dfcb2fa0597e[m
+Author: Karina <karina.caetano.etec@gmail.com>
+Date:   Sun Aug 30 22:14:31 2026 -0300
+
+    feat: implementa cadastro de usuarios
+
+[33mcommit cb34fa1e19d68cf9834b04e1dd1ff400a23123e2[m
+Merge: 58a6694 2ee04d4
+Author: Clayton Brito <61214041+GhostRiley115@users.noreply.github.com>
+Date:   Sun Aug 30 18:35:20 2026 -0300
+
+    Merge pull request #6 from GhostRiley115/Karina
+    
+    Karina
+
+[33mcommit 2ee04d425ff4f83d433231b7d0b02f4aabbd578f[m
+Author: Karina <karina.caetano.etec@gmail.com>
+Date:   Sun Aug 30 18:19:28 2026 -0300
+
+    feat: implementa estrutura de autenticacao de usuarios
+
+[33mcommit 8a548444a00004844d9152d770eee932cb0cce79[m
+Author: Karina <karina.caetano.etec@gmail.com>
+Date:   Sun Aug 30 16:00:22 2026 -0300
+
+    fix: corrige links e botão de localização
+
+[33mcommit 58a669486ef92ae06a0d68ae7456d0ca38b3fdca[m
+Merge: 4f0674a 57d2be6
+Author: Clayton Brito <61214041+GhostRiley115@users.noreply.github.com>
+Date:   Sun Aug 30 06:16:02 2026 -0300
+
+    Merge pull request #5 from GhostRiley115/Clayton
+    
+    Clayton
+
+[33mcommit 57d2be6f734ed236d2058d57095e2b2f8ba07f92[m
+Author: Clayton Brito <clayton.brito115@gmail.com>
+Date:   Sun Aug 30 05:48:27 2026 -0300
+
+    Chore: Configura DbContext e relacionamentos do banco
+
+[33mcommit 607492c2cfa0a5aadab8a25035e227e5d22eeef7[m
+Author: Clayton Brito <clayton.brito115@gmail.com>
+Date:   Sun Aug 30 04:52:33 2026 -0300
+
+    Feat:Criando atributos em Usuario e Produto para se relacionar as models Carrinho e ItemCarrinho. Também foi alterado a regra do carrinho: Carrinho -> pode ou não ter um usuário associado, a associação é criada após o login
+
+[33mcommit b319d65adf877ec051f305c0061cf34dcd62e146[m
+Author: Clayton Brito <clayton.brito115@gmail.com>
+Date:   Sun Aug 30 03:37:47 2026 -0300
+
+    Feat: Criando as Models Carrinho e ItemCarrinho
+
+[33mcommit 4f0674af95f32793f7c17d62683c10d455c8b989[m
+Merge: f32bcff 1a70f2c
+Author: Clayton Brito <61214041+GhostRiley115@users.noreply.github.com>
+Date:   Sat Aug 29 18:51:40 2026 -0300
+
+    Merge pull request #4 from GhostRiley115/Karina
+    
+    style: ajusta layout do modal de localização
+
+[33mcommit 1a70f2cf05061a1b346783c102df211e45c770fc[m
+Author: Karina <karina.caetano.etec@gmail.com>
+Date:   Sat Aug 29 11:22:18 2026 -0300
+
+    style: ajusta layout do modal de localização
+
+[33mcommit f32bcff6cb039e705d8ffa156c9171ee64e5b0f2[m
+Merge: 1ca7278 8ddf5aa
+Author: Clayton Brito <61214041+GhostRiley115@users.noreply.github.com>
+Date:   Wed Aug 26 21:13:40 2026 -0300
+
+    Merge pull request #3 from GhostRiley115/Bruno
+    
+    Feat: adicionando model Produto
+
+[33mcommit 8ddf5aae6cdb021ee1c94583bd8306e91c092c57[m
+Author: igor <igorc7871@gmail.com>
+Date:   Wed Aug 26 21:10:57 2026 -0300
+
+    Feat: adicionando model Produto
+
+[33mcommit 1ca7278d30b228eb55db6267af992401fe7e0ebe[m
+Merge: bf1bd3a 618c1d9
+Author: Clayton Brito <61214041+GhostRiley115@users.noreply.github.com>
+Date:   Tue Aug 25 23:46:36 2026 -0300
+
+    Merge pull request #2 from GhostRiley115/Karina
+    
+    Karina
+
+[33mcommit 618c1d9f8dd1f40423ca1e6f63a36aac092e4386[m
+Merge: c9ad2ac bf1bd3a
+Author: Karina <karina.caetano.etec@gmail.com>
+Date:   Tue Aug 25 23:11:31 2026 -0300
+
+    Merge branch 'main' of https://github.com/GhostRiley115/KioraRestaurante into dev
+
+[33mcommit bf1bd3a7f47a7b7d4a55b33350f22d6a9df1cbc5[m
+Merge: 541709b afcfa45
+Author: Clayton Brito <61214041+GhostRiley115@users.noreply.github.com>
+Date:   Tue Aug 25 19:21:56 2026 -0300
+
+    Merge pull request #1 from GhostRiley115/Bruno
+    
+    Feat: Adicionando a pasta Services
+
+[33mcommit afcfa454d9eae19a34326c20c2a3197556a2fec6[m
+Author: igor <igorc7871@gmail.com>
+Date:   Tue Aug 25 19:08:28 2026 -0300
+
+    Feat: Adicionando a pasta Services
+
+[33mcommit c9ad2acbb76358f9e3c1e6254fa36bdd8b9d0b88[m[33m ([m[1;31morigin/dev[m[33m)[m
+Author: Karina <karina.caetano.etec@gmail.com>
+Date:   Tue Aug 25 16:38:51 2026 -0300
+
+    feat: Criando as páginas do front-end
+
+[33mcommit 541709b960e08ee0bce480ec74d0dbab5f22832d[m
+Author: Clayton Brito <clayton.brito115@gmail.com>
+Date:   Sat Aug 22 04:32:49 2026 -0300
+
+    Chore: Configurando o projeto com banco de dados na nuvem
+
+[33mcommit 733362e61114aba526d74c1782b8b4f5bf498baf[m
+Author: Clayton Brito <clayton.brito115@gmail.com>
+Date:   Sat Aug 22 01:34:04 2026 -0300
+
+    Chore: Criando projeto web API do Restaurante da Kiora
