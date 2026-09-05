@@ -38,7 +38,7 @@ namespace KioraRestaurante.Migrations
                     b.HasIndex("UsuarioId")
                         .IsUnique();
 
-                    b.ToTable("Carrinhos");
+                    b.ToTable("Carrinhos", (string)null);
                 });
 
             modelBuilder.Entity("KioraRestaurante.Models.ItemCarrinho", b =>
@@ -64,7 +64,7 @@ namespace KioraRestaurante.Migrations
 
                     b.HasIndex("ProdutoId");
 
-                    b.ToTable("ItensCarrinho");
+                    b.ToTable("ItensCarrinho", (string)null);
                 });
 
             modelBuilder.Entity("KioraRestaurante.Models.Produto", b =>
@@ -77,7 +77,7 @@ namespace KioraRestaurante.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Produtos");
+                    b.ToTable("Produtos", (string)null);
                 });
 
             modelBuilder.Entity("KioraRestaurante.Models.Usuario", b =>
@@ -114,7 +114,7 @@ namespace KioraRestaurante.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("Usuarios");
+                    b.ToTable("Usuarios", (string)null);
                 });
 
             modelBuilder.Entity("KioraRestaurante.Models.Carrinho", b =>

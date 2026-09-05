@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using KioraRestaurante.Models.Enums;
 
 namespace KioraRestaurante.Models
 {
@@ -6,7 +7,7 @@ namespace KioraRestaurante.Models
     {
         public int Id { get; set; }
         public int UsuarioId { get; set; }
-        public Usuario Usuario { get; set; }
+        public Usuario Usuario { get; set; } = null!;
         public DateTime DataPedido { get; set; } = DateTime.UtcNow;
 
         public StatusPedido Status { get; set; } = StatusPedido.Recebido;
@@ -14,22 +15,7 @@ namespace KioraRestaurante.Models
 
         [Column(TypeName = "decimal(10,2)")]
         public decimal ValorTotal { get; set; }
-        public List<ItemPedido> Itens { get; set; } = new();
-    }
 
-    public enum StatusPedido
-    {
-        Recebido,
-        EmPreparo,
-        SaiuParaEntrega,
-        Entregue,
-        Cancelado
-    }
-    public enum FormaPagamento
-    {
-        Dinheiro,
-        Pix,
-        CartaoCredito,
-        CartaoDebito
+        public List<ItemPedido> ItensPedido { get; set; } = new();
     }
 }

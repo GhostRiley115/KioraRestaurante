@@ -13,6 +13,6 @@ namespace KioraRestaurante.Models
         public Usuario? Usuario { get; set; }
 
         //Criando uma lista podendo conter varios ItemCarrinho dentro dela.
-        public List<ItemCarrinho> Itens { get; set; } = new(); 
+        public List<ItemCarrinho> ItensCarrinho { get; set; } = new(); 
     }
 }
