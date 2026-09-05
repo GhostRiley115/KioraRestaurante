@@ -116,13 +116,12 @@
 <link rel="stylesheet"
       href="~/Kiora.styles.css"
       asp-append-version="true" />
-```
 
 </head>
 
 <body class="d-flex flex-column min-vh-100 @(ViewData["HomePage"] != null ? "pagina-home" : "")">
 
-```
+
 <!--
     ================================================================
     HEADER
@@ -203,21 +202,102 @@
                     </li>
 
 
-                    <!-- CARDÁPIO -->
+                    <!-- ================================================================
+                         CARDÁPIO - MENU SUSPENSO
+                         ================================================================ -->
 
-                    <li class="nav-item">
+                    <!-- Início do item Cardápio. -->
+                    <li class="nav-item dropdown">
 
-                        <a class="nav-link"
-                           href="#">
+                        <!-- Botão principal do Cardápio. -->
+                        <a class="nav-link dropdown-toggle"
+                           href="#"
+                           role="button"
+                           data-bs-toggle="dropdown"
+                           aria-expanded="false">
 
+                            <!-- Nome do menu. -->
                             Cardápio
 
                         </a>
 
+
+                        <!-- ============================================================
+                             CATEGORIAS DO CARDÁPIO
+                             ============================================================ -->
+
+                        <!-- Início da lista suspensa. -->
+                        <ul class="dropdown-menu">
+
+                            <!-- Lamen. -->
+                            <li>
+                                <a class="dropdown-item"
+                                   href="/Cardapio?categoria=Lamen">
+
+                                    <!-- Ícone de Lamen. -->
+                                    <i class="bi bi-cup-hot"></i>
+
+                                    <!-- Nome da categoria. -->
+                                    Lamen
+
+                                </a>
+                            </li>
+
+
+                            <!-- Entradas. -->
+                            <li>
+                                <a class="dropdown-item"
+                                   href="/Cardapio?categoria=Entradas">
+
+                                    <!-- Ícone de Entradas. -->
+                                    <i class="bi bi-egg-fried"></i>
+
+                                    <!-- Nome da categoria. -->
+                                    Entradas
+
+                                </a>
+                            </li>
+
+
+                            <!-- Sobremesas. -->
+                            <li>
+                                <a class="dropdown-item"
+                                   href="/Cardapio?categoria=Sobremesas">
+
+                                    <!-- Ícone de Sobremesas. -->
+                                    <i class="bi bi-cake2"></i>
+
+                                    <!-- Nome da categoria. -->
+                                    Sobremesas
+
+                                </a>
+                            </li>
+
+
+                            <!-- Bebidas. -->
+                            <li>
+                                <a class="dropdown-item"
+                                   href="/Cardapio?categoria=Bebidas">
+
+                                    <!-- Ícone de Bebidas. -->
+                                    <i class="bi bi-cup-straw"></i>
+
+                                    <!-- Nome da categoria. -->
+                                    Bebidas
+
+                                </a>
+                            </li>
+
+                        </ul>
+                        <!-- Fim da lista suspensa. -->
+
                     </li>
+                    <!-- Fim do item Cardápio. -->
 
 
-                    <!-- SOBRE -->
+                    <!-- ================================================================
+                         SOBRE NÓS
+                         ================================================================ -->
 
                     <li class="nav-item">
 
@@ -232,25 +312,22 @@
                     </li>
 
 
-                    <!-- GALERIA -->
+                    <!-- ================================================================
+                         GALERIA
+                         ================================================================ -->
 
                     <li class="nav-item">
 
-                        <a class="nav-link"
-                           href="#">
-
+                        <a class="nav-link" href="#">
                             Galeria
-
                         </a>
 
                     </li>
 
 
-                    <!--
-                        LOCALIZAÇÃO
-
-                        Abre o modal de localização.
-                    -->
+                    <!-- ================================================================
+                         LOCALIZAÇÃO
+                         ================================================================ -->
 
                     <li class="nav-item">
 
@@ -266,20 +343,17 @@
                     </li>
 
 
-                    <!-- CONTATO -->
+                    <!-- ================================================================
+                         CONTATO
+                         ================================================================ -->
 
                     <li class="nav-item">
 
-                        <a class="nav-link"
-                           href="#">
-
+                        <a class="nav-link" href="#">
                             Contato
-
                         </a>
 
                     </li>
-
-                </ul>
 
 
                 <!--

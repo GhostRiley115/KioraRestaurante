@@ -4948,4 +4948,189 @@ HOVER DO BOTÃO EDITAR PERFIL
         
     }
 
+/* ================================================================
+   MENU SUSPENSO DO CARDÁPIO
+   ================================================================ */
+
+/* Define o visual da caixa que aparece ao abrir o menu Cardápio. */
+.navbar-kiora .dropdown-menu {
+    /* Define o fundo escuro do menu. */
+    background-color: #0E0E0E;
+    /* Cria uma borda dourada discreta. */
+    border: 1px solid rgba(217, 178, 122, 0.5);
+    /* Remove o arredondamento padrão do Bootstrap. */
+    border-radius: 0;
+    /* Adiciona uma pequena sombra ao redor do menu. */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    /* Define um pequeno espaço entre a navbar e o menu. */
+    margin-top: 8px;
+    /* Remove o espaçamento interno padrão. */
+    padding: 5px 0;
+}
+
+
+/* ================================================================
+   ITENS DO MENU
+   ================================================================ */
+
+/* Define a aparência de cada categoria. */
+.navbar-kiora .dropdown-item {
+    /* Define a cor branca para o texto. */
+    color: #FFFFFF;
+    /* Utiliza a fonte principal do projeto. */
+    font-family: 'Lato', sans-serif;
+    /* Define o tamanho do texto. */
+    font-size: 15px;
+    /* Adiciona espaço interno ao item. */
+    padding: 10px 20px;
+    /* Cria uma transição suave para o efeito hover. */
+    transition: all 0.3s ease;
+}
+
+
+    /* ================================================================
+   EFEITO AO PASSAR O MOUSE
+   ================================================================ */
+
+    /* Altera o item quando o usuário passa o mouse sobre ele. */
+    .navbar-kiora .dropdown-item:hover {
+        /* Muda o fundo para o vinho do Kiora. */
+        background-color: #7D1F1F;
+        /* Destaca o texto com o dourado da identidade. */
+        color: #D9B27A;
+        /* Move levemente o texto para a direita. */
+        padding-left: 25px;
+    }
+
+
+    /* ================================================================
+   ITEM ATIVO / FOCADO
+   ================================================================ */
+
+    /* Mantém o estilo quando o item recebe foco pelo teclado. */
+    .navbar-kiora .dropdown-item:focus {
+        /* Mantém o fundo vinho. */
+        background-color: #7D1F1F;
+        /* Mantém o texto dourado. */
+        color: #D9B27A;
+    }
+
+
+    /* ================================================================
+       ÍCONES DAS CATEGORIAS DO CARDÁPIO
+       ================================================================ */
+    /* Define o estilo dos ícones dentro do menu. */
+    .navbar-kiora .dropdown-item i {
+        /* Define a cor dourada dos ícones. */
+        color: #D9B27A;
+        /* Define o tamanho dos ícones. */
+        font-size: 17px;
+        /* Cria espaço entre o ícone e o texto. */
+        margin-right: 10px;
+        /* Mantém o ícone alinhado com o texto. */
+        vertical-align: middle;
+        /* Cria uma transição suave. */
+        transition: all 0.3s ease;
+    }
+
+
+    /* Altera o ícone quando o mouse passa sobre a categoria. */
+    .navbar-kiora .dropdown-item:hover i {
+        /* Mantém o ícone destacado em dourado. */
+        color: #FFFFFF;
+    }
+
+/* ================================================================
+   RESPONSIVIDADE DO MENU SUSPENSO DO CARDÁPIO
+   ================================================================ */
+
+/* Ajusta o menu do Cardápio para telas menores. */
+@media (max-width: 991.98px) {
+
+    /* Define o menu para ocupar a largura disponível no celular/tablet. */
+    .navbar-kiora .dropdown-menu {
+        /* Remove a margem lateral do menu. */
+        margin-left: 0;
+        /* Remove o espaço superior excessivo. */
+        margin-top: 5px;
+        /* Permite que o menu acompanhe a largura da navbar. */
+        width: 100%;
+        /* Impede que o menu fique maior que a tela. */
+        max-width: 100%;
+        /* Remove qualquer limite de largura imposto pelo Bootstrap. */
+        min-width: 0;
+    }
+
+
+    /* Ajusta os itens do submenu para telas menores. */
+    .navbar-kiora .dropdown-item {
+        /* Mantém um tamanho confortável para toque. */
+        padding: 12px 20px;
+        /* Mantém o texto legível em telas pequenas. */
+        font-size: 15px;
+    }
+
+
+        /* Ajusta o efeito hover em telas menores. */
+        .navbar-kiora .dropdown-item:hover {
+            /* Mantém o deslocamento menor para evitar excesso de movimento. */
+            padding-left: 23px;
+        }
+
+
+        /* Ajusta os ícones das categorias. */
+        .navbar-kiora .dropdown-item i {
+            /* Mantém o ícone proporcional ao texto. */
+            font-size: 16px;
+            /* Mantém um pequeno espaço entre ícone e texto. */
+            margin-right: 8px;
+        }
+}
+
+
+/* ================================================================
+   AJUSTE PARA CELULARES PEQUENOS
+   ================================================================ */
+
+/* Aplica ajustes adicionais em telas muito pequenas. */
+@media (max-width: 575.98px) {
+
+    /* Ajusta o menu suspenso para celulares. */
+    .navbar-kiora .dropdown-menu {
+        /* Mantém o menu dentro da área disponível. */
+        width: 100%;
+        /* Remove qualquer largura mínima. */
+        min-width: 0;
+        /* Evita que o menu ultrapasse a tela. */
+        max-width: 100%;
+    }
+
+
+    /* Ajusta os itens para facilitar o toque. */
+    .navbar-kiora .dropdown-item {
+        /* Aumenta um pouco a área de toque vertical. */
+        padding: 12px 16px;
+        /* Mantém o texto confortável para leitura. */
+        font-size: 14px;
+    }
+
+
+        /* Ajusta o efeito de hover para celulares. */
+        .navbar-kiora .dropdown-item:hover {
+            /* Reduz o deslocamento lateral. */
+            padding-left: 19px;
+        }
+
+
+        /* Ajusta os ícones no celular. */
+        .navbar-kiora .dropdown-item i {
+            /* Reduz levemente o tamanho do ícone. */
+            font-size: 15px;
+            /* Reduz o espaço entre ícone e texto. */
+            margin-right: 7px;
+        }
+}
+
+
+
 

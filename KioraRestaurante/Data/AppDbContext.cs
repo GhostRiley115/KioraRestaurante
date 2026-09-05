@@ -12,6 +12,7 @@ namespace KioraRestaurante.Data
         // Cada DbSet vai virar uma tabela no MySQL, então pra cada classe é preciso adicionar do mesmo jeito do usuario
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Produto> Produtos { get; set; }
+        public DbSet<Categoria> Categorias { get; set; }
         public DbSet<Carrinho> Carrinhos { get; set; }
         public DbSet<ItemCarrinho> ItensCarrinho { get; set; }
         public DbSet<Pedido> Pedidos { get; set; }
@@ -32,6 +33,14 @@ namespace KioraRestaurante.Data
             modelBuilder.Entity<Produto>()
                 .Property(p => p.Disponivel)
                 .HasDefaultValue(true);
+
+            // Categoria 1 : N Produto
+            // Define que uma categoria pode possuir vários produtos.
+            modelBuilder.Entity<Produto>()
+                .HasOne(p => p.Categoria)
+                .WithMany(c => c.Produtos)
+                .HasForeignKey(p => p.CategoriaId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Usuario 1 : 0..1 Carrinho
             modelBuilder.Entity<Carrinho>()
