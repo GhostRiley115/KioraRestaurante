@@ -1,0 +1,83 @@
+﻿@model KioraRestaurante.Models.Usuario
+
+@{
+// Define o título da página.
+ViewData["Title"] = "Meu Perfil";
+}
+
+<!-- ================================================================
+     PÁGINA MEU PERFIL
+     ================================================================ -->
+
+<!-- Container principal da página de perfil. -->
+
+<div class="container perfil-kiora-container">
+
+
+<!-- ============================================================
+     TÍTULO
+     ============================================================ -->
+
+<!-- Exibe o título principal da página. -->
+<h1 class="perfil-kiora-titulo">
+    Meu Perfil
+</h1>
+
+
+<!-- ============================================================
+     CARD DO PERFIL
+     ============================================================ -->
+
+<!-- Card que contém as informações do usuário. -->
+<div class="perfil-kiora-card">
+
+
+    <!-- ========================================================
+         NOME
+         ======================================================== -->
+
+    <!-- Identificação do campo nome. -->
+    <p class="perfil-kiora-label">
+        Nome
+    </p>
+
+    <!-- Exibe o nome real do usuário. -->
+    <p class="perfil-kiora-info">
+        @Model.Nome
+    </p>
+
+
+    <!-- ========================================================
+         E-MAIL
+         ======================================================== -->
+
+    <!-- Identificação do campo e-mail. -->
+    <p class="perfil-kiora-label">
+        E-mail
+    </p>
+
+    <!-- Exibe o e-mail real do usuário. -->
+    <p class="perfil-kiora-info">
+        @Model.Email
+    </p>
+
+
+    <!-- ========================================================
+         BOTÃO EDITAR PERFIL
+         ======================================================== -->
+
+    <!--
+        Por enquanto o botão é somente visual.
+
+        A funcionalidade de edição será criada posteriormente.
+    -->
+    <a href="#" class="btn-editar-perfil-kiora">
+        Editar Perfil
+    </a>
+
+
+</div>
+<!-- Fim do card do perfil. -->
+
+</div>
+<!-- Fim do container da página. -->

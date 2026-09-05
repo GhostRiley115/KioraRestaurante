@@ -430,7 +430,7 @@ button,
 /* Configura a linha divisória */
 .menu-usuario .dropdown-divider {
     /* Define a cor da linha */
-    border-top: 1px solid #7D1F1F;
+    border-top: none;
     /* Define o espaçamento */
     margin: 6px 12px;
 }
@@ -2955,107 +2955,11 @@ button,
     line-height: 1.6;
 }
 
-/* =========================================================
-   MENSAGENS DO CADASTRO
-   ========================================================= */
-/* Configura a área geral da mensagem */
-.mensagem-cadastro {
-    /* Ocupa toda a largura disponível */
-    width: 100%;
-    /* Cria espaçamento interno */
-    padding: 11px 14px;
-    /* Cria espaço abaixo da mensagem */
-    margin-bottom: 18px;
-    /* Arredonda levemente os cantos */
-    border-radius: 3px;
-    /* Define o tamanho do texto */
-    font-size: 13px;
-    /* Define o peso do texto */
-    font-weight: 500;
-    /* Define a fonte */
-    font-family: 'Lato', sans-serif;
-    /* Define a altura das linhas */
-    line-height: 1.5;
-    /* Centraliza o texto */
-    text-align: center;
-    /* Garante que o padding não aumente a largura */
-    box-sizing: border-box;
-    /* Cria uma transição suave */
-    transition: all 0.3s ease;
-}
-
-
-/* =========================================================
-   MENSAGEM DE SUCESSO
-   ========================================================= */
-
-/* Configura a mensagem exibida quando o cadastro é realizado */
-.mensagem-cadastro-sucesso {
-    /* Define um fundo escuro levemente esverdeado */
-    background-color: rgba(46, 125, 50, 0.12);
-    /* Define a borda verde discreta */
-    border: 1px solid rgba(76, 175, 80, 0.45);
-    /* Define a cor do texto */
-    color: #A5D6A7;
-}
-
-
-/* =========================================================
-   MENSAGEM DE ERRO
-   ========================================================= */
-
-/* Configura a mensagem exibida quando ocorre um erro */
-.mensagem-cadastro-erro {
-    /* Define um fundo vinho transparente */
-    background-color: rgba(125, 31, 31, 0.18);
-    /* Define a borda vinho */
-    border: 1px solid rgba(217, 178, 122, 0.45);
-    /* Define a cor do texto */
-    color: #F0C7C7;
-}
-
-
-/* =========================================================
-   RESPONSIVIDADE - MENSAGEM DO CADASTRO
-   ========================================================= */
-
-/* Aplica ajustes em telas de até 767px */
-@media (max-width: 767px) {
-
-    /* Ajusta a mensagem em telas menores */
-    .mensagem-cadastro {
-        /* Reduz o espaçamento interno */
-        padding: 10px 12px;
-        /* Reduz levemente o tamanho da fonte */
-        font-size: 12px;
-        /* Reduz o espaço inferior */
-        margin-bottom: 16px;
-    }
-}
-
-
-/* =========================================================
-   RESPONSIVIDADE - CELULARES PEQUENOS
-   ========================================================= */
-
-/* Aplica ajustes em telas de até 400px */
-@media (max-width: 400px) {
-
-    /* Ajusta a mensagem em celulares pequenos */
-    .mensagem-cadastro {
-        /* Reduz ainda mais o espaçamento */
-        padding: 9px 10px;
-        /* Mantém o texto legível */
-        font-size: 12px;
-        /* Reduz o espaço inferior */
-        margin-bottom: 14px;
-    }
-}
-
 
 /* =========================================================
    GRUPOS DO FORMULÁRIO
    ========================================================= */
+
 /* Configura grupo */
 .modal-login-grupo {
     /* Cria espaço inferior */
@@ -3402,6 +3306,78 @@ button,
             /* Afasta o sublinhado */
             text-underline-offset: 3px;
         }
+
+
+/* =========================================================
+   MENSAGENS PADRÃO KIORA
+   ========================================================= */
+
+/* Configura a área principal da mensagem */
+.mensagem-kiora {
+    /* Ocupa toda a largura disponível */
+    width: 100%;
+    /* Cria espaço interno */
+    padding: 11px 14px;
+    /* Cria espaço acima e abaixo */
+    margin: 12px 0;
+    /* Arredonda levemente os cantos */
+    border-radius: 3px;
+    /* Define tamanho da fonte */
+    font-size: 13px;
+    /* Define peso da fonte */
+    font-weight: 500;
+    /* Define altura das linhas */
+    line-height: 1.4;
+    /* Centraliza o texto */
+    text-align: center;
+    /* Define a fonte padrão do site */
+    font-family: 'Lato', sans-serif;
+    /* Faz a mensagem respeitar o tamanho do elemento */
+    box-sizing: border-box;
+}
+
+/* =========================================================
+   MENSAGEM DE SUCESSO
+   ========================================================= */
+.mensagem-kiora-sucesso {
+    background-color: rgba(40, 120, 75, 0.15);
+    border: 1px solid rgba(80, 180, 110, 0.45);
+    color: #8FD19E;
+}
+
+/* =========================================================
+   MENSAGEM DE ERRO
+   ========================================================= */
+.mensagem-kiora-erro {
+    background-color: rgba(125, 31, 31, 0.18);
+    border: 1px solid rgba(180, 70, 70, 0.45);
+    color: #E58B8B;
+}
+
+/* =========================================================
+   MENSAGEM DE AVISO
+   ========================================================= */
+.mensagem-kiora-aviso {
+    background-color: rgba(217, 178, 122, 0.12);
+    border: 1px solid rgba(217, 178, 122, 0.40);
+    color: #D9B27A;
+}
+
+/* =========================================================
+   MENSAGEM INFORMATIVA
+   ========================================================= */
+.mensagem-kiora-info {
+    background-color: rgba(80, 130, 180, 0.12);
+    border: 1px solid rgba(100, 160, 210, 0.40);
+    color: #9FC5E8;
+}
+
+/* =========================================================
+   MENSAGEM OCULTA
+   ========================================================= */
+.mensagem-kiora.d-none {
+    display: none !important;
+}
 
 
 /* =========================================================
@@ -4103,19 +4079,20 @@ button,
     }
 }
 
+
 /* ================================================================
    MODAL DE LOCALIZAÇÃO KIORA
-   Mesmo padrão visual do Modal Login
    ================================================================ */
-
-
 /* ----------------------------------------------------------------
    CONTAINER DO MODAL
    ---------------------------------------------------------------- */
-
+/* Configura o tamanho máximo do diálogo do modal */
 .modal-localizacao-dialog {
+    /* Define a largura máxima do modal */
     max-width: 587px;
+    /* Define a largura considerando as margens laterais */
     width: calc(100% - 24px);
+    /* Centraliza o modal horizontalmente */
     margin: 1.75rem auto;
 }
 
@@ -4124,13 +4101,21 @@ button,
    CONTEÚDO PRINCIPAL
    ---------------------------------------------------------------- */
 
+/* Configura o conteúdo principal do modal */
 .modal-localizacao-kiora {
+    /* Permite posicionar elementos internos */
     position: relative;
+    /* Define o fundo escuro do modal */
     background-color: #0E0E0E;
+    /* Define a borda dourada */
     border: 1px solid #D9B27A;
+    /* Arredonda os cantos */
     border-radius: 6px;
+    /* Define a cor padrão dos textos */
     color: #F8F5F2;
+    /* Impede que elementos ultrapassem os limites */
     overflow: hidden;
+    /* Cria sombra ao redor do modal */
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.55);
 }
 
@@ -4140,15 +4125,25 @@ button,
    Igual ao modal Login
    ---------------------------------------------------------------- */
 
+    /* Cria o detalhe dourado no topo do modal */
     .modal-localizacao-kiora::before {
+        /* Permite criar o pseudo-elemento */
         content: "";
+        /* Define o posicionamento do detalhe */
         position: absolute;
+        /* Posiciona no topo */
         top: 0;
+        /* Alinha inicialmente à esquerda */
         left: 50%;
+        /* Centraliza horizontalmente */
         transform: translateX(-50%);
+        /* Define a largura do detalhe */
         width: 125px;
+        /* Define a altura do detalhe */
         height: 3px;
+        /* Define a cor dourada */
         background-color: #D9B27A;
+        /* Mantém o detalhe acima dos outros elementos */
         z-index: 10;
     }
 
@@ -4157,12 +4152,19 @@ button,
    CABEÇALHO
    ---------------------------------------------------------------- */
 
+/* Configura a área superior do modal */
 .modal-localizacao-topo {
+    /* Permite posicionar elementos internos */
     position: relative;
+    /* Ocupa toda a largura disponível */
     width: 100%;
+    /* Ativa o Flexbox */
     display: flex;
+    /* Centraliza horizontalmente */
     justify-content: center;
+    /* Centraliza verticalmente */
     align-items: center;
+    /* Cria espaço acima do conteúdo */
     padding-top: 58px;
 }
 
@@ -4171,17 +4173,28 @@ button,
    LOGO
    ---------------------------------------------------------------- */
 
+/* Configura a área da logo */
 .modal-localizacao-logo {
+    /* Ativa o Flexbox */
     display: flex;
+    /* Centraliza horizontalmente */
     justify-content: center;
+    /* Centraliza verticalmente */
     align-items: center;
+    /* Ocupa toda a largura */
     width: 100%;
 }
 
+
+    /* Configura a imagem da logo */
     .modal-localizacao-logo img {
+        /* Faz a imagem ocupar sua própria linha */
         display: block;
+        /* Define a largura da logo */
         width: 180px;
+        /* Impede que ultrapasse 70% da área disponível */
         max-width: 70%;
+        /* Mantém a proporção original */
         height: auto;
     }
 
@@ -4190,31 +4203,55 @@ button,
    BOTÃO FECHAR
    ---------------------------------------------------------------- */
 
+/* Configura o botão de fechar */
 .modal-localizacao-fechar {
+    /* Permite posicionamento absoluto */
     position: absolute;
+    /* Define a distância do topo */
     top: 25px;
+    /* Define a distância da direita */
     right: 27px;
+    /* Define a largura do botão */
     width: 32px;
+    /* Define a altura do botão */
     height: 32px;
+    /* Remove o espaçamento interno padrão */
     padding: 0;
+    /* Ativa o Flexbox */
     display: flex;
+    /* Centraliza horizontalmente */
     justify-content: center;
+    /* Centraliza verticalmente */
     align-items: center;
+    /* Mantém o fundo transparente */
     background: transparent;
+    /* Remove a borda */
     border: none;
+    /* Define a cor dourada */
     color: #D9B27A;
+    /* Define o cursor como ponteiro */
     cursor: pointer;
+    /* Mantém o botão acima dos demais elementos */
     z-index: 20;
+    /* Cria uma transição suave */
     transition: all 0.3s ease;
 }
 
+
+    /* Configura o ícone do botão fechar */
     .modal-localizacao-fechar i {
+        /* Define o tamanho do ícone */
         font-size: 24px;
+        /* Define a espessura do ícone */
         font-weight: 300;
     }
 
+
+    /* Efeito ao passar o mouse sobre o botão fechar */
     .modal-localizacao-fechar:hover {
+        /* Muda a cor para branco */
         color: #F8F5F2;
+        /* Gira o botão */
         transform: rotate(90deg);
     }
 
@@ -4223,7 +4260,9 @@ button,
    CORPO
    ---------------------------------------------------------------- */
 
+/* Configura o corpo do modal */
 .modal-localizacao-body {
+    /* Define o espaçamento interno */
     padding: 30px 60px 52px;
 }
 
@@ -4232,45 +4271,76 @@ button,
    CABEÇALHO INSTITUCIONAL
    ---------------------------------------------------------------- */
 
+/* Configura o cabeçalho institucional */
 .modal-localizacao-header {
+    /* Centraliza o conteúdo */
     text-align: center;
+    /* Cria espaço abaixo do cabeçalho */
     margin-bottom: 30px;
 }
 
 
-/* SUBTÍTULO */
+/* ----------------------------------------------------------------
+   SUBTÍTULO
+   ---------------------------------------------------------------- */
 
+/* Configura o subtítulo */
 .modal-localizacao-subtitulo {
+    /* Faz o elemento ocupar sua própria linha */
     display: block;
+    /* Cria espaço abaixo */
     margin-bottom: 18px;
+    /* Define a cor dourada */
     color: #D9B27A;
+    /* Define a fonte */
     font-family: "Lato", sans-serif;
+    /* Define o tamanho da fonte */
     font-size: 14px;
+    /* Define o peso da fonte */
     font-weight: 700;
+    /* Aumenta o espaçamento entre as letras */
     letter-spacing: 3px;
+    /* Transforma o texto em letras maiúsculas */
     text-transform: uppercase;
 }
 
 
-/* TÍTULO */
+/* ----------------------------------------------------------------
+   TÍTULO
+   ---------------------------------------------------------------- */
 
+/* Configura o título principal */
 .modal-localizacao-header h2 {
+    /* Remove a margem superior e define a inferior */
     margin: 0 0 10px;
+    /* Define a cor clara */
     color: #F8F5F2;
+    /* Define a fonte do título */
     font-family: "Playfair Display", serif;
+    /* Define o tamanho do título */
     font-size: 38px;
+    /* Define o peso da fonte */
     font-weight: 600;
+    /* Define a altura das linhas */
     line-height: 1.15;
 }
 
 
-/* DESCRIÇÃO */
+/* ----------------------------------------------------------------
+   DESCRIÇÃO
+   ---------------------------------------------------------------- */
 
+/* Configura a descrição do modal */
 .modal-localizacao-header p {
+    /* Remove as margens */
     margin: 0;
+    /* Define a cor cinza */
     color: #999999;
+    /* Define a fonte */
     font-family: "Lato", sans-serif;
+    /* Define o tamanho da fonte */
     font-size: 16px;
+    /* Define o peso normal */
     font-weight: 400;
 }
 
@@ -4279,14 +4349,23 @@ button,
    BLOCO DE ENDEREÇO
    ---------------------------------------------------------------- */
 
+/* Configura o bloco que apresenta o endereço */
 .modal-localizacao-endereco {
+    /* Ativa o Flexbox */
     display: flex;
+    /* Centraliza verticalmente */
     align-items: center;
+    /* Define o espaço entre os elementos */
     gap: 16px;
+    /* Cria espaço abaixo */
     margin-bottom: 22px;
+    /* Cria espaçamento interno */
     padding: 18px;
+    /* Define o fundo escuro */
     background-color: #111111;
+    /* Define a borda */
     border: 1px solid #292929;
+    /* Arredonda os cantos */
     border-radius: 4px;
 }
 
@@ -4295,19 +4374,32 @@ button,
    ÍCONE
    ---------------------------------------------------------------- */
 
+/* Configura o container do ícone */
 .modal-localizacao-icone {
+    /* Ativa o Flexbox */
     display: flex;
+    /* Centraliza verticalmente */
     align-items: center;
+    /* Centraliza horizontalmente */
     justify-content: center;
+    /* Define a largura */
     width: 46px;
+    /* Define a altura */
     height: 46px;
+    /* Impede que o ícone seja reduzido */
     flex-shrink: 0;
+    /* Define a borda dourada */
     border: 1px solid #D9B27A;
+    /* Arredonda os cantos */
     border-radius: 4px;
+    /* Define a cor dourada */
     color: #D9B27A;
 }
 
+
+    /* Configura o ícone dentro do container */
     .modal-localizacao-icone i {
+        /* Define o tamanho do ícone */
         font-size: 20px;
     }
 
@@ -4316,51 +4408,85 @@ button,
    INFORMAÇÕES DO ENDEREÇO
    ---------------------------------------------------------------- */
 
+/* Configura a área das informações do endereço */
 .modal-localizacao-info {
+    /* Ativa o Flexbox */
     display: flex;
+    /* Organiza os elementos verticalmente */
     flex-direction: column;
+    /* Define pequeno espaço entre os elementos */
     gap: 3px;
+    /* Permite que o conteúdo seja reduzido */
     min-width: 0;
 }
 
 
-/* LABEL */
+/* ----------------------------------------------------------------
+   LABEL
+   ---------------------------------------------------------------- */
 
+/* Configura o texto de identificação do endereço */
 .modal-localizacao-label {
+    /* Define a cor dourada */
     color: #D9B27A;
+    /* Define a fonte */
     font-family: "Lato", sans-serif;
+    /* Define o tamanho */
     font-size: 11px;
+    /* Define o peso */
     font-weight: 700;
+    /* Define o espaçamento entre letras */
     letter-spacing: 1.5px;
 }
 
 
-/* RUA */
+/* ----------------------------------------------------------------
+   RUA
+   ---------------------------------------------------------------- */
 
+/* Configura o nome da rua */
 .modal-localizacao-info h3 {
+    /* Remove a margem */
     margin: 0;
+    /* Define a cor clara */
     color: #F8F5F2;
+    /* Define a fonte */
     font-family: "Lato", sans-serif;
+    /* Define o tamanho */
     font-size: 16px;
+    /* Define o peso */
     font-weight: 600;
 }
 
 
-/* CIDADE */
+/* ----------------------------------------------------------------
+   CIDADE
+   ---------------------------------------------------------------- */
 
+/* Configura a cidade do endereço */
 .modal-localizacao-info p {
+    /* Remove a margem */
     margin: 0;
+    /* Define a cor cinza */
     color: #999999;
+    /* Define a fonte */
     font-family: "Lato", sans-serif;
+    /* Define o tamanho */
     font-size: 14px;
 }
 
 
-/* CEP */
+/* ----------------------------------------------------------------
+   CEP
+   ---------------------------------------------------------------- */
 
+/* Configura o CEP */
 .modal-localizacao-cep {
+    /* Define a cor cinza mais escura */
     color: #777777;
+    /* Define a fonte */
     font-family: "Lato", sans-serif;
+    /* Define o tamanho */
     font-size: 12px;
 }
 
@@ -4369,23 +4495,38 @@ button,
    MAPA
    ---------------------------------------------------------------- */
 
+/* Configura o container do mapa */
 .modal-localizacao-mapa {
+    /* Ocupa toda a largura */
     width: 100%;
+    /* Cria espaço abaixo */
     margin-bottom: 22px;
+    /* Define a borda */
     border: 1px solid #333333;
+    /* Arredonda os cantos */
     border-radius: 4px;
+    /* Impede que o conteúdo ultrapasse os limites */
     overflow: hidden;
+    /* Define o fundo */
     background-color: #111111;
 }
 
 
-    /* IFRAME */
+    /* ----------------------------------------------------------------
+   IFRAME
+   ---------------------------------------------------------------- */
 
+    /* Configura o mapa incorporado */
     .modal-localizacao-mapa iframe {
+        /* Faz o iframe ocupar sua própria linha */
         display: block;
+        /* Ocupa toda a largura disponível */
         width: 100%;
+        /* Define a altura do mapa */
         height: 220px;
+        /* Remove a borda padrão */
         border: 0;
+        /* Remove filtros aplicados ao iframe */
         filter: none !important;
     }
 
@@ -4394,7 +4535,9 @@ button,
    ÁREA DO BOTÃO
    ---------------------------------------------------------------- */
 
+/* Configura a área que contém o botão */
 .modal-localizacao-acoes {
+    /* Ocupa toda a largura disponível */
     width: 100%;
 }
 
@@ -4403,38 +4546,65 @@ button,
    BOTÃO COMO CHEGAR
    ---------------------------------------------------------------- */
 
+/* Configura o botão de localização */
 .btn-localizacao {
+    /* Ativa o Flexbox */
     display: flex;
+    /* Centraliza horizontalmente */
     justify-content: center;
+    /* Centraliza verticalmente */
     align-items: center;
+    /* Define o espaço entre texto e ícone */
     gap: 10px;
+    /* Ocupa toda a largura */
     width: 100%;
+    /* Define a altura */
     height: 63px;
+    /* Define o fundo vinho */
     background-color: #7D1F1F;
+    /* Define a borda dourada */
     border: 1px solid #D9B27A;
+    /* Arredonda os cantos */
     border-radius: 4px;
+    /* Define a cor do texto */
     color: #F8F5F2;
+    /* Define a fonte */
     font-family: "Lato", sans-serif;
+    /* Define o tamanho da fonte */
     font-size: 17px;
+    /* Define o peso da fonte */
     font-weight: 700;
+    /* Remove o sublinhado */
     text-decoration: none;
+    /* Cria uma transição suave */
     transition: all 0.3s ease;
 }
 
 
-    /* ÍCONE DO BOTÃO */
+    /* ----------------------------------------------------------------
+   ÍCONE DO BOTÃO
+   ---------------------------------------------------------------- */
 
+    /* Configura o ícone do botão */
     .btn-localizacao i {
+        /* Define o tamanho do ícone */
         font-size: 17px;
+        /* Define a cor dourada */
         color: #D9B27A;
     }
-        
 
-    /* HOVER */
 
+    /* ----------------------------------------------------------------
+   HOVER
+   ---------------------------------------------------------------- */
+
+    /* Define o efeito ao passar o mouse sobre o botão */
     .btn-localizacao:hover {
+        /* Muda o fundo para dourado */
         background-color: #D9B27A;
+        /* Muda o texto para preto */
         color: #0E0E0E;
+        /* Move levemente o botão para cima */
         transform: translateY(-1px);
     }
 
@@ -4443,63 +4613,339 @@ button,
    RESPONSIVIDADE
    ---------------------------------------------------------------- */
 
+/* Aplica ajustes em telas de até 600px */
 @media (max-width: 600px) {
 
+    /* Ajusta a largura do modal em telas menores */
     .modal-localizacao-dialog {
+        /* Reduz as margens laterais */
         width: calc(100% - 20px);
     }
 
 
+    /* Ajusta o espaço superior do cabeçalho */
     .modal-localizacao-topo {
+        /* Reduz o espaçamento superior */
         padding-top: 50px;
     }
 
 
+    /* Ajusta o tamanho da logo */
     .modal-localizacao-logo img {
+        /* Reduz a largura da logo */
         width: 155px;
     }
 
 
+    /* Ajusta a posição do botão fechar */
     .modal-localizacao-fechar {
+        /* Reduz a distância do topo */
         top: 20px;
+        /* Reduz a distância da direita */
         right: 20px;
     }
 
 
+    /* Ajusta o corpo do modal */
     .modal-localizacao-body {
+        /* Reduz o espaçamento interno */
         padding: 25px 25px 30px;
     }
 
 
+    /* Ajusta o cabeçalho */
     .modal-localizacao-header {
+        /* Reduz o espaço inferior */
         margin-bottom: 25px;
     }
 
 
+        /* Ajusta o título */
         .modal-localizacao-header h2 {
+            /* Reduz o tamanho do título */
             font-size: 32px;
         }
 
 
+    /* Ajusta o subtítulo */
     .modal-localizacao-subtitulo {
+        /* Reduz o tamanho da fonte */
         font-size: 12px;
+        /* Reduz o espaçamento entre letras */
         letter-spacing: 2px;
     }
 
 
+    /* Ajusta o bloco de endereço */
     .modal-localizacao-endereco {
+        /* Reduz o espaçamento interno */
         padding: 15px;
+        /* Reduz o espaço entre os elementos */
         gap: 12px;
     }
 
 
+    /* Ajusta a altura do mapa */
     .modal-localizacao-mapa iframe {
+        /* Reduz a altura do mapa */
         height: 190px;
     }
 
 
+    /* Ajusta o botão */
     .btn-localizacao {
+        /* Reduz a altura */
         height: 58px;
+        /* Reduz o tamanho da fonte */
         font-size: 15px;
     }
 }
+
+/* ================================================================
+PÁGINA MEU PERFIL
+================================================================ */
+
+/* ================================================================
+CONTAINER PRINCIPAL DO PERFIL
+================================================================ */
+
+/* Define o espaçamento superior da página de perfil. */
+.perfil-kiora-container {
+    /* Adiciona espaço entre o menu e o conteúdo. */
+    margin-top: 60px;    
+    /* Adiciona espaço inferior antes do final da página. */
+    margin-bottom: 80px;
+  
+}
+
+/* ================================================================
+TÍTULO DO PERFIL
+================================================================ */
+
+/* Estiliza o título principal "Meu Perfil". */
+.perfil-kiora-titulo {
+    /* Utiliza a fonte Playfair Display do projeto. */
+    font-family: 'Playfair Display', serif;    
+    /* Define a cor dourada utilizada na identidade do Kiora. */
+    color: #D9B27A;
+    /* Define o tamanho do título. */
+    font-size: 38px;
+    /* Centraliza o título. */
+    text-align: center;
+    /* Adiciona espaço abaixo do título. */
+    margin-bottom: 35px;
+    
+}
+
+/* =========================================================
+   CARD DO MEU PERFIL
+   ========================================================= */
+
+/* Configura o card que apresenta os dados do usuário. */
+.perfil-kiora-card {
+    /* Permite posicionar os elementos decorativos internos. */
+    position: relative;
+    /* Define o fundo escuro seguindo o padrão dos cards da Home. */
+    background: #111111;
+    /* Define uma borda dourada inicialmente discreta. */
+    border: 1px solid rgba(217, 178, 122, 0.35);
+    /* Limita a largura máxima do card. */
+    max-width: 600px;
+    /* Centraliza o card horizontalmente. */
+    margin: 0 auto;
+    /* Define o espaçamento interno do card. */
+    padding: 35px;
+    /* Esconde qualquer conteúdo que ultrapasse os limites do card. */
+    overflow: hidden;
+    /* Cria transições suaves semelhantes às dos cards da Home. */
+    transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease, background 0.4s ease;
+}
+
+
+    /* =========================================================
+   LINHA DECORATIVA SUPERIOR
+   ========================================================= */
+
+    /* Cria a linha dourada decorativa no topo do card. */
+    .perfil-kiora-card::before {
+        /* Permite criar o elemento decorativo. */
+        content: "";
+        /* Posiciona a linha dentro do card. */
+        position: absolute;
+        /* Coloca a linha no topo do card. */
+        top: 0;
+        /* Começa a linha no centro do card. */
+        left: 50%;
+        /* Inicialmente a linha não possui largura. */
+        width: 0;
+        /* Define a altura da linha. */
+        height: 2px;
+        /* Define a cor dourada do Kiora. */
+        background-color: #D9B27A;
+        /* Centraliza a linha horizontalmente. */
+        transform: translateX(-50%);
+        /* Cria uma animação suave da largura. */
+        transition: width 0.4s ease;
+        /* Mantém a linha acima dos outros elementos. */
+        z-index: 5;
+    }
+
+
+    /* =========================================================
+   DETALHE DECORATIVO DO CANTO
+   ========================================================= */
+
+    /* Cria o detalhe dourado no canto superior direito. */
+    .perfil-kiora-card::after {
+        /* Permite criar o elemento decorativo. */
+        content: "";
+        /* Posiciona o detalhe dentro do card. */
+        position: absolute;
+        /* Define a distância em relação ao topo. */
+        top: 15px;
+        /* Define a distância em relação à direita. */
+        right: 15px;
+        /* Define a largura inicial do detalhe. */
+        width: 25px;
+        /* Define a altura inicial do detalhe. */
+        height: 25px;
+        /* Cria a linha superior do detalhe. */
+        border-top: 1px solid rgba(217, 178, 122, 0.45);
+        /* Cria a linha direita do detalhe. */
+        border-right: 1px solid rgba(217, 178, 122, 0.45);
+        /* Cria uma transição suave. */
+        transition: all 0.4s ease;
+        /* Mantém o detalhe acima dos demais elementos. */
+        z-index: 5;
+    }
+
+
+    /* =========================================================
+   HOVER DO CARD DO PERFIL
+   ========================================================= */
+
+    /* Define o comportamento do card quando o mouse passa sobre ele. */
+    .perfil-kiora-card:hover {
+        /* Move o card levemente para cima. */
+        transform: translateY(-10px);
+        /* Torna a borda completamente dourada. */
+        border-color: #D9B27A;
+        /* Cria a mesma sombra utilizada nos cards da Home. */
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45), 0 0 20px rgba(217, 178, 122, 0.08);
+        /* Aplica o mesmo gradiente utilizado nos cards da Home. */
+        background: linear-gradient(145deg, #1C1C1C 0%, #111111 100%);
+    }
+
+
+        /* =========================================================
+   ANIMAÇÃO DA LINHA SUPERIOR
+   ========================================================= */
+
+        /* Expande a linha dourada quando o mouse passa sobre o card. */
+        .perfil-kiora-card:hover::before {
+            /* Define a largura da linha durante o hover. */
+            width: 70%;
+        }
+
+
+        /* =========================================================
+   ANIMAÇÃO DO DETALHE DO CANTO
+   ========================================================= */
+
+        /* Aumenta o detalhe dourado durante o hover. */
+        .perfil-kiora-card:hover::after {
+            /* Aumenta a largura do detalhe. */
+            width: 35px;
+            /* Aumenta a altura do detalhe. */
+            height: 35px;
+            /* Torna as linhas completamente douradas. */
+            border-color: #D9B27A;
+        }
+
+/* ================================================================
+TÍTULO DAS INFORMAÇÕES
+================================================================ */
+
+/* Estiliza os títulos "Nome" e "E-mail". */
+.perfil-kiora-label {
+    /* Utiliza a fonte Lato do projeto. */
+    font-family: 'Lato', sans-serif;   
+    /* Define a cor dourada. */
+    color: #D9B27A;
+    /* Define o tamanho do texto. */
+    font-size: 16px;
+    /* Deixa o texto em negrito. */
+    font-weight: 700;
+    /* Remove margem superior. */
+    margin-top: 0;
+    /* Adiciona espaço abaixo do título. */
+    margin-bottom: 8px;
+    
+}
+
+/* ================================================================
+INFORMAÇÕES DO USUÁRIO
+================================================================ */
+
+/* Estiliza o nome e o e-mail exibidos no perfil. */
+.perfil-kiora-info {
+    /* Utiliza a fonte Lato do projeto. */
+    font-family: 'Lato', sans-serif;    
+    /* Define a cor branca para as informações. */
+    color: #FFFFFF;
+    /* Define o tamanho do texto. */
+    font-size: 18px;
+    /* Adiciona espaço abaixo de cada informação. */
+    margin-bottom: 25px;
+    
+}
+
+/* ================================================================
+BOTÃO EDITAR PERFIL
+================================================================ */
+
+/* Estiliza o botão de edição do perfil. */
+.btn-editar-perfil-kiora {
+    /* Define o fundo vinho padrão do Kiora. */
+    background-color: #7D1F1F;    
+    /* Define a borda dourada padrão do Kiora. */
+    border: 1px solid #D9B27A;
+    /* Define a cor branca para o texto. */
+    color: #FFFFFF;
+    /* Utiliza a fonte Lato do projeto. */
+    font-family: 'Lato', sans-serif;
+    /* Deixa o texto do botão em negrito. */
+    font-weight: 700;
+    /* Define o tamanho do texto. */
+    font-size: 16px;
+    /* Define o espaçamento interno do botão. */
+    padding: 10px 25px;
+    /* Arredonda os cantos do botão. */
+    border-radius: 5px;
+    /* Remove o sublinhado do link. */
+    text-decoration: none;
+    /* Permite controlar o tamanho e espaçamento do botão. */
+    display: inline-block;
+    /* Cria uma transição suave entre as cores. */
+    transition: all 0.3s ease;
+    
+}
+
+    /* ================================================================
+HOVER DO BOTÃO EDITAR PERFIL
+================================================================ */
+
+    /* Aplica o efeito quando o mouse passa sobre o botão. */
+    .btn-editar-perfil-kiora:hover {
+        /* Transforma o fundo do botão em dourado. */
+        background-color: #D9B27A;       
+        /* Mantém a borda dourada. */
+        border-color: #D9B27A;
+        /* Muda o texto para o fundo escuro do Kiora. */
+        color: #0E0E0E;
+        /* Remove o sublinhado do link. */
+        text-decoration: none;
+        
+    }
+
+

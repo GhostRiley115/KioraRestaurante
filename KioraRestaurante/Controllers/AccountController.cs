@@ -12,6 +12,8 @@ using KioraRestaurante.ViewModels;
 // e outros recursos do ASP.NET Core MVC.
 using Microsoft.AspNetCore.Mvc;
 
+using Microsoft.AspNetCore.Authorization;
+
 // Permite utilizar os recursos de autenticação do ASP.NET Core.
 using Microsoft.AspNetCore.Authentication;
 
@@ -91,11 +93,31 @@ namespace KioraRestaurante.Controllers
             // passaram pelas validações do ViewModel.
             if (!ModelState.IsValid)
             {
+                // Obtém a primeira mensagem de validação encontrada.
+                //
+                // Dessa forma, o sistema poderá apresentar ao usuário
+                // mensagens específicas como:
+                //
+                // "O nome é obrigatório."
+                // "O e-mail é obrigatório."
+                // "Digite um e-mail válido."
+                // "A senha é obrigatória."
+                // "As senhas não são iguais."
+                var mensagem = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .FirstOrDefault();
+
                 // Retorna uma resposta de erro para o JavaScript.
                 return BadRequest(new
                 {
                     sucesso = false,
-                    mensagem = "Verifique os dados informados."
+
+                    // Envia a mensagem específica para o JavaScript.
+                    //
+                    // Caso nenhuma mensagem seja encontrada,
+                    // utiliza uma mensagem padrão.
+                    mensagem = mensagem ?? "Verifique os dados informados."
                 });
             }
 
@@ -179,11 +201,29 @@ namespace KioraRestaurante.Controllers
             // pelas validações do LoginViewModel.
             if (!ModelState.IsValid)
             {
+                // Obtém a primeira mensagem de validação encontrada.
+                //
+                // Dessa forma, o sistema poderá apresentar ao usuário
+                // mensagens específicas como:
+                //
+                // "Informe seu e-mail."
+                // "Informe um e-mail válido."
+                // "Informe sua senha."
+                var mensagem = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .FirstOrDefault();
+
                 // Retorna uma resposta de erro para o JavaScript.
                 return BadRequest(new
                 {
                     sucesso = false,
-                    mensagem = "Informe seu e-mail e sua senha."
+
+                    // Envia a mensagem específica para o JavaScript.
+                    //
+                    // Caso nenhuma mensagem seja encontrada,
+                    // utiliza uma mensagem padrão.
+                    mensagem = mensagem ?? "Informe seu e-mail e sua senha."
                 });
             }
 
@@ -325,5 +365,43 @@ namespace KioraRestaurante.Controllers
             // Depois de sair, retorna para a página inicial.
             return RedirectToAction("Index", "Home");
         }
+
+
+        // ================================================================
+        // MEU PERFIL - GET
+        // ================================================================
+
+        // Permite acesso somente para usuários autenticados.
+        [Authorize]
+
+        // [HttpGet] indica que esta ação responde a uma requisição GET.
+        [HttpGet]
+        public IActionResult MeuPerfil()
+        {
+            // Obtém o e-mail do usuário que está logado.
+            var email = User.FindFirstValue(ClaimTypes.Email);
+
+            // Verifica se o e-mail foi encontrado no Cookie de autenticação.
+            if (string.IsNullOrEmpty(email))
+            {
+                // Caso não encontre o e-mail, retorna para a página inicial.
+                return RedirectToAction("Index", "Home");
+            }
+
+            // Procura o usuário no banco de dados utilizando o e-mail.
+            var usuario = _usuarioServices.BuscarPorEmail(email);
+
+            // Verifica se o usuário foi encontrado no banco.
+            if (usuario == null)
+            {
+                // Caso o usuário não exista mais no banco,
+                // retorna para a página inicial.
+                return RedirectToAction("Index", "Home");
+            }
+
+            // Envia o usuário encontrado para a View MeuPerfil.cshtml.
+            return View(usuario);
+        }
     }
+
 }

@@ -42,7 +42,7 @@ if (formCadastro) {
                 mensagemCadastro.textContent = resultado.mensagem;
 
                 // Adiciona a classe de sucesso.
-                mensagemCadastro.className = "mensagem-cadastro mensagem-cadastro-sucesso";
+                mensagemCadastro.className = "mensagem-kiora mensagem-kiora-sucesso";
 
                 // Garante que a mensagem fique visível.
                 mensagemCadastro.style.display = "block";
@@ -57,7 +57,7 @@ if (formCadastro) {
                     resultado.mensagem || "Não foi possível realizar o cadastro.";
 
                 // Adiciona a classe de erro.
-                mensagemCadastro.className = "mensagem-cadastro mensagem-cadastro-erro";
+                mensagemCadastro.className = "mensagem-kiora mensagem-kiora-erro";
 
                 // Garante que a mensagem fique visível.
                 mensagemCadastro.style.display = "block";
@@ -72,8 +72,8 @@ if (formCadastro) {
             mensagemCadastro.textContent =
                 "Não foi possível realizar o cadastro. Tente novamente.";
 
-            // Adiciona a classe de erro.
-            mensagemCadastro.className = "mensagem-cadastro mensagem-cadastro-erro";
+            // Adiciona as classes padrão de erro do Kiora.
+            mensagemCadastro.className = "mensagem-kiora mensagem-kiora-erro";
 
             // Garante que a mensagem fique visível.
             mensagemCadastro.style.display = "block";
@@ -220,9 +220,6 @@ if (
             iconeConfirmarSenha.classList.remove("bi-eye-slash");
             iconeConfirmarSenha.classList.add("bi-eye");
 
-            // Atualiza o ícone.
-            iconeConfirmarSenha.classList.add("bi-eye");
-
             // Atualiza a descrição do botão.
             btnMostrarConfirmarSenha.setAttribute(
                 "aria-label",
@@ -333,7 +330,7 @@ if (formLogin) {
 
                     // Define as classes.
                     mensagemLogin.className =
-                        "mensagem-login mensagem-login-erro";
+                        "mensagem-kiora mensagem-kiora-erro";
 
                     // Mostra a mensagem.
                     mensagemLogin.style.display = "block";
@@ -354,7 +351,7 @@ if (formLogin) {
 
                 // Define as classes.
                 mensagemLogin.className =
-                    "mensagem-login mensagem-login-erro";
+                    "mensagem-kiora mensagem-kiora-erro";
 
                 // Mostra a mensagem.
                 mensagemLogin.style.display = "block";
@@ -413,6 +410,52 @@ if (btnMostrarSenha && loginSenha && iconeSenha) {
             iconeSenha.classList.add("bi-eye");
 
             // Atualiza a descrição do botão.
+            btnMostrarSenha.setAttribute(
+                "aria-label",
+                "Mostrar senha"
+            );
+        }
+    });
+}
+
+// ================================================================
+// LIMPAR MODAL DE LOGIN
+// ================================================================
+
+// Obtém o modal de login.
+const modalLogin = document.getElementById("modalLogin");
+
+// Verifica se o modal existe.
+if (modalLogin) {
+
+    // Executa quando o modal termina de fechar.
+    modalLogin.addEventListener("hidden.bs.modal", function () {
+
+        // Limpa os campos do formulário.
+        if (formLogin) {
+            formLogin.reset();
+        }
+
+        // Limpa a mensagem.
+        if (mensagemLogin) {
+            mensagemLogin.textContent = "";
+            mensagemLogin.className = "";
+            mensagemLogin.style.display = "none";
+        }
+
+        // Retorna o campo de senha para o tipo password.
+        if (loginSenha) {
+            loginSenha.type = "password";
+        }
+
+        // Retorna o ícone para o olho normal.
+        if (iconeSenha) {
+            iconeSenha.classList.remove("bi-eye-slash");
+            iconeSenha.classList.add("bi-eye");
+        }
+
+        // Atualiza a descrição do botão.
+        if (btnMostrarSenha) {
             btnMostrarSenha.setAttribute(
                 "aria-label",
                 "Mostrar senha"
