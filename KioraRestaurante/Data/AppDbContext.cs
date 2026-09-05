@@ -28,6 +28,11 @@ namespace KioraRestaurante.Data
                 .HasIndex(u => u.Email)
                 .IsUnique();
 
+            //Define Disponivel true como default
+            modelBuilder.Entity<Produto>()
+                .Property(p => p.Disponivel)
+                .HasDefaultValue(true);
+
             // Usuario 1 : 0..1 Carrinho
             modelBuilder.Entity<Carrinho>()
                 .HasOne(c => c.Usuario)
