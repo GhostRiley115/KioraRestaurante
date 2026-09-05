@@ -349,8 +349,13 @@
 
                     <li class="nav-item">
 
-                        <a class="nav-link" href="#">
+                        <a class="nav-link"
+                           href="#"
+                           data-bs-toggle="modal"
+                           data-bs-target="#modalContato">
+
                             Contato
+
                         </a>
 
                     </li>
@@ -1264,6 +1269,320 @@
 
 </div>
 
+<!--
+    ================================================================
+    MODAL DE CONTATO KIORA
+    ================================================================
+-->
+
+<div class="modal fade"
+     id="modalContato"
+     tabindex="-1"
+     aria-labelledby="modalContatoTitulo"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered modal-contato-dialog">
+
+        <div class="modal-content modal-contato-kiora">
+
+            <!--
+                ====================================================
+                CABEÇALHO DO MODAL
+                ====================================================
+            -->
+
+            <div class="modal-contato-topo">
+
+                <!-- LOGO -->
+
+                <div class="modal-contato-logo">
+
+                    <img src="~/imagens/logo-kiora-v.png"
+                         alt="Kiora Japanese Cuisine">
+
+                </div>
+
+
+                <!-- BOTÃO FECHAR -->
+
+                <button type="button"
+                        class="modal-contato-fechar"
+                        data-bs-dismiss="modal"
+                        aria-label="Fechar">
+
+                    <i class="bi bi-x-lg"></i>
+
+                </button>
+
+            </div>
+
+
+            <!--
+                ====================================================
+                CONTEÚDO
+                ====================================================
+            -->
+
+            <div class="modal-body modal-contato-body">
+
+                <!--
+                    =================================================
+                    CABEÇALHO
+                    =================================================
+                -->
+
+                <div class="modal-contato-header">
+
+                    <span class="modal-contato-subtitulo">
+
+                        KIORA RAMEN HOUSE
+
+                    </span>
+
+                    <h2 id="modalContatoTitulo">
+
+                        Entre em contato
+
+                    </h2>
+
+                    <p>
+
+                        Estamos à disposição para atender você.
+
+                    </p>
+
+                </div>
+
+
+                <!--
+                    =================================================
+                    INFORMAÇÕES DE CONTATO
+                    =================================================
+                -->
+
+                <div class="modal-contato-informacoes">
+
+
+                    <!-- TELEFONE -->
+
+                    <a href="tel:+5511900001234"
+                       class="modal-contato-item">
+
+                        <div class="modal-contato-icone">
+
+                            <i class="bi bi-telephone-fill"></i>
+
+                        </div>
+
+                        <div class="modal-contato-info">
+
+                            <span>
+
+                                TELEFONE
+
+                            </span>
+
+                            <strong>
+
+                                (11) 90000-1234
+
+                            </strong>
+
+                        </div>
+
+                    </a>
+
+
+                    <!-- WHATSAPP -->
+
+                    <a href="https://wa.me/5511900001234"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="modal-contato-item">
+
+                        <div class="modal-contato-icone">
+
+                            <i class="bi bi-whatsapp"></i>
+
+                        </div>
+
+                        <div class="modal-contato-info">
+
+                            <span>
+
+                                WHATSAPP
+
+                            </span>
+
+                            <strong>
+
+                                (11) 90000-1234
+
+                            </strong>
+
+                        </div>
+
+                    </a>
+
+
+                    <!-- E-MAIL -->
+
+                    <a href="mailto:kiora_restaurante@gmail.com"
+                       class="modal-contato-item">
+
+                        <div class="modal-contato-icone">
+
+                            <i class="bi bi-envelope-fill"></i>
+
+                        </div>
+
+                        <div class="modal-contato-info">
+
+                            <span>
+
+                                E-MAIL
+
+                            </span>
+
+                            <strong>
+
+                                kiora_restaurante@gmail.com
+
+                            </strong>
+
+                        </div>
+
+                    </a>
+
+
+                    <!-- INSTAGRAM -->
+
+                    <a href="https://www.instagram.com/kiora_lamen/"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="modal-contato-item">
+
+                        <div class="modal-contato-icone">
+
+                            <i class="bi bi-instagram"></i>
+
+                        </div>
+
+                        <div class="modal-contato-info">
+
+                            <span>
+
+                                INSTAGRAM
+
+                            </span>
+
+                            <strong>
+
+                                @@kiora_lamen
+                                
+                            </strong>
+
+                        </div>
+
+                    </a>
+
+
+                    <!-- FACEBOOK -->
+
+                    <a href="https://www.facebook.com/profile.php?id=61592931191936"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="modal-contato-item">
+
+                        <div class="modal-contato-icone">
+
+                            <i class="bi bi-facebook"></i>
+
+                        </div>
+
+                        <div class="modal-contato-info">
+
+                            <span>
+
+                                FACEBOOK
+
+                            </span>
+
+                            <strong>
+
+                                Kiora Lamen
+
+                            </strong>
+
+                        </div>
+
+                    </a>
+
+
+                    <!-- ENDEREÇO -->
+
+                    <a href="#"
+                       class="modal-contato-item"
+                       data-bs-dismiss="modal"
+                       data-bs-toggle="modal"
+                       data-bs-target="#modalLocalizacao">
+
+                        <div class="modal-contato-icone">
+
+                            <i class="bi bi-geo-alt-fill"></i>
+
+                        </div>
+
+                        <div class="modal-contato-info">
+
+                            <span>
+
+                                ENDEREÇO
+
+                            </span>
+
+                            <strong>
+
+                                R. dos Pinheiros, 1234
+
+                            </strong>
+
+                            <small>
+
+                                Pinheiros, São Paulo - SP
+
+                            </small>
+
+                        </div>
+
+                    </a>
+
+                </div>
+
+
+                <!--
+                    =================================================
+                    FRASE FINAL
+                    =================================================
+                -->
+
+                <div class="modal-contato-final">
+
+                    <span>
+
+                        Uma experiência além do sabor.
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
 <!--
     ================================================================
@@ -1434,7 +1753,9 @@
 
                         <!-- INSTAGRAM -->
 
-                        <a href="#"
+                        <a href="https://www.instagram.com/kiora_lamen/"
+                           target="_blank"
+                           rel="noopener noreferrer"
                            aria-label="Instagram">
 
                             <i class="bi bi-instagram"></i>
@@ -1444,7 +1765,9 @@
 
                         <!-- FACEBOOK -->
 
-                        <a href="#"
+                        <a href="https://www.facebook.com/profile.php?id=61592931191936"
+                           target="_blank"
+                           rel="noopener noreferrer"
                            aria-label="Facebook">
 
                             <i class="bi bi-facebook"></i>
