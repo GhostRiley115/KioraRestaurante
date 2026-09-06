@@ -402,6 +402,401 @@ namespace KioraRestaurante.Controllers
             // Envia o usuário encontrado para a View MeuPerfil.cshtml.
             return View(usuario);
         }
+
+        // ================================================================
+        // EDITAR PERFIL - GET
+        // ================================================================
+
+        // Esta ação será responsável por carregar
+        // os dados atuais do usuário para a edição do perfil.
+        //
+        // O usuário precisa estar autenticado para acessar
+        // esta funcionalidade.
+        [Authorize]
+        [HttpGet]
+        public IActionResult EditarPerfil()
+        {
+            // Recupera o e-mail armazenado no Cookie
+            // de autenticação do usuário atualmente logado.
+            var email = User.FindFirstValue(ClaimTypes.Email);
+
+
+            // Verifica se o e-mail não foi encontrado
+            // dentro do Cookie de autenticação.
+            if (string.IsNullOrEmpty(email))
+            {
+                // Caso não exista um e-mail válido,
+                // retorna o usuário para a página inicial.
+                return RedirectToAction("Index", "Home");
+            }
+
+
+            // Busca no banco de dados o usuário correspondente
+            // ao e-mail encontrado no Cookie.
+            var usuario = _usuarioServices.BuscarPorEmail(email);
+
+
+            // Verifica se o usuário foi encontrado no banco.
+            if (usuario == null)
+            {
+                // Caso o usuário não exista mais no banco,
+                // retorna para a página inicial.
+                return RedirectToAction("Index", "Home");
+            }
+
+
+            // Cria um ViewModel específico para edição.
+            //
+            // Não utilizamos a entidade Usuario diretamente
+            // no formulário de edição.
+            var model = new EditarPerfilViewModel
+            {
+                // Preenche o campo Nome com o nome
+                // atualmente cadastrado.
+                Nome = usuario.Nome,
+
+                // Preenche o campo Email com o e-mail
+                // atualmente cadastrado.
+                Email = usuario.Email
+            };
+
+
+            // Envia o ViewModel para a View de edição.
+            return View(model);
+        }
+
+        // ================================================================
+        // EDITAR PERFIL - POST
+        // ================================================================
+
+        // Esta ação recebe os dados enviados pelo formulário
+        // de edição do perfil.
+        //
+        // O usuário precisa estar autenticado para realizar
+        // esta operação.
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> EditarPerfil(
+            EditarPerfilViewModel model
+        )
+        {
+            // ============================================================
+            // VALIDAÇÃO DO FORMULÁRIO
+            // ============================================================
+
+            // Verifica se os dados enviados pelo formulário
+            // passaram pelas validações do ViewModel.
+            if (!ModelState.IsValid)
+            {
+                // Procura a primeira mensagem de erro
+                // encontrada nas validações.
+                var mensagem = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .FirstOrDefault();
+
+
+                // Retorna uma resposta informando
+                // que os dados não são válidos.
+                return BadRequest(new
+                {
+                    sucesso = false,
+                    mensagem = mensagem ??
+                               "Verifique os dados informados."
+                });
+            }
+
+
+            // ============================================================
+            // IDENTIFICAR USUÁRIO LOGADO
+            // ============================================================
+
+            // Recupera o e-mail atualmente armazenado
+            // no Cookie de autenticação.
+            var emailAtual = User.FindFirstValue(
+                ClaimTypes.Email
+            );
+
+
+            // Verifica se o e-mail foi encontrado.
+            if (string.IsNullOrEmpty(emailAtual))
+            {
+                // Caso não exista um e-mail válido,
+                // informa que não foi possível identificar
+                // o usuário.
+                return BadRequest(new
+                {
+                    sucesso = false,
+                    mensagem = "Não foi possível identificar o usuário."
+                });
+            }
+
+
+            // Busca o usuário atualmente logado
+            // no banco de dados.
+            var usuario = _usuarioServices.BuscarPorEmail(
+                emailAtual
+            );
+
+
+            // Verifica se o usuário realmente existe.
+            if (usuario == null)
+            {
+                return BadRequest(new
+                {
+                    sucesso = false,
+                    mensagem = "Usuário não encontrado."
+                });
+            }
+
+
+            // ============================================================
+            // VERIFICAR E-MAIL DUPLICADO
+            // ============================================================
+
+            // Verifica se o novo e-mail informado
+            // já pertence a outro usuário.
+            var emailJaExiste =
+                _usuarioServices.EmailExisteParaOutroUsuario(
+                    model.Email,
+                    usuario.Id
+                );
+
+
+            // Caso o e-mail já pertença a outra conta,
+            // impede a alteração.
+            if (emailJaExiste)
+            {
+                return BadRequest(new
+                {
+                    sucesso = false,
+                    mensagem = "Este e-mail já está cadastrado."
+                });
+            }
+
+
+            // ============================================================
+            // ATUALIZAR DADOS DO USUÁRIO
+            // ============================================================
+
+            // Atualiza somente os dados permitidos
+            // pela edição do perfil.
+            usuario.Nome = model.Nome;
+            usuario.Email = model.Email;
+
+
+            // Envia o usuário atualizado para o Service,
+            // que será responsável por salvar os dados
+            // no banco de dados.
+            _usuarioServices.AtualizarPerfil(usuario);
+
+
+            // ============================================================
+            // ATUALIZAR COOKIE DE AUTENTICAÇÃO
+            // ============================================================
+
+            // Depois de alterar o nome ou o e-mail,
+            // precisamos atualizar também o Cookie de autenticação.
+            //
+            // Isso é importante porque o menu do site utiliza
+            // o nome armazenado no Cookie.
+            //
+            // Além disso, o MeuPerfil utiliza o e-mail armazenado
+            // no Cookie para localizar o usuário no banco.
+
+
+            // Cria uma nova lista de Claims
+            // com os dados atualizados.
+            var claims = new List<Claim>
+            {
+                // Mantém o identificador do usuário.
+                new Claim(
+                    ClaimTypes.NameIdentifier,
+                    usuario.Id.ToString()
+                ),
+
+                // Atualiza o nome armazenado no Cookie.
+                new Claim(
+                    ClaimTypes.Name,
+                    usuario.Nome
+                ),
+
+                // Atualiza o e-mail armazenado no Cookie.
+                new Claim(
+                    ClaimTypes.Email,
+                    usuario.Email
+                )
+            };
+
+
+            // Cria uma nova identidade utilizando
+            // o mesmo esquema de autenticação por Cookie.
+            var identidade = new ClaimsIdentity(
+                claims,
+                CookieAuthenticationDefaults.AuthenticationScheme
+            );
+
+
+            // Cria um novo usuário autenticado
+            // utilizando a identidade atualizada.
+            var principal = new ClaimsPrincipal(identidade);
+
+
+            // Substitui o Cookie atual pelo novo Cookie,
+            // contendo o nome e o e-mail atualizados.
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                principal
+            );
+
+
+            // ============================================================
+            // RESPOSTA DE SUCESSO
+            // ============================================================
+
+            // Retorna uma resposta de sucesso para o JavaScript.
+            return Ok(new
+            {
+                sucesso = true,
+                mensagem = "Perfil atualizado com sucesso!",
+                nome = usuario.Nome
+            });
+        }
+
+        // ================================================================
+        // ALTERAR SENHA - POST
+        // ================================================================
+
+        // Esta ação recebe os dados enviados pelo formulário
+        // de alteração de senha.
+        //
+        // O usuário precisa estar autenticado para realizar
+        // esta operação.
+        [Authorize]
+        [HttpPost]
+        public IActionResult AlterarSenha(
+            AlterarSenhaViewModel model
+        )
+        {
+            // ============================================================
+            // VALIDAR DADOS DO FORMULÁRIO
+            // ============================================================
+
+            // Verifica se os dados enviados passaram
+            // pelas validações definidas no ViewModel.
+            if (!ModelState.IsValid)
+            {
+                // Procura a primeira mensagem de erro
+                // encontrada nas validações.
+                var mensagem = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .FirstOrDefault();
+
+
+                // Retorna uma resposta informando
+                // que os dados enviados são inválidos.
+                return BadRequest(new
+                {
+                    sucesso = false,
+                    mensagem = mensagem ??
+                               "Verifique os dados informados."
+                });
+            }
+
+
+            // ============================================================
+            // IDENTIFICAR USUÁRIO LOGADO
+            // ============================================================
+
+            // Recupera o identificador do usuário
+            // armazenado no Cookie de autenticação.
+            var usuarioIdString = User.FindFirstValue(
+                ClaimTypes.NameIdentifier
+            );
+
+
+            // Verifica se o identificador foi encontrado.
+            if (string.IsNullOrEmpty(usuarioIdString))
+            {
+                // Caso o identificador não exista,
+                // não será possível localizar o usuário.
+                return BadRequest(new
+                {
+                    sucesso = false,
+                    mensagem = "Não foi possível identificar o usuário."
+                });
+            }
+
+
+            // ============================================================
+            // CONVERTER ID DO USUÁRIO
+            // ============================================================
+
+            // Converte o identificador recebido do Cookie
+            // de texto para número inteiro.
+            if (!int.TryParse(
+                usuarioIdString,
+                out int usuarioId
+            ))
+            {
+                // Caso o valor não possa ser convertido,
+                // interrompe a operação.
+                return BadRequest(new
+                {
+                    sucesso = false,
+                    mensagem = "Identificação do usuário inválida."
+                });
+            }
+
+
+            // ============================================================
+            // ALTERAR SENHA
+            // ============================================================
+
+            // Envia os dados para o Service responsável
+            // pela alteração da senha.
+            //
+            // O Service irá:
+            //
+            // 1. Procurar o usuário.
+            // 2. Verificar a senha atual.
+            // 3. Criar o hash da nova senha.
+            // 4. Salvar a nova senha no banco.
+            var senhaAlterada = _usuarioServices.AlterarSenha(
+                usuarioId,
+                model.SenhaAtual,
+                model.NovaSenha
+            );
+
+
+            // ============================================================
+            // VERIFICAR RESULTADO
+            // ============================================================
+
+            // Caso a senha atual esteja incorreta,
+            // o Service retornará false.
+            if (!senhaAlterada)
+            {
+                return BadRequest(new
+                {
+                    sucesso = false,
+                    mensagem = "A senha atual está incorreta."
+                });
+            }
+
+
+            // ============================================================
+            // RESPOSTA DE SUCESSO
+            // ============================================================
+
+            // Retorna uma resposta de sucesso para o JavaScript.
+            return Ok(new
+            {
+                sucesso = true,
+                mensagem = "Senha alterada com sucesso!"
+            });
+        }
     }
 
 }

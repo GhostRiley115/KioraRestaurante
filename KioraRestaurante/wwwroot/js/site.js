@@ -463,3 +463,613 @@ if (modalLogin) {
         }
     });
 }
+
+// ================================================================
+// EDITAR PERFIL
+// ================================================================
+
+// Localiza o formulário responsável pela edição do perfil.
+const formEditarPerfil = document.getElementById("formEditarPerfil");
+
+// Localiza a área onde serão exibidas as mensagens
+// de sucesso ou erro.
+const mensagemEditarPerfil =
+    document.getElementById("mensagemEditarPerfil");
+
+
+// ================================================================
+// FORMULÁRIO DE EDIÇÃO DO PERFIL
+// ================================================================
+
+// Verifica se o formulário existe na página.
+//
+// Essa verificação é importante porque o site.js
+// é utilizado em outras páginas do sistema.
+// Dessa forma, o código só será executado
+// quando o formulário realmente estiver presente.
+if (formEditarPerfil) {
+
+    // Detecta o envio do formulário.
+    formEditarPerfil.addEventListener("submit", async function (evento) {
+
+        // Impede que o navegador recarregue a página
+        // ao enviar o formulário.
+        evento.preventDefault();
+
+
+        // ============================================================
+        // LIMPAR MENSAGEM ANTERIOR
+        // ============================================================
+
+        // Remove a mensagem exibida anteriormente.
+        mensagemEditarPerfil.textContent = "";
+
+        // Esconde a área de mensagem.
+        mensagemEditarPerfil.style.display = "none";
+
+
+        // ============================================================
+        // CAPTURAR OS DADOS DO FORMULÁRIO
+        // ============================================================
+
+        // Cria um objeto FormData utilizando
+        // os campos existentes no formulário.
+        const dados = new FormData(formEditarPerfil);
+
+
+        // ============================================================
+        // ENVIAR DADOS PARA O CONTROLLER
+        // ============================================================
+
+        try {
+
+            // Envia os dados para a ação EditarPerfil
+            // do AccountController.
+            const resposta = await fetch("/Account/EditarPerfil", {
+                method: "POST",
+                body: dados
+            });
+
+
+            // Converte a resposta recebida do Controller
+            // para um objeto JavaScript.
+            const resultado = await resposta.json();
+
+
+            // ========================================================
+            // VERIFICAR RESULTADO
+            // ========================================================
+
+            // Verifica se o Controller informou
+            // que a operação foi realizada com sucesso.
+            if (resultado.sucesso) {
+
+                // Exibe a mensagem de sucesso.
+                mensagemEditarPerfil.textContent =
+                    resultado.mensagem;
+
+                // Exibe a área da mensagem.
+                mensagemEditarPerfil.style.display = "block";
+
+
+                // Define uma cor verde para indicar
+                // que a operação foi concluída.
+                mensagemEditarPerfil.style.color = "#FFFFFF";
+
+                mensagemEditarPerfil.style.backgroundColor =
+                    "#198754";
+
+
+                // ====================================================
+                // ATUALIZAR NOME DO MENU
+                // ====================================================
+
+                // Procura o elemento que exibe o nome
+                // do usuário no menu superior.
+                const nomeUsuarioMenu =
+                    document.querySelector(".nome-usuario-menu");
+
+
+                // Verifica se o elemento foi encontrado
+                // e se o Controller enviou um novo nome.
+                if (nomeUsuarioMenu && resultado.nome) {
+
+                    // Atualiza o nome exibido no menu
+                    // sem precisar recarregar a página.
+                    nomeUsuarioMenu.textContent =
+                        resultado.nome;
+                }
+
+
+                // ====================================================
+                // FECHAR MODAL
+                // ====================================================
+
+                // Aguarda um pequeno intervalo para que
+                // o usuário consiga visualizar a mensagem
+                // de sucesso antes do modal ser fechado.
+                setTimeout(function () {
+
+                    // Localiza o modal de edição.
+                    const modalElemento =
+                        document.getElementById("modalEditarPerfil");
+
+
+                    // Verifica se o modal existe.
+                    if (modalElemento) {
+
+                        // Obtém a instância do modal criada
+                        // pelo Bootstrap.
+                        const modal =
+                            bootstrap.Modal.getInstance(
+                                modalElemento
+                            );
+
+
+                        // Se a instância existir,
+                        // fecha o modal.
+                        if (modal) {
+                            modal.hide();
+                        }
+                    }
+
+
+                    // =================================================
+                    // ATUALIZAR DADOS EXIBIDOS NA PÁGINA
+                    // =================================================
+
+                    // Atualiza o nome exibido no card do perfil.
+                    //
+                    // A página ainda possui os dados antigos
+                    // porque não foi recarregada.
+                    //
+                    // Para evitar alterações desnecessárias
+                    // no HTML atual, recarregaremos a página
+                    // depois que o modal for fechado.
+                    window.location.reload();
+
+                }, 1200);
+
+            }
+
+            // ========================================================
+            // ERRO
+            // ========================================================
+
+            else {
+
+                // Exibe a mensagem enviada pelo Controller.
+                mensagemEditarPerfil.textContent =
+                    resultado.mensagem ||
+                    "Não foi possível atualizar o perfil.";
+
+                // Exibe a área da mensagem.
+                mensagemEditarPerfil.style.display = "block";
+
+
+                // Define uma aparência de erro.
+                mensagemEditarPerfil.style.color =
+                    "#FFFFFF";
+
+                mensagemEditarPerfil.style.backgroundColor =
+                    "#7D1F1F";
+            }
+
+
+        }
+
+        // ============================================================
+        // ERRO DE COMUNICAÇÃO
+        // ============================================================
+
+        catch (erro) {
+
+            // Exibe uma mensagem caso ocorra
+            // algum problema na comunicação com o servidor.
+            mensagemEditarPerfil.textContent =
+                "Ocorreu um erro ao atualizar o perfil.";
+
+            // Exibe a mensagem.
+            mensagemEditarPerfil.style.display = "block";
+
+
+            // Define a aparência de erro.
+            mensagemEditarPerfil.style.color =
+                "#FFFFFF";
+
+            mensagemEditarPerfil.style.backgroundColor =
+                "#7D1F1F";
+
+
+            // Registra o erro no console
+            // para facilitar a identificação do problema.
+            console.error(
+                "Erro ao editar perfil:",
+                erro
+            );
+        }
+
+    });
+}
+
+// ================================================================
+// ALTERAR SENHA
+// ================================================================
+
+// Localiza o formulário de alteração de senha.
+const formAlterarSenha =
+    document.getElementById("formAlterarSenha");
+
+// Localiza a área onde serão exibidas
+// as mensagens de sucesso ou erro.
+const mensagemAlterarSenha =
+    document.getElementById("mensagemAlterarSenha");
+
+// Verifica se o formulário existe na página.
+if (formAlterarSenha) {
+
+    // ============================================================
+    // ENVIO DO FORMULÁRIO
+    // ============================================================
+
+    formAlterarSenha.addEventListener(
+        "submit",
+        async function (evento) {
+
+            // Impede o envio tradicional do formulário.
+            evento.preventDefault();
+
+            // Limpa qualquer mensagem anterior.
+            mensagemAlterarSenha.textContent = "";
+
+            // Esconde a mensagem anterior.
+            mensagemAlterarSenha.style.display = "none";
+
+            // Cria os dados do formulário.
+            const dados = new FormData(formAlterarSenha);
+
+            try {
+
+                // Envia os dados para o AccountController.
+                const resposta = await fetch(
+                    "/Account/AlterarSenha",
+                    {
+                        method: "POST",
+                        body: dados
+                    }
+                );
+
+                // Converte a resposta para JSON.
+                const resultado = await resposta.json();
+
+                // ====================================================
+                // SENHA ALTERADA COM SUCESSO
+                // ====================================================
+
+                if (resultado.sucesso) {
+
+                    // Exibe a mensagem recebida do Controller.
+                    mensagemAlterarSenha.textContent =
+                        resultado.mensagem;
+
+                    // Mostra a mensagem.
+                    mensagemAlterarSenha.style.display =
+                        "block";
+
+                    // Define a cor do texto.
+                    mensagemAlterarSenha.style.color =
+                        "#FFFFFF";
+
+                    // Define o fundo verde de sucesso.
+                    mensagemAlterarSenha.style.backgroundColor =
+                        "#198754";
+
+                    // Limpa os campos do formulário.
+                    formAlterarSenha.reset();
+
+                    // Aguarda um pouco e fecha o modal.
+                    setTimeout(function () {
+
+                        const modalElemento =
+                            document.getElementById(
+                                "modalAlterarSenha"
+                            );
+
+                        if (modalElemento) {
+
+                            const modal =
+                                bootstrap.Modal.getInstance(
+                                    modalElemento
+                                );
+
+                            if (modal) {
+                                modal.hide();
+                            }
+                        }
+
+                    }, 1200);
+
+                }
+
+                // ====================================================
+                // ERRO NA ALTERAÇÃO DA SENHA
+                // ====================================================
+
+                else {
+
+                    // Exibe a mensagem de erro.
+                    mensagemAlterarSenha.textContent =
+                        resultado.mensagem ||
+                        "Não foi possível alterar a senha.";
+
+                    // Mostra a mensagem.
+                    mensagemAlterarSenha.style.display =
+                        "block";
+
+                    // Define a cor do texto.
+                    mensagemAlterarSenha.style.color =
+                        "#FFFFFF";
+
+                    // Define o fundo vinho de erro.
+                    mensagemAlterarSenha.style.backgroundColor =
+                        "#7D1F1F";
+                }
+
+            }
+
+            // ========================================================
+            // ERRO DE COMUNICAÇÃO
+            // ========================================================
+
+            catch (erro) {
+
+                // Exibe uma mensagem para o usuário.
+                mensagemAlterarSenha.textContent =
+                    "Ocorreu um erro ao alterar a senha.";
+
+                // Mostra a mensagem.
+                mensagemAlterarSenha.style.display =
+                    "block";
+
+                // Define a cor do texto.
+                mensagemAlterarSenha.style.color =
+                    "#FFFFFF";
+
+                // Define o fundo vinho de erro.
+                mensagemAlterarSenha.style.backgroundColor =
+                    "#7D1F1F";
+
+                // Exibe o erro no console
+                // para facilitar a identificação do problema.
+                console.error(
+                    "Erro ao alterar senha:",
+                    erro
+                );
+            }
+
+        }
+    );
+}
+
+// ================================================================
+// MOSTRAR / OCULTAR SENHA ATUAL
+// ================================================================
+
+// Localiza o botão responsável por mostrar ou ocultar
+// a senha atual.
+const btnMostrarSenhaAtual =
+    document.getElementById("btnMostrarSenhaAtual");
+
+// Localiza o campo da senha atual.
+const senhaAtual =
+    document.getElementById("senhaAtual");
+
+// Localiza o ícone do olho.
+const iconeSenhaAtual =
+    document.getElementById("iconeSenhaAtual");
+
+// Verifica se os elementos existem na página.
+if (
+    btnMostrarSenhaAtual &&
+    senhaAtual &&
+    iconeSenhaAtual
+) {
+
+    btnMostrarSenhaAtual.addEventListener(
+        "click",
+        function () {
+
+            // Verifica se a senha está escondida.
+            if (senhaAtual.type === "password") {
+
+                // Mostra a senha.
+                senhaAtual.type = "text";
+
+                // Altera o ícone para olho fechado.
+                iconeSenhaAtual.classList.remove(
+                    "bi-eye"
+                );
+
+                iconeSenhaAtual.classList.add(
+                    "bi-eye-slash"
+                );
+
+                // Atualiza a descrição do botão.
+                btnMostrarSenhaAtual.setAttribute(
+                    "aria-label",
+                    "Ocultar senha"
+                );
+
+            } else {
+
+                // Esconde novamente a senha.
+                senhaAtual.type = "password";
+
+                // Altera o ícone para olho aberto.
+                iconeSenhaAtual.classList.remove(
+                    "bi-eye-slash"
+                );
+
+                iconeSenhaAtual.classList.add(
+                    "bi-eye"
+                );
+
+                // Atualiza a descrição do botão.
+                btnMostrarSenhaAtual.setAttribute(
+                    "aria-label",
+                    "Mostrar senha"
+                );
+            }
+
+        }
+    );
+}
+
+// ================================================================
+// MOSTRAR / OCULTAR NOVA SENHA
+// ================================================================
+
+// Localiza o botão responsável por mostrar ou ocultar
+// a nova senha.
+const btnMostrarNovaSenha =
+    document.getElementById("btnMostrarNovaSenha");
+
+// Localiza o campo da nova senha.
+const novaSenha =
+    document.getElementById("novaSenha");
+
+// Localiza o ícone do olho.
+const iconeNovaSenha =
+    document.getElementById("iconeNovaSenha");
+
+// Verifica se os elementos existem na página.
+if (
+    btnMostrarNovaSenha &&
+    novaSenha &&
+    iconeNovaSenha
+) {
+
+    btnMostrarNovaSenha.addEventListener(
+        "click",
+        function () {
+
+            // Verifica se a senha está escondida.
+            if (novaSenha.type === "password") {
+
+                // Mostra a senha.
+                novaSenha.type = "text";
+
+                // Altera o ícone para olho fechado.
+                iconeNovaSenha.classList.remove(
+                    "bi-eye"
+                );
+
+                iconeNovaSenha.classList.add(
+                    "bi-eye-slash"
+                );
+
+                // Atualiza a descrição do botão.
+                btnMostrarNovaSenha.setAttribute(
+                    "aria-label",
+                    "Ocultar senha"
+                );
+
+            } else {
+
+                // Esconde novamente a senha.
+                novaSenha.type = "password";
+
+                // Altera o ícone para olho aberto.
+                iconeNovaSenha.classList.remove(
+                    "bi-eye-slash"
+                );
+
+                iconeNovaSenha.classList.add(
+                    "bi-eye"
+                );
+
+                // Atualiza a descrição do botão.
+                btnMostrarNovaSenha.setAttribute(
+                    "aria-label",
+                    "Mostrar senha"
+                );
+            }
+
+        }
+    );
+}
+
+// ================================================================
+// MOSTRAR / OCULTAR CONFIRMAÇÃO DA NOVA SENHA
+// ================================================================
+
+// Localiza o botão responsável por mostrar ou ocultar
+// a confirmação da nova senha.
+const btnMostrarConfirmarNovaSenha =
+    document.getElementById("btnMostrarConfirmarNovaSenha");
+
+// Localiza o campo de confirmação da nova senha.
+const confirmarNovaSenha =
+    document.getElementById("confirmarNovaSenha");
+
+// Localiza o ícone do olho.
+const iconeConfirmarNovaSenha =
+    document.getElementById("iconeConfirmarNovaSenha");
+
+// Verifica se os elementos existem na página.
+if (
+    btnMostrarConfirmarNovaSenha &&
+    confirmarNovaSenha &&
+    iconeConfirmarNovaSenha
+) {
+
+    btnMostrarConfirmarNovaSenha.addEventListener(
+        "click",
+        function () {
+
+            // Verifica se a senha está escondida.
+            if (confirmarNovaSenha.type === "password") {
+
+                // Mostra a senha.
+                confirmarNovaSenha.type = "text";
+
+                // Altera o ícone para olho fechado.
+                iconeConfirmarNovaSenha.classList.remove(
+                    "bi-eye"
+                );
+
+                iconeConfirmarNovaSenha.classList.add(
+                    "bi-eye-slash"
+                );
+
+                // Atualiza a descrição do botão.
+                btnMostrarConfirmarNovaSenha.setAttribute(
+                    "aria-label",
+                    "Ocultar senha"
+                );
+
+            } else {
+
+                // Esconde novamente a senha.
+                confirmarNovaSenha.type = "password";
+
+                // Altera o ícone para olho aberto.
+                iconeConfirmarNovaSenha.classList.remove(
+                    "bi-eye-slash"
+                );
+
+                iconeConfirmarNovaSenha.classList.add(
+                    "bi-eye"
+                );
+
+                // Atualiza a descrição do botão.
+                btnMostrarConfirmarNovaSenha.setAttribute(
+                    "aria-label",
+                    "Mostrar senha"
+                );
+            }
+
+        }
+    );
+}
+

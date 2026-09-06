@@ -271,6 +271,190 @@ namespace KioraRestaurante.Services
             // Informa que a senha foi alterada com sucesso.
             return true;
         }
+
+        // ================================================================
+        // EDIÇÃO DO PERFIL
+        // ================================================================
+
+        // Verifica se o e-mail informado já pertence
+        // a outro usuário cadastrado no banco de dados.
+        //
+        // O usuário atual é ignorado através do seu Id.
+        //
+        // Isso permite que o usuário continue utilizando
+        // o próprio e-mail sem receber uma mensagem
+        // informando que o e-mail já está cadastrado.
+        public bool EmailExisteParaOutroUsuario(
+            string email,
+            int usuarioId
+        )
+        {
+            // Remove espaços desnecessários do início e do final
+            // do endereço de e-mail.
+            email = email.Trim().ToLower();
+
+            // Procura no banco um usuário que:
+            //
+            // 1. Possua o mesmo e-mail informado.
+            // 2. Possua um Id diferente do usuário atual.
+            //
+            // Se encontrar, significa que o e-mail
+            // já pertence a outro usuário.
+            return _context.Usuarios
+                .Any(u =>
+                    u.Email.ToLower() == email &&
+                    u.Id != usuarioId
+                );
+        }
+
+
+        // ================================================================
+        // ATUALIZAR PERFIL
+        // ================================================================
+
+        // Atualiza os dados permitidos do perfil
+        // do usuário no banco de dados.
+        //
+        // Neste momento serão alterados somente:
+        // - Nome
+        // - E-mail
+        //
+        // A senha, o tipo de usuário, o carrinho,
+        // os pedidos e os dados de recuperação de senha
+        // não serão alterados por esta função.
+        public void AtualizarPerfil(Usuario usuario)
+        {
+            // Localiza o usuário existente no banco de dados
+            // através do Id recebido.
+            var usuarioBanco = _context.Usuarios
+                .FirstOrDefault(u => u.Id == usuario.Id);
+
+            // Caso o usuário não seja encontrado,
+            // encerra a operação sem realizar alterações.
+            if (usuarioBanco == null)
+                return;
+
+
+            // ============================================================
+            // ATUALIZAÇÃO DO NOME
+            // ============================================================
+
+            // Remove espaços desnecessários do nome
+            // antes de salvar no banco de dados.
+            usuarioBanco.Nome = usuario.Nome.Trim();
+
+
+            // ============================================================
+            // ATUALIZAÇÃO DO E-MAIL
+            // ============================================================
+
+            // Remove espaços desnecessários do e-mail
+            // e transforma as letras em minúsculas.
+            //
+            // Isso mantém o mesmo padrão utilizado
+            // no cadastro e no login.
+            usuarioBanco.Email = usuario.Email.Trim().ToLower();
+
+
+            // ============================================================
+            // SALVAR ALTERAÇÕES
+            // ============================================================
+
+            // Envia as alterações realizadas para o banco de dados.
+            _context.SaveChanges();
+        }
+
+        // ================================================================
+        // ALTERAÇÃO DE SENHA
+        // ================================================================
+
+        // Altera a senha do usuário.
+        //
+        // Antes de salvar a nova senha, o sistema verifica
+        // se a senha atual informada está correta.
+        //
+        // A nova senha será armazenada utilizando o mesmo
+        // PasswordHasher utilizado no cadastro e no login.
+        public bool AlterarSenha(
+            int usuarioId,
+            string senhaAtual,
+            string novaSenha
+        )
+        {
+            // ============================================================
+            // BUSCAR USUÁRIO
+            // ============================================================
+
+            // Procura no banco de dados o usuário
+            // através do seu Id.
+            var usuario = _context.Usuarios
+                .FirstOrDefault(u => u.Id == usuarioId);
+
+
+            // Verifica se o usuário foi encontrado.
+            if (usuario == null)
+            {
+                // Caso o usuário não exista,
+                // a alteração não poderá ser realizada.
+                return false;
+            }
+
+
+            // ============================================================
+            // VERIFICAR SENHA ATUAL
+            // ============================================================
+
+            // Verifica se a senha informada pelo usuário
+            // corresponde à senha armazenada no banco.
+            //
+            // O PasswordHasher compara a senha informada
+            // com o hash armazenado em usuario.Senha.
+            var resultado = _passwordHasher.VerifyHashedPassword(
+                usuario,
+                usuario.Senha,
+                senhaAtual
+            );
+
+
+            // Verifica se a senha atual está incorreta.
+            if (resultado == PasswordVerificationResult.Failed)
+            {
+                // Impede a alteração da senha.
+                return false;
+            }
+
+
+            // ============================================================
+            // GERAR HASH DA NOVA SENHA
+            // ============================================================
+
+            // A nova senha nunca deve ser armazenada
+            // diretamente no banco de dados.
+            //
+            // O PasswordHasher transforma a nova senha
+            // em um hash seguro antes de armazená-la.
+            usuario.Senha = _passwordHasher.HashPassword(
+                usuario,
+                novaSenha
+            );
+
+
+            // ============================================================
+            // SALVAR ALTERAÇÃO
+            // ============================================================
+
+            // Envia a nova senha para o banco de dados.
+            _context.SaveChanges();
+
+
+            // ============================================================
+            // RETORNO
+            // ============================================================
+
+            // Informa que a alteração foi realizada
+            // com sucesso.
+            return true;
+        }
     }
 }
 

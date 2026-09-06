@@ -67,13 +67,43 @@ ViewData["Title"] = "Meu Perfil";
          ======================================================== -->
 
     <!--
-        Por enquanto o botão é somente visual.
-
-        A funcionalidade de edição será criada posteriormente.
+        Botão responsável por abrir o modal
+        de edição dos dados do perfil.
+    
+        O atributo data-bs-toggle informa ao Bootstrap
+        que este botão irá abrir um modal.
+    
+        O atributo data-bs-target informa qual modal
+        deverá ser aberto.
     -->
-    <a href="#" class="btn-editar-perfil-kiora">
+    <button type="button"
+            class="btn-editar-perfil-kiora"
+            data-bs-toggle="modal"
+            data-bs-target="#modalEditarPerfil">
+
+        <!-- Texto exibido no botão. -->
         Editar Perfil
-    </a>
+
+    </button>
+
+    <!-- ========================================================
+         BOTÃO ALTERAR SENHA
+         ======================================================== -->
+
+    <!--
+        Botão responsável por abrir o modal
+        de alteração da senha.
+
+        O modal será criado no próximo passo.
+    -->
+    <button type="button"
+            class="btn-alterar-senha-kiora"
+            data-bs-toggle="modal"
+            data-bs-target="#modalAlterarSenha">
+
+        Alterar Senha
+
+    </button>
 
 
 </div>
@@ -81,3 +111,401 @@ ViewData["Title"] = "Meu Perfil";
 
 </div>
 <!-- Fim do container da página. -->
+
+<!-- ================================================================
+     MODAL EDITAR PERFIL
+     ================================================================ -->
+
+<!--
+    Modal utilizado para permitir que o usuário
+    altere seus dados pessoais.
+    
+    Neste momento serão permitidos somente:
+    - Alteração do nome.
+    - Alteração do e-mail.
+    
+    A senha continuará sendo tratada separadamente.
+-->
+<div class="modal fade"
+     id="modalEditarPerfil"
+     tabindex="-1"
+     aria-labelledby="modalEditarPerfilTitulo"
+     aria-hidden="true">
+
+
+    <!-- ============================================================
+         CONTAINER DO MODAL
+         ============================================================ -->
+
+    <!--
+        Centraliza o modal verticalmente na tela.
+    -->
+    <div class="modal-dialog modal-dialog-centered modal-editar-perfil-dialog">
+
+
+        <!-- ========================================================
+             CONTEÚDO DO MODAL
+             ======================================================== -->
+
+        <div class="modal-content modal-editar-perfil">
+
+
+            <!-- ====================================================
+                 CABEÇALHO DO MODAL
+                 ==================================================== -->
+
+            <div class="modal-header modal-editar-perfil-header">
+
+
+                <!-- =================================================
+                     TÍTULO
+                     ================================================= -->
+
+                <!--
+                    Título apresentado na parte superior
+                    do modal.
+                -->
+                <h5 class="modal-title"
+                    id="modalEditarPerfilTitulo">
+
+                    Editar Perfil
+
+                </h5>
+
+
+                <!-- =================================================
+                     BOTÃO FECHAR
+                     ================================================= -->
+
+                <!--
+                    Botão utilizado para fechar o modal.
+                    
+                    O Bootstrap identifica que este botão
+                    deve fechar o modal através do atributo
+                    data-bs-dismiss.
+                -->
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Fechar">
+                </button>
+
+
+            </div>
+            <!-- Fim do cabeçalho do modal. -->
+
+
+            <!-- ====================================================
+                 CORPO DO MODAL
+                 ==================================================== -->
+
+            <div class="modal-body modal-editar-perfil-body">
+
+
+                <!-- =================================================
+                     MENSAGEM
+                     ================================================= -->
+
+                <!--
+                    Área reservada para as mensagens de sucesso
+                    ou erro que serão exibidas pelo JavaScript.
+                    
+                    Inicialmente ela fica vazia.
+                -->
+                <div id="mensagemEditarPerfil"
+                     class="mensagem-editar-perfil"
+                     role="alert">
+                </div>
+
+
+                <!-- =================================================
+                     FORMULÁRIO
+                     ================================================= -->
+
+                <!--
+                    Formulário responsável por enviar
+                    os dados atualizados do usuário.
+                    
+                    O JavaScript utilizará este ID
+                    para identificar o formulário.
+                -->
+                <form id="formEditarPerfil">
+
+
+                    <!-- =============================================
+                         NOME
+                         ============================================= -->
+
+                    <!-- Identificação do campo nome. -->
+                    <div class="mb-3">
+
+                        <label for="editarPerfilNome"
+                               class="form-label">
+
+                            Nome
+
+                        </label>
+
+
+                        <!--
+                            Campo que receberá o nome atual
+                            do usuário.
+                            
+                            O valor será preenchido pelo
+                            JavaScript posteriormente.
+                        -->
+                        <input type="text"
+                               class="form-control"
+                               id="editarPerfilNome"
+                               name="Nome"
+                               value="@Model.Nome"
+                               required />
+
+                    </div>
+
+
+                    <!-- =============================================
+                         E-MAIL
+                         ============================================= -->
+
+                    <!-- Identificação do campo e-mail. -->
+                    <div class="mb-3">
+
+                        <label for="editarPerfilEmail"
+                               class="form-label">
+
+                            E-mail
+
+                        </label>
+
+
+                        <!--
+                            Campo que receberá o e-mail atual
+                            do usuário.
+                        -->
+                        <input type="email"
+                               class="form-control"
+                               id="editarPerfilEmail"
+                               name="Email"
+                               value="@Model.Email"
+                               required />
+
+                    </div>
+
+
+                    <!-- =============================================
+                         BOTÃO SALVAR
+                         ============================================= -->
+
+                    <!--
+                        Botão responsável por enviar
+                        as alterações realizadas no formulário.
+                    -->
+                    <button type="submit"
+                            class="btn-salvar-perfil-kiora">
+
+                        Salvar alterações
+
+                    </button>
+
+
+                </form>
+                <!-- Fim do formulário. -->
+
+
+            </div>
+            <!-- Fim do corpo do modal. -->
+
+
+        </div>
+        <!-- Fim do conteúdo do modal. -->
+
+
+    </div>
+    <!-- Fim do container do modal. -->
+
+
+</div>
+<!-- Fim do modal Editar Perfil. -->
+
+<!-- ================================================================
+MODAL ALTERAR SENHA
+================================================================ -->
+
+<div class="modal fade"
+     id="modalAlterarSenha"
+     tabindex="-1"
+     aria-labelledby="modalAlterarSenhaTitulo"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered modal-alterar-senha-dialog">
+
+        <div class="modal-content modal-alterar-senha">
+
+            <!-- ====================================================
+                 CABEÇALHO DO MODAL
+                 ==================================================== -->
+
+            <div class="modal-header modal-alterar-senha-header">
+
+                <h5 class="modal-title"
+                    id="modalAlterarSenhaTitulo">
+
+                    Alterar Senha
+
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Fechar">
+                </button>
+
+            </div>
+
+            <!-- ====================================================
+                 CORPO DO MODAL
+                 ==================================================== -->
+
+            <div class="modal-body modal-alterar-senha-body">
+
+                <!--
+                    Área destinada às mensagens de sucesso
+                    ou erro da alteração da senha.
+                -->
+                <div id="mensagemAlterarSenha"
+                     class="mensagem-alterar-senha"
+                     role="alert">
+                </div>
+
+                <!-- ====================================================
+                     FORMULÁRIO
+                     ==================================================== -->
+
+                <form id="formAlterarSenha">
+
+                    <!-- ==================================================
+                         SENHA ATUAL
+                         ================================================== -->
+
+                    <div class="mb-3">
+
+                        <label for="senhaAtual"
+                               class="form-label">
+
+                            Senha atual
+
+                        </label>
+
+                        <div class="campo-senha-kiora">
+
+                            <input type="password"
+                                   class="form-control"
+                                   id="senhaAtual"
+                                   name="SenhaAtual"
+                                   required />
+
+                            <button type="button"
+                                    class="btn-mostrar-senha-kiora"
+                                    id="btnMostrarSenhaAtual"
+                                    aria-label="Mostrar senha">
+
+                                <i class="bi bi-eye"
+                                   id="iconeSenhaAtual"></i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <!-- ==================================================
+                         NOVA SENHA
+                         ================================================== -->
+
+                    <div class="mb-3">
+
+                        <label for="novaSenha"
+                               class="form-label">
+
+                            Nova senha
+
+                        </label>
+
+                        <div class="campo-senha-kiora">
+
+                            <input type="password"
+                                   class="form-control"
+                                   id="novaSenha"
+                                   name="NovaSenha"
+                                   required />
+
+                            <button type="button"
+                                    class="btn-mostrar-senha-kiora"
+                                    id="btnMostrarNovaSenha"
+                                    aria-label="Mostrar senha">
+
+                                <i class="bi bi-eye"
+                                   id="iconeNovaSenha"></i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <!-- ==================================================
+                         CONFIRMAÇÃO DA NOVA SENHA
+                         ================================================== -->
+
+                    <div class="mb-3">
+
+                        <label for="confirmarNovaSenha"
+                               class="form-label">
+
+                            Confirmar nova senha
+
+                        </label>
+
+                        <div class="campo-senha-kiora">
+
+                            <input type="password"
+                                   class="form-control"
+                                   id="confirmarNovaSenha"
+                                   name="ConfirmarNovaSenha"
+                                   required />
+
+                            <button type="button"
+                                    class="btn-mostrar-senha-kiora"
+                                    id="btnMostrarConfirmarNovaSenha"
+                                    aria-label="Mostrar senha">
+
+                                <i class="bi bi-eye"
+                                   id="iconeConfirmarNovaSenha"></i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <!-- ==================================================
+                         BOTÃO SALVAR
+                         ================================================== -->
+
+                    <button type="submit"
+                            class="btn-salvar-senha-kiora">
+
+                        Alterar senha
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
