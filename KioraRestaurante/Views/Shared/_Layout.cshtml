@@ -717,11 +717,18 @@
                     </div>
 
 
-                    <!-- ESQUECI SENHA -->
+                    <!--
+                        =================================================
+                        ESQUECI MINHA SENHA
+                        =================================================
+                    -->
 
                     <div class="modal-login-opcoes">
 
-                        <a href="#">
+                        <a href="#"
+                           data-bs-dismiss="modal"
+                           data-bs-toggle="modal"
+                           data-bs-target="#modalEsqueciSenha">
 
                             Esqueci minha senha
 
@@ -1066,6 +1073,196 @@
                            data-bs-target="#modalLogin">
 
                             Entrar
+
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!--
+    ================================================================
+    MODAL DE RECUPERAÇÃO DE SENHA KIORA
+    ================================================================
+-->
+
+<div class="modal fade"
+     id="modalEsqueciSenha"
+     tabindex="-1"
+     aria-labelledby="modalEsqueciSenhaTitulo"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered modal-login-dialog">
+
+        <div class="modal-content modal-login-kiora">
+
+            <!--
+                ====================================================
+                BOTÃO FECHAR
+                ====================================================
+            -->
+
+            <button type="button"
+                    class="btn-close modal-login-fechar"
+                    data-bs-dismiss="modal"
+                    aria-label="Fechar">
+
+                <i class="bi bi-x-lg"></i>
+
+            </button>
+
+
+            <!--
+                ====================================================
+                CONTEÚDO
+                ====================================================
+            -->
+
+            <div class="modal-body modal-login-body">
+
+                <!--
+                    =================================================
+                    LOGO
+                    =================================================
+                -->
+
+                <div class="modal-login-logo">
+
+                    <img src="~/imagens/logo-kiora-v.png"
+                         alt="Kiora Japanese Cuisine">
+
+                </div>
+
+
+                <!--
+                    =================================================
+                    CABEÇALHO
+                    =================================================
+                -->
+
+                <div class="modal-login-header">
+
+                    <span class="modal-login-subtitulo">
+
+                        RECUPERAÇÃO DE SENHA
+
+                    </span>
+
+                    <h2 id="modalEsqueciSenhaTitulo">
+
+                        Recupere sua senha
+
+                    </h2>
+
+                    <p>
+
+                        Informe seu e-mail para receber o link
+                        de redefinição de senha.
+
+                    </p>
+
+                </div>
+
+
+                <!--
+                    =================================================
+                    FORMULÁRIO
+                    =================================================
+                -->
+
+                <form id="formEsqueciSenha">
+
+                    <!--
+                        =================================================
+                        MENSAGEM
+                        =================================================
+
+                        Esta área começa escondida.
+
+                        O JavaScript será responsável por exibir
+                        mensagens de sucesso ou erro.
+                    -->
+
+                    <div id="mensagemEsqueciSenha"
+                         class="mensagem-kiora"
+                         role="alert"
+                         style="display: none;">
+
+                    </div>
+
+
+                    <!--
+                        =================================================
+                        E-MAIL
+                        =================================================
+                    -->
+
+                    <div class="modal-login-grupo">
+
+                        <label for="esqueciSenhaEmail">
+
+                            E-mail
+
+                        </label>
+
+                        <div class="modal-login-input">
+
+                            <i class="bi bi-envelope"></i>
+
+                            <input type="email"
+                                   id="esqueciSenhaEmail"
+                                   name="Email"
+                                   placeholder="Digite seu e-mail"
+                                   autocomplete="email"
+                                   required>
+
+                        </div>
+
+                    </div>
+
+
+                    <!--
+                        =================================================
+                        BOTÃO ENVIAR
+                        =================================================
+                    -->
+
+                    <button type="submit"
+                            class="btn-modal-login">
+
+                        ENVIAR LINK
+
+                    </button>
+
+
+                    <!--
+                        =================================================
+                        VOLTAR PARA LOGIN
+                        =================================================
+                    -->
+
+                    <div class="modal-login-cadastro">
+
+                        <p>
+
+                            Lembrou sua senha?
+
+                        </p>
+
+                        <a href="#"
+                           data-bs-dismiss="modal"
+                           data-bs-toggle="modal"
+                           data-bs-target="#modalLogin">
+
+                            Voltar para o login
 
                         </a>
 

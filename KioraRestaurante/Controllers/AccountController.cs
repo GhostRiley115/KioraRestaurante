@@ -339,6 +339,96 @@ namespace KioraRestaurante.Controllers
             });
         }
 
+        // ================================================================
+        // RECUPERAÇÃO DE SENHA
+        // ================================================================
+
+        // Recebe a solicitação de recuperação de senha.
+        //
+        // O usuário informa seu e-mail no modal
+        // "Esqueci minha senha".
+        [HttpPost]
+        public IActionResult EsqueciSenha(
+            [FromForm] EsqueciSenhaViewModel model
+        )
+        {
+            // ============================================================
+            // VALIDAÇÃO DOS DADOS
+            // ============================================================
+
+            // Verifica se o e-mail informado passou
+            // pelas validações do ViewModel.
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new
+                {
+                    sucesso = false,
+                    mensagem = "Informe um e-mail válido."
+                });
+            }
+
+
+            // ============================================================
+            // LOCALIZAR USUÁRIO
+            // ============================================================
+
+            // Procura o usuário utilizando o e-mail informado.
+            var usuario = _usuarioServices.BuscarPorEmail(
+                model.Email
+            );
+
+
+            // ============================================================
+            // VERIFICAR USUÁRIO
+            // ============================================================
+
+            // Por segurança, não informamos ao usuário
+            // se o e-mail está ou não cadastrado.
+            //
+            // Isso evita que alguém possa descobrir
+            // quais e-mails possuem cadastro no sistema.
+            if (usuario == null)
+            {
+                return Ok(new
+                {
+                    sucesso = true,
+                    mensagem =
+                        "Se o e-mail estiver cadastrado, você receberá um link para redefinir sua senha."
+                });
+            }
+
+
+            // ============================================================
+            // GERAR TOKEN
+            // ============================================================
+
+            // Gera um token temporário para recuperação da senha.
+            //
+            // O Service também define o prazo de validade
+            // desse token.
+            string token =
+                _usuarioServices.GerarTokenRecuperacao(usuario);
+
+
+            // ============================================================
+            // RESPOSTA
+            // ============================================================
+
+            // Neste momento o token já foi gerado e armazenado
+            // no banco de dados.
+            //
+            // O envio do token por e-mail será implementado
+            // posteriormente.
+            //
+            // Por segurança, o token NÃO é enviado para o navegador.
+            return Ok(new
+            {
+                sucesso = true,
+                mensagem =
+                    "Se o e-mail estiver cadastrado, você receberá um link para redefinir sua senha."
+            });
+        }
+
 
         // ================================================================
         // LOGOUT - GET

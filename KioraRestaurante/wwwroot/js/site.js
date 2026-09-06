@@ -1073,3 +1073,84 @@ if (
     );
 }
 
+// ================================================================
+// RECUPERAÇÃO DE SENHA
+// ================================================================
+
+// Localiza o formulário de recuperação de senha.
+const formEsqueciSenha = document.getElementById("formEsqueciSenha");
+
+// Localiza a área onde serão exibidas as mensagens.
+const mensagemEsqueciSenha = document.getElementById("mensagemEsqueciSenha");
+
+
+// Verifica se o formulário existe na página.
+if (formEsqueciSenha) {
+
+    // Detecta o envio do formulário.
+    formEsqueciSenha.addEventListener("submit", async function (event) {
+
+        // Impede o comportamento padrão do formulário.
+        event.preventDefault();
+
+
+        // ============================================================
+        // LIMPAR MENSAGEM ANTERIOR
+        // ============================================================
+
+        mensagemEsqueciSenha.style.display = "none";
+        mensagemEsqueciSenha.innerHTML = "";
+
+
+        // ============================================================
+        // PEGAR DADOS DO FORMULÁRIO
+        // ============================================================
+
+        const dados = new FormData(formEsqueciSenha);
+
+
+        try {
+
+            // ========================================================
+            // ENVIAR SOLICITAÇÃO
+            // ========================================================
+
+            const resposta = await fetch("/Account/EsqueciSenha", {
+                method: "POST",
+                body: dados
+            });
+
+
+            // Converte a resposta para JSON.
+            const resultado = await resposta.json();
+
+
+            // ========================================================
+            // EXIBIR MENSAGEM
+            // ========================================================
+
+            mensagemEsqueciSenha.innerHTML = resultado.mensagem;
+
+            mensagemEsqueciSenha.style.display = "block";
+
+
+        } catch (erro) {
+
+            // ========================================================
+            // ERRO DE COMUNICAÇÃO
+            // ========================================================
+
+            mensagemEsqueciSenha.innerHTML =
+                "Não foi possível realizar a solicitação. Tente novamente.";
+
+            mensagemEsqueciSenha.style.display = "block";
+
+            console.error(
+                "Erro na recuperação de senha:",
+                erro
+            );
+        }
+
+    });
+}
+
