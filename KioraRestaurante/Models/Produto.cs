@@ -23,7 +23,9 @@ namespace KioraRestaurante.Models
         public bool Disponivel { get; set; } = true;
         public int CategoriaId { get; set; }
 
-        // public Categoria Categoria { get; set; } -> Esperando a model categoria ser criada
+        // Define a categoria à qual este produto pertence. Cada produto possui uma CategoriaId que será relacionada
+        // com o Id da categoria correspondente.
+        public Categoria Categoria { get; set; } = null!;
 
         //Define que um produto pode estar em vários ItemProduto e cria uma navegação do produto para cada ItemCarrinho que ele esteja.
         public List<ItemCarrinho> ItensCarrinho { get; set; } = new();

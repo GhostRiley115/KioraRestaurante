@@ -4948,4 +4948,847 @@ HOVER DO BOTÃO EDITAR PERFIL
         
     }
 
+/* ================================================================
+   MENU SUSPENSO DO CARDÁPIO
+   ================================================================ */
+
+/* Define o visual da caixa que aparece ao abrir o menu Cardápio. */
+.navbar-kiora .dropdown-menu {
+    /* Define o fundo escuro do menu. */
+    background-color: #0E0E0E;
+    /* Cria uma borda dourada discreta. */
+    border: 1px solid rgba(217, 178, 122, 0.5);
+    /* Remove o arredondamento padrão do Bootstrap. */
+    border-radius: 0;
+    /* Adiciona uma pequena sombra ao redor do menu. */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    /* Define um pequeno espaço entre a navbar e o menu. */
+    margin-top: 8px;
+    /* Remove o espaçamento interno padrão. */
+    padding: 5px 0;
+}
+
+
+/* ================================================================
+   ITENS DO MENU
+   ================================================================ */
+
+/* Define a aparência de cada categoria. */
+.navbar-kiora .dropdown-item {
+    /* Define a cor branca para o texto. */
+    color: #FFFFFF;
+    /* Utiliza a fonte principal do projeto. */
+    font-family: 'Lato', sans-serif;
+    /* Define o tamanho do texto. */
+    font-size: 15px;
+    /* Adiciona espaço interno ao item. */
+    padding: 10px 20px;
+    /* Cria uma transição suave para o efeito hover. */
+    transition: all 0.3s ease;
+}
+
+
+    /* ================================================================
+   EFEITO AO PASSAR O MOUSE
+   ================================================================ */
+
+    /* Altera o item quando o usuário passa o mouse sobre ele. */
+    .navbar-kiora .dropdown-item:hover {
+        /* Muda o fundo para o vinho do Kiora. */
+        background-color: #7D1F1F;
+        /* Destaca o texto com o dourado da identidade. */
+        color: #D9B27A;
+        /* Move levemente o texto para a direita. */
+        padding-left: 25px;
+    }
+
+
+    /* ================================================================
+   ITEM ATIVO / FOCADO
+   ================================================================ */
+
+    /* Mantém o estilo quando o item recebe foco pelo teclado. */
+    .navbar-kiora .dropdown-item:focus {
+        /* Mantém o fundo vinho. */
+        background-color: #7D1F1F;
+        /* Mantém o texto dourado. */
+        color: #D9B27A;
+    }
+
+
+    /* ================================================================
+       ÍCONES DAS CATEGORIAS DO CARDÁPIO
+       ================================================================ */
+    /* Define o estilo dos ícones dentro do menu. */
+    .navbar-kiora .dropdown-item i {
+        /* Define a cor dourada dos ícones. */
+        color: #D9B27A;
+        /* Define o tamanho dos ícones. */
+        font-size: 17px;
+        /* Cria espaço entre o ícone e o texto. */
+        margin-right: 10px;
+        /* Mantém o ícone alinhado com o texto. */
+        vertical-align: middle;
+        /* Cria uma transição suave. */
+        transition: all 0.3s ease;
+    }
+
+
+    /* Altera o ícone quando o mouse passa sobre a categoria. */
+    .navbar-kiora .dropdown-item:hover i {
+        /* Mantém o ícone destacado em dourado. */
+        color: #FFFFFF;
+    }
+
+/* ================================================================
+   RESPONSIVIDADE DO MENU SUSPENSO DO CARDÁPIO
+   ================================================================ */
+
+/* Ajusta o menu do Cardápio para telas menores. */
+@media (max-width: 991.98px) {
+
+    /* Define o menu para ocupar a largura disponível no celular/tablet. */
+    .navbar-kiora .dropdown-menu {
+        /* Remove a margem lateral do menu. */
+        margin-left: 0;
+        /* Remove o espaço superior excessivo. */
+        margin-top: 5px;
+        /* Permite que o menu acompanhe a largura da navbar. */
+        width: 100%;
+        /* Impede que o menu fique maior que a tela. */
+        max-width: 100%;
+        /* Remove qualquer limite de largura imposto pelo Bootstrap. */
+        min-width: 0;
+    }
+
+
+    /* Ajusta os itens do submenu para telas menores. */
+    .navbar-kiora .dropdown-item {
+        /* Mantém um tamanho confortável para toque. */
+        padding: 12px 20px;
+        /* Mantém o texto legível em telas pequenas. */
+        font-size: 15px;
+    }
+
+
+        /* Ajusta o efeito hover em telas menores. */
+        .navbar-kiora .dropdown-item:hover {
+            /* Mantém o deslocamento menor para evitar excesso de movimento. */
+            padding-left: 23px;
+        }
+
+
+        /* Ajusta os ícones das categorias. */
+        .navbar-kiora .dropdown-item i {
+            /* Mantém o ícone proporcional ao texto. */
+            font-size: 16px;
+            /* Mantém um pequeno espaço entre ícone e texto. */
+            margin-right: 8px;
+        }
+}
+
+
+/* ================================================================
+   AJUSTE PARA CELULARES PEQUENOS
+   ================================================================ */
+
+/* Aplica ajustes adicionais em telas muito pequenas. */
+@media (max-width: 575.98px) {
+
+    /* Ajusta o menu suspenso para celulares. */
+    .navbar-kiora .dropdown-menu {
+        /* Mantém o menu dentro da área disponível. */
+        width: 100%;
+        /* Remove qualquer largura mínima. */
+        min-width: 0;
+        /* Evita que o menu ultrapasse a tela. */
+        max-width: 100%;
+    }
+
+
+    /* Ajusta os itens para facilitar o toque. */
+    .navbar-kiora .dropdown-item {
+        /* Aumenta um pouco a área de toque vertical. */
+        padding: 12px 16px;
+        /* Mantém o texto confortável para leitura. */
+        font-size: 14px;
+    }
+
+
+        /* Ajusta o efeito de hover para celulares. */
+        .navbar-kiora .dropdown-item:hover {
+            /* Reduz o deslocamento lateral. */
+            padding-left: 19px;
+        }
+
+
+        /* Ajusta os ícones no celular. */
+        .navbar-kiora .dropdown-item i {
+            /* Reduz levemente o tamanho do ícone. */
+            font-size: 15px;
+            /* Reduz o espaço entre ícone e texto. */
+            margin-right: 7px;
+        }
+}
+
+/* =========================================================
+   NOME DO USUÁRIO LOGADO
+   ========================================================= */
+
+.nome-usuario-menu {
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    margin-left: 8px;
+}
+
+/* =========================================================
+   MODAL DE CONTATO KIORA
+   ========================================================= */
+
+/* =========================================================
+   TAMANHO E POSICIONAMENTO
+   ========================================================= */
+
+.modal-contato-dialog {
+    max-width: 500px;
+}
+
+
+/* =========================================================
+   CONTEÚDO PRINCIPAL
+   ========================================================= */
+
+.modal-contato-kiora {
+    position: relative;
+    background-color: #0E0E0E;
+    border: 1px solid #D9B27A;
+    border-radius: 12px;
+    overflow: hidden;
+    color: #FFFFFF;
+}
+
+
+/* =========================================================
+   CABEÇALHO
+   ========================================================= */
+
+.modal-contato-topo {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 25px 55px 10px;
+}
+
+
+/* =========================================================
+   LOGO
+   ========================================================= */
+
+.modal-contato-logo img {
+    width: 150px;
+    height: auto;
+}
+
+
+/* =========================================================
+   BOTÃO FECHAR
+   ========================================================= */
+
+.modal-contato-fechar {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    color: #D9B27A;
+    cursor: pointer;
+    transition: all 0.4s ease;
+}
+
+
+    /* ÍCONE X */
+
+    .modal-contato-fechar i {
+        transition: transform 0.4s ease;
+    }
+
+
+    /* AO PASSAR O MOUSE */
+
+    .modal-contato-fechar:hover {
+        background-color: transparent;
+        color: #FFFFFF;
+    }
+
+
+        /* GIRO DO X */
+
+        .modal-contato-fechar:hover i {
+            transform: rotate(90deg);
+        }
+
+
+/* =========================================================
+   CORPO
+   ========================================================= */
+
+.modal-contato-body {
+    padding: 15px 35px 35px;
+}
+
+
+/* =========================================================
+   CABEÇALHO DO CONTEÚDO
+   ========================================================= */
+
+.modal-contato-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.modal-contato-subtitulo {
+    display: block;
+    font-family: 'Lato', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    color: #D9B27A;
+    margin-bottom: 8px;
+}
+
+.modal-contato-header h2 {
+    margin: 0 0 8px;
+    font-family: 'Playfair Display', serif;
+    font-size: 30px;
+    font-weight: 600;
+    color: #FFFFFF;
+}
+
+.modal-contato-header p {
+    margin: 0;
+    font-family: 'Lato', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    color: #FFFFFF;
+}
+
+
+/* =========================================================
+   INFORMAÇÕES DE CONTATO
+   ========================================================= */
+
+.modal-contato-informacoes {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+
+/* =========================================================
+   ITEM DE CONTATO
+   ========================================================= */
+
+.modal-contato-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 13px 15px;
+    background-color: #151515;
+    border: 1px solid rgba(217, 178, 122, 0.35);
+    border-radius: 8px;
+    color: #FFFFFF;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+    .modal-contato-item:hover {
+        border-color: #D9B27A;
+        background-color: #1B1B1B;
+        transform: translateY(-2px);
+    }
+
+
+/* =========================================================
+   ÍCONE
+   ========================================================= */
+
+.modal-contato-icone {
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #7D1F1F;
+    border-radius: 50%;
+    color: #D9B27A;
+    font-size: 18px;
+}
+
+
+/* =========================================================
+   INFORMAÇÕES
+   ========================================================= */
+
+.modal-contato-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+    .modal-contato-info span {
+        font-family: 'Lato', sans-serif;
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 1.5px;
+        color: #D9B27A;
+    }
+
+    .modal-contato-info strong {
+        font-family: 'Lato', sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        color: #FFFFFF;
+        overflow-wrap: anywhere;
+    }
+
+    .modal-contato-info small {
+        font-family: 'Lato', sans-serif;
+        font-size: 12px;
+        color: #FFFFFF;
+    }
+
+
+/* =========================================================
+   FRASE FINAL
+   ========================================================= */
+
+.modal-contato-final {
+    text-align: center;
+    margin-top: 25px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(217, 178, 122, 0.3);
+}
+
+    .modal-contato-final span {
+        font-family: 'Playfair Display', serif;
+        font-size: 14px;
+        font-style: italic;
+        color: #D9B27A;
+    }
+
+
+/* =========================================================
+   RESPONSIVIDADE
+   ========================================================= */
+
+@media (max-width: 576px) {
+
+    .modal-contato-dialog {
+        margin: 15px;
+    }
+
+    .modal-contato-body {
+        padding: 10px 20px 25px;
+    }
+
+    .modal-contato-topo {
+        padding-top: 20px;
+    }
+
+    .modal-contato-logo img {
+        width: 130px;
+    }
+
+    .modal-contato-header h2 {
+        font-size: 25px;
+    }
+
+    .modal-contato-header p {
+        font-size: 14px;
+    }
+
+    .modal-contato-item {
+        padding: 11px 12px;
+        gap: 12px;
+    }
+
+    .modal-contato-icone {
+        width: 38px;
+        height: 38px;
+        font-size: 16px;
+    }
+}
+
+/* ================================================================
+   MODAL EDITAR PERFIL KIORA
+   ================================================================ */
+
+
+/* ================================================================
+   CONTAINER DO MODAL
+   ================================================================ */
+
+/*
+   Define uma largura adequada para o modal
+   de edição do perfil.
+*/
+.modal-editar-perfil-dialog {
+    max-width: 500px;
+}
+
+
+/* ================================================================
+   CONTEÚDO DO MODAL
+   ================================================================ */
+
+/*
+   Define o visual principal do modal.
+   
+   O fundo utiliza o mesmo preto utilizado
+   na identidade visual do Kiora.
+*/
+.modal-editar-perfil {
+    background-color: #0E0E0E;
+    border: 1px solid #D9B27A;
+    border-radius: 12px;
+    color: #FFFFFF;
+}
+
+
+/* ================================================================
+   CABEÇALHO
+   ================================================================ */
+
+/*
+   Organiza o cabeçalho do modal.
+*/
+.modal-editar-perfil-header {
+    border-bottom: 1px solid #D9B27A;
+    padding: 20px 24px;
+}
+
+
+    /* ================================================================
+   TÍTULO
+   ================================================================ */
+
+    /*
+   Define o estilo do título "Editar Perfil".
+*/
+    .modal-editar-perfil-header .modal-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 25px;
+        font-weight: 600;
+        color: #D9B27A;
+    }
+
+
+    /* ================================================================
+   BOTÃO FECHAR
+   ================================================================ */
+
+    /*
+   Personaliza o botão "X" padrão do Bootstrap.
+   
+   O filtro transforma o ícone padrão em branco.
+*/
+    .modal-editar-perfil-header .btn-close {
+        filter: invert(1);
+        opacity: 1;
+    }
+
+
+        /*
+   Altera a aparência do botão fechar
+   quando o mouse passa sobre ele.
+*/
+        .modal-editar-perfil-header .btn-close:hover {
+            opacity: 0.7;
+        }
+
+
+/* ================================================================
+   CORPO DO MODAL
+   ================================================================ */
+
+/*
+   Define o espaçamento interno do corpo do modal.
+*/
+.modal-editar-perfil-body {
+    padding: 24px;
+}
+
+
+    /* ================================================================
+   CAMPOS DO FORMULÁRIO
+   ================================================================ */
+
+    /*
+   Define o estilo dos textos "Nome" e "E-mail".
+*/
+    .modal-editar-perfil-body .form-label {
+        font-family: 'Lato', sans-serif;
+        font-size: 15px;
+        font-weight: 600;
+        color: #D9B27A;
+    }
+
+
+    /*
+   Define a aparência dos campos de texto.
+*/
+    .modal-editar-perfil-body .form-control {
+        background-color: #FFFFFF;
+        border: 1px solid #D9B27A;
+        border-radius: 6px;
+        color: #0E0E0E;
+        font-family: 'Lato', sans-serif;
+        padding: 11px 13px;
+    }
+
+
+        /*
+   Remove o comportamento visual padrão
+   do Bootstrap quando o campo recebe foco.
+*/
+        .modal-editar-perfil-body .form-control:focus {
+            border-color: #D9B27A;
+            box-shadow: 0 0 0 0.15rem rgba(217, 178, 122, 0.20);
+        }
+
+
+/* ================================================================
+   MENSAGEM
+   ================================================================ */
+
+/*
+   Área reservada para mensagens de sucesso
+   ou erro durante a edição do perfil.
+   
+   Ela permanece invisível enquanto não houver
+   nenhuma mensagem.
+*/
+.mensagem-editar-perfil {
+    display: none;
+    margin-bottom: 18px;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-family: 'Lato', sans-serif;
+    font-size: 14px;
+}
+
+
+/* ================================================================
+   BOTÃO SALVAR
+   ================================================================ */
+
+/*
+   Botão responsável por salvar as alterações
+   realizadas no perfil.
+*/
+.btn-salvar-perfil-kiora {
+    width: 100%;
+    margin-top: 10px;
+    padding: 12px 20px;
+    background-color: #7D1F1F;
+    border: 1px solid #D9B27A;
+    border-radius: 6px;
+    color: #FFFFFF;
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+
+    /*
+   Efeito visual quando o mouse passa
+   sobre o botão salvar.
+*/
+    .btn-salvar-perfil-kiora:hover {
+        background-color: #D9B27A;
+        color: #0E0E0E;
+    }
+
+/* ================================================================
+   MODAL ALTERAR SENHA KIORA
+   ================================================================ */
+
+.modal-alterar-senha-dialog {
+    max-width: 500px;
+}
+
+.modal-alterar-senha {
+    background-color: #0E0E0E;
+    border: 1px solid #D9B27A;
+    border-radius: 12px;
+    color: #FFFFFF;
+}
+
+.modal-alterar-senha-header {
+    border-bottom: 1px solid #D9B27A;
+    padding: 20px 24px;
+}
+
+    .modal-alterar-senha-header .modal-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 25px;
+        font-weight: 600;
+        color: #D9B27A;
+    }
+
+    .modal-alterar-senha-header .btn-close {
+        filter: invert(1);
+        opacity: 1;
+    }
+
+        .modal-alterar-senha-header .btn-close:hover {
+            opacity: 0.7;
+        }
+
+.modal-alterar-senha-body {
+    padding: 24px;
+}
+
+    .modal-alterar-senha-body .form-label {
+        font-family: 'Lato', sans-serif;
+        font-size: 15px;
+        font-weight: 600;
+        color: #D9B27A;
+    }
+
+    .modal-alterar-senha-body .form-control {
+        background-color: #FFFFFF;
+        border: 1px solid #D9B27A;
+        border-radius: 6px;
+        color: #0E0E0E;
+        font-family: 'Lato', sans-serif;
+        padding: 11px 13px;
+    }
+
+        .modal-alterar-senha-body .form-control:focus {
+            border-color: #D9B27A;
+            box-shadow: 0 0 0 0.15rem rgba(217, 178, 122, 0.20);
+        }
+
+.mensagem-alterar-senha {
+    display: none;
+    margin-bottom: 18px;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-family: 'Lato', sans-serif;
+    font-size: 14px;
+}
+
+.btn-salvar-senha-kiora {
+    width: 100%;
+    margin-top: 10px;
+    padding: 12px 20px;
+    background-color: #7D1F1F;
+    border: 1px solid #D9B27A;
+    border-radius: 6px;
+    color: #FFFFFF;
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    .btn-salvar-senha-kiora:hover {
+        background-color: #D9B27A;
+        color: #0E0E0E;
+    }
+
+/* ================================================================
+BOTÃO ALTERAR SENHA
+================================================================ */
+
+/* Estiliza o botão de alteração da senha. */
+.btn-alterar-senha-kiora {
+    /* Define o fundo vinho padrão do Kiora. */
+    background-color: #7D1F1F;
+    /* Define a borda dourada padrão do Kiora. */
+    border: 1px solid #D9B27A;
+    /* Define a cor branca para o texto. */
+    color: #FFFFFF;
+    /* Utiliza a fonte Lato do projeto. */
+    font-family: 'Lato', sans-serif;
+    /* Deixa o texto do botão em negrito. */
+    font-weight: 700;
+    /* Define o tamanho do texto. */
+    font-size: 16px;
+    /* Define o espaçamento interno do botão. */
+    padding: 10px 25px;
+    /* Arredonda os cantos do botão. */
+    border-radius: 5px;
+    /* Remove o sublinhado do link. */
+    text-decoration: none;
+    /* Permite controlar o tamanho e espaçamento do botão. */
+    display: inline-block;
+    /* Cria uma transição suave entre as cores. */
+    transition: all 0.3s ease;
+}
+
+    /* ================================================================
+HOVER DO BOTÃO ALTERAR SENHA
+================================================================ */
+
+    /* Aplica o efeito quando o mouse passa sobre o botão. */
+    .btn-alterar-senha-kiora:hover {
+        /* Transforma o fundo do botão em dourado. */
+        background-color: #D9B27A;
+        /* Mantém a borda dourada. */
+        border-color: #D9B27A;
+        /* Muda o texto para o fundo escuro do Kiora. */
+        color: #0E0E0E;
+        /* Remove o sublinhado do link. */
+        text-decoration: none;
+    }
+
+/* ================================================================
+   CAMPO DE SENHA COM BOTÃO MOSTRAR SENHA
+   ================================================================ */
+
+/* Define o posicionamento do campo e do botão do olho. */
+.campo-senha-kiora {
+    position: relative;
+}
+
+    /* Ajusta o campo de senha para reservar espaço para o olho. */
+    .campo-senha-kiora .form-control {
+        padding-right: 45px;
+    }
+
+/* Posiciona o botão do olho dentro do campo. */
+.btn-mostrar-senha-kiora {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: #0E0E0E;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 4px;
+}
+
+    /* Efeito ao passar o mouse sobre o olho. */
+    .btn-mostrar-senha-kiora:hover {
+        color: #7D1F1F;
+    }
+
+
 
