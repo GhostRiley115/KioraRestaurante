@@ -13,6 +13,8 @@ namespace KioraRestaurante.Models
         [MaxLength(50)]
         public string Nome { get; set; } = null!;
 
+        public bool Ativa { get; set; } = true;
+
         //Define o relacionamento entre Categoria e Produto.
         //Uma categoria pode possuir vários produtos.
         public List<Produto> Produtos { get; set; } = new();

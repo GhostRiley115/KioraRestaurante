@@ -1,5 +1,7 @@
 ﻿//Essa classe cria um Objeto com UM produto e sua Quantidade e relaciona a um Carrinho. 
 
+using System.ComponentModel.DataAnnotations;
+
 namespace KioraRestaurante.Models
 {
     public class ItemCarrinho
@@ -18,6 +20,7 @@ namespace KioraRestaurante.Models
         public Produto Produto { get; set; } = null!;
 
         //Quantidade de vezes que o produto foi adicionado.
+        [Range(1, 99)]
         public int Quantidade { get; set; } 
     }
 }

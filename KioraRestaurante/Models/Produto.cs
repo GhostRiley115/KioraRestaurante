@@ -14,16 +14,21 @@ namespace KioraRestaurante.Models
         public string Nome { get; set; } = null!;
 
         [MaxLength(500)]
-        public string? Descricao { get; set; }
+        public string Descricao { get; set; } = null!;
 
+        //Atribui um preço mínimo e máximo à propriedade.
+        [Range(typeof(decimal), "0.01", "99999999")]
         //Cria uma coluna e evita que o mysql mapeie de forma padrão o decimal como numeric
         [Column(TypeName = "decimal(10,2)")]
         public decimal Preco { get; set; }
-        public string? Imagem { get; set; }
+
+        [MaxLength(500)]
+        public string Imagem { get; set; } = null!;
         public bool Disponivel { get; set; } = true;
+        public bool Ativo { get; set; } = true;
         public int CategoriaId { get; set; }
 
-        public Categoria? Categoria { get; set; }
+        public Categoria Categoria { get; set; } = null!;
 
         //Define que um produto pode estar em vários ItemProduto e cria uma navegação do produto para cada ItemCarrinho que ele esteja.
         public List<ItemCarrinho> ItensCarrinho { get; set; } = new();
