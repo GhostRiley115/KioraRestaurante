@@ -5,6 +5,7 @@ namespace KioraRestaurante.DTO.Carrinho
     public class CarrinhoResponseDTO
     {
         //Representa o carrinho inteiro na resposta
+        public int CarrinhoId { get; set; }
         public List<ItemCarrinhoResponseDTO> Itens { get; set; } = new();
         public decimal Total { get; set; }
     }
