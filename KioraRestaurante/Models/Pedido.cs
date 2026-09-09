@@ -9,9 +9,12 @@ namespace KioraRestaurante.Models
         public int UsuarioId { get; set; }
         public Usuario Usuario { get; set; } = null!;
         public DateTime DataPedido { get; set; } = DateTime.UtcNow;
+        
+        public EnderecoEntrega EnderecoEntrega { get; set; } = null!;
 
-        public StatusPedido Status { get; set; } = StatusPedido.Recebido;
         public FormaPagamento FormaPagamento { get; set; }
+        public StatusPedido StatusPedido { get; set; } = StatusPedido.Recebido;
+        public StatusPagamento StatusPagamento { get; set; }
 
         [Column(TypeName = "decimal(10,2)")]
         public decimal ValorTotal { get; set; }

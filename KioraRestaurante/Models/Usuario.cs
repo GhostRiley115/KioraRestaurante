@@ -1,4 +1,5 @@
 ﻿using KioraRestaurante.Models.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace KioraRestaurante.Models
 {
@@ -6,9 +7,17 @@ namespace KioraRestaurante.Models
     {
         // O EF Core sabe automaticamente que "Id" é a Chave Primária.
         public int Id { get; set; }
+
+        [Required]
+        [MaxLength(100)]
         public string Nome { get; set; } = null!;
+
+        [Required]
+        [MaxLength(150)]
+        [EmailAddress]
         public string Email { get; set; } = null!;
         public string Senha { get; set; } = null!;
+        public bool Ativo { get; set; } = true;
 
         public TipoUsuario Tipo { get; set; } = TipoUsuario.Cliente;
         public string? TokenRecuperacaoSenha { get; set; }

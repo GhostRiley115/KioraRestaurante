@@ -45,7 +45,7 @@ builder.Services.AddControllersWithViews();
 //Registra o UsuarioService para que o ASP.NET Core
 //possa fornecer automaticamente uma instância dele
 //para os Controllers que precisarem do serviço.
-builder.Services.AddScoped<IUsuarioServices, UsuarioServices>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
 var app = builder.Build();
 

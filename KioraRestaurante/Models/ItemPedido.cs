@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace KioraRestaurante.Models
 {
@@ -10,13 +11,21 @@ namespace KioraRestaurante.Models
         public Pedido Pedido { get; set; } = null!;
         public int ProdutoId { get; set; }
         public Produto Produto { get; set; } = null!;
+
+        [Range(1, 99)]
         public int Quantidade { get; set; }
+
+        [MaxLength(500)]
+        public string? Observacao { get; set; }
 
         //snapshot do preço no momento da compra
         //evita com que quando o proprietario mude o preço 
         //mude o valor de um pedido no dia anterior
         [Column(TypeName = "decimal(10,2)")]
         public decimal PrecoUnitario { get; set; }
+
+        //snapshot do nome do produto
+        public string NomeProduto { get; set; } = null!;
 
         //Esse atributo fala para pro EF Core não crie
         //uma coluna disso no banco, sendo muito util para 

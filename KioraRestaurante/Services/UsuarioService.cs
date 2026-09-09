@@ -20,7 +20,7 @@ namespace KioraRestaurante.Services
     //Cadastro
     //Login
     //Recuperação de senha
-    public class UsuarioServices : IUsuarioServices
+    public class UsuarioService : IUsuarioService
     {
         //Representa o acesso ao banco de dados.
 
@@ -37,7 +37,7 @@ namespace KioraRestaurante.Services
         private readonly PasswordHasher<Usuario> _passwordHasher;
 
         //CONSTRUTOR
-        public UsuarioServices(AppDbContext context)
+        public UsuarioService(AppDbContext context)
         {
             //Recebe o AppDbContext através da injeção de dependência
             //e guarda na variável _context.
@@ -132,9 +132,9 @@ namespace KioraRestaurante.Services
             //Se a senha estiver incorreta, retorna null.
             return null;
         }
-           
+
         //RECUPERAÇÃO DE SENHA
-        
+
         //Procura um usuário pelo e-mail.
         //Será utilizado no processo de "Esqueci minha senha".
         public Usuario? BuscarPorEmail(string email)

@@ -14,7 +14,7 @@ namespace KioraRestaurante.Services.Interfaces
     //
     // A implementação dessas operações ficará na classe
     // UsuarioServices.
-    public interface IUsuarioServices
+    public interface IUsuarioService
     {
         // ================================================================
         // CADASTRO
