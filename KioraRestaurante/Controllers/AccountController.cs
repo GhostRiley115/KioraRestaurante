@@ -39,15 +39,15 @@ namespace KioraRestaurante.Controllers
         //O Controller não acessa o banco de dados diretamente.
         //Ele utiliza o Service para executar as regras relacionadas
         //aos usuários.
-        private readonly IUsuarioServices _usuarioServices;
+        private readonly IUsuarioService _usuarioService;
 
         //CONSTRUTOR
         //O ASP.NET Core utiliza a Injeção de Dependência para fornecer
         //uma instância de IUsuarioServices.
-        public AccountController(IUsuarioServices usuarioServices)
+        public AccountController(IUsuarioService usuarioService)
         {
             //Guarda o Service recebido na variável privada.
-            _usuarioServices = usuarioServices;
+            _usuarioService = usuarioService;
         }
 
         //CADASTRO - GET
@@ -98,7 +98,7 @@ namespace KioraRestaurante.Controllers
             //VERIFICAÇÃO DE E-MAIL
             //Verifica se já existe um usuário cadastrado
             //utilizando o e-mail informado.
-            if (_usuarioServices.EmailExiste(model.Email))
+            if (_usuarioService.EmailExiste(model.Email))
             {
                 //Retorna uma resposta de erro informando
                 //que o e-mail já está cadastrado.
@@ -128,7 +128,7 @@ namespace KioraRestaurante.Controllers
 
             //CADASTRO
             //Envia o usuário para o UsuarioServices.
-            _usuarioServices.Cadastrar(usuario);
+            _usuarioService.Cadastrar(usuario);
 
             //RESPOSTA DE SUCESSO
             // Retorna uma resposta que será interpretada
@@ -177,7 +177,7 @@ namespace KioraRestaurante.Controllers
 
             //AUTENTICAÇÃO
             //Procura o usuário pelo e-mail e verifica a senha.
-            var usuario = _usuarioServices.Autenticar(
+            var usuario = _usuarioService.Autenticar(
                 model.Email,
                 model.Senha
             );
@@ -304,7 +304,7 @@ namespace KioraRestaurante.Controllers
             // ============================================================
 
             // Procura o usuário utilizando o e-mail informado.
-            var usuario = _usuarioServices.BuscarPorEmail(
+            var usuario = _usuarioService.BuscarPorEmail(
                 model.Email
             );
 
@@ -338,7 +338,7 @@ namespace KioraRestaurante.Controllers
             // O Service também define o prazo de validade
             // desse token.
             string token =
-                _usuarioServices.GerarTokenRecuperacao(usuario);
+                _usuarioService.GerarTokenRecuperacao(usuario);
 
 
             // ============================================================
@@ -410,7 +410,7 @@ namespace KioraRestaurante.Controllers
             }
 
             // Procura o usuário no banco de dados utilizando o e-mail.
-            var usuario = _usuarioServices.BuscarPorEmail(email);
+            var usuario = _usuarioService.BuscarPorEmail(email);
 
             // Verifica se o usuário foi encontrado no banco.
             if (usuario == null)
@@ -454,7 +454,7 @@ namespace KioraRestaurante.Controllers
 
             // Busca no banco de dados o usuário correspondente
             // ao e-mail encontrado no Cookie.
-            var usuario = _usuarioServices.BuscarPorEmail(email);
+            var usuario = _usuarioService.BuscarPorEmail(email);
 
 
             // Verifica se o usuário foi encontrado no banco.
@@ -555,7 +555,7 @@ namespace KioraRestaurante.Controllers
 
             // Busca o usuário atualmente logado
             // no banco de dados.
-            var usuario = _usuarioServices.BuscarPorEmail(
+            var usuario = _usuarioService.BuscarPorEmail(
                 emailAtual
             );
 
@@ -578,7 +578,7 @@ namespace KioraRestaurante.Controllers
             // Verifica se o novo e-mail informado
             // já pertence a outro usuário.
             var emailJaExiste =
-                _usuarioServices.EmailExisteParaOutroUsuario(
+                _usuarioService.EmailExisteParaOutroUsuario(
                     model.Email,
                     usuario.Id
                 );
@@ -609,7 +609,7 @@ namespace KioraRestaurante.Controllers
             // Envia o usuário atualizado para o Service,
             // que será responsável por salvar os dados
             // no banco de dados.
-            _usuarioServices.AtualizarPerfil(usuario);
+            _usuarioService.AtualizarPerfil(usuario);
 
 
             // ============================================================
@@ -784,7 +784,7 @@ namespace KioraRestaurante.Controllers
             // 2. Verificar a senha atual.
             // 3. Criar o hash da nova senha.
             // 4. Salvar a nova senha no banco.
-            var senhaAlterada = _usuarioServices.AlterarSenha(
+            var senhaAlterada = _usuarioService.AlterarSenha(
                 usuarioId,
                 model.SenhaAtual,
                 model.NovaSenha
