@@ -9,7 +9,7 @@ namespace KioraRestaurante.Models
         public int UsuarioId { get; set; }
         public Usuario Usuario { get; set; } = null!;
         public DateTime DataPedido { get; set; } = DateTime.UtcNow;
-
+        
         public EnderecoEntrega EnderecoEntrega { get; set; } = null!;
 
         public FormaPagamento FormaPagamento { get; set; }

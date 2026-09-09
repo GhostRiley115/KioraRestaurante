@@ -17,6 +17,7 @@ namespace KioraRestaurante.Data
         public DbSet<ItemCarrinho> ItensCarrinho { get; set; }
         public DbSet<Pedido> Pedidos { get; set; }
         public DbSet<ItemPedido> ItensPedido { get; set; }
+        public DbSet<EnderecoEntrega> EnderecoEntregas { get; set; } 
 
         //Cria a relação entre tabelas
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -86,6 +87,12 @@ namespace KioraRestaurante.Data
                 .WithMany(p => p.ItensPedido)
                 .HasForeignKey(i => i.ProdutoId)
                 .OnDelete(DeleteBehavior.Restrict); //impede o histórico de sumir caso um produto seja apagado.
+
+            //Pedido 1 : 1 EnderecoEntrega
+            modelBuilder.Entity<Pedido>()
+                .HasOne(p => p.EnderecoEntrega)
+                .WithOne(e => e.Pedido)
+                .HasForeignKey<EnderecoEntrega>(e => e.PedidoId);
 
             //Pedido 1 : N ItemPedido
             modelBuilder.Entity<ItemPedido>()
