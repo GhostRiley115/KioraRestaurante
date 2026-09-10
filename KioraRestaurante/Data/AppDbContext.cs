@@ -125,6 +125,14 @@ namespace KioraRestaurante.Data
             modelBuilder.Entity<ItemCarrinho>()
                 .HasIndex(i => new { i.CarrinhoId, i.ProdutoId })
                 .IsUnique();
+
+            //SEED - Categorias iniciais do cardápio
+            modelBuilder.Entity<Categoria>().HasData(
+                new Categoria { Id = 1, Nome = "Entradas", Ativa = true},
+                new Categoria { Id = 2, Nome ="Pratos Principais", Ativa = true},
+                new Categoria { Id = 3, Nome = "Bebidas", Ativa = true},
+                new Categoria { Id = 4, Nome = "Sobremesas", Ativa = true}
+                );
         }
     }
 }
