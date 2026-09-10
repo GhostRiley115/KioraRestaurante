@@ -27,8 +27,7 @@ namespace KioraRestaurante.Models
         [Required]
         [MaxLength(2)]
         public string Uf { get; set; } = null!;
-        [Required]
-        [MaxLength(2)]
+        [MaxLength(200)]
         public string? Complemento { get; set; }
         [MaxLength(200)]
         public string? Referencia { get; set; }

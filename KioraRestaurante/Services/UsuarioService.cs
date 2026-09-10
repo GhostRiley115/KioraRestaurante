@@ -18,8 +18,8 @@ namespace KioraRestaurante.Services
         e Salvar alterações*/
         private readonly AppDbContext _context;
 
-        /*Responsável por criar o hash da senha e vericar se a
-        sennha é compátivel.*/
+        /*Responsável por criar o hash da senha e verificar
+        se uma senha informada corresponde ao hash armazenado.*/
         private readonly PasswordHasher<Usuario> _passwordHasher;
 
         public UsuarioService(AppDbContext context)
@@ -37,6 +37,9 @@ namespace KioraRestaurante.Services
             return email.Trim().ToLower();
         }
 
+        /*Converte a entidade Usuario em um UsuarioResponseDTO.
+        Isso evita retornar dados internos ou sensíveis da entidade,
+        como SenhaHash e informações de recuperação de senha.*/
         private static UsuarioResponseDTO ParaResponseDTO(Usuario usuario)
         {
             return new UsuarioResponseDTO
@@ -47,6 +50,17 @@ namespace KioraRestaurante.Services
                 Tipo = usuario.Tipo,
                 Ativo = usuario.Ativo
             };
+        }
+
+        public UsuarioResponseDTO? BuscarPorId(int usuarioId)
+        {
+            var usuario = _context.Usuarios
+                .FirstOrDefault(u => u.Id == usuarioId && u.Ativo);
+
+            if (usuario == null)
+                return null;
+
+            return ParaResponseDTO(usuario);
         }
 
         /* ---- CADASTRO ---- */
@@ -89,7 +103,7 @@ namespace KioraRestaurante.Services
             /*Procura um usuário pelo e-mail. FirstOrDefault retorna:
             O usuário encontrado -> null caso não encontre*/
             var usuario = _context.Usuarios
-                .FirstOrDefault(u => u.Email.ToLower() == email && u.Ativo);
+                .FirstOrDefault(u => u.Email == email && u.Ativo);
 
             //Se não encontrou nenhum usuário, o login não pode continuar.
             if (usuario == null)
@@ -120,8 +134,8 @@ namespace KioraRestaurante.Services
             var email = NormalizarEmail(dto.Email);
 
             var usuario = _context.Usuarios
-                .FirstOrDefault(u => u.Email.ToLower() == email && u.Ativo);
-            if(usuario == null ) 
+                .FirstOrDefault(u => u.Email == email && u.Ativo);
+            if(usuario == null) 
                 return null;
 
             //Gera um identificador único.
@@ -188,7 +202,7 @@ namespace KioraRestaurante.Services
             2. Possua um Id diferente do usuário atual.
             Se encontrar, significa que o e-mail já pertence a outro usuário.*/
             return _context.Usuarios
-                .Any(u => u.Email.ToLower() == email && u.Id != usuarioId);
+                .Any(u => u.Email == email && u.Id != usuarioId);
         }
 
         /* ---- ATUALIZAR PERFIL ---- */
@@ -220,18 +234,14 @@ namespace KioraRestaurante.Services
                 .FirstOrDefault(u => u.Id == usuarioId);
 
             if (usuario == null)
-            {
                 return false;
-            }
 
-            //O PasswordHasher compara a senha informada com o hash armazenado em usuario.Senha.
+            //O PasswordHasher compara a senha informada com o hash armazenado em usuario.SenhaHash.
             var resultado = _passwordHasher.VerifyHashedPassword(
                 usuario, usuario.SenhaHash, dto.SenhaAtual);
 
             if (resultado == PasswordVerificationResult.Failed)
-            {
                 return false;
-            }
 
             usuario.SenhaHash = _passwordHasher.HashPassword(usuario,dto.NovaSenha);
 
