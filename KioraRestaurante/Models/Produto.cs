@@ -23,17 +23,19 @@ namespace KioraRestaurante.Models
         public decimal Preco { get; set; }
 
         [MaxLength(500)]
-        public string Imagem { get; set; } = null!;
+        public string? Imagem { get; set; } //Nesse primeiro momento de testes a imagem não é obrigatória
         public bool Disponivel { get; set; } = true;
         public bool Ativo { get; set; } = true;
         public int CategoriaId { get; set; }
 
         public Categoria Categoria { get; set; } = null!;
 
-        //Define que um produto pode estar em vários ItemProduto e cria uma navegação do produto para cada ItemCarrinho que ele esteja.
+        /*Define que um produto pode estar em vários ItemProduto e cria 
+        uma navegação do produto para cada ItemCarrinho que ele esteja.*/
         public List<ItemCarrinho> ItensCarrinho { get; set; } = new();
 
-        //Define que um produto pode estar em vários ItemPedido e cria uma navegação do produto para cada ItemPedido que ele esteja.
+        /*Define que um produto pode estar em vários ItemPedido e cria uma
+        navegação do produto para cada ItemPedido que ele esteja.*/
         public List<ItemPedido> ItensPedido { get; set; } = new();
     }
 }

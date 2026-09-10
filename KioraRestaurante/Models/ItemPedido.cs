@@ -18,18 +18,18 @@ namespace KioraRestaurante.Models
         [MaxLength(500)]
         public string? Observacao { get; set; }
 
-        //snapshot do preço no momento da compra
-        //evita com que quando o proprietario mude o preço 
-        //mude o valor de um pedido no dia anterior
+        /*snapshot do preço no momento da compra, evita com que quando o
+        proprietario mude o preço mude o valor de um pedido no dia anterior*/
         [Column(TypeName = "decimal(10,2)")]
         public decimal PrecoUnitario { get; set; }
 
         //snapshot do nome do produto
+        [Required]
+        [MaxLength(100)]
         public string NomeProduto { get; set; } = null!;
 
-        //Esse atributo fala para pro EF Core não crie
-        //uma coluna disso no banco, sendo muito util para 
-        //usar direto na view sem repetir a conta lá
+        /*Esse atributo fala para pro EF Core não crie uma coluna disso
+        no banco, sendo muito util para usar direto na view sem repetir a conta lá*/
         [NotMapped]
         public decimal Subtotal => Quantidade * PrecoUnitario;
     }

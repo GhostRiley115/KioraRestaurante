@@ -1,4 +1,4 @@
-﻿using KioraRestaurante.DTO.ItemCarrinho;
+﻿using KioraRestaurante.DTOs.ItemCarrinho;
 
 namespace KioraRestaurante.DTO.Carrinho
 {
