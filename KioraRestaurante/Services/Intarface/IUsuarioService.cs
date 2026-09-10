@@ -17,10 +17,8 @@ namespace KioraRestaurante.Services.Interfaces
         UsuarioResponseDTO? Autenticar(UsuarioLoginDTO dto);
 
         //Recuperação de senha
-        UsuarioResponseDTO? BuscarPorEmail(string email);
-
         //Gera um token para recuperação de senha.
-        string GerarTokenRecuperacao(string email);
+        string? GerarTokenRecuperacao(UsuarioSolicitarRecuperacaoDTO dto);
 
         //Redefine a senha utilizando o token
         bool RedefinirSenha(UsuarioRedefinirSenhaDTO dto);
@@ -33,7 +31,7 @@ namespace KioraRestaurante.Services.Interfaces
         /*Neste momento serão atualizados somente:
             - Nome
             - E-mail*/
-        void AtualizarPerfil(int usuarioId, UsuarioAtualizarPerfilDTO dto);
+        bool AtualizarPerfil(int usuarioId, UsuarioAtualizarPerfilDTO dto);
 
         bool AlterarSenha(int usuarioId, UsuarioAlterarSenhaDTO dto);
     }

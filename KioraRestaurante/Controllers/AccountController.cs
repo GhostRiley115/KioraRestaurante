@@ -1,27 +1,17 @@
-﻿// Permite utilizar a classe Usuario, que representa o usuário salvo no banco de dados.
-using KioraRestaurante.Models;
-
-//Permite utilizar a interface IUsuarioServices,
-//responsável pelas operações relacionadas aos usuários.
+﻿using KioraRestaurante.Models;
 using KioraRestaurante.Services.Interfaces;
-
 //Permite utilizar os ViewModels utilizados pelo cadastro e pelo login.
 using KioraRestaurante.ViewModels;
-
-//Permite utilizar Controller, IActionResult, HttpGet, HttpPost
-//e outros recursos do ASP.NET Core MVC.
+/*Permite utilizar Controller, IActionResult, HttpGet, HttpPost
+e outros recursos do ASP.NET Core MVC.*/
 using Microsoft.AspNetCore.Mvc;
-
 using Microsoft.AspNetCore.Authorization;
-
-//Permite utilizar os recursos de autenticação do ASP.NET Core.
+//recursos de autenticação do ASP.NET Core.
 using Microsoft.AspNetCore.Authentication;
-
-//Permite utilizar o esquema de autenticação por Cookie.
+//esquema de autenticação por Cookie.
 using Microsoft.AspNetCore.Authentication.Cookies;
-
-//Permite criar as informações que serão armazenadas
-//dentro do Cookie de autenticação.
+/*Permite criar as informações que serão armazenadas
+dentro do Cookie de autenticação.*/
 using System.Security.Claims;
 
 namespace KioraRestaurante.Controllers
