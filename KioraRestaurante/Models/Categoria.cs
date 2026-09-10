@@ -15,8 +15,8 @@ namespace KioraRestaurante.Models
 
         public bool Ativa { get; set; } = true;
 
-        //Define o relacionamento entre Categoria e Produto.
-        //Uma categoria pode possuir vários produtos.
+        /*Define o relacionamento entre Categoria e Produto.
+        Uma categoria pode possuir vários produtos.*/
         public List<Produto> Produtos { get; set; } = new();
     }
 }

@@ -30,10 +30,12 @@ namespace KioraRestaurante.Models
 
         public Categoria Categoria { get; set; } = null!;
 
-        //Define que um produto pode estar em vários ItemProduto e cria uma navegação do produto para cada ItemCarrinho que ele esteja.
+        /*Define que um produto pode estar em vários ItemProduto e cria 
+        uma navegação do produto para cada ItemCarrinho que ele esteja.*/
         public List<ItemCarrinho> ItensCarrinho { get; set; } = new();
 
-        //Define que um produto pode estar em vários ItemPedido e cria uma navegação do produto para cada ItemPedido que ele esteja.
+        /*Define que um produto pode estar em vários ItemPedido e cria uma
+        navegação do produto para cada ItemPedido que ele esteja.*/
         public List<ItemPedido> ItensPedido { get; set; } = new();
     }
 }

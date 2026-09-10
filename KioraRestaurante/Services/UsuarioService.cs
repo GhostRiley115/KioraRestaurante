@@ -1,13 +1,7 @@
-﻿//Permite acessar o AppDbContext,
-//que é responsável pela comunicação com o banco de dados.
+﻿//Permite acessar o AppDbContext.
 using KioraRestaurante.Data;
-
-//Permite utilizar a classe Usuario.
 using KioraRestaurante.Models;
-
-//Permite utilizar a interface IUsuarioService.
 using KioraRestaurante.Services.Interfaces;
-
 //Permite utilizar o PasswordHasher,
 //responsável por transformar e verificar senhas com hash.
 using Microsoft.AspNetCore.Identity;
