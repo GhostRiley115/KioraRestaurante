@@ -25,6 +25,8 @@ namespace KioraRestaurante.Models
         public decimal PrecoUnitario { get; set; }
 
         //snapshot do nome do produto
+        [Required]
+        [MaxLength(100)]
         public string NomeProduto { get; set; } = null!;
 
         //Esse atributo fala para pro EF Core não crie

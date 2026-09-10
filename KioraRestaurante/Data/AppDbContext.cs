@@ -79,7 +79,8 @@ namespace KioraRestaurante.Data
             modelBuilder.Entity<ItemCarrinho>()
                 .HasOne(i => i.Produto)
                 .WithMany(p => p.ItensCarrinho)
-                .HasForeignKey(i => i.ProdutoId);
+                .HasForeignKey(i => i.ProdutoId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             //Produto 1 : N ItemPedido
             modelBuilder.Entity<ItemPedido>()

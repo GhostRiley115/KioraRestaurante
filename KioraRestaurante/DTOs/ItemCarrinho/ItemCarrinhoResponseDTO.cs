@@ -1,4 +1,4 @@
-﻿namespace KioraRestaurante.DTO.ItemCarrinho
+﻿namespace KioraRestaurante.DTOs.ItemCarrinho
 {
     public class ItemCarrinhoResponseDTO
     {

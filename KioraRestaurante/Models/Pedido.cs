@@ -14,7 +14,7 @@ namespace KioraRestaurante.Models
 
         public FormaPagamento FormaPagamento { get; set; }
         public StatusPedido StatusPedido { get; set; } = StatusPedido.Recebido;
-        public StatusPagamento StatusPagamento { get; set; }
+        public StatusPagamento StatusPagamento { get; set; } = StatusPagamento.Pendente;
 
         [Column(TypeName = "decimal(10,2)")]
         public decimal ValorTotal { get; set; }

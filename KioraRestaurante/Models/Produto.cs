@@ -23,7 +23,7 @@ namespace KioraRestaurante.Models
         public decimal Preco { get; set; }
 
         [MaxLength(500)]
-        public string Imagem { get; set; } = null!;
+        public string? Imagem { get; set; } //Nesse primeiro momento de testes a imagem não é obrigatória
         public bool Disponivel { get; set; } = true;
         public bool Ativo { get; set; } = true;
         public int CategoriaId { get; set; }
