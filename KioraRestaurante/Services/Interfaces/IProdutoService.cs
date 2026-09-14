@@ -1,6 +1,6 @@
-﻿using KioraRestaurante.Models;
+using KioraRestaurante.Models;
 
-namespace KioraRestaurante.Services.Intarface
+namespace KioraRestaurante.Services.Interfaces
 {
     public interface IProdutoService
     {

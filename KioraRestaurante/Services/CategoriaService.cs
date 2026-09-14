@@ -1,6 +1,5 @@
 ﻿using KioraRestaurante.Data;
 using KioraRestaurante.Models;
-using KioraRestaurante.Services.Intarface;
 using KioraRestaurante.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 

@@ -23,7 +23,7 @@ namespace KioraRestaurante.Models
         public Produto Produto { get; set; } = null!;
 
         //Quantidade de vezes que o produto foi adicionado.
-        [Range(1, 99)]
+        [Range(1, 30, ErrorMessage = "A quantidade deve estar entre 1 e 30 unidades.")]
         public int Quantidade { get; set; } 
     }
 }
