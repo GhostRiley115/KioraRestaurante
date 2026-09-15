@@ -16,6 +16,11 @@ namespace KioraRestaurante.Controllers
             return View();
         }
 
+        public IActionResult Cardapio()
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();

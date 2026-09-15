@@ -19,4 +19,10 @@
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\imagens\home\" />
+    <Folder Include="wwwroot\imagens\galeria\" />
+    <Folder Include="wwwroot\imagens\sobre\" />
+  </ItemGroup>
+
 </Project>
