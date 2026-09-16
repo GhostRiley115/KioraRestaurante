@@ -13,13 +13,14 @@ namespace KioraRestaurante.ViewModels
         public string? Descricao { get; set; }
         [Required(ErrorMessage = "Informe o preço.")]
         [Range(typeof(decimal), "0.01", "9999999", ErrorMessage = "Preço inválido.")]
+        public decimal Preco { get; set; }
 
         [MaxLength(500)]
         public string? Imagem { get; set; }
 
         [Required(ErrorMessage = "Selecione uma categoria.")]
-        public int Categoria { get; set; }
+        public int CategoriaId { get; set; }
 
-        public List<SelectListItem> CategoriaDisponiveis { get; set; } = new();
+        public List<SelectListItem> CategoriasDisponiveis { get; set; } = new();
     }
 }
