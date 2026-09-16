@@ -19,7 +19,7 @@ namespace KioraRestaurante.Services.Interfaces
         //Remove todos os itens do carrinho. O carrinho permanece cadastrado, mas fica sem produtos.
         Task <CarrinhoResponseDTO> EsvaziarCarrinho(AcessoCarrinho acesso);
         //Mescla o carrinho do visitante ao do usuário.
-        Task<MesclagemCarrinhoResponseDTO> MesclarCarrinho(AcessoCarrinho acesso, MesclarCarrinhoRequestDTO dto);
+        Task<MesclagemCarrinhoResponseDTO> MesclarCarrinhos(AcessoCarrinho acesso, MesclarCarrinhoRequestDTO dto);
     }
 }
 

@@ -410,7 +410,7 @@ namespace KioraRestaurante.Services
             return await MontarResposta(acesso, carrinho);
         }
 
-        public async Task<MesclagemCarrinhoResponseDTO> MesclarCarrinho(AcessoCarrinho acesso,
+        public async Task<MesclagemCarrinhoResponseDTO> MesclarCarrinhos(AcessoCarrinho acesso,
             MesclarCarrinhoRequestDTO dto)
         {
             //APENAS USUÁRIOS LOGADOS PODEM MESCLAR CARRINHO.

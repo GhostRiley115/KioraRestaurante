@@ -3,9 +3,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KioraRestaurante.Services;
 
+//BackgroundService significa que esse serviço roda em segundo plano.
 public class LimpezaCarrinhosService : BackgroundService
 {
     private readonly IServiceScopeFactory _scopeFactory;
+    //Cria um log da funcionalidade de remover carrinho.
     private readonly ILogger<LimpezaCarrinhosService> _logger;
 
     public LimpezaCarrinhosService(IServiceScopeFactory scopeFactory,
@@ -17,6 +19,7 @@ public class LimpezaCarrinhosService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        //Faz consultas no banco de uma em uma hora.
         using var timer = new PeriodicTimer(TimeSpan.FromHours(1));
         try
         {
@@ -24,12 +27,14 @@ public class LimpezaCarrinhosService : BackgroundService
             {
                 try
                 {
+                    //Abre sessão -> Pega DbContext -> Faz consulta -> Termina sessão
                     using var scope = _scopeFactory.CreateScope();
 
                     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
                     var agora = DateTime.UtcNow;
 
+                    //Consulta carrinhos que já foram expirados e remove do banco.
                     await context.Carrinhos.Where
                         (c =>
                             c.UsuarioId == null

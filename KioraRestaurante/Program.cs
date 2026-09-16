@@ -47,6 +47,9 @@ builder.Services.AddControllersWithViews();
 //para os Controllers que precisarem do serviço.
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<ICarrinhoService, CarrinhoService>();
+builder.Services.AddDataProtection();
+builder.Services.AddScoped<CarrinhoCookie>();
+builder.Services.AddHostedService<LimpezaCarrinhosService>();
 
 builder.Services.
     AddAntiforgery(options =>

@@ -3,12 +3,11 @@ using System.Security.Cryptography;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 
-
 namespace KioraRestaurante.Services;
 
 public class CarrinhoCookie
 {
-    private const string Nome = "__Host-KioraCarinho";
+    private const string Nome = "__Host-KioraCarrinho";
     private readonly IDataProtector _protetor;
 
     public CarrinhoCookie(IDataProtectionProvider provider)
@@ -18,6 +17,7 @@ public class CarrinhoCookie
 
     public int? Ler(HttpContext httpContext)
     {
+        //Pegue da requisição o cookie que tem esse nome.
         var cookie = httpContext.Request.Cookies[Nome];
 
         if (string.IsNullOrWhiteSpace(cookie))
@@ -25,8 +25,10 @@ public class CarrinhoCookie
 
         try
         {
+            //Desprotege o Cookie para poder ler.
             var texto = _protetor.Unprotect(cookie);
 
+            //Tenta converter o Cookie para um int e guarda na var "id".
             if (int.TryParse(texto, NumberStyles.None,
                     CultureInfo.InvariantCulture, out var id) && id > 0)
             {
@@ -42,10 +44,13 @@ public class CarrinhoCookie
 
     public void Gravar(HttpContext httpContext, int carrinhoId)
     {
+        //Pega o ID do carrinho e converte a uma string.
         var texto = carrinhoId.ToString(CultureInfo.InvariantCulture);
 
+        //Protege o ID.
         var valorProtegido = _protetor.Protect(texto);
 
+        //Joga o ID do carrinho no navegador de forma protegida para ser o Cookie.
         httpContext.Response.Cookies.Append(Nome, valorProtegido, new CookieOptions
         {
             //Impede que o JavaScript leia diretamente esse cookie.
