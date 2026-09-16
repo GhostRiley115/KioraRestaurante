@@ -1,4 +1,4 @@
-﻿//Permite utilizar os DTOs
+//Permite utilizar os DTOs
 using KioraRestaurante.DTOs.Usuario;
 
 

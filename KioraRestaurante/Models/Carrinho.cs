@@ -1,4 +1,7 @@
 ﻿//Um Carrinho possui um identificador, pertence a um Usuário e possui uma lista de itens.
+
+using System.ComponentModel.DataAnnotations;
+
 namespace KioraRestaurante.Models
 {
     public class Carrinho
@@ -17,6 +20,15 @@ namespace KioraRestaurante.Models
         public Usuario? Usuario { get; set; }
 
         //Criando uma lista podendo conter varios ItemCarrinho dentro dela.
-        public List<ItemCarrinho> ItensCarrinho { get; set; } = new(); 
+        public List<ItemCarrinho> ItensCarrinho { get; set; } = new();
+
+        /*Somente carrinhos de visitante possuem expiração. Quando o
+         carrinho passa a pertencer ao usuário, está propriedade fica nula.*/
+        public DateTime? ExpiraEmUtc { get; set; }
+
+        /*Permite detectar se outra requisição alterou
+         o mesmo carrinho antes de salvarmos nossa alteração.*/
+        [ConcurrencyCheck]
+        public Guid Versao { get; set; } = Guid.NewGuid();
     }
 }

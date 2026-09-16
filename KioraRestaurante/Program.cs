@@ -46,18 +46,28 @@ builder.Services.AddControllersWithViews();
 //possa fornecer automaticamente uma instância dele
 //para os Controllers que precisarem do serviço.
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<ICarrinhoService, CarrinhoService>();
+builder.Services.AddDataProtection();
+builder.Services.AddScoped<CarrinhoCookie>();
+builder.Services.AddHostedService<LimpezaCarrinhosService>();
+
+builder.Services.
+    AddAntiforgery(options =>
+    {
+    options.HeaderName = "X-CSRF-TOKEN";
+    });
 
 var app = builder.Build();
 
 //Verifica se a aplicação não está em ambiente de desenvolvimento.
 if (!app.Environment.IsDevelopment())
-{
-    //Utiliza uma página de erro personalizada.
-    app.UseExceptionHandler("/Home/Error");
+    {
+        //Utiliza uma página de erro personalizada.
+        app.UseExceptionHandler("/Home/Error");
 
-    //Ativa o HSTS para aumentar a segurança da aplicação.
-    app.UseHsts();
-}
+        //Ativa o HSTS para aumentar a segurança da aplicação.
+        app.UseHsts();
+    }
 
 //Redireciona requisições HTTP para HTTPS.
 app.UseHttpsRedirection();
