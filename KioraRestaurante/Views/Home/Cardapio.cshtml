@@ -1,0 +1,509 @@
+﻿@{
+    ViewData["Title"] = "Cardápio";
+}
+
+<!-- ============================================================
+     PÁGINA DO CARDÁPIO KIORA
+     ============================================================ -->
+
+<section class="cardapio-kiora">
+
+
+    <!-- ========================================================
+         CABEÇALHO DO CARDÁPIO
+         ======================================================== -->
+
+    <div class="cardapio-cabecalho">
+
+        <span class="cardapio-subtitulo">
+            UMA EXPERIÊNCIA ALÉM DO SABOR
+        </span>
+
+        <p>
+            Descubra sabores inspirados na tradição japonesa,
+            preparados para proporcionar uma experiência única.
+        </p>
+
+    </div>
+
+
+    <!-- ========================================================
+         CONTEÚDO PRINCIPAL
+         ======================================================== -->
+
+    <div class="cardapio-conteudo">
+
+        <!-- ====================================================
+             MENU LATERAL DE CATEGORIAS
+             ==================================================== -->
+
+        <aside class="cardapio-categorias">
+
+            <div class="categorias-card">
+
+                <div class="categorias-titulo">
+
+                    <span>
+                        <i class="bi bi-list"></i>
+                    </span>
+
+                    <h2>Categorias</h2>
+
+                </div>
+
+
+                <nav class="categorias-menu">
+
+                    <a href="#lamen" class="categoria-item ativo">
+                        <i class="bi bi-cup-hot"></i>
+                        <span>Lamen</span>
+                    </a>
+
+                    <a href="#entradas" class="categoria-item">
+                        <i class="bi bi-egg-fried"></i>
+                        <span>Entradas</span>
+                    </a>
+
+                    <a href="#sobremesas" class="categoria-item">
+                        <i class="bi bi-cake2"></i>
+                        <span>Sobremesas</span>
+                    </a>
+
+                    <a href="#bebidas" class="categoria-item">
+                        <i class="bi bi-cup-straw"></i>
+                        <span>Bebidas</span>
+                    </a>
+
+                </nav>
+
+            </div>
+
+        </aside>
+
+
+        <!-- ====================================================
+             ÁREA DOS PRODUTOS
+             ==================================================== -->
+
+        <main class="cardapio-produtos">
+
+
+            <!-- =================================================
+                 CATEGORIA — LAMEN
+                 ================================================= -->
+
+            <section class="categoria-produtos" id="lamen">
+
+                <div class="categoria-cabecalho">
+
+                    <div>
+
+                        <span class="categoria-label">
+                            ESPECIALIDADE DA CASA
+                        </span>
+
+                        <h2>Lamen</h2>
+
+                    </div>
+
+                    <i class="bi bi-cup-hot categoria-icone"></i>
+
+                </div>
+
+
+                <div class="produtos-grid">
+
+
+                    <!-- =================================================
+                         PRODUTO — LAMEN KIORA
+                         ================================================= -->
+
+                    <article class="produto-card">
+
+                        <div class="produto-imagem">
+
+                            <img src="~/imagens/produtos/lamen-kiora.jpg"
+                                 alt="Lamen Kiora">
+
+                        </div>
+
+                        <div class="produto-informacoes">
+
+                            <h3>Lamen Kiora</h3>
+
+                            <p>
+                                Lamen preparado com caldo especial
+                                e ingredientes selecionados.
+                            </p>
+
+                            <div class="produto-rodape">
+
+                                <span class="produto-preco">
+                                    R$ 39,90
+                                </span>
+
+                                <button type="button"
+                                        class="btn-adicionar-produto">
+                                    <i class="bi bi-plus-lg"></i>
+                                    <span>Adicionar</span>
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+
+                    <!-- =================================================
+                         PRODUTO — LAMEN TRADICIONAL
+                         ================================================= -->
+
+                    <article class="produto-card">
+
+                        <div class="produto-imagem">
+
+                            <img src="~/imagens/produtos/lamen-tradicional.jpg"
+                                 alt="Lamen Tradicional">
+
+                        </div>
+
+                        <div class="produto-informacoes">
+
+                            <h3>Lamen Tradicional</h3>
+
+                            <p>
+                                Receita tradicional japonesa com
+                                caldo encorpado e ingredientes frescos.
+                            </p>
+
+                            <div class="produto-rodape">
+
+                                <span class="produto-preco">
+                                    R$ 34,90
+                                </span>
+
+                                <button type="button"
+                                        class="btn-adicionar-produto">
+                                    <i class="bi bi-plus-lg"></i>
+                                    <span>Adicionar</span>
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+
+                    <!-- =================================================
+                         PRODUTO — LAMEN ESPECIAL
+                         ================================================= -->
+
+                    <article class="produto-card">
+
+                        <div class="produto-imagem">
+
+                            <img src="~/imagens/produtos/lamen-especial.jpg"
+                                 alt="Lamen Especial">
+
+                        </div>
+
+                        <div class="produto-informacoes">
+
+                            <h3>Lamen Especial</h3>
+
+                            <p>
+                                Uma combinação especial de sabores
+                                para uma experiência única.
+                            </p>
+
+                            <div class="produto-rodape">
+
+                                <span class="produto-preco">
+                                    R$ 44,90
+                                </span>
+
+                                <button type="button"
+                                        class="btn-adicionar-produto">
+                                    <i class="bi bi-plus-lg"></i>
+                                    <span>Adicionar</span>
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 CATEGORIA — ENTRADAS
+                 ================================================= -->
+
+            <section class="categoria-produtos" id="entradas">
+
+                <div class="categoria-cabecalho">
+
+                    <div>
+
+                        <span class="categoria-label">
+                            PARA COMEÇAR
+                        </span>
+
+                        <h2>Entradas</h2>
+
+                    </div>
+
+                    <i class="bi bi-egg-fried categoria-icone"></i>
+
+                </div>
+
+
+                <div class="produtos-grid">
+
+
+                    <!-- =================================================
+                         PRODUTO — GYOZA
+                         ================================================= -->
+
+                    <article class="produto-card">
+
+                        <div class="produto-imagem">
+
+                            <img src="~/imagens/produtos/gyoza.jpg"
+                                 alt="Gyoza">
+
+                        </div>
+
+                        <div class="produto-informacoes">
+
+                            <h3>Gyoza</h3>
+
+                            <p>
+                                Delicados pastéis japoneses recheados
+                                e preparados de forma artesanal.
+                            </p>
+
+                            <div class="produto-rodape">
+
+                                <span class="produto-preco">
+                                    R$ 24,90
+                                </span>
+
+                                <button type="button"
+                                        class="btn-adicionar-produto">
+                                    <i class="bi bi-plus-lg"></i>
+                                    <span>Adicionar</span>
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+
+                    <!-- =================================================
+                         PRODUTO — HARUMAKI
+                         ================================================= -->
+
+                    <article class="produto-card">
+
+                        <div class="produto-imagem">
+
+                            <img src="~/imagens/produtos/harumaki.jpg"
+                                 alt="Harumaki">
+
+                        </div>
+
+                        <div class="produto-informacoes">
+
+                            <h3>Harumaki</h3>
+
+                            <p>
+                                Rolinho primavera crocante com
+                                recheio especial da casa.
+                            </p>
+
+                            <div class="produto-rodape">
+
+                                <span class="produto-preco">
+                                    R$ 19,90
+                                </span>
+
+                                <button type="button"
+                                        class="btn-adicionar-produto">
+                                    <i class="bi bi-plus-lg"></i>
+                                    <span>Adicionar</span>
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 CATEGORIA — SOBREMESAS
+                 ================================================= -->
+
+            <section class="categoria-produtos" id="sobremesas">
+
+                <div class="categoria-cabecalho">
+
+                    <div>
+
+                        <span class="categoria-label">
+                            PARA FINALIZAR
+                        </span>
+
+                        <h2>Sobremesas</h2>
+
+                    </div>
+
+                    <i class="bi bi-cake2 categoria-icone"></i>
+
+                </div>
+
+
+                <div class="produtos-grid">
+
+
+                    <!-- =================================================
+                         PRODUTO — MOCHI
+                         ================================================= -->
+
+                    <article class="produto-card">
+
+                        <div class="produto-imagem">
+
+                            <img src="~/imagens/produtos/mochi.jpg"
+                                 alt="Mochi">
+
+                        </div>
+
+                        <div class="produto-informacoes">
+
+                            <h3>Mochi</h3>
+
+                            <p>
+                                Tradicional doce japonês de textura
+                                macia e recheio delicado.
+                            </p>
+
+                            <div class="produto-rodape">
+
+                                <span class="produto-preco">
+                                    R$ 16,90
+                                </span>
+
+                                <button type="button"
+                                        class="btn-adicionar-produto">
+                                    <i class="bi bi-plus-lg"></i>
+                                    <span>Adicionar</span>
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 CATEGORIA — BEBIDAS
+                 ================================================= -->
+
+            <section class="categoria-produtos" id="bebidas">
+
+                <div class="categoria-cabecalho">
+
+                    <div>
+
+                        <span class="categoria-label">
+                            PARA ACOMPANHAR
+                        </span>
+
+                        <h2>Bebidas</h2>
+
+                    </div>
+
+                    <i class="bi bi-cup-straw categoria-icone"></i>
+
+                </div>
+
+
+                <div class="produtos-grid">
+
+
+                    <!-- =================================================
+                         PRODUTO — CHÁ VERDE
+                         ================================================= -->
+
+                    <article class="produto-card">
+
+                        <div class="produto-imagem">
+
+                            <img src="~/imagens/produtos/cha-verde.jpg"
+                                 alt="Chá Verde">
+
+                        </div>
+
+                        <div class="produto-informacoes">
+
+                            <h3>Chá Verde</h3>
+
+                            <p>
+                                Chá verde tradicional para acompanhar
+                                sua experiência KIORA.
+                            </p>
+
+                            <div class="produto-rodape">
+
+                                <span class="produto-preco">
+                                    R$ 9,90
+                                </span>
+
+                                <button type="button"
+                                        class="btn-adicionar-produto">
+                                    <i class="bi bi-plus-lg"></i>
+                                    <span>Adicionar</span>
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</section>
+
+
+@section Scripts {
+
+    <script src="~/js/cardapio.js"></script>
+
+}
+
