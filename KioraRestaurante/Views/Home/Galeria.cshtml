@@ -1,0 +1,268 @@
+﻿@{
+    ViewData["Title"] = "Galeria";
+}
+
+<section class="galeria-kiora">
+
+    <!-- =========================================================
+         CABEÇALHO DA GALERIA
+         ========================================================= -->
+
+    <div class="galeria-cabecalho">
+
+        <span class="galeria-subtitulo">
+            MOMENTOS KIORA
+        </span>
+
+        <h1>
+            Nossa Galeria
+        </h1>
+
+        <p>
+            Uma experiência além do sabor, traduzida em cada detalhe.
+        </p>
+
+    </div>
+
+
+    <!-- =========================================================
+         GALERIA DE IMAGENS
+         ========================================================= -->
+
+    <div class="galeria-grid">
+
+        <!-- =====================================================
+             IMAGEM 01
+             ===================================================== -->
+
+        <button class="galeria-item galeria-item-grande"
+                type="button"
+                data-imagem="~/imagens/galeria/galeria-01.jpg"
+                data-titulo="Experiência KIORA">
+
+            <img src="~/imagens/galeria/galeria-01.jpg"
+                 alt="Experiência KIORA"
+                 loading="lazy">
+
+            <span class="galeria-overlay">
+
+                <i class="bi bi-plus-lg"></i>
+
+            </span>
+
+        </button>
+
+
+        <!-- =====================================================
+             IMAGEM 02
+             ===================================================== -->
+
+        <button class="galeria-item"
+                type="button"
+                data-imagem="~/imagens/galeria/galeria-02.jpg"
+                data-titulo="Culinária KIORA">
+
+            <img src="~/imagens/galeria/galeria-02.jpg"
+                 alt="Culinária KIORA"
+                 loading="lazy">
+
+            <span class="galeria-overlay">
+
+                <i class="bi bi-plus-lg"></i>
+
+            </span>
+
+        </button>
+
+
+        <!-- =====================================================
+             IMAGEM 03
+             ===================================================== -->
+
+        <button class="galeria-item"
+                type="button"
+                data-imagem="~/imagens/galeria/galeria-03.jpg"
+                data-titulo="Sabores KIORA">
+
+            <img src="~/imagens/galeria/galeria-03.jpg"
+                 alt="Sabores KIORA"
+                 loading="lazy">
+
+            <span class="galeria-overlay">
+
+                <i class="bi bi-plus-lg"></i>
+
+            </span>
+
+        </button>
+
+
+        <!-- =====================================================
+             IMAGEM 04
+             ===================================================== -->
+
+        <button class="galeria-item"
+                type="button"
+                data-imagem="~/imagens/galeria/galeria-04.jpg"
+                data-titulo="Detalhes KIORA">
+
+            <img src="~/imagens/galeria/galeria-04.jpg"
+                 alt="Detalhes KIORA"
+                 loading="lazy">
+
+            <span class="galeria-overlay">
+
+                <i class="bi bi-plus-lg"></i>
+
+            </span>
+
+        </button>
+
+
+        <!-- =====================================================
+             IMAGEM 05
+             ===================================================== -->
+
+        <button class="galeria-item"
+                type="button"
+                data-imagem="~/imagens/galeria/galeria-05.jpg"
+                data-titulo="Lamen KIORA">
+
+            <img src="~/imagens/galeria/galeria-05.jpg"
+                 alt="Lamen KIORA"
+                 loading="lazy">
+
+            <span class="galeria-overlay">
+
+                <i class="bi bi-plus-lg"></i>
+
+            </span>
+
+        </button>
+
+
+        <!-- =====================================================
+             IMAGEM 06
+             ===================================================== -->
+
+        <button class="galeria-item galeria-item-grande"
+                type="button"
+                data-imagem="~/imagens/galeria/galeria-06.jpg"
+                data-titulo="Uma experiência além do sabor">
+
+            <img src="~/imagens/galeria/galeria-06.jpg"
+                 alt="Uma experiência além do sabor"
+                 loading="lazy">
+
+            <span class="galeria-overlay">
+
+                <i class="bi bi-plus-lg"></i>
+
+            </span>
+
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =============================================================
+     MODAL DA GALERIA
+     ============================================================= -->
+
+<div class="modal fade"
+     id="modalGaleria"
+     tabindex="-1"
+     aria-labelledby="modalGaleriaTitulo"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+
+        <div class="modal-content modal-galeria-kiora">
+
+            <!-- BOTÃO FECHAR -->
+
+            <button type="button"
+                    class="modal-galeria-fechar"
+                    data-bs-dismiss="modal"
+                    aria-label="Fechar">
+
+                <i class="bi bi-x-lg"></i>
+
+            </button>
+
+
+            <!-- IMAGEM AMPLIADA -->
+
+            <div class="modal-galeria-imagem">
+
+                <img id="imagemGaleriaModal"
+                     src=""
+                     alt="">
+
+            </div>
+
+
+            <!-- TÍTULO -->
+
+            <div class="modal-galeria-titulo">
+
+                <h2 id="modalGaleriaTitulo"></h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const itensGaleria =
+                document.querySelectorAll(".galeria-item");
+
+            const imagemModal =
+                document.getElementById("imagemGaleriaModal");
+
+            const tituloModal =
+                document.getElementById("modalGaleriaTitulo");
+
+            const modalElemento =
+                document.getElementById("modalGaleria");
+
+            const modal =
+                new bootstrap.Modal(modalElemento);
+
+
+            itensGaleria.forEach(function (item) {
+
+                item.addEventListener("click", function () {
+
+                    const imagem =
+                        item.getAttribute("data-imagem");
+
+                    const titulo =
+                        item.getAttribute("data-titulo");
+
+                    imagemModal.src = imagem;
+                    imagemModal.alt = titulo;
+                    tituloModal.textContent = titulo;
+
+                    modal.show();
+
+                });
+
+            });
+
+        });
+
+    </script>
+
+}

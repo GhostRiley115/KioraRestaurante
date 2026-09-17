@@ -12,11 +12,19 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.19">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\imagens\home\" />
+    <Folder Include="wwwroot\imagens\galeria\" />
+    <Folder Include="wwwroot\imagens\sobre\" />
   </ItemGroup>
 
   <ItemGroup>

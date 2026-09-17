@@ -1,0 +1,594 @@
+﻿/* ================================================================
+   CARDÁPIO KIORA
+   ================================================================ */
+/* ================================================================
+   CONFIGURAÇÃO GERAL
+   ================================================================ */
+html {
+    scroll-behavior: smooth;
+}
+
+.cardapio-kiora {
+    width: 100%;
+    padding: 70px 6% 90px;
+    background: #0E0E0E;
+    color: #FFFFFF;
+}
+
+
+/* ================================================================
+   CABEÇALHO DO CARDÁPIO
+   ================================================================ */
+
+.cardapio-cabecalho {
+    max-width: 900px;
+    margin: 0 auto 60px;
+    text-align: center;
+}
+
+    .cardapio-cabecalho .sobre-label {
+        display: inline-block;
+        margin-bottom: 12px;
+        color: #D9B27A;
+        font-family: "Lato", sans-serif;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+    }
+
+    .cardapio-cabecalho h1 {
+        margin: 0 0 18px;
+        color: #FFFFFF;
+        font-family: "Playfair Display", serif;
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        font-weight: 600;
+        line-height: 1.1;
+    }
+
+    .cardapio-cabecalho p {
+        max-width: 720px;
+        margin: 0 auto;
+        color: #BDBDBD;
+        font-family: "Lato", sans-serif;
+        font-size: 1rem;
+        line-height: 1.8;
+    }
+
+
+/* ================================================================
+   ESTRUTURA PRINCIPAL
+   ================================================================ */
+
+.cardapio-conteudo {
+    display: grid;
+    grid-template-columns: 250px minmax(0, 1fr);
+    gap: 45px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+
+/* ================================================================
+   CATEGORIAS
+   ================================================================ */
+
+.cardapio-categorias {
+    position: relative;
+}
+
+.categorias-card {
+    position: sticky;
+    top: 110px;
+    padding: 28px 20px;
+    background: #151515;
+    border: 1px solid rgba(217, 178, 122, 0.18);
+    border-radius: 14px;
+}
+
+.categorias-titulo {
+    margin: 0 0 20px;
+    color: #D9B27A;
+    font-family: "Lato", sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.categorias-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.categoria-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    padding: 10px 22px;
+    background-color: #7D1F1F;
+    color: #FFFFFF !important;
+    border: 1px solid #D9B27A;
+    border-radius: 3px;
+    font-family: "Lato", sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+    .categoria-item i {
+        font-size: 1rem;
+    }
+
+    .categoria-item:hover {
+        background-color: #D9B27A;
+        color: #0E0E0E !important;
+        border-color: #D9B27A;
+        transform: none;
+    }
+
+    .categoria-item.ativo {
+        background-color: #D9B27A;
+        color: #0E0E0E !important;
+        border-color: #D9B27A;
+    }
+
+
+/* ================================================================
+   ÁREA DOS PRODUTOS
+   ================================================================ */
+
+.cardapio-produtos {
+    min-width: 0;
+}
+
+.categoria-produtos {
+    margin-bottom: 70px;
+    scroll-margin-top: 120px;
+}
+
+
+/* ================================================================
+   CABEÇALHO DE CADA CATEGORIA
+   ================================================================ */
+
+.categoria-cabecalho {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid rgba(217, 178, 122, 0.2);
+}
+
+.categoria-label {
+    display: block;
+    margin-bottom: 5px;
+    color: #D9B27A;
+    font-family: "Lato", sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.categoria-cabecalho h2 {
+    margin: 0;
+    color: #FFFFFF;
+    font-family: "Playfair Display", serif;
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.categoria-icone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    color: #D9B27A;
+    font-size: 1.4rem;
+    border: 1px solid rgba(217, 178, 122, 0.3);
+    border-radius: 50%;
+}
+
+
+/* ================================================================
+   GRID DOS PRODUTOS
+   ================================================================ */
+
+.produtos-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px;
+}
+
+
+/* ================================================================
+   CARD DO PRODUTO
+   ================================================================ */
+
+.produto-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 500px;
+    overflow: hidden;
+    background: linear-gradient( 145deg, #191919 0%, #121212 52%, #0D0D0D 100% );
+    border: 1px solid rgba(217, 178, 122, 0.28);
+    border-radius: 6px;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+    transition: transform 0.45s ease, border-color 0.45s ease, box-shadow 0.45s ease, background 0.45s ease;
+}
+
+
+    /* ================================================================
+   DETALHE DOURADO SUPERIOR
+   ================================================================ */
+
+    .produto-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 50%;
+        width: 0;
+        height: 2px;
+        background: #D9B27A;
+        transform: translateX(-50%);
+        transition: width 0.45s ease;
+        z-index: 10;
+    }
+
+
+    /* ================================================================
+   DETALHE DECORATIVO DO CANTO
+   ================================================================ */
+
+    .produto-card::after {
+        content: "";
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        width: 25px;
+        height: 25px;
+        border-top: 1px solid rgba(217, 178, 122, 0.60);
+        border-right: 1px solid rgba(217, 178, 122, 0.60);
+        transition: width 0.45s ease, height 0.45s ease, border-color 0.45s ease;
+        z-index: 10;
+        pointer-events: none;
+    }
+
+
+/* ================================================================
+   IMAGEM DO PRODUTO
+   ================================================================ */
+
+.produto-imagem {
+    position: relative;
+    width: 100%;
+    height: 240px;
+    overflow: hidden;
+    background: #151515;
+}
+
+    .produto-imagem img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        filter: brightness(0.88) saturate(0.92);
+        transform: scale(1);
+        transition: transform 0.8s cubic-bezier(0.2, 0.65, 0.3, 1), filter 0.8s ease;
+    }
+
+
+    /* ================================================================
+   GRADIENTE SOBRE A IMAGEM
+   ================================================================ */
+
+    .produto-imagem::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient( to bottom, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.04) 35%, rgba(14, 14, 14, 0.30) 65%, rgba(14, 14, 14, 0.94) 100% );
+        pointer-events: none;
+    }
+
+
+/* ================================================================
+   PLACEHOLDER DA IMAGEM
+   ================================================================ */
+
+.produto-imagem-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient( 145deg, #191919 0%, #111111 100% );
+    color: rgba(217, 178, 122, 0.45);
+    font-size: 2.8rem;
+    transition: transform 0.6s ease, color 0.6s ease;
+}
+
+
+/* ================================================================
+   INFORMAÇÕES DO PRODUTO
+   ================================================================ */
+
+.produto-informacoes {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 26px 25px 23px;
+}
+
+
+    /* ================================================================
+   NOME DO PRODUTO
+   ================================================================ */
+
+    .produto-informacoes h3 {
+        margin: 0 0 10px;
+        color: #FFFFFF;
+        font-family: "Playfair Display", serif;
+        font-size: 1.42rem;
+        font-weight: 600;
+        line-height: 1.25;
+        transition: color 0.35s ease, transform 0.35s ease;
+    }
+
+
+    /* ================================================================
+   DESCRIÇÃO DO PRODUTO
+   ================================================================ */
+
+    .produto-informacoes p {
+        margin: 0;
+        color: #B8B8B8;
+        font-family: "Lato", sans-serif;
+        font-size: 0.86rem;
+        line-height: 1.7;
+        transition: color 0.35s ease, transform 0.35s ease;
+    }
+
+
+/* ================================================================
+   RODAPÉ DO CARD
+   ================================================================ */
+
+.produto-rodape {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+
+/* ================================================================
+   PREÇO
+   ================================================================ */
+
+.produto-preco {
+    display: flex;
+    align-items: baseline;
+    color: #D9B27A;
+    font-family: "Lato", sans-serif;
+    font-size: 1.20rem;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+    transition: color 0.35s ease, transform 0.35s ease;
+}
+
+
+/* ================================================================
+   BOTÃO ADICIONAR
+   ================================================================ */
+
+.btn-adicionar-produto {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 110px;
+    padding: 9px 15px;
+    background: #7D1F1F;
+    color: #FFFFFF;
+    border: 1px solid #D9B27A;
+    border-radius: 3px;
+    font-family: "Lato", sans-serif;
+    font-size: 0.80rem;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+
+    /* ================================================================
+   ÍCONE DO BOTÃO
+   ================================================================ */
+
+    .btn-adicionar-produto i {
+        font-size: 0.9rem;
+        transition: transform 0.3s ease;
+    }
+
+
+    /* ================================================================
+   TEXTO DO BOTÃO
+   ================================================================ */
+
+    .btn-adicionar-produto span {
+        transition: transform 0.3s ease;
+    }
+
+
+    /* ================================================================
+   HOVER DO BOTÃO
+   ================================================================ */
+
+    .btn-adicionar-produto:hover {
+        background: #D9B27A;
+        color: #0E0E0E;
+        border-color: #D9B27A;
+        transform: translateY(-2px);
+        box-shadow: 0 7px 18px rgba(217, 178, 122, 0.20);
+    }
+
+        .btn-adicionar-produto:hover i {
+            transform: rotate(90deg);
+        }
+
+        .btn-adicionar-produto:hover span {
+            transform: translateX(1px);
+        }
+
+
+    /* ================================================================
+   EFEITO AO CLICAR
+   ================================================================ */
+
+    .btn-adicionar-produto:active {
+        transform: translateY(0);
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+    }
+
+
+    /* ================================================================
+   ESTADO "ADICIONADO"
+   ================================================================ */
+
+    .btn-adicionar-produto.adicionado {
+        background: #D9B27A;
+        color: #0E0E0E;
+        border-color: #D9B27A;
+        box-shadow: 0 6px 16px rgba(217, 178, 122, 0.16);
+    }
+
+        .btn-adicionar-produto.adicionado i {
+            transform: rotate(0deg);
+        }
+
+
+    /* ================================================================
+   ANIMAÇÃO AO ADICIONAR
+   ================================================================ */
+
+    .btn-adicionar-produto.animando {
+        animation: botaoAdicionado 0.4s ease;
+    }
+
+@keyframes botaoAdicionado {
+
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(0.94);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+
+/* ================================================================
+   ACESSIBILIDADE — FOCO PELO TECLADO
+   ================================================================ */
+
+.btn-adicionar-produto:focus-visible {
+    outline: 2px solid #D9B27A;
+    outline-offset: 3px;
+}
+
+
+/* ================================================================
+   HOVER DO CARD
+   ================================================================ */
+
+.produto-card:hover {
+    transform: translateY(-9px);
+    border-color: rgba(217, 178, 122, 0.85);
+    background: linear-gradient( 145deg, #1C1C1C 0%, #111111 100% );
+    box-shadow: 0 20px 42px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(217, 178, 122, 0.08);
+}
+
+
+    /* ================================================================
+   LINHA SUPERIOR
+   ================================================================ */
+
+    .produto-card:hover::before {
+        width: 72%;
+    }
+
+
+    /* ================================================================
+   DETALHE DO CANTO
+   ================================================================ */
+
+    .produto-card:hover::after {
+        width: 35px;
+        height: 35px;
+        border-color: rgba(217, 178, 122, 0.95);
+    }
+
+
+    /* ================================================================
+   ZOOM DA IMAGEM
+   ================================================================ */
+
+    .produto-card:hover .produto-imagem img {
+        transform: scale(1.07);
+        filter: brightness(0.82) saturate(1.08);
+    }
+
+
+    /* ================================================================
+   TÍTULO
+   ================================================================ */
+
+    .produto-card:hover .produto-informacoes h3 {
+        color: #D9B27A;
+        transform: translateX(2px);
+    }
+
+
+    /* ================================================================
+   DESCRIÇÃO
+   ================================================================ */
+
+    .produto-card:hover .produto-informacoes p {
+        color: #D2D2D2;
+        transform: translateX(2px);
+    }
+
+
+    /* ================================================================
+   PREÇO
+   ================================================================ */
+
+    .produto-card:hover .produto-preco {
+        color: #E6C894;
+        transform: translateX(2px);
+    }
+
+
