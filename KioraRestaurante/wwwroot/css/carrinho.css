@@ -1,0 +1,424 @@
+/* Cores da identidade visual do Kiora. */
+:root {
+    --kc-fundo: #0e0e0e;
+    --kc-superficie: #171717;
+    --kc-dourado: #d9b27a;
+    --kc-vinho: #7d1f1f;
+    --kc-texto: #ffffff;
+    --kc-suave: #bbbbbb;
+    --kc-borda: #383838;
+}
+
+/* Estilo do botão que abre o carrinho. */
+button.carrinho-kiora {
+    border: 0;
+    background: transparent;
+    padding: 6px;
+}
+
+/* Garante que elementos com hidden continuem escondidos. */
+#painelCarrinho [hidden],
+#quantidadeCarrinho[hidden],
+#avisoCarrinho[hidden] {
+    display: none !important;
+}
+
+/* Configura o painel lateral do carrinho. */
+.kc-painel {
+    --bs-offcanvas-width: 460px;
+    --bs-offcanvas-bg: var(--kc-fundo);
+    --bs-offcanvas-color: var(--kc-texto);
+
+    max-width: 100%;
+    border-left: 1px solid var(--kc-dourado) !important;
+    font-family: "Lato", sans-serif;
+}
+
+/* Cabeçalho do carrinho. */
+.kc-cabecalho {
+    padding: 24px;
+    border-bottom: 1px solid var(--kc-borda);
+}
+
+/* Texto pequeno acima do título. */
+.kc-sobretitulo {
+    color: var(--kc-dourado);
+    font-size: 11px;
+    letter-spacing: 2px;
+}
+
+/* Define a fonte dos títulos. */
+.kc-cabecalho h2,
+.kc-vazio h3,
+.kc-mesclagem h3,
+.kc-cardapio h1 {
+    font-family: "Playfair Display", serif;
+}
+
+/* Título principal do carrinho. */
+.kc-cabecalho h2 {
+    margin: 6px 0 0;
+    font-size: 30px;
+}
+
+/* Botão para fechar o carrinho. */
+.kc-icone {
+    width: 44px;
+    height: 44px;
+    border: 0;
+    background: transparent;
+    color: var(--kc-dourado);
+}
+
+/* Espaçamento do conteúdo do carrinho. */
+.kc-conteudo {
+    padding: 24px;
+}
+
+/* Área de status e atualização do carrinho. */
+.kc-atualizacao {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    color: var(--kc-suave);
+    font-size: 13px;
+}
+
+/* Remove o estilo padrão da lista de itens. */
+.kc-itens {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Estrutura visual de cada item do carrinho. */
+.kc-item {
+    display: grid;
+    grid-template-columns: 76px minmax(0, 1fr);
+    gap: 16px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--kc-borda);
+}
+
+/* Área da imagem do produto. */
+.kc-miniatura {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 76px;
+    height: 76px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--kc-superficie);
+    color: var(--kc-dourado);
+}
+
+/* Faz a imagem preencher a miniatura. */
+.kc-imagem {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Nome do produto. */
+.kc-item-nome {
+    margin: 0 0 6px;
+    font-size: 16px;
+    overflow-wrap: anywhere;
+}
+
+/* Preço unitário do produto. */
+.kc-item-preco {
+    margin: 0;
+    color: var(--kc-suave);
+    font-size: 13px;
+}
+
+/* Área dos controles do item. */
+.kc-item-acoes {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin: 12px 0;
+}
+
+/* Caixa de controle da quantidade. */
+.kc-quantidade {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--kc-borda);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+/* Botões de aumentar e diminuir quantidade. */
+.kc-quantidade button {
+    min-width: 40px;
+    min-height: 40px;
+    border: 0;
+    background: var(--kc-superficie);
+    color: var(--kc-dourado);
+    font-size: 20px;
+}
+
+/* Número da quantidade do produto. */
+.kc-quantidade span {
+    min-width: 36px;
+    text-align: center;
+}
+
+/* Campo de quantidade, caso seja utilizado. */
+.kc-quantidade input {
+    width: 52px;
+    height: 40px;
+    padding: 0 4px;
+    border: 0;
+    background: var(--kc-fundo);
+    color: var(--kc-texto);
+    text-align: center;
+}
+
+/* Destaque do subtotal. */
+.kc-item-subtotal {
+    color: var(--kc-dourado);
+}
+
+/* Estilo dos avisos do carrinho. */
+.kc-item-aviso,
+.kc-avisos {
+    color: #ffd8a3;
+    font-size: 13px;
+}
+
+/* Espaçamento do aviso de um item. */
+.kc-item-aviso {
+    margin: 8px 0 0;
+}
+
+/* Caixa de avisos gerais. */
+.kc-avisos {
+    padding: 12px 12px 12px 28px;
+    border: 1px solid #705b3d;
+    background: #251f17;
+    border-radius: 4px;
+}
+
+/* Área exibida quando o carrinho está vazio. */
+.kc-vazio {
+    padding: 40px 0;
+    text-align: center;
+}
+
+/* Ícone do carrinho vazio. */
+.kc-vazio > i {
+    color: var(--kc-dourado);
+    font-size: 42px;
+}
+
+/* Título do estado vazio. */
+.kc-vazio h3 {
+    margin-top: 18px;
+    font-size: 25px;
+}
+
+/* Texto do estado vazio. */
+.kc-vazio p {
+    color: var(--kc-suave);
+}
+
+/* Rodapé do carrinho. */
+.kc-rodape {
+    padding: 24px;
+    border-top: 1px solid var(--kc-borda);
+    background: var(--kc-fundo);
+}
+
+/* Área que mostra o total. */
+.kc-total {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+/* Valor total do carrinho. */
+.kc-total strong {
+    color: var(--kc-dourado);
+    font-size: 22px;
+}
+
+/* Botão principal da interface. */
+.kc-botao {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 46px;
+    padding: 10px 18px;
+    border: 1px solid var(--kc-dourado);
+    border-radius: 3px;
+    background: var(--kc-vinho);
+    color: var(--kc-texto);
+    font-family: "Lato", sans-serif;
+    font-weight: 700;
+}
+
+/* Efeito do botão ao passar o mouse. */
+.kc-botao:hover:not(:disabled) {
+    background: var(--kc-dourado);
+    color: var(--kc-fundo);
+}
+
+/* Versão secundária do botão. */
+.kc-botao-secundario {
+    background: transparent;
+}
+
+/* Faz o botão principal ocupar toda a largura do rodapé. */
+.kc-rodape > .kc-botao {
+    width: 100%;
+}
+
+/* Estilo dos links de ação. */
+.kc-link {
+    border: 0;
+    padding: 8px 0;
+    background: transparent;
+    color: var(--kc-dourado);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    font-size: 13px;
+}
+
+/* Centraliza os links do rodapé. */
+.kc-rodape > .kc-link {
+    display: block;
+    margin: 8px auto 0;
+}
+
+/* Aparência dos botões desabilitados. */
+.kc-painel button:disabled,
+.kc-compra button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+/* Destaque visual ao navegar pelo teclado. */
+.kc-painel :focus-visible,
+.kc-compra :focus-visible,
+#abrirCarrinho:focus-visible {
+    outline: 2px solid var(--kc-dourado);
+    outline-offset: 3px;
+}
+
+/* Caixa usada para resolver conflitos da mesclagem. */
+.kc-mesclagem {
+    padding: 16px;
+    margin-bottom: 20px;
+    background: var(--kc-superficie);
+    border: 1px solid var(--kc-dourado);
+    border-radius: 4px;
+}
+
+/* Texto explicativo da mesclagem. */
+.kc-mesclagem p {
+    color: var(--kc-suave);
+    font-size: 14px;
+}
+
+/* Estrutura de cada conflito. */
+.kc-conflito {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+/* Campo para escolher a quantidade final. */
+.kc-conflito input {
+    width: 90px;
+    padding: 8px;
+    border: 1px solid var(--kc-borda);
+    border-radius: 3px;
+    background: var(--kc-fundo);
+    color: var(--kc-texto);
+}
+
+/* Notificação visível mesmo com o painel fechado. */
+.kc-notificacao {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    z-index: 1100;
+    max-width: min(360px, calc(100vw - 40px));
+    padding: 14px 18px;
+    border: 1px solid var(--kc-dourado);
+    border-radius: 4px;
+    background: var(--kc-superficie);
+    color: var(--kc-texto);
+    box-shadow: 0 10px 35px #0008;
+}
+
+/* Destaca notificações de erro. */
+.kc-notificacao[data-erro="true"] {
+    border-color: #ef9696;
+}
+
+/* Espaçamento da página de cardápio. */
+.kc-cardapio {
+    padding-top: 40px;
+    padding-bottom: 60px;
+}
+
+/* Card visual de cada produto. */
+.kc-produto {
+    height: 100%;
+    padding: 20px;
+    border: 1px solid var(--kc-borda);
+    border-radius: 4px;
+    background: var(--kc-superficie);
+}
+
+/* Nome do produto no cardápio. */
+.kc-produto h2 {
+    margin: 0 0 10px;
+    font-size: 21px;
+    font-family: "Playfair Display", serif;
+}
+
+/* Descrição do produto. */
+.kc-produto p {
+    color: var(--kc-suave);
+}
+
+/* Preço do produto no cardápio. */
+.kc-produto > strong {
+    display: block;
+    color: var(--kc-dourado);
+    margin-bottom: 16px;
+}
+
+/* Área dos controles de compra do produto. */
+.kc-compra {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+}
+
+/* Ajustes do painel em telas pequenas. */
+@media (max-width: 575.98px) {
+    .kc-painel {
+        --bs-offcanvas-width: 100vw;
+    }
+
+    .kc-cabecalho,
+    .kc-conteudo,
+    .kc-rodape {
+        padding: 20px;
+    }
+}

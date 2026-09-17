@@ -121,6 +121,16 @@
       href="~/Kiora.styles.css"
       asp-append-version="true" />
 
+<!--
+================================================================
+CSS DO CARRINHO
+================================================================
+-->
+
+<link rel="stylesheet"
+      href="~/css/carrinho.css"
+      asp-append-version="true" />
+
 </head>
 
 <body class="d-flex flex-column min-vh-100 @(ViewData["HomePage"] != null ? "pagina-home" : "")">
@@ -222,7 +232,6 @@
 
                     </li>
 
-
                     <!-- ================================================================
                          SOBRE NÓS
                          ================================================================ -->
@@ -287,7 +296,7 @@
                         </a>
 
                     </li>
-
+                </ul>
 
                 <!--
                     =================================================
@@ -452,20 +461,22 @@
                         =================================================
                     -->
 
-                    <a href="#"
-                       class="carrinho-kiora position-relative"
-                       aria-label="Carrinho">
+                    <button type="button"
+                            id="abrirCarrinho"
+                            class="carrinho-kiora position-relative"
+                            data-bs-toggle="offcanvas"
+                            data-bs-target="#painelCarrinho"
+                            aria-controls="painelCarrinho"
+                            aria-label="Abrir carrinho">
 
-                        <i class="bi bi-cart3"></i>
+                        <i class="bi bi-cart3" aria-hidden="true"></i>
 
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill contador-carrinho">
-
+                        <span id="quantidadeCarrinho"
+                              class="position-absolute top-0 start-100 translate-middle badge rounded-pill contador-carrinho"
+                              hidden>
                             0
-
                         </span>
-
-                    </a>
-
+                    </button>
 
                     <!--
                         =================================================
@@ -1984,11 +1995,12 @@
     ================================================================
 -->
 
+<!-- Primeiro, cria o HTML do painel. -->
+<partial name="_Carrinho" />
 
+<!-- Depois, carrega as bibliotecas e os comportamentos. -->
 <!-- jQuery -->
-
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
-
 
 <!--
     Bootstrap Bundle
@@ -1996,15 +2008,16 @@
     Inclui o Popper.js necessário para Dropdown,
     Navbar, Modal e outros componentes.
 -->
-
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
 
 <!-- JavaScript personalizado -->
-
 <script src="~/js/site.js"
         asp-append-version="true"></script>
 
+<!-- JavaScript carrinho -->
+<script src="~/js/carrinho.js"
+        asp-append-version="true"></script>
 
 <!--
     ================================================================

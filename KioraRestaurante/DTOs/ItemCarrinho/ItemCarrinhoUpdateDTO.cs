@@ -1,8 +1,10 @@
-﻿namespace KioraRestaurante.DTOs.ItemCarrinho
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace KioraRestaurante.DTOs.ItemCarrinho
 {
+    //Define o que é preciso para alterar a quantidade do produto
     public class ItemCarrinhoUpdateDTO
     {
-        //Define o que é preciso para alterar a quantidade do produto
         public int Quantidade { get; set; }
     }
 }

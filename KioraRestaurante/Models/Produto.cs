@@ -8,7 +8,7 @@ namespace KioraRestaurante.Models
         //O EF Core sabe automaticamente que "Id" é a Chave Primária.
         public int Id { get; set; }
 
-        //Diz para o Ef core o máximo de caracteres possiveis
+        //Diz para o Ef core o máximo de caracteres possiveis.
         [Required]
         [MaxLength(100)]
         public string Nome { get; set; } = null!;

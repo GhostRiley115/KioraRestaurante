@@ -1,0 +1,183 @@
+<!-- Configura os dados que o JavaScript precisa para acessar a API. -->
+<div id="carrinhoConfiguracao"
+     data-api="@Url.Content("~/api/carrinho")"
+     data-raiz="@Url.Content("~/")"
+     hidden>
+    @Html.AntiForgeryToken()
+</div>
+
+<!-- Mostra notificações do carrinho mesmo com o painel fechado. -->
+<div id="avisoCarrinho"
+     class="kc-notificacao"
+     role="status"
+     aria-live="polite"
+     hidden>
+</div>
+
+<!-- Painel lateral do carrinho. -->
+<div class="offcanvas offcanvas-end kc-painel"
+     tabindex="-1"
+     id="painelCarrinho"
+     aria-labelledby="tituloCarrinho">
+
+    <!-- Cabeçalho do carrinho. -->
+    <div class="offcanvas-header kc-cabecalho">
+        <div>
+            <span class="kc-sobretitulo">KIORA · SEU PEDIDO</span>
+            <h2 id="tituloCarrinho">Meu carrinho</h2>
+        </div>
+
+        <!-- Fecha o painel do carrinho. -->
+        <button type="button"
+                class="kc-icone"
+                data-bs-dismiss="offcanvas"
+                aria-label="Fechar carrinho">
+            <i class="bi bi-x-lg" aria-hidden="true"></i>
+        </button>
+    </div>
+
+    <div class="offcanvas-body kc-conteudo">
+
+        <!-- Mostra o estado do carrinho e permite atualizá-lo. -->
+        <div class="kc-atualizacao">
+            <span id="estadoCarrinho" role="status">
+                Carregando carrinho...
+            </span>
+
+            <button type="button"
+                    id="atualizarCarrinho"
+                    class="kc-link">
+                Atualizar
+            </button>
+        </div>
+
+        <!-- Lista de avisos do carrinho. -->
+        <ul id="avisosCarrinho" class="kc-avisos" hidden></ul>
+
+        <!-- Formulário para resolver conflitos da mesclagem. -->
+        <form id="formMesclagem" class="kc-mesclagem" hidden>
+            <h3>Ajuste as quantidades</h3>
+
+            <p>
+                Ao reunir seus carrinhos, alguns produtos passaram
+                do limite de 30 unidades. Escolha a quantidade final.
+            </p>
+
+            <!-- JavaScript adiciona os conflitos aqui. -->
+            <div id="conflitosCarrinho"></div>
+
+            <button type="submit" class="kc-botao">
+                Confirmar Quantidades
+            </button>
+        </form>
+
+        <!-- Área exibida quando o carrinho está vazio. -->
+        <div id="carrinhoVazio" class="kc-vazio" hidden>
+            <i class="bi bi-bag" aria-hidden="true"></i>
+
+            <h3>Seu carrinho está vazio</h3>
+
+            <p>Escolha seus pratos favoritos no cardápio.</p>
+
+            <button type="button"
+                    class="kc-botao kc-botao-secundario"
+                    data-bs-dismiss="offcanvas">
+                Continuar escolhendo
+            </button>
+        </div>
+
+        <!-- JavaScript adiciona os itens do carrinho aqui. -->
+        <ul id="itensCarrinho"
+            class="kc-itens"
+            tabindex="-1"
+            aria-label="Produtos do carrinho">
+        </ul>
+    </div>
+
+    <!-- Rodapé com total e ações do carrinho. -->
+    <div class="kc-rodape">
+
+        <!-- Mostra o valor total dos produtos. -->
+        <div class="kc-total">
+            <span>Total dos produtos</span>
+            <strong id="totalCarrinho">—</strong>
+        </div>
+
+        <!-- Avança para a revisão do pedido. -->
+        <button type="button"
+                id="revisarCarrinho"
+                class="kc-botao"
+                disabled>
+            Revisar pedido
+            <i class="bi bi-arrow-right" aria-hidden="true"></i>
+        </button>
+
+        <!-- Remove todos os itens do carrinho. -->
+        <button type="button"
+                id="esvaziarCarrinho"
+                class="kc-link"
+                disabled>
+            Esvaziar carrinho
+        </button>
+    </div>
+</div>
+
+<!-- Molde usado pelo JavaScript para criar cada item. -->
+<template id="modeloItemCarrinho">
+    <li class="kc-item">
+
+        <!-- Imagem do produto. -->
+        <div class="kc-miniatura">
+            <i class="bi bi-image" aria-hidden="true"></i>
+            <img class="kc-imagem" alt="" hidden>
+        </div>
+
+        <div class="kc-item-conteudo">
+
+            <!-- Nome do produto. -->
+            <h3 class="kc-item-nome"></h3>
+
+            <!-- Preço do produto. -->
+            <p class="kc-item-preco"></p>
+
+            <!-- Aviso do produto, se houver. -->
+            <p class="kc-item-aviso" hidden></p>
+
+            <!-- Controles do item. -->
+            <div class="kc-item-acoes">
+
+                <!-- Controle de quantidade. -->
+                <div class="kc-quantidade" role="group">
+
+                    <!-- Diminui a quantidade. -->
+                    <button type="button"
+                            data-acao="diminuir"
+                            data-carrinho-mutacao>
+                        −
+                    </button>
+
+                    <!-- Mostra a quantidade atual. -->
+                    <span class="kc-item-quantidade"></span>
+
+                    <!-- Aumenta a quantidade. -->
+                    <button type="button"
+                            data-acao="aumentar"
+                            data-carrinho-mutacao>
+                        +
+                    </button>
+                </div>
+
+                <!-- Remove o produto do carrinho. -->
+                <button type="button"
+                        class="kc-link"
+                        data-acao="remover"
+                        data-carrinho-mutacao>
+                    Remover
+                </button>
+            </div>
+
+            <!-- Mostra o subtotal do item. -->
+            <strong class="kc-item-subtotal"></strong>
+        </div>
+    </li>
+</template>
