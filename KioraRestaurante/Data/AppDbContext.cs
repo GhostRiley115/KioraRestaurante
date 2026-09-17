@@ -24,6 +24,15 @@ namespace KioraRestaurante.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            // Uma confirmação só pode gerar um pedido para aquele usuário.
+            modelBuilder.Entity<Pedido>()
+                .HasIndex(p => new
+                {
+                    p.UsuarioId,
+                    p.ChaveConfirmacao
+                })
+                .IsUnique();
+
             //E-MAIL ÚNICO 
             //Impede que dois usuários tenham o mesmo e-mail.
             modelBuilder.Entity<Usuario>()
