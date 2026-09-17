@@ -78,7 +78,7 @@ namespace KioraRestaurante.Controllers
         [HttpGet]
         public IActionResult Cadastro()
         {
-            return View();
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
@@ -284,6 +284,17 @@ namespace KioraRestaurante.Controllers
                 {
                     sucesso = false,
                     mensagem = "Não foi possível identificar o usuário."
+                });
+            }
+
+            if (_usuarioService.EmailExisteParaOutroUsuario(
+                    model.Email,
+                    usuarioId.Value))
+            {
+                return BadRequest(new
+                {
+                    sucesso = false,
+                    mensagem = "Este e-mail já está sendo utilizado por outra conta."
                 });
             }
 
