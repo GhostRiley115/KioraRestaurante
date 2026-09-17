@@ -1,0 +1,123 @@
+.pedido-pagina {
+    padding-top: 40px;
+    padding-bottom: 60px;
+    font-family: "Lato", sans-serif;
+}
+
+.pedido-pagina h1,
+.pedido-pagina h2 {
+    font-family: "Playfair Display", serif;
+}
+
+.pedido-pagina h1 {
+    margin: 10px 0 16px;
+}
+
+.pedido-pagina h2 {
+    margin: 0 0 20px;
+    font-size: 24px;
+}
+
+.pedido-sobretitulo {
+    color: #d9b27a;
+    font-size: 11px;
+    letter-spacing: 2px;
+}
+
+.pedido-box {
+    padding: 24px;
+    background: #171717;
+    border: 1px solid #383838;
+    border-radius: 4px;
+}
+
+.pedido-texto-suave {
+    color: #bbbbbb;
+}
+
+.pedido-box label {
+    display: block;
+    margin-bottom: 7px;
+}
+
+.pedido-box .form-control,
+.pedido-box .form-select {
+    background-color: #0e0e0e;
+    color: #ffffff;
+    border-color: #555555;
+    min-height: 44px;
+}
+
+.pedido-box .form-control::placeholder {
+    color: #aaaaaa;
+}
+
+.pedido-box .form-control:focus,
+.pedido-box .form-select:focus {
+    border-color: #d9b27a;
+    box-shadow: 0 0 0 2px #d9b27a33;
+}
+
+.pedido-linha,
+.pedido-total {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 16px 0;
+    border-bottom: 1px solid #383838;
+}
+
+.pedido-linha > div {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.pedido-total {
+    margin-bottom: 20px;
+    color: #d9b27a;
+    font-size: 20px;
+}
+
+.pedido-botao {
+    width: 100%;
+    padding: 14px 20px;
+    background: #7d1f1f;
+    color: #ffffff;
+    border: 1px solid #d9b27a;
+    border-radius: 3px;
+    font-weight: 700;
+}
+
+.pedido-botao:hover:not(:disabled) {
+    background: #d9b27a;
+    color: #0e0e0e;
+}
+
+.pedido-botao:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.pedido-link {
+    display: inline-block;
+    margin-right: 12px;
+    padding: 8px 0;
+    border: 0;
+    background: transparent;
+    color: #d9b27a;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.pedido-erros {
+    color: #ffd8a3;
+}
+
+.validation-summary-valid {
+    display: none;
+}
+
+.pedido-pagina :focus-visible {
+    outline: 2px solid #d9b27a;
+    outline-offset: 3px;
+}

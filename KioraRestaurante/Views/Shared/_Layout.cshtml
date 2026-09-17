@@ -127,6 +127,16 @@ CSS DO CARRINHO
       href="~/css/carrinho.css"
       asp-append-version="true" />
 
+<!--
+================================================================
+CSS DOS PEDIDOS
+================================================================
+-->
+
+<link rel="stylesheet"
+      href="~/css/pedido.css"
+      asp-append-version="true" />
+
 </head>
 
 <body class="d-flex flex-column min-vh-100 @(ViewData["HomePage"] != null ? "pagina-home" : "")">
@@ -436,6 +446,15 @@ CSS DO CARRINHO
 
                                 <hr class="dropdown-divider">
 
+                            </li>
+
+                            <li>
+                                <a class="dropdown-item"
+                                   asp-controller="Pedido"
+                                   asp-action="MeusPedidos">
+                                    <i class="bi bi-receipt" aria-hidden="true"></i>
+                                    Meus pedidos
+                                </a>
                             </li>
 
 

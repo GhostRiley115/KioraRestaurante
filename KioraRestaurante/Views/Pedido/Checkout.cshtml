@@ -1,0 +1,254 @@
+@model KioraRestaurante.ViewModels.CheckoutViewModel
+@using System.Globalization
+
+@{
+    ViewData["Title"] = "Revisar pedido";
+
+    var cultura = CultureInfo.GetCultureInfo("pt-BR");
+
+    var estados = new[]
+    {
+        "AC", "AL", "AP", "AM", "BA", "CE", "DF",
+        "ES", "GO", "MA", "MT", "MS", "MG", "PA",
+        "PB", "PR", "PE", "PI", "RJ", "RN", "RS",
+        "RO", "RR", "SC", "SP", "SE", "TO"
+    };
+
+    var podeConfirmar =
+        Model.Resumo.PodeProsseguir
+        && !string.IsNullOrWhiteSpace(Model.Dados.TokenRevisao);
+}
+
+<section class="container pedido-pagina">
+    <span class="pedido-sobretitulo">KIORA · CHECKOUT</span>
+    <h1>Revise seu pedido</h1>
+
+    <p class="pedido-texto-suave">
+        Confira os produtos, informe o endereço e escolha
+        como deseja pagar.
+    </p>
+
+    <div asp-validation-summary="All"
+         class="pedido-erros"
+         role="alert"></div>
+
+    @if (Model.Resumo.Avisos.Count > 0)
+    {
+        <ul class="pedido-erros">
+            @foreach (var aviso in Model.Resumo.Avisos)
+            {
+                <li>@aviso</li>
+            }
+        </ul>
+    }
+
+    <form asp-controller="Pedido"
+          asp-action="Checkout"
+          method="post"
+          id="formCheckout">
+
+        <input asp-for="Dados.TokenRevisao" type="hidden" />
+
+        <div class="row g-4">
+            <div class="col-12 col-lg-7">
+                <section class="pedido-box">
+                    <h2>Endereço de entrega</h2>
+
+                    <div class="row g-3">
+                        <div class="col-12 col-sm-5">
+                            <label asp-for="Dados.Cep">CEP</label>
+                            <input asp-for="Dados.Cep"
+                                   class="form-control"
+                                   autocomplete="postal-code"
+                                   maxlength="9"
+                                   placeholder="12345-678" />
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="Dados.Logradouro">
+                                Rua ou avenida
+                            </label>
+                            <input asp-for="Dados.Logradouro"
+                                   class="form-control"
+                                   autocomplete="address-line1"
+                                   maxlength="150" />
+                        </div>
+
+                        <div class="col-12 col-sm-4">
+                            <label asp-for="Dados.Numero">Número</label>
+                            <input asp-for="Dados.Numero"
+                                   class="form-control"
+                                   maxlength="20" />
+                        </div>
+
+                        <div class="col-12 col-sm-8">
+                            <label asp-for="Dados.Bairro">Bairro</label>
+                            <input asp-for="Dados.Bairro"
+                                   class="form-control"
+                                   maxlength="100" />
+                        </div>
+
+                        <div class="col-12 col-sm-8">
+                            <label asp-for="Dados.Cidade">Cidade</label>
+                            <input asp-for="Dados.Cidade"
+                                   class="form-control"
+                                   autocomplete="address-level2"
+                                   maxlength="100" />
+                        </div>
+
+                        <div class="col-12 col-sm-4">
+                            <label asp-for="Dados.Uf">Estado</label>
+                            <select asp-for="Dados.Uf"
+                                    class="form-select"
+                                    autocomplete="address-level1">
+                                <option value="">Selecione</option>
+
+                                @foreach (var uf in estados)
+                                {
+                                    <option value="@uf">@uf</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="Dados.Complemento">
+                                Complemento — opcional
+                            </label>
+                            <input asp-for="Dados.Complemento"
+                                   class="form-control"
+                                   autocomplete="address-line2"
+                                   maxlength="200" />
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="Dados.Referencia">
+                                Ponto de referência — opcional
+                            </label>
+                            <input asp-for="Dados.Referencia"
+                                   class="form-control"
+                                   maxlength="200" />
+                        </div>
+                    </div>
+                </section>
+
+                <section class="pedido-box mt-4">
+                    <h2>Forma de pagamento</h2>
+
+                    <label asp-for="Dados.FormaPagamento">
+                        Como deseja pagar?
+                    </label>
+
+                    <select asp-for="Dados.FormaPagamento"
+                            class="form-select">
+                        <option value="">Selecione</option>
+                        <option value="0">Dinheiro</option>
+                        <option value="1">Pix</option>
+                        <option value="2">Cartão de crédito</option>
+                        <option value="3">Cartão de débito</option>
+                    </select>
+
+                    <p class="pedido-texto-suave mt-3 mb-0">
+                        O pagamento será acertado com o restaurante.
+                        Nenhuma cobrança é realizada nesta página.
+                    </p>
+                </section>
+            </div>
+
+            <div class="col-12 col-lg-5">
+                <section class="pedido-box">
+                    <h2>Seus produtos</h2>
+
+                    @if (Model.Resumo.Itens.Count == 0)
+                    {
+                        <p>Seu carrinho está vazio.</p>
+                    }
+
+                    @foreach (var item in Model.Resumo.Itens)
+                    {
+                        <div class="pedido-linha">
+                            <div>
+                                <strong>@item.NomeProduto</strong>
+
+                                <p class="pedido-texto-suave mb-0">
+                                    @item.Quantidade ×
+                                    @item.PrecoUnitario.ToString("C", cultura)
+                                </p>
+
+                                @if (item.Aviso != null)
+                                {
+                                    <p class="pedido-erros">
+                                        @item.Aviso
+                                    </p>
+                                }
+                            </div>
+
+                            <strong>
+                                @item.Subtotal.ToString("C", cultura)
+                            </strong>
+                        </div>
+                    }
+
+                    <div class="pedido-total">
+                        <span>Total dos produtos</span>
+                        <strong>
+                            @Model.Resumo.Total.ToString("C", cultura)
+                        </strong>
+                    </div>
+
+                    <button type="submit"
+                            id="confirmarPedido"
+                            class="pedido-botao"
+                            disabled="@(!podeConfirmar)">
+                        Confirmar pedido
+                    </button>
+
+                    <p class="pedido-texto-suave mt-3">
+                        Se alterar o carrinho, atualize esta revisão
+                        antes de confirmar.
+                    </p>
+
+                    <a asp-action="Checkout" class="pedido-link">
+                        Atualizar revisão
+                    </a>
+
+                    <button type="button"
+                            class="pedido-link"
+                            data-bs-toggle="offcanvas"
+                            data-bs-target="#painelCarrinho"
+                            aria-controls="painelCarrinho">
+                        Abrir carrinho
+                    </button>
+                </section>
+            </div>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        const formularioCheckout =
+            document.getElementById("formCheckout");
+
+        const confirmarPedido =
+            document.getElementById("confirmarPedido");
+
+        const inicialmenteDesabilitado =
+            confirmarPedido.disabled;
+
+        formularioCheckout.addEventListener("submit", function () {
+            // A validação jQuery pode impedir o envio.
+            if (!$(formularioCheckout).valid()) return;
+
+            confirmarPedido.disabled = true;
+            confirmarPedido.textContent = "Confirmando…";
+        });
+
+        // Recupera o botão ao voltar pelo histórico do navegador.
+        window.addEventListener("pageshow", function () {
+            confirmarPedido.disabled = inicialmenteDesabilitado;
+            confirmarPedido.textContent = "Confirmar pedido";
+        });
+    </script>
+}

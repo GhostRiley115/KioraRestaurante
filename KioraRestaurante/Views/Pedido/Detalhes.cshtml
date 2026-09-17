@@ -1,0 +1,120 @@
+@model KioraRestaurante.Models.Pedido
+@using System.Globalization
+@using KioraRestaurante.Models.Enums
+
+@{
+    ViewData["Title"] = $"Pedido #{Model.Id}";
+
+    var cultura = CultureInfo.GetCultureInfo("pt-BR");
+
+    var fuso = TimeZoneInfo.FindSystemTimeZoneById(
+        "America/Sao_Paulo");
+
+    var dataLocal = TimeZoneInfo.ConvertTimeFromUtc(
+        DateTime.SpecifyKind(Model.DataPedido, DateTimeKind.Utc),
+        fuso);
+
+    var pagamento = Model.FormaPagamento switch
+    {
+        FormaPagamento.Dinheiro => "Dinheiro",
+        FormaPagamento.Pix => "Pix",
+        FormaPagamento.CartaoCredito => "Cartão de crédito",
+        FormaPagamento.CartaoDebito => "Cartão de débito",
+        _ => "Não informado"
+    };
+
+    var status = Model.StatusPedido switch
+    {
+        StatusPedido.Recebido => "Recebido",
+        StatusPedido.EmPreparo => "Em preparo",
+        StatusPedido.SaiuParaEntrega => "Saiu para entrega",
+        StatusPedido.Entregue => "Entregue",
+        StatusPedido.Cancelado => "Cancelado",
+        _ => "Não informado"
+    };
+}
+
+<section class="container pedido-pagina">
+    <span class="pedido-sobretitulo">KIORA · MEUS PEDIDOS</span>
+
+    <h1>Pedido #@Model.Id</h1>
+
+    <p class="pedido-texto-suave">
+        Registrado em @dataLocal.ToString("dd/MM/yyyy HH:mm")
+        — horário de Brasília.
+    </p>
+
+    <div class="row g-4">
+        <div class="col-12 col-lg-7">
+            <section class="pedido-box">
+                <h2>Produtos</h2>
+
+                @foreach (var item in Model.ItensPedido)
+                {
+                    <div class="pedido-linha">
+                        <div>
+                            <strong>@item.NomeProduto</strong>
+
+                            <p class="pedido-texto-suave mb-0">
+                                @item.Quantidade ×
+                                @item.PrecoUnitario.ToString("C", cultura)
+                            </p>
+                        </div>
+
+                        <strong>
+                            @item.Subtotal.ToString("C", cultura)
+                        </strong>
+                    </div>
+                }
+
+                <div class="pedido-total">
+                    <span>Total</span>
+                    <strong>
+                        @Model.ValorTotal.ToString("C", cultura)
+                    </strong>
+                </div>
+            </section>
+        </div>
+
+        <div class="col-12 col-lg-5">
+            <section class="pedido-box">
+                <h2>Informações do pedido</h2>
+
+                <p><strong>Situação:</strong> @status</p>
+                <p><strong>Forma de pagamento:</strong> @pagamento</p>
+                <p>
+                    <strong>Pagamento:</strong>
+                    @Model.StatusPagamento
+                </p>
+
+                <h2 class="mt-4">Entrega</h2>
+
+                @if (Model.EnderecoEntrega != null)
+                {
+                    var endereco = Model.EnderecoEntrega;
+
+                    <p>
+                        @endereco.Logradouro, @endereco.Numero<br />
+                        @endereco.Bairro<br />
+                        @endereco.Cidade — @endereco.Uf<br />
+                        CEP @endereco.Cep
+                    </p>
+
+                    @if (!string.IsNullOrWhiteSpace(endereco.Complemento))
+                    {
+                        <p>Complemento: @endereco.Complemento</p>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(endereco.Referencia))
+                    {
+                        <p>Referência: @endereco.Referencia</p>
+                    }
+                }
+
+                <a asp-action="MeusPedidos" class="pedido-link">
+                    Ver meus pedidos
+                </a>
+            </section>
+        </div>
+    </div>
+</section>
