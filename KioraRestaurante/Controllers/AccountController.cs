@@ -17,6 +17,7 @@ using System.Security.Claims;
 namespace KioraRestaurante.Controllers
 {
     //Controller responsável pelas operações relacionadas à conta do usuário.
+    [AutoValidateAntiforgeryToken]
     public class AccountController : Controller
     {
         //Guarda uma referência para a interface IUsuarioServices.
@@ -122,6 +123,15 @@ namespace KioraRestaurante.Controllers
             });
         }
 
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return RedirectToAction(
+                "Index",
+                "Home",
+                new { abrirLogin = true });
+        }
+
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
@@ -199,7 +209,7 @@ namespace KioraRestaurante.Controllers
         /* ---- LOGOUT ---- */
         //Permite acesso somente para usuários autenticados.
         [Authorize]
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> Logout()
         {
             //Remove o Cookie que mantém o usuário autenticado.
@@ -237,29 +247,7 @@ namespace KioraRestaurante.Controllers
         [HttpGet]
         public IActionResult EditarPerfil()
         {
-            var usuarioId = ObterUsuarioId();
-
-            if (usuarioId == null)
-                return RedirectToAction("Index", "Home");
-
-            var usuario = _usuarioService.BuscarPorId(usuarioId.Value);
-
-            if (usuario == null)
-                return RedirectToAction("Index", "Home");
-
-            /*Cria um ViewModel específico para edição. Não utilizamos a entidade
-            Usuario diretamenteno formulário de edição.*/
-            var model = new EditarPerfilViewModel
-            {
-                //Preenche o campo Email com o e-mail, atualmente cadastrado.
-                Nome = usuario.Nome,
-
-                //Preenche o campo Email com o e-mail, atualmente cadastrado.
-                Email = usuario.Email
-            };
-
-            // Envia o ViewModel para a View de edição.
-            return View(model);
+            return RedirectToAction(nameof(MeuPerfil));
         }
 
         /*---- EDITAR PERFIL ---- */

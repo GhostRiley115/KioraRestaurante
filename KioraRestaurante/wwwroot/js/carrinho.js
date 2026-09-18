@@ -759,6 +759,10 @@
         });
     });
 
+    document.addEventListener("kiora:carrinho-revisado", () => {
+        window.location.assign(configuracao.dataset.checkout);
+    });
+
     // Faz a primeira consulta ao abrir uma página que possui o carrinho.
     executar(sincronizar);
 

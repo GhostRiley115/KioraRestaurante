@@ -1,0 +1,45 @@
+@model List<KioraRestaurante.Models.Pedido>
+@using System.Globalization
+
+@{
+    ViewData["Title"] = "Meus pedidos";
+
+    var cultura = CultureInfo.GetCultureInfo("pt-BR");
+}
+
+<section class="container pedido-pagina">
+    <span class="pedido-sobretitulo">KIORA · SUA CONTA</span>
+    <h1>Meus pedidos</h1>
+
+    <p class="pedido-texto-suave">
+        Seus 50 pedidos mais recentes.
+    </p>
+
+    @if (Model.Count == 0)
+    {
+        <div class="pedido-box">
+            <p>Você ainda não fez nenhum pedido.</p>
+        </div>
+    }
+
+    @foreach (var pedido in Model)
+    {
+        <article class="pedido-box mb-3">
+            <div class="pedido-linha">
+                <div>
+                    <h2>Pedido #@pedido.Id</h2>
+
+                    <strong>
+                        @pedido.ValorTotal.ToString("C", cultura)
+                    </strong>
+                </div>
+
+                <a asp-action="Detalhes"
+                   asp-route-id="@pedido.Id"
+                   class="pedido-link">
+                    Ver detalhes
+                </a>
+            </div>
+        </article>
+    }
+</section>

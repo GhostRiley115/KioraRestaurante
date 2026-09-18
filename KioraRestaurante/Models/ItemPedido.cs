@@ -12,7 +12,7 @@ namespace KioraRestaurante.Models
         public int ProdutoId { get; set; }
         public Produto Produto { get; set; } = null!;
 
-        [Range(1, 99)]
+        [Range(1, 30)]
         public int Quantidade { get; set; }
 
         [MaxLength(500)]

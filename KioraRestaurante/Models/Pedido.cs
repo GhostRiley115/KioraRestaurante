@@ -20,5 +20,8 @@ namespace KioraRestaurante.Models
         public decimal ValorTotal { get; set; }
 
         public List<ItemPedido> ItensPedido { get; set; } = new();
+
+        //Se a mesma confirmação for enviada novamente, podemos recuperar o pedido já criado.
+        public Guid? ChaveConfirmacao { get; set; }
     }
 }

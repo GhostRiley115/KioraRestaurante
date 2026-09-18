@@ -230,7 +230,7 @@ ViewData["Title"] = "Meu Perfil";
                 para identificar o formulário.
             -->
             <form id="formEditarPerfil">
-
+                @Html.AntiForgeryToken()
 
                 <!-- =============================================
                      NOME
@@ -384,7 +384,7 @@ ViewData["Title"] = "Meu Perfil";
                  ================================================= -->
 
             <form id="formAlterarSenha">
-
+                @Html.AntiForgeryToken()
 
                 <!-- ==================================================
                      SENHA ATUAL

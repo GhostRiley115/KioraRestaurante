@@ -6,6 +6,14 @@
     @Html.AntiForgeryToken()
 </div>
 
+<div id="carrinhoConfiguracao"
+     data-api="@Url.Content("~/api/carrinho")"
+     data-raiz="@Url.Content("~/")"
+     data-checkout="@Url.Action("Checkout", "Pedido")"
+     hidden>
+    @Html.AntiForgeryToken()
+</div>
+
 <!-- Mostra notificações do carrinho mesmo com o painel fechado. -->
 <div id="avisoCarrinho"
      class="kc-notificacao"
