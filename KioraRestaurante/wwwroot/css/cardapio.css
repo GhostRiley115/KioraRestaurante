@@ -592,3 +592,49 @@ html {
     }
 
 
+.cardapio-kiora .kc-compra {
+    display: grid;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.cardapio-kiora .produto-controles {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.cardapio-kiora .produto-controles button,
+.cardapio-kiora .produto-controles input {
+    height: 40px;
+    color: #FFFFFF;
+    background: #151515;
+    border: 1px solid rgba(217, 178, 122, .45);
+    border-radius: 4px;
+    text-align: center;
+}
+
+.cardapio-kiora .produto-controles button {
+    width: 40px;
+}
+
+.cardapio-kiora .produto-controles input {
+    width: 70px;
+}
+
+.cardapio-kiora .kc-compra > .btn-adicionar-produto {
+    width: 100%;
+    justify-content: center;
+}
+
+.cardapio-kiora button:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.cardapio-kiora .produto-indisponivel {
+    margin-top: 18px;
+    color: #D9B27A;
+}
+/* ÍCONES LOCAIS DAS CATEGORIAS: herdam a cor normal, ativa e de hover. */
+.categoria-icone { width: 24px; height: 24px; flex-shrink: 0; }

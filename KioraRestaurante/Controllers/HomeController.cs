@@ -1,11 +1,22 @@
 using KioraRestaurante.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using KioraRestaurante.Services.Interfaces;
+using KioraRestaurante.ViewModels;
 
 namespace KioraRestaurante.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly IProdutoService _produtoService;
+        private readonly ICategoriaService _categoriaService;
+
+        public HomeController(IProdutoService produtoService, ICategoriaService categoriaService)
+        {
+            _produtoService = produtoService;
+            _categoriaService = categoriaService;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -16,9 +27,29 @@ namespace KioraRestaurante.Controllers
             return View();
         }
 
-        public IActionResult Cardapio()
+        // Retorna os produtos da categoria selecionada pelo usuário.
+        [HttpGet]
+        public async Task<IActionResult> Cardapio(int? categoriaId)
         {
-            return View();
+            var categorias = await _categoriaService.ListarTodas();
+
+            var selecionada = categorias.SingleOrDefault(
+                c => c.Id == categoriaId);
+
+            if (categoriaId.HasValue && selecionada == null)
+            {
+                return NotFound();
+            }
+
+            var model = new CardapioViewModel
+            {
+                Categorias = categorias,
+                Produtos = await _produtoService.ListarCardapio(categoriaId),
+                CategoriaSelecionadaId = categoriaId,
+                Titulo = selecionada?.Nome ?? "Todos os produtos"
+            };
+
+            return View(model);
         }
 
         public IActionResult Galeria()

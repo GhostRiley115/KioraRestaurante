@@ -1,0 +1,79 @@
+@model KioraRestaurante.ViewModels.CadastrarProdutoViewModel
+@{
+    ViewData["Title"] = "Cadastrar produto";
+}
+
+<!-- ADMIN / PRODUTOS: formulário de cadastro, sem incluir outras funções administrativas. -->
+<section class="container produto-admin">
+    <span class="produto-admin-subtitulo">KIORA · ADMINISTRAÇÃO</span>
+    <h1>Cadastrar produto</h1>
+    <p class="produto-admin-ajuda">Adicione um produto ao cardápio do restaurante.</p>
+    <div asp-validation-summary="All" class="produto-admin-erros" role="alert"></div>
+    @if (Model.Categorias.Count == 0)
+    {
+        <p class="produto-admin-erros">É necessário ter uma categoria ativa para cadastrar produtos.</p>
+    }
+
+    <!-- multipart/form-data envia os campos e a foto; o Tag Helper gera o token antiforgery. -->
+    <form asp-controller="ProdutosAdmin" asp-action="Cadastrar" method="post"
+          enctype="multipart/form-data" id="formCadastrarProduto" class="produto-admin-form">
+        <div class="row g-4">
+            <!-- DADOS DO PRODUTO -->
+            <div class="col-12 col-lg-7">
+                <label asp-for="Nome">Nome do produto</label>
+                <input asp-for="Nome" class="form-control" maxlength="100" />
+                <span asp-validation-for="Nome" class="produto-admin-erros"></span>
+
+                <label asp-for="Descricao" class="mt-3">Descrição</label>
+                <textarea asp-for="Descricao" class="form-control" rows="5" maxlength="500"></textarea>
+                <span asp-validation-for="Descricao" class="produto-admin-erros"></span>
+
+                <div class="row g-3 mt-1">
+                    <div class="col-12 col-sm-7">
+                        <label asp-for="CategoriaId">Categoria</label>
+                        <select asp-for="CategoriaId" class="form-select">
+                            <option value="">Selecione</option>
+                            @foreach (var categoria in Model.Categorias)
+                            {
+                                <option value="@categoria.Id">@categoria.Nome</option>
+                            }
+                        </select>
+                        <span asp-validation-for="CategoriaId" class="produto-admin-erros"></span>
+                    </div>
+                    <div class="col-12 col-sm-5">
+                        <label asp-for="PrecoTexto">Preço em reais</label>
+                        <input asp-for="PrecoTexto" class="form-control" inputmode="decimal" placeholder="39,90" />
+                        <span asp-validation-for="PrecoTexto" class="produto-admin-erros"></span>
+                    </div>
+                </div>
+                <div class="form-check mt-4">
+                    <input asp-for="Disponivel" class="form-check-input" />
+                    <label asp-for="Disponivel" class="form-check-label">Disponível para compra</label>
+                </div>
+            </div>
+
+            <!-- FOTO E PRÉVIA: a prévia é local; o servidor envia a imagem ao confirmar. -->
+            <div class="col-12 col-lg-5">
+                <label asp-for="Foto">Foto do produto</label>
+                <input asp-for="Foto" type="file" class="form-control" accept="image/jpeg,image/png,image/webp" />
+                <span asp-validation-for="Foto" class="produto-admin-erros"></span>
+                <p class="produto-admin-ajuda mt-2">JPG, PNG ou WebP. Máximo de 5 MB.
+                    Se o formulário voltar com erro, selecione a foto novamente.</p>
+                <img id="previewProduto" class="produto-admin-preview" alt="Prévia da foto selecionada" hidden />
+            </div>
+        </div>
+
+        <!-- AÇÕES DO FORMULÁRIO -->
+        <div class="d-flex gap-3 align-items-center flex-wrap mt-4">
+            <button type="submit" id="cadastrarProduto" class="produto-admin-botao"
+                    disabled="@(Model.Categorias.Count == 0)">Cadastrar produto</button>
+            <a asp-controller="Home" asp-action="Cardapio" class="produto-admin-link">Voltar ao cardápio</a>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <!-- Validação carregada antes do comportamento específico do formulário. -->
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/produto-admin.js" asp-append-version="true"></script>
+}

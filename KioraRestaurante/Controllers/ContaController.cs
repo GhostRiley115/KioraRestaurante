@@ -1,4 +1,4 @@
-﻿using KioraRestaurante.DTOs.Usuario;
+using KioraRestaurante.DTOs.Usuario;
 using KioraRestaurante.Services.Interfaces;
 using KioraRestaurante.ViewModels;
 
@@ -18,13 +18,13 @@ namespace KioraRestaurante.Controllers
 {
     //Controller responsável pelas operações relacionadas à conta do usuário.
     [AutoValidateAntiforgeryToken]
-    public class AccountController : Controller
+    public class ContaController : Controller
     {
         //Guarda uma referência para a interface IUsuarioServices.
         private readonly IUsuarioService _usuarioService;
 
         //instância de IUsuarioServices.
-        public AccountController(IUsuarioService usuarioService)
+        public ContaController(IUsuarioService usuarioService)
         {
             //Guarda o Service recebido na variável privada.
             _usuarioService = usuarioService;

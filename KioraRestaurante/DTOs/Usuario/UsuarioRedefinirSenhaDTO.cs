@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using KioraRestaurante.Validacoes;
 
 namespace KioraRestaurante.DTOs.Usuario
 {
@@ -9,7 +10,8 @@ namespace KioraRestaurante.DTOs.Usuario
 
 
         [Required(ErrorMessage = "A nova senha é obrigatória.")]
-        [MinLength(6, ErrorMessage = "A nova senha deve possuir pelo menos 6 caracteres.")]
+        [MinLength(RegrasSenha.TamanhoMinimo, ErrorMessage = RegrasSenha.Mensagem)]
+        [RegularExpression(RegrasSenha.Padrao, ErrorMessage = RegrasSenha.Mensagem)]
         public string NovaSenha { get; set; } = string.Empty;
 
 

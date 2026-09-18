@@ -2,13 +2,6 @@
 <div id="carrinhoConfiguracao"
      data-api="@Url.Content("~/api/carrinho")"
      data-raiz="@Url.Content("~/")"
-     hidden>
-    @Html.AntiForgeryToken()
-</div>
-
-<div id="carrinhoConfiguracao"
-     data-api="@Url.Content("~/api/carrinho")"
-     data-raiz="@Url.Content("~/")"
      data-checkout="@Url.Action("Checkout", "Pedido")"
      hidden>
     @Html.AntiForgeryToken()

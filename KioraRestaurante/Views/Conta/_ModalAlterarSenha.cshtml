@@ -1,0 +1,195 @@
+@using KioraRestaurante.Validacoes
+<!-- ================================================================
+     MODAL ALTERAR SENHA
+     ================================================================ -->
+
+<div class="modal fade"
+     id="modalAlterarSenha"
+     tabindex="-1"
+     aria-labelledby="modalAlterarSenhaTitulo"
+     aria-hidden="true">
+
+<div class="modal-dialog modal-dialog-centered modal-alterar-senha-dialog">
+
+    <div class="modal-content modal-alterar-senha">
+
+        <!-- ====================================================
+             CABEÇALHO DO MODAL
+             ==================================================== -->
+
+        <div class="modal-header modal-alterar-senha-header">
+
+            <h5 class="modal-title"
+                id="modalAlterarSenhaTitulo">
+
+                Alterar Senha
+
+            </h5>
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Fechar">
+            </button>
+
+        </div>
+
+
+        <!-- ====================================================
+             CORPO DO MODAL
+             ==================================================== -->
+
+        <div class="modal-body modal-alterar-senha-body">
+
+            <!--
+                Área destinada às mensagens de sucesso
+                ou erro da alteração da senha.
+            -->
+            <div id="mensagemAlterarSenha"
+                 class="mensagem-alterar-senha"
+                 role="alert">
+            </div>
+
+
+            <!-- =================================================
+                 FORMULÁRIO
+                 ================================================= -->
+
+            <form id="formAlterarSenha" asp-controller="Conta" asp-action="AlterarSenha"
+                  method="post" asp-antiforgery="false">
+                @Html.AntiForgeryToken()
+
+                <!-- ==================================================
+                     SENHA ATUAL
+                     ================================================== -->
+
+                <div class="mb-3">
+
+                    <label for="senhaAtual"
+                           class="form-label">
+
+                        Senha atual
+
+                    </label>
+
+                    <div class="campo-senha-kiora">
+
+                        <input type="password"
+                               class="form-control"
+                               id="senhaAtual"
+                               name="SenhaAtual"
+                               required />
+
+                        <button type="button"
+                                class="btn-mostrar-senha-kiora"
+                                id="btnMostrarSenhaAtual"
+                                aria-label="Mostrar senha">
+
+                            <i class="bi bi-eye"
+                               id="iconeSenhaAtual"></i>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ==================================================
+                     NOVA SENHA
+                     ================================================== -->
+
+                <div class="mb-3">
+
+                    <label for="novaSenha"
+                           class="form-label">
+
+                        Nova senha
+
+                    </label>
+                        <small id="novaSenhaAjuda" class="senha-ajuda">@RegrasSenha.Mensagem</small>
+
+                    <div class="campo-senha-kiora">
+
+                        <input type="password"
+                               class="form-control"
+                               id="novaSenha"
+                                   minlength="@RegrasSenha.TamanhoMinimo"
+                                   pattern="@RegrasSenha.Padrao"
+                                   title="@RegrasSenha.Mensagem"
+                                   aria-describedby="novaSenhaAjuda"
+                               name="NovaSenha"
+                               required />
+
+                        <button type="button"
+                                class="btn-mostrar-senha-kiora"
+                                id="btnMostrarNovaSenha"
+                                aria-label="Mostrar senha">
+
+                            <i class="bi bi-eye"
+                               id="iconeNovaSenha"></i>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ==================================================
+                     CONFIRMAÇÃO DA NOVA SENHA
+                     ================================================== -->
+
+                <div class="mb-3">
+
+                    <label for="confirmarNovaSenha"
+                           class="form-label">
+
+                        Confirmar nova senha
+
+                    </label>
+
+                    <div class="campo-senha-kiora">
+
+                        <input type="password"
+                               class="form-control"
+                               id="confirmarNovaSenha"
+                               name="ConfirmarNovaSenha"
+                               required />
+
+                        <button type="button"
+                                class="btn-mostrar-senha-kiora"
+                                id="btnMostrarConfirmarNovaSenha"
+                                aria-label="Mostrar senha">
+
+                            <i class="bi bi-eye"
+                               id="iconeConfirmarNovaSenha"></i>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ==================================================
+                     BOTÃO SALVAR
+                     ================================================== -->
+
+                <button type="submit"
+                        class="btn-salvar-senha-kiora">
+
+                    Alterar senha
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+<!-- Fim do modal Alterar Senha. -->

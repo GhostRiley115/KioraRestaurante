@@ -25,10 +25,10 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     {
         //Define para onde o usuário será enviado
         //caso tente acessar uma área protegida sem estar logado.
-        options.LoginPath = "/Account/Login";
+        options.LoginPath = "/Conta/Login";
 
         //Define o caminho utilizado para sair da conta.
-        options.LogoutPath = "/Account/Logout";
+        options.LogoutPath = "/Conta/Logout";
 
         //Define o tempo de validade do Cookie.
         options.ExpireTimeSpan = TimeSpan.FromHours(2);
@@ -94,6 +94,14 @@ app.UseAuthorization();
 
 //Mapeia os arquivos estáticos da aplicação.
 app.MapStaticAssets();
+
+// Compatibilidade com endereços antigos, sem gerar novos links com Account.
+// A rota aponta para o mesmo controller e preserva os métodos GET e POST.
+app.MapControllerRoute(
+    name: "conta-legada",
+    pattern: "Account/{action=Login}/{id?}",
+    defaults: new { controller = "Conta" })
+    .WithMetadata(new Microsoft.AspNetCore.Routing.SuppressLinkGenerationMetadata());
 
 //Define a rota padrão da aplicação.
 app.MapControllerRoute(

@@ -1,0 +1,217 @@
+<!--
+    ================================================================
+    MODAL DE LOGIN KIORA
+    ================================================================
+-->
+
+<div class="modal fade"
+     id="modalLogin"
+     tabindex="-1"
+     aria-labelledby="modalLoginTitulo"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered modal-login-dialog">
+
+        <div class="modal-content modal-login-kiora">
+
+            <!-- BOTÃO FECHAR -->
+
+            <button type="button"
+                    class="btn-close modal-login-fechar"
+                    data-bs-dismiss="modal"
+                    aria-label="Fechar">
+
+                <i class="bi bi-x-lg"></i>
+
+            </button>
+
+
+            <!-- CONTEÚDO -->
+
+            <div class="modal-body modal-login-body">
+
+                <!-- LOGO -->
+
+                <div class="modal-login-logo">
+
+                    <img src="~/imagens/logo-kiora-v.png"
+                         alt="Kiora Japanese Cuisine">
+
+                </div>
+
+
+                <!-- CABEÇALHO -->
+
+                <div class="modal-login-header">
+
+                    <span class="modal-login-subtitulo">
+
+                        BEM-VINDO À KIORA
+
+                    </span>
+
+                    <h2 id="modalLoginTitulo">
+
+                        Entre na sua conta
+
+                    </h2>
+
+                    <p>
+
+                        Acesse para continuar sua experiência.
+
+                    </p>
+
+                </div>
+
+
+                <!-- FORMULÁRIO -->
+
+                <form id="formLogin" asp-controller="Conta" asp-action="Login"
+                  method="post" asp-antiforgery="false">
+                    @Html.AntiForgeryToken()
+                    <!-- Mensagem de retorno do login -->
+                    <div id="mensagemLogin"
+                         class="mensagem-kiora"
+                         role="alert"
+                         style="display: none;">
+
+                    </div>
+
+                    <!-- E-MAIL -->
+
+                    <div class="modal-login-grupo">
+
+                        <label for="loginEmail">
+
+                            E-mail
+
+                        </label>
+
+                        <div class="modal-login-input">
+
+                            <i class="bi bi-envelope"></i>
+
+                            <input type="email"
+                                   id="loginEmail"
+                                   name="email"
+                                   placeholder="Digite seu e-mail"
+                                   autocomplete="email"
+                                   required>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- SENHA -->
+
+                    <div class="modal-login-grupo">
+
+                        <label for="loginSenha">
+
+                            Senha
+
+                        </label>
+
+                        <div class="modal-login-input">
+
+                            <i class="bi bi-lock"></i>
+
+                            <input type="password"
+                                   id="loginSenha"
+                                   name="senha"
+                                   placeholder="Digite sua senha"
+                                   autocomplete="current-password"
+                                   required>
+
+                            <button type="button"
+                                    class="modal-login-olho"
+                                    id="btnMostrarSenha"
+                                    aria-label="Mostrar senha">
+
+                                <i class="bi bi-eye"
+                                   id="iconeSenha"></i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!--
+                        =================================================
+                        ESQUECI MINHA SENHA
+                        =================================================
+                    -->
+
+                    <div class="modal-login-opcoes">
+
+                        <a href="#"
+                           data-bs-dismiss="modal"
+                           data-bs-toggle="modal"
+                           data-bs-target="#modalEsqueciSenha">
+
+                            Esqueci minha senha
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- ENTRAR -->
+
+                    <button type="submit"
+                            class="btn-modal-login">
+
+                        ENTRAR
+
+                    </button>
+
+
+                    <!-- DIVISOR -->
+
+                    <div class="modal-login-divisor">
+
+                        <span>
+
+                            ou
+
+                        </span>
+
+                    </div>
+
+
+                    <!-- CADASTRO -->
+
+                    <div class="modal-login-cadastro">
+
+                        <p>
+
+                            Ainda não possui uma conta?
+
+                        </p>
+
+                        <a href="#"
+                           data-bs-dismiss="modal"
+                           data-bs-toggle="modal"
+                           data-bs-target="#modalCadastro">
+
+                            Criar conta
+
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+

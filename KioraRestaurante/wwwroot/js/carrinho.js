@@ -69,6 +69,38 @@
     }
 
 
+    // CONFIRMAÇÃO VISUAL: só é chamada depois da resposta de sucesso da API.
+    // A mensagem de texto continua disponível mesmo sem animações.
+    function animarAdicao(formulario, quantidade) {
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        const origem = formulario.querySelector('button[type="submit"]');
+        if (!origem || !abrir || typeof origem.animate !== "function") return;
+        const inicio = origem.getBoundingClientRect();
+        const destino = abrir.getBoundingClientRect();
+        // No menu recolhido do celular, confirma no botão sem voar para um alvo oculto.
+        origem.animate([{ opacity: 0.55 }, { opacity: 1 }], { duration: 450 });
+        if (!destino.width || !destino.height || destino.bottom < 0 || destino.top > innerHeight) return;
+        const indicador = document.createElement("span");
+        indicador.className = "kc-adicao-voando";
+        indicador.textContent = `+${quantidade}`;
+        indicador.setAttribute("aria-hidden", "true");
+        indicador.style.left = `${inicio.left + inicio.width / 2 - 22}px`;
+        indicador.style.top = `${inicio.top + inicio.height / 2 - 22}px`;
+        document.body.append(indicador);
+        const x = destino.left + destino.width / 2 - (inicio.left + inicio.width / 2);
+        const y = destino.top + destino.height / 2 - (inicio.top + inicio.height / 2);
+        const voo = indicador.animate([
+            { transform: "translate(0, 0) scale(1)", opacity: 1 },
+            { transform: `translate(${x}px, ${y}px) scale(0.45)`, opacity: 0.3 }
+        ], { duration: 650, easing: "ease-in-out" });
+        // Remove o elemento temporário tanto ao concluir quanto ao cancelar.
+        voo.finished.then(() => {
+            indicador.remove();
+            abrir.animate([{ transform: "scale(1)" }, { transform: "scale(1.2)" },
+                { transform: "scale(1)" }], { duration: 300 });
+        }, () => indicador.remove());
+    }
+
     //Centraliza as chamadas para a API do carrinho.
 
     //Recebe:
@@ -611,6 +643,7 @@
                 avisar(
                     `${quantidade} unidade(s) adicionada(s) ao carrinho.`
                 );
+                animarAdicao(form, quantidade);
             });
         });
     });

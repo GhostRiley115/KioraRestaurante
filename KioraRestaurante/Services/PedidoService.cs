@@ -48,6 +48,7 @@ public class PedidoService : IPedidoService
                 i.Quantidade,
                 Nome = i.Produto.Nome,
                 Preco = i.Produto.Preco,
+                CategoriaAtiva = i.Produto.Categoria.Ativa,
                 i.Produto.Ativo,
                 i.Produto.Disponivel
             });
@@ -102,6 +103,7 @@ public class PedidoService : IPedidoService
         return _context.Carrinhos
             .Include(c => c.ItensCarrinho)
             .ThenInclude(i => i.Produto)
+            .ThenInclude(p => p.Categoria)
             .SingleOrDefaultAsync(c => c.UsuarioId == usuarioId);
     }
 
@@ -235,7 +237,7 @@ public class PedidoService : IPedidoService
                 throw new RegraPedidoException("Existe uma quantidade inválida no carrinho.");
             }
 
-            if (!item.Produto.Ativo || !item.Produto.Disponivel)
+            if (!item.Produto.Ativo || !item.Produto.Disponivel || !item.Produto.Categoria.Ativa)
             {
                 throw new RegraPedidoException($"{item.Produto.Nome} não está disponível.");
             }

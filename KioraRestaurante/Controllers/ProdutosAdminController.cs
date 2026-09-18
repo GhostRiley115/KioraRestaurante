@@ -17,6 +17,9 @@ namespace KioraRestaurante.Controllers;
 [AutoValidateAntiforgeryToken]
 public class ProdutosAdminController : Controller
 {
+    // As telas administrativas ficam agrupadas por funcionalidade.
+    private const string ViewCadastro = "~/Views/Admin/Produtos/Cadastrar.cshtml";
+
     private readonly IProdutoService _produtoService;
     private readonly ICategoriaService _categoriaService;
 
@@ -37,7 +40,7 @@ public class ProdutosAdminController : Controller
             Categorias = await _categoriaService.ListarTodas()
         };
 
-        return View(model);
+        return View(ViewCadastro, model);
     }
 
     // Cadastra um novo produto pela tela de Admin.
@@ -112,6 +115,6 @@ public class ProdutosAdminController : Controller
         // Na volta com erro, precisamos montar o select novamente.
         model.Categorias = await _categoriaService.ListarTodas();
 
-        return View(model);
+        return View(ViewCadastro, model);
     }
 }

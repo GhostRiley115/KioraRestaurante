@@ -1,5 +1,6 @@
 ﻿// Permite utilizar os atributos de validação, como Required, EmailAddress, MinLength e Compare.
 using System.ComponentModel.DataAnnotations;
+using KioraRestaurante.Validacoes;
 
 namespace KioraRestaurante.ViewModels
 {
@@ -39,8 +40,9 @@ namespace KioraRestaurante.ViewModels
 
         // Define o tamanho mínimo da senha.
        
-        // Neste caso, a senha precisa possuir pelo menos 6 caracteres.
-        [MinLength(6, ErrorMessage = "A senha deve possuir pelo menos 6 caracteres.")]
+        // Neste caso, a senha precisa possuir pelo menos 8 caracteres, incluindo letra e número.
+        [MinLength(RegrasSenha.TamanhoMinimo, ErrorMessage = RegrasSenha.Mensagem)]
+        [RegularExpression(RegrasSenha.Padrao, ErrorMessage = RegrasSenha.Mensagem)]
         public string Senha { get; set; } = string.Empty;
 
 
@@ -55,12 +57,12 @@ namespace KioraRestaurante.ViewModels
         // Se os valores forem diferentes, o cadastro será considerado inválido.
         
         // Exemplo:        
-        // Senha:          123456
-        // ConfirmarSenha: 123456        
+        // Senha:          ramen2026
+        // ConfirmarSenha: ramen2026        
         // Resultado: válido.
         // 
-        // Senha:          123456
-        // ConfirmarSenha: 123457        
+        // Senha:          ramen2026
+        // ConfirmarSenha: ramen2027        
         // Resultado: inválido.
         [Compare("Senha", ErrorMessage = "As senhas não são iguais.")]
         public string ConfirmarSenha { get; set; } = string.Empty;
