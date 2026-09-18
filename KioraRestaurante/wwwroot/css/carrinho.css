@@ -422,3 +422,20 @@ button.carrinho-kiora {
         padding: 20px;
     }
 }
+
+/* CONFIRMAÇÃO DA COMPRA: indicador temporário, sem bloquear cliques. */
+.kc-adicao-voando {
+    position: fixed;
+    z-index: 1090;
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    border: 1px solid #D9B27A;
+    border-radius: 50%;
+    background: #7D1F1F;
+    color: #fff;
+    font-weight: 700;
+    pointer-events: none;
+    box-shadow: 0 4px 18px #0006;
+}

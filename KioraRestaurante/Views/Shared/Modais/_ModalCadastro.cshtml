@@ -1,0 +1,303 @@
+@using KioraRestaurante.Validacoes
+<!--
+    ================================================================
+    MODAL DE CADASTRO KIORA
+    ================================================================
+-->
+
+<div class="modal fade"
+     id="modalCadastro"
+     tabindex="-1"
+     aria-labelledby="modalCadastroTitulo"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered modal-cadastro-dialog">
+
+        <div class="modal-content modal-cadastro-kiora">
+
+            <!-- BOTÃO FECHAR -->
+
+            <button type="button"
+                    class="btn-close modal-cadastro-fechar"
+                    data-bs-dismiss="modal"
+                    aria-label="Fechar">
+
+                <i class="bi bi-x-lg"></i>
+
+            </button>
+
+
+            <div class="modal-body modal-cadastro-body">
+
+                <!-- LOGO -->
+
+                <div class="modal-cadastro-logo">
+
+                    <img src="~/imagens/logo-kiora-v.png"
+                         alt="Kiora Japanese Cuisine">
+
+                </div>
+
+
+                <!-- CABEÇALHO -->
+
+                <div class="modal-cadastro-header">
+
+                    <span class="modal-cadastro-subtitulo">
+
+                        BEM-VINDO À KIORA
+
+                    </span>
+
+                    <h2 id="modalCadastroTitulo">
+
+                        Crie sua conta
+
+                    </h2>
+
+                    <p>
+
+                        Cadastre-se para aproveitar sua experiência KIORA.
+
+                    </p>
+
+                </div>
+
+
+                <!--
+                    ====================================================
+                    FORMULÁRIO DE CADASTRO
+                    ====================================================
+                -->
+
+                <form id="formCadastro" asp-controller="Conta" asp-action="Cadastro"
+                  method="post" asp-antiforgery="false">
+                    @Html.AntiForgeryToken()
+
+                    <!--
+                        =================================================
+                        MENSAGEM DO CADASTRO
+                        =================================================
+
+                        Esta área começa escondida.
+
+                        O JavaScript irá utilizá-la para informar
+                        visualmente o resultado do cadastro.
+
+                        Exemplos:
+
+                        Sucesso:
+                        "Conta criada com sucesso!"
+
+                        Erro:
+                        "Este e-mail já está cadastrado."
+
+                        A classe visual será definida pelo JavaScript.
+                    -->
+
+                    <div id="mensagemCadastro"
+                         class="mensagem-kiora"
+                         role="alert"
+                         style="display: none;">
+
+                    </div>
+
+
+                    <!--
+                        =================================================
+                        NOME
+                        =================================================
+                    -->
+
+                    <div class="modal-cadastro-grupo">
+
+                        <label for="cadastroNome">
+
+                            Nome
+
+                        </label>
+
+                        <div class="modal-cadastro-input">
+
+                            <i class="bi bi-person"></i>
+
+                            <input type="text"
+                                   id="cadastroNome"
+                                   name="Nome"
+                                   placeholder="Digite seu nome"
+                                   autocomplete="name"
+                                   required>
+
+                        </div>
+
+                    </div>
+
+
+                    <!--
+                        =================================================
+                        E-MAIL
+                        =================================================
+                    -->
+
+                    <div class="modal-cadastro-grupo">
+
+                        <label for="cadastroEmail">
+
+                            E-mail
+
+                        </label>
+
+                        <div class="modal-cadastro-input">
+
+                            <i class="bi bi-envelope"></i>
+
+                            <input type="email"
+                                   id="cadastroEmail"
+                                   name="Email"
+                                   placeholder="Digite seu e-mail"
+                                   autocomplete="email"
+                                   required>
+
+                        </div>
+
+                    </div>
+
+
+                    <!--
+                        =================================================
+                        SENHA
+                        =================================================
+                    -->
+
+                    <div class="modal-cadastro-grupo">
+
+                        <label for="cadastroSenha">
+
+                            Senha
+
+                        </label>
+                        <small id="cadastroSenhaAjuda" class="senha-ajuda">@RegrasSenha.Mensagem</small>
+
+                        <div class="modal-cadastro-input">
+
+                            <i class="bi bi-lock"></i>
+
+                            <input type="password"
+                                   id="cadastroSenha"
+                                   minlength="@RegrasSenha.TamanhoMinimo"
+                                   pattern="@RegrasSenha.Padrao"
+                                   title="@RegrasSenha.Mensagem"
+                                   aria-describedby="cadastroSenhaAjuda"
+                                   name="Senha"
+                                   placeholder="Digite sua senha"
+                                   autocomplete="new-password"
+                                   required>
+
+                            <button type="button"
+                                    class="modal-cadastro-olho"
+                                    id="btnMostrarCadastroSenha"
+                                    aria-label="Mostrar senha">
+
+                                <i class="bi bi-eye"
+                                   id="iconeCadastroSenha"></i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!--
+                        =================================================
+                        CONFIRMAR SENHA
+                        =================================================
+
+                        ConfirmarSenha existe somente no ViewModel.
+
+                        Ela NÃO é armazenada na tabela Usuarios.
+                    -->
+
+                    <div class="modal-cadastro-grupo">
+
+                        <label for="cadastroConfirmarSenha">
+
+                            Confirmar senha
+
+                        </label>
+
+                        <div class="modal-cadastro-input">
+
+                            <i class="bi bi-lock-fill"></i>
+
+                            <input type="password"
+                                   id="cadastroConfirmarSenha"
+                                   name="ConfirmarSenha"
+                                   placeholder="Confirme sua senha"
+                                   autocomplete="new-password"
+                                   required>
+
+                            <button type="button"
+                                    class="modal-cadastro-olho"
+                                    id="btnMostrarConfirmarSenha"
+                                    aria-label="Mostrar senha">
+
+                                <i class="bi bi-eye"
+                                   id="iconeConfirmarSenha"></i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!--
+                        =================================================
+                        BOTÃO CADASTRAR
+                        =================================================
+                    -->
+
+                    <button type="submit"
+                            class="btn-modal-cadastro">
+
+                        CRIAR CONTA
+
+                    </button>
+
+
+                    <!--
+                        =================================================
+                        LINK PARA LOGIN
+                        =================================================
+                    -->
+
+                    <div class="modal-cadastro-login">
+
+                        <p>
+
+                            Já possui uma conta?
+
+                        </p>
+
+                        <a href="#"
+                           data-bs-dismiss="modal"
+                           data-bs-toggle="modal"
+                           data-bs-target="#modalLogin">
+
+                            Entrar
+
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+

@@ -1,0 +1,117 @@
+@model KioraRestaurante.DTOs.Usuario.UsuarioResponseDTO
+
+@{
+// Define o título da página.
+ViewData["Title"] = "Meu Perfil";
+}
+
+<!-- ================================================================
+     PÁGINA MEU PERFIL
+     ================================================================ -->
+
+<!-- Container principal da página de perfil. -->
+
+<div class="container perfil-kiora-container">
+
+
+<!-- ============================================================
+     TÍTULO
+     ============================================================ -->
+
+<!-- Exibe o título principal da página. -->
+<h1 class="perfil-kiora-titulo">
+    Meu Perfil
+</h1>
+
+
+<!-- ============================================================
+     CARD DO PERFIL
+     ============================================================ -->
+
+<!-- Card que contém as informações do usuário. -->
+<div class="perfil-kiora-card">
+
+
+    <!-- ========================================================
+         NOME
+         ======================================================== -->
+
+    <!-- Identificação do campo nome. -->
+    <p class="perfil-kiora-label">
+        Nome
+    </p>
+
+    <!-- Exibe o nome real do usuário. -->
+    <p class="perfil-kiora-info">
+        @Model.Nome
+    </p>
+
+
+    <!-- ========================================================
+         E-MAIL
+         ======================================================== -->
+
+    <!-- Identificação do campo e-mail. -->
+    <p class="perfil-kiora-label">
+        E-mail
+    </p>
+
+    <!-- Exibe o e-mail real do usuário. -->
+    <p class="perfil-kiora-info">
+        @Model.Email
+    </p>
+
+
+    <!-- ========================================================
+         BOTÃO EDITAR PERFIL
+         ======================================================== -->
+
+    <!--
+        Botão responsável por abrir o modal
+        de edição dos dados do perfil.
+
+        O atributo data-bs-toggle informa ao Bootstrap
+        que este botão irá abrir um modal.
+
+        O atributo data-bs-target informa qual modal
+        deverá ser aberto.
+    -->
+    <button type="button"
+            class="btn-editar-perfil-kiora"
+            data-bs-toggle="modal"
+            data-bs-target="#modalEditarPerfil">
+
+        <!-- Texto exibido no botão. -->
+        Editar Perfil
+
+    </button>
+
+
+    <!-- ========================================================
+         BOTÃO ALTERAR SENHA
+         ======================================================== -->
+
+    <!--
+        Botão responsável por abrir o modal
+        de alteração da senha.
+    -->
+    <button type="button"
+            class="btn-alterar-senha-kiora"
+            data-bs-toggle="modal"
+            data-bs-target="#modalAlterarSenha">
+
+        Alterar Senha
+
+    </button>
+
+
+</div>
+<!-- Fim do card do perfil. -->
+
+
+</div>
+<!-- Fim do container da página. -->
+
+<!-- MODAIS DO PERFIL: extraídos sem alterar os campos e identificadores. -->
+<partial name="_ModalEditarPerfil" model="Model" />
+<partial name="_ModalAlterarSenha" />

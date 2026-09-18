@@ -1,6 +1,7 @@
 ﻿// Permite utilizar os recursos de validação
 // fornecidos pelo ASP.NET Core.
 using System.ComponentModel.DataAnnotations;
+using KioraRestaurante.Validacoes;
 
 
 namespace KioraRestaurante.ViewModels
@@ -36,10 +37,8 @@ namespace KioraRestaurante.ViewModels
 
         // Define uma quantidade mínima de caracteres
         // para a nova senha.
-        [MinLength(
-            6,
-            ErrorMessage = "A nova senha deve possuir pelo menos 6 caracteres."
-        )]
+        [MinLength(RegrasSenha.TamanhoMinimo, ErrorMessage = RegrasSenha.Mensagem)]
+        [RegularExpression(RegrasSenha.Padrao, ErrorMessage = RegrasSenha.Mensagem)]
 
         // Guarda a nova senha escolhida pelo usuário.
         public string NovaSenha { get; set; } = null!;

@@ -1,0 +1,861 @@
+/* =========================================================
+   PÁGINA SOBRE - HERO
+   ========================================================= */
+
+/* Configura a Hero da página Sobre */
+.sobre-hero {
+    /* Permite posicionamento dos elementos */
+    position: relative;
+    /* Define altura mínima */
+    min-height: 560px;
+    /* Define imagem de fundo */
+    background-image: url('/imagens/fundo-sobre1.png');
+    /* Faz a imagem preencher a seção */
+    background-size: cover;
+    /* Centraliza a imagem */
+    background-position: center;
+    /* Impede repetição */
+    background-repeat: no-repeat;
+    /* Ativa Flexbox */
+    display: flex;
+    /* Centraliza verticalmente */
+    align-items: center;
+}
+
+
+/* Overlay da Hero Sobre */
+.sobre-hero-overlay {
+    /* Posiciona o overlay */
+    position: absolute;
+    /* Ocupa toda a seção */
+    inset: 0;
+    /* Cria degradê escuro */
+    background: linear-gradient( 90deg, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.62) 55%, rgba(0, 0, 0, 0.35) 100% );
+}
+
+
+/* Conteúdo da Hero Sobre */
+.sobre-hero-conteudo {
+    /* Permite posicionamento */
+    position: relative;
+    /* Mantém acima do overlay */
+    z-index: 2;
+    /* Define texto branco */
+    color: #FFFFFF;
+    /* Cria espaço superior */
+    padding-top: 60px;
+    /* Cria espaço inferior */
+    padding-bottom: 60px;
+}
+
+
+/* Subtítulos da página Sobre */
+.sobre-subtitulo,
+.sobre-secao-subtitulo {
+    /* Permite controlar tamanho */
+    display: inline-block;
+    /* Define dourado */
+    color: #D9B27A;
+    /* Define fonte */
+    font-family: 'Lato', sans-serif;
+    /* Define tamanho */
+    font-size: 13px;
+    /* Define peso */
+    font-weight: 600;
+    /* Aumenta espaçamento */
+    letter-spacing: 3px;
+    /* Cria espaço inferior */
+    margin-bottom: 15px;
+}
+
+
+/* Título da Hero Sobre */
+.sobre-hero h1 {
+    /* Define Playfair Display */
+    font-family: 'Playfair Display', serif;
+    /* Define branco */
+    color: #FFFFFF;
+    /* Define tamanho */
+    font-size: 56px;
+    /* Define peso */
+    font-weight: 600;
+    /* Define espaçamento */
+    line-height: 1.15;
+}
+
+
+/* Parágrafo da Hero Sobre */
+.sobre-hero p {
+    /* Define fonte */
+    font-family: 'Lato', sans-serif;
+    /* Define cor */
+    color: #E5E5E5;
+    /* Define tamanho */
+    font-size: 18px;
+    /* Define peso */
+    font-weight: 400;
+    /* Define espaçamento */
+    line-height: 1.7;
+    /* Limita largura */
+    max-width: 600px;
+}
+
+
+/* =========================================================
+   HISTÓRIA E ESSÊNCIA
+   ========================================================= */
+
+/* Define estrutura compartilhada */
+.sobre-historia,
+.sobre-essencia {
+    /* Define altura mínima */
+    min-height: 520px;
+    /* Define espaçamento */
+    padding: 50px 0;
+    /* Ativa Flexbox */
+    display: flex;
+    /* Centraliza verticalmente */
+    align-items: center;
+}
+
+
+    /* Títulos das seções Sobre */
+    .sobre-historia h2,
+    .sobre-essencia h2,
+    .sobre-experiencia h2,
+    .sobre-diferenciais h2,
+    .sobre-missao h2,
+    .sobre-valores h2,
+    .sobre-reserva h2 {
+        /* Define fonte dos títulos */
+        font-family: 'Playfair Display', serif;
+        /* Define peso */
+        font-weight: 600;
+    }
+
+
+    /* Textos das seções Sobre */
+    .sobre-historia p,
+    .sobre-essencia p,
+    .sobre-experiencia p,
+    .sobre-diferenciais p,
+    .sobre-missao p,
+    .sobre-valores p,
+    .sobre-reserva p {
+        /* Define fonte */
+        font-family: 'Lato', sans-serif;
+        /* Define peso normal */
+        font-weight: 400;
+    }
+
+
+/* =========================================================
+   IMAGENS DA PÁGINA SOBRE
+   ========================================================= */
+
+/* Container da imagem */
+.sobre-imagem {
+    /* Permite posicionar elementos */
+    position: relative;
+    /* Esconde conteúdos excedentes */
+    overflow: hidden;
+    /* Cria borda vinho */
+    border: 1px solid #7D1F1F;
+}
+
+
+    /* Moldura interna da imagem */
+    .sobre-imagem::after {
+        /* Cria o pseudo-elemento */
+        content: "";
+        /* Posiciona a moldura */
+        position: absolute;
+        /* Define distância das bordas */
+        inset: 12px;
+        /* Cria borda dourada transparente */
+        border: 1px solid rgba(217, 178, 122, 0.5);
+        /* Impede que interfira nos cliques */
+        pointer-events: none;
+    }
+
+
+    /* Configura a imagem */
+    .sobre-imagem img {
+        /* Ocupa toda a largura */
+        width: 100%;
+        /* Define altura */
+        height: 420px;
+        /* Preenche sem distorção */
+        object-fit: cover;
+        /* Remove espaços abaixo da imagem */
+        display: block;
+    }
+
+
+/* =========================================================
+   EXPERIÊNCIA
+   ========================================================= */
+
+/* Configura a seção de experiência */
+.sobre-experiencia {
+    /* Define fundo escuro */
+    background-color: #0E0E0E;
+    /* Define espaçamento vertical */
+    padding: 100px 0;
+    /* Cria linha superior */
+    border-top: 1px solid #1F1F1F;
+}
+
+
+/* Espaço abaixo do título */
+.sobre-titulo-secao {
+    /* Define margem inferior */
+    margin-bottom: 50px;
+}
+
+
+/* Títulos da experiência e diferenciais */
+.sobre-experiencia h2,
+.sobre-diferenciais h2 {
+    /* Define cor branca */
+    color: #FFFFFF;
+    /* Define fonte */
+    font-family: 'Playfair Display', serif;
+    /* Define tamanho */
+    font-size: 42px;
+    /* Define peso */
+    font-weight: 600;
+    /* Cria espaço inferior */
+    margin-bottom: 12px;
+}
+
+
+/* Texto introdutório */
+.sobre-experiencia .sobre-titulo-secao p,
+.sobre-diferenciais .sobre-titulo-secao p {
+    /* Define cor cinza */
+    color: #BDBDBD;
+    /* Define fonte */
+    font-family: 'Lato', sans-serif;
+    /* Define tamanho */
+    font-size: 16px;
+    /* Define peso */
+    font-weight: 400;
+}
+
+
+/* =========================================================
+   CARDS DA PÁGINA SOBRE
+   ========================================================= */
+
+/* Configura os cards */
+.sobre-card {
+    /* Permite posicionamento */
+    position: relative;
+    /* Ocupa toda a altura disponível */
+    height: 100%;
+    /* Cria fundo em degradê */
+    background: linear-gradient( 145deg, #171717 0%, #101010 100% );
+    /* Cria borda dourada transparente */
+    border: 1px solid rgba(217, 178, 122, 0.35);
+    /* Define espaçamento interno */
+    padding: 45px 30px;
+    /* Centraliza o conteúdo */
+    text-align: center;
+    /* Cria transição */
+    transition: all 0.4s ease;
+    /* Esconde conteúdos excedentes */
+    overflow: hidden;
+}
+
+
+    /* Linha decorativa superior */
+    .sobre-card::before {
+        /* Cria o pseudo-elemento */
+        content: "";
+        /* Posiciona */
+        position: absolute;
+        /* Coloca no topo */
+        top: 0;
+        /* Começa no centro */
+        left: 50%;
+        /* Começa sem largura */
+        width: 0;
+        /* Define altura */
+        height: 2px;
+        /* Define cor dourada */
+        background-color: #D9B27A;
+        /* Centraliza */
+        transform: translateX(-50%);
+        /* Cria animação */
+        transition: width 0.4s ease;
+    }
+
+
+    /* Detalhe decorativo */
+    .sobre-card::after {
+        /* Cria pseudo-elemento */
+        content: "";
+        /* Posiciona */
+        position: absolute;
+        /* Distância superior */
+        top: 15px;
+        /* Distância direita */
+        right: 15px;
+        /* Define largura */
+        width: 25px;
+        /* Define altura */
+        height: 25px;
+        /* Cria borda superior */
+        border-top: 1px solid rgba(217, 178, 122, 0.45);
+        /* Cria borda direita */
+        border-right: 1px solid rgba(217, 178, 122, 0.45);
+        /* Cria transição */
+        transition: all 0.4s ease;
+    }
+
+
+    /* Hover do card */
+    .sobre-card:hover {
+        /* Move o card para cima */
+        transform: translateY(-10px);
+        /* Torna a borda dourada */
+        border-color: #D9B27A;
+        /* Cria sombra */
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45), 0 0 20px rgba(217, 178, 122, 0.08);
+        /* Altera o fundo */
+        background: linear-gradient( 145deg, #1C1C1C 0%, #111111 100% );
+    }
+
+
+        /* Aumenta a linha no hover */
+        .sobre-card:hover::before {
+            /* Define largura */
+            width: 70%;
+        }
+
+
+        /* Aumenta o detalhe no hover */
+        .sobre-card:hover::after {
+            /* Aumenta largura */
+            width: 35px;
+            /* Aumenta altura */
+            height: 35px;
+            /* Torna dourado */
+            border-color: #D9B27A;
+        }
+
+
+    /* =========================================================
+   ÍCONES DOS CARDS
+   ========================================================= */
+
+    /* Configura os ícones */
+    .sobre-card i {
+        /* Define cor dourada */
+        color: #D9B27A;
+        /* Define tamanho */
+        font-size: 38px;
+        /* Faz ocupar uma linha */
+        display: block;
+        /* Cria espaço inferior */
+        margin-bottom: 22px;
+        /* Cria transição */
+        transition: all 0.4s ease;
+    }
+
+
+    /* Hover dos ícones */
+    .sobre-card:hover i {
+        /* Move e aumenta o ícone */
+        transform: translateY(-4px) scale(1.05);
+        /* Cria brilho */
+        text-shadow: 0 0 12px rgba(217, 178, 122, 0.35);
+    }
+
+
+    /* Título dos cards */
+    .sobre-card h3 {
+        /* Define branco */
+        color: #FFFFFF;
+        /* Define fonte */
+        font-family: 'Playfair Display', serif;
+        /* Define tamanho */
+        font-size: 22px;
+        /* Define peso */
+        font-weight: 600;
+        /* Cria espaço inferior */
+        margin-bottom: 15px;
+        /* Cria transição */
+        transition: color 0.3s ease;
+    }
+
+
+    /* Hover do título */
+    .sobre-card:hover h3 {
+        /* Muda para dourado */
+        color: #D9B27A;
+    }
+
+
+    /* Texto dos cards */
+    .sobre-card p {
+        /* Define cinza */
+        color: #BDBDBD;
+        /* Define fonte */
+        font-family: 'Lato', sans-serif;
+        /* Define tamanho */
+        font-size: 15px;
+        /* Define peso */
+        font-weight: 400;
+        /* Define espaçamento */
+        line-height: 1.7;
+        /* Remove margem */
+        margin: 0;
+    }
+
+
+/* =========================================================
+   NOSSA ESSÊNCIA
+   ========================================================= */
+
+/* Configura o fundo da seção */
+.sobre-essencia {
+    /* Define fundo */
+    background-color: #0E0E0E;
+    /* Cria linha superior */
+    border-top: 1px solid #1F1F1F;
+}
+
+
+/* =========================================================
+   DIFERENCIAIS
+   ========================================================= */
+
+/* Configura a seção */
+.sobre-diferenciais {
+    /* Define fundo */
+    background-color: #0E0E0E;
+    /* Define espaçamento */
+    padding: 100px 0;
+    /* Cria linha superior */
+    border-top: 1px solid #1F1F1F;
+}
+
+
+    /* Define fundo específico dos cards */
+    .sobre-diferenciais .sobre-card {
+        /* Define fundo um pouco mais claro */
+        background-color: #151515;
+    }
+
+
+/* =========================================================
+   MISSÃO
+   ========================================================= */
+
+/* Configura a seção de missão */
+.sobre-missao {
+    /* Define fundo vinho */
+    background-color: #7D1F1F;
+    /* Define texto branco */
+    color: #FFFFFF;
+    /* Define espaçamento */
+    padding: 90px 0;
+}
+
+
+    /* Subtítulo da missão */
+    .sobre-missao .sobre-secao-subtitulo {
+        /* Define dourado */
+        color: #D9B27A;
+    }
+
+
+    /* Título da missão */
+    .sobre-missao h2 {
+        /* Define branco */
+        color: #FFFFFF;
+        /* Define fonte */
+        font-family: 'Playfair Display', serif;
+        /* Define tamanho */
+        font-size: 42px;
+        /* Define peso */
+        font-weight: 600;
+        /* Define espaçamento */
+        line-height: 1.2;
+        /* Cria espaço inferior */
+        margin-bottom: 18px;
+    }
+
+
+    /* Texto da missão */
+    .sobre-missao p {
+        /* Limita largura */
+        max-width: 700px;
+        /* Centraliza */
+        margin: 0 auto;
+        /* Define cor */
+        color: #F1F1F1;
+        /* Define fonte */
+        font-family: 'Lato', sans-serif;
+        /* Define tamanho */
+        font-size: 17px;
+        /* Define peso */
+        font-weight: 400;
+        /* Define espaçamento */
+        line-height: 1.7;
+    }
+
+
+/* =========================================================
+   VISÃO E VALORES
+   ========================================================= */
+
+/* Configura a seção */
+.sobre-valores {
+    /* Define fundo */
+    background-color: #0E0E0E;
+    /* Define texto branco */
+    color: #FFFFFF;
+    /* Define espaçamento */
+    padding: 100px 0;
+    /* Cria linha superior */
+    border-top: 1px solid #1F1F1F;
+}
+
+
+    /* Título dos valores */
+    .sobre-valores h2 {
+        /* Define branco */
+        color: #FFFFFF;
+        /* Define fonte */
+        font-family: 'Playfair Display', serif;
+        /* Define tamanho */
+        font-size: 36px;
+        /* Define peso */
+        font-weight: 600;
+        /* Define espaçamento */
+        line-height: 1.25;
+        /* Cria espaço abaixo */
+        margin-bottom: 18px;
+    }
+
+
+    /* Texto dos valores */
+    .sobre-valores p {
+        /* Define cor cinza */
+        color: #BDBDBD;
+        /* Define fonte */
+        font-family: 'Lato', sans-serif;
+        /* Define tamanho */
+        font-size: 16px;
+        /* Define peso */
+        font-weight: 400;
+        /* Define espaçamento */
+        line-height: 1.8;
+        /* Limita largura */
+        max-width: 550px;
+    }
+
+
+/* =========================================================
+   LISTA DE VALORES
+   ========================================================= */
+
+/* Organiza os valores */
+.valores-lista {
+    /* Ativa Flexbox */
+    display: flex;
+    /* Permite quebra de linha */
+    flex-wrap: wrap;
+    /* Define espaço entre os itens */
+    gap: 10px;
+    /* Cria espaço superior */
+    margin-top: 25px;
+}
+
+
+    /* Configura cada valor */
+    .valores-lista span {
+        /* Define texto branco */
+        color: #FFFFFF;
+        /* Define fundo escuro */
+        background-color: #151515;
+        /* Define borda vinho */
+        border: 1px solid #7D1F1F;
+        /* Define fonte */
+        font-family: 'Lato', sans-serif;
+        /* Define espaçamento */
+        padding: 9px 16px;
+        /* Define tamanho */
+        font-size: 14px;
+        /* Define peso */
+        font-weight: 500;
+        /* Cria transição */
+        transition: all 0.3s ease;
+    }
+
+
+        /* Hover dos valores */
+        .valores-lista span:hover {
+            /* Muda fundo para vinho */
+            background-color: #7D1F1F;
+            /* Muda borda para dourada */
+            border-color: #D9B27A;
+        }
+
+
+/* =========================================================
+   SEÇÃO FINAL / RESERVA
+   ========================================================= */
+
+/* Configura a seção final */
+.sobre-reserva {
+    /* Define fundo vinho */
+    background-color: #7D1F1F;
+    /* Define espaçamento */
+    padding: 80px 0;
+    /* Define texto branco */
+    color: #FFFFFF;
+}
+
+
+    /* Subtítulo final */
+    .sobre-reserva .sobre-secao-subtitulo {
+        /* Define dourado */
+        color: #D9B27A;
+    }
+
+
+    /* Título final */
+    .sobre-reserva h2 {
+        /* Define branco */
+        color: #FFFFFF;
+        /* Define fonte */
+        font-family: 'Playfair Display', serif;
+        /* Define tamanho */
+        font-size: 42px;
+        /* Define peso */
+        font-weight: 600;
+        /* Cria espaço abaixo */
+        margin-bottom: 15px;
+    }
+
+
+    /* Texto final */
+    .sobre-reserva p {
+        /* Define cor */
+        color: #F1F1F1;
+        /* Define fonte */
+        font-family: 'Lato', sans-serif;
+        /* Define tamanho */
+        font-size: 17px;
+        /* Define peso */
+        font-weight: 400;
+        /* Cria espaço abaixo */
+        margin-bottom: 30px;
+    }
+
+
+/* =========================================================
+   BOTÃO RESERVA - PÁGINA SOBRE
+   ========================================================= */
+
+/* Configura o botão */
+.btn-reserva-sobre {
+    /* Define fundo escuro */
+    background-color: #0E0E0E;
+    /* Define texto branco */
+    color: #FFFFFF !important;
+    /* Define borda dourada */
+    border: 1px solid #D9B27A;
+    /* Define espaçamento */
+    padding: 12px 28px;
+    /* Define fonte */
+    font-family: 'Lato', sans-serif;
+    /* Define peso */
+    font-weight: 600;
+    /* Arredonda os cantos */
+    border-radius: 3px;
+    /* Remove sublinhado */
+    text-decoration: none;
+    /* Cria transição */
+    transition: all 0.3s ease;
+}
+
+
+    /* Hover do botão */
+    .btn-reserva-sobre:hover {
+        /* Muda fundo para dourado */
+        background-color: #D9B27A;
+        /* Muda texto para preto */
+        color: #0E0E0E !important;
+    }
+
+
+
+/* SOBRE: ajustes para telas menores. */
+@media (max-width: 991px) {
+    /* Ajusta Hero Sobre */
+    .sobre-hero {
+        /* Reduz altura */
+        min-height: 500px;
+    }
+
+        /* Ajusta título */
+        .sobre-hero h1 {
+            /* Reduz tamanho */
+            font-size: 44px;
+        }
+
+    /* Ajusta espaçamento das seções */
+    .sobre-historia,
+    .sobre-experiencia,
+    .sobre-essencia,
+    .sobre-diferenciais,
+    .sobre-valores {
+        /* Define espaçamento menor */
+        padding: 75px 0;
+    }
+
+        /* Ajusta títulos */
+        .sobre-historia h2,
+        .sobre-essencia h2,
+        .sobre-experiencia h2,
+        .sobre-diferenciais h2,
+        .sobre-missao h2,
+        .sobre-reserva h2 {
+            /* Reduz tamanho */
+            font-size: 36px;
+        }
+
+        /* Ajusta título dos valores */
+        .sobre-valores h2 {
+            /* Define tamanho menor */
+            font-size: 32px;
+        }
+
+    /* Reduz imagens */
+    .sobre-imagem img {
+        /* Define altura menor */
+        height: 380px;
+    }
+
+    /* Ajusta missão */
+    .sobre-missao {
+        /* Reduz espaçamento */
+        padding: 75px 20px;
+    }
+
+
+}
+
+/* SOBRE: ajustes para telas menores. */
+@media (max-width: 575px) {
+    /* Ajusta Hero Sobre */
+    .sobre-hero {
+        /* Define altura */
+        min-height: 500px;
+        /* Ajusta posição da imagem */
+        background-position: 60% center;
+    }
+
+    /* Centraliza conteúdo */
+    .sobre-hero-conteudo {
+        /* Centraliza texto */
+        text-align: center;
+        /* Define espaçamento */
+        padding: 60px 20px;
+    }
+
+    /* Reduz título */
+    .sobre-hero h1 {
+        /* Define tamanho menor */
+        font-size: 34px;
+    }
+
+    /* Reduz texto */
+    .sobre-hero p {
+        /* Define tamanho menor */
+        font-size: 15px;
+        /* Centraliza */
+        margin-left: auto;
+        /* Centraliza */
+        margin-right: auto;
+    }
+
+    /* Reduz espaçamento das seções */
+    .sobre-historia,
+    .sobre-experiencia,
+    .sobre-essencia,
+    .sobre-diferenciais,
+    .sobre-valores {
+        /* Define espaçamento */
+        padding: 60px 20px;
+    }
+
+        /* Reduz títulos */
+        .sobre-historia h2,
+        .sobre-essencia h2,
+        .sobre-experiencia h2,
+        .sobre-diferenciais h2,
+        .sobre-missao h2,
+        .sobre-reserva h2 {
+            /* Define tamanho menor */
+            font-size: 30px;
+        }
+
+        /* Ajusta textos */
+        .sobre-historia p,
+        .sobre-essencia p {
+            /* Define tamanho */
+            font-size: 15px;
+        }
+
+    /* Reduz imagens */
+    .sobre-imagem img {
+        /* Define altura */
+        height: 300px;
+    }
+
+    /* Reduz padding dos cards */
+    .sobre-card {
+        /* Define espaçamento menor */
+        padding: 35px 25px;
+    }
+
+    /* Ajusta missão */
+    .sobre-missao {
+        /* Define espaçamento */
+        padding: 60px 20px;
+    }
+
+    /* Reduz título dos valores */
+    .sobre-valores h2 {
+        /* Define tamanho */
+        font-size: 30px;
+    }
+
+    /* Centraliza valores */
+    .valores-lista {
+        /* Centraliza os itens */
+        justify-content: center;
+    }
+
+        /* Ajusta itens */
+        .valores-lista span {
+            /* Define tamanho menor */
+            font-size: 13px;
+            /* Define espaçamento menor */
+            padding: 8px 13px;
+        }
+
+    /* Ajusta seção final */
+    .sobre-reserva {
+        /* Define espaçamento */
+        padding: 60px 20px;
+    }
+
+
+}

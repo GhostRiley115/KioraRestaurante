@@ -26,7 +26,8 @@ namespace KioraRestaurante.Services
         {
             return _context.Carrinhos
                 .Include(c => c.ItensCarrinho)
-                .ThenInclude(i => i.Produto);
+                .ThenInclude(i => i.Produto)
+                .ThenInclude(p => p.Categoria);
         }
 
         //Consulta se o usuário está ativo ou não.
@@ -93,7 +94,7 @@ namespace KioraRestaurante.Services
         
         private static void ValidarProduto(Produto produto)
         {
-            if (!produto.Ativo || !produto.Disponivel)
+            if (!produto.Ativo || !produto.Disponivel || !produto.Categoria.Ativa)
                 throw new InvalidOperationException("Este produto não está disponível para compra.");
         }
 
@@ -115,7 +116,7 @@ namespace KioraRestaurante.Services
          e não simplesmente some com o item do carrinho*/
         private static ItemCarrinhoResponseDTO MontarItem(ItemCarrinho item)
         {
-            var disponivel = item.Produto.Ativo && item.Produto.Disponivel;
+            var disponivel = item.Produto.Ativo && item.Produto.Disponivel && item.Produto.Categoria.Ativa;
 
             /*Cria uma lista de avisos gerais que se inicia null -> a cada verificação,
              se estiver algo errado com o Produto/ItemCarrinho ele adiciona um novo aviso
@@ -312,7 +313,10 @@ namespace KioraRestaurante.Services
                 throw new ArgumentException("Informe um produto válido");
             
             //Consulta o banco para encontrar o produto com o ID recebido.
-            var produto = await _context.Produtos.SingleOrDefaultAsync(p => p.Id == dto.ProdutoId);
+            var produto = await _context.Produtos
+                .Include(p => p.Categoria)
+                .SingleOrDefaultAsync(p => p.Id == dto.ProdutoId);
+
             if(produto == null)
                 throw new KeyNotFoundException("Produto não encontrado");
             
