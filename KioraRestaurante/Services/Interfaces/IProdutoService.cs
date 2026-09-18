@@ -1,11 +1,11 @@
-using KioraRestaurante.Models;
+using KioraRestaurante.DTOs.Produto;
+using Microsoft.AspNetCore.Http;
 
 namespace KioraRestaurante.Services.Interfaces
 {
     public interface IProdutoService
     {
-        Task<Produto> Criar(Produto produto);
-        Task<List<Produto>> ListarTodos();
-        Task<List<Produto>> ListarPorCategoria(int categoriaId);
+        Task<int> Criar(int administradorId, CriarProdutoRequestDTO dto, IFormFile foto);
+        Task<List<ProdutoResponseDTO>> ListarCardapio(int? categoriaId = null);
     }
 }

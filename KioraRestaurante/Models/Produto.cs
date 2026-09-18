@@ -5,10 +5,10 @@ namespace KioraRestaurante.Models
 {
     public class Produto
     {
-        //O EF Core sabe automaticamente que "Id" é a Chave Primária.
+        // O EF Core sabe automaticamente que "Id" é a Chave Primária.
         public int Id { get; set; }
 
-        //Diz para o Ef core o máximo de caracteres possiveis.
+        // Diz para o Ef core o máximo de caracteres possiveis.
         [Required]
         [MaxLength(100)]
         public string Nome { get; set; } = null!;
@@ -16,26 +16,33 @@ namespace KioraRestaurante.Models
         [MaxLength(500)]
         public string Descricao { get; set; } = null!;
 
-        //Atribui um preço mínimo e máximo à propriedade.
+        // Atribui um preço mínimo e máximo à propriedade.
         [Range(typeof(decimal), "0.01", "99999999")]
-        //Cria uma coluna e evita que o mysql mapeie de forma padrão o decimal como numeric
+        // Cria uma coluna e evita que o mysql mapeie de forma padrão o decimal como numeric
         [Column(TypeName = "decimal(10,2)")]
         public decimal Preco { get; set; }
 
         [MaxLength(500)]
-        public string? Imagem { get; set; } //Nesse primeiro momento de testes a imagem não é obrigatória
+        public string? Imagem { get; set; } // Nesse primeiro momento de testes a imagem não é obrigatória
+        // Identifica a imagem no Cloudinary para futuras alterações ou exclusões.
+        [MaxLength(200)]
+        public string? ImagemPublicId { get; set; }
         public bool Disponivel { get; set; } = true;
         public bool Ativo { get; set; } = true;
         public int CategoriaId { get; set; }
 
         public Categoria Categoria { get; set; } = null!;
 
-        /*Define que um produto pode estar em vários ItemProduto e cria 
-        uma navegação do produto para cada ItemCarrinho que ele esteja.*/
+        /*
+         *Define que um produto pode estar em vários ItemProduto e cria
+         *uma navegação do produto para cada ItemCarrinho que ele esteja.
+         */
         public List<ItemCarrinho> ItensCarrinho { get; set; } = new();
 
-        /*Define que um produto pode estar em vários ItemPedido e cria uma
-        navegação do produto para cada ItemPedido que ele esteja.*/
+        /*
+         *Define que um produto pode estar em vários ItemPedido e cria uma
+         *navegação do produto para cada ItemPedido que ele esteja.
+         */
         public List<ItemPedido> ItensPedido { get; set; } = new();
     }
 }

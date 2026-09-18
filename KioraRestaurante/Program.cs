@@ -53,6 +53,7 @@ builder.Services.AddHostedService<LimpezaCarrinhosService>();
 builder.Services.AddScoped<IPedidoService, PedidoService>();
 builder.Services.AddScoped<IProdutoService, ProdutoService>();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
+builder.Services.AddScoped<IImagemProdutoService, ImagemProdutoService>();
 
 builder.Services.
     AddAntiforgery(options =>

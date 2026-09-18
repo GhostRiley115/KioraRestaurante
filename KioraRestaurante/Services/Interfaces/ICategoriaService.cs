@@ -1,9 +1,9 @@
-using KioraRestaurante.Models;
+using KioraRestaurante.DTOs.Categoria;
 
 namespace KioraRestaurante.Services.Interfaces
 {
     public interface ICategoriaService
     {
-        Task<List<Categoria>> ListarTodas();
+        Task<List<CategoriaResponseDTO>> ListarTodas();
     }
 }
