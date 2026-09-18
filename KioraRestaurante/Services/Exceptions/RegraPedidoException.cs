@@ -1,4 +1,4 @@
-namespace KioraRestaurante.Services.Interfaces;
+namespace KioraRestaurante.Services.Exceptions;
 
 public class RegraPedidoException : Exception
 {

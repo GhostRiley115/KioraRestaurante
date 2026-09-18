@@ -87,12 +87,12 @@ public class CarrinhoController : ControllerBase
         catch (ArgumentException ex)
         {
             //HTTP 400
-            return BadRequest(new { message = ex.Message });
+            return BadRequest(new { mensagem = ex.Message});
         }
         catch (KeyNotFoundException ex)
         {
             //HTTP 404
-            return NotFound(new { message = ex.Message });
+            return NotFound(new { mensagem = ex.Message });
         }
         //"Outra operação alterou esse carrinho antes de você salvar sua alteração."
         catch (DbUpdateConcurrencyException)
@@ -107,7 +107,7 @@ public class CarrinhoController : ControllerBase
         }
         catch (InvalidOperationException ex)
         {
-            return Conflict(new { message = ex.Message });
+            return Conflict(new { mensagem = ex.Message });
         }
     }
 

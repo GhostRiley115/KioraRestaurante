@@ -256,6 +256,8 @@ namespace KioraRestaurante.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UsuarioId");
+
                     b.HasIndex("UsuarioId", "ChaveConfirmacao")
                         .IsUnique();
 

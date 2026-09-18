@@ -51,6 +51,8 @@ builder.Services.AddDataProtection();
 builder.Services.AddScoped<CarrinhoCookie>();
 builder.Services.AddHostedService<LimpezaCarrinhosService>();
 builder.Services.AddScoped<IPedidoService, PedidoService>();
+builder.Services.AddScoped<IProdutoService, ProdutoService>();
+builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 
 builder.Services.
     AddAntiforgery(options =>

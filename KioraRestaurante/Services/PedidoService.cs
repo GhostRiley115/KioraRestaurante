@@ -9,6 +9,7 @@ using KioraRestaurante.DTOs.Pedido;
 using KioraRestaurante.Models;
 using KioraRestaurante.Models.Enums;
 using KioraRestaurante.Services.Interfaces;
+using KioraRestaurante.Services.Exceptions;
 
 namespace KioraRestaurante.Services;
 
@@ -191,13 +192,42 @@ public class PedidoService : IPedidoService
             throw new RegraPedidoException("Seu carrinho está vazio.");
         }
 
-        if (carrinho.Id != revisao.UsuarioId || carrinho.Versao != revisao.VersaoCarrinho ||
+        ValidarRevisaoAtual(carrinho, revisao);
+        ValidarItensParaPedido(carrinho);
+
+        var pedido = new Pedido
+        {
+            UsuarioId = usuarioId,
+            ChaveConfirmacao = revisao.ChaveConfirmacao,
+            DataPedido = DateTime.UtcNow,
+            FormaPagamento = dto.FormaPagamento!.Value,
+            StatusPedido = StatusPedido.Recebido,
+            StatusPagamento = StatusPagamento.Pendente,
+
+            EnderecoEntrega = CriarEndereco(dto)
+        };
+
+        CopiarItensParaPedido(carrinho, pedido);
+
+        return await SalvarPedidoELimparCarrinho(pedido, carrinho);
+    }
+
+
+    // Confere se a revisão ainda representa o mesmo carrinho, versão e produtos.
+    private static void ValidarRevisaoAtual(Carrinho carrinho, RevisaoProtegida revisao)
+    {
+        if (carrinho.Id != revisao.CarrinhoId || carrinho.Versao != revisao.VersaoCarrinho ||
             RepresentarItens(carrinho) != revisao.Itens)
         {
             throw new RegraPedidoException(
                 "O carrinho ou os produtos mudaram. Confira a revisão atualizada antes de confirmar.");
         }
 
+    }
+
+    // Valida cada item antes de transformá-lo em parte de um pedido.
+    private static void ValidarItensParaPedido(Carrinho carrinho)
+    {
         foreach (var item in carrinho.ItensCarrinho)
         {
             if (item.Quantidade < 1 || item.Quantidade > 30)
@@ -216,28 +246,27 @@ public class PedidoService : IPedidoService
             }
         }
 
-        var pedido = new Pedido
+    }
+
+    // Monta o endereço do pedido com os dados já validados do formulário.
+    private static EnderecoEntrega CriarEndereco(CriarPedidoRequestDTO dto)
+    {
+        return new EnderecoEntrega
         {
-            UsuarioId = usuarioId,
-            ChaveConfirmacao = revisao.ChaveConfirmacao,
-            DataPedido = DateTime.UtcNow,
-            FormaPagamento = dto.FormaPagamento!.Value,
-            StatusPedido = StatusPedido.Recebido,
-            StatusPagamento = StatusPagamento.Pendente,
-
-            EnderecoEntrega = new EnderecoEntrega
-            {
-                Cep = dto.Cep.Trim(),
-                Logradouro = dto.Logradouro.Trim(),
-                Numero = dto.Numero.Trim(),
-                Bairro = dto.Bairro.Trim(),
-                Cidade = dto.Cidade.Trim(),
-                Uf = dto.Uf.Trim(),
-                Complemento = dto.Complemento?.Trim(),
-                Referencia = dto.Referencia?.Trim(),
-            }
+            Cep = dto.Cep.Trim(),
+            Logradouro = dto.Logradouro.Trim(),
+            Numero = dto.Numero.Trim(),
+            Bairro = dto.Bairro.Trim(),
+            Cidade = dto.Cidade.Trim(),
+            Uf = dto.Uf.Trim(),
+            Complemento = dto.Complemento?.Trim(),
+            Referencia = dto.Referencia?.Trim(),
         };
+    }
 
+    // Copia os dados da compra para preservar o histórico e calcula o total.
+    private static void CopiarItensParaPedido(Carrinho carrinho, Pedido pedido)
+    {
         foreach (var item in carrinho.ItensCarrinho)
         {
             pedido.ItensPedido.Add(new ItemPedido
@@ -257,6 +286,11 @@ public class PedidoService : IPedidoService
                 "O valor do pedido ultrapassa o limite permitido.");
         }
 
+    }
+
+    // Salva a compra e a limpeza do carrinho na mesma operação.
+    private async Task<int> SalvarPedidoELimparCarrinho(Pedido pedido, Carrinho carrinho)
+    {
         _context.Pedidos.Add(pedido);
 
         _context.ItensCarrinho.RemoveRange(carrinho.ItensCarrinho);
@@ -278,7 +312,7 @@ public class PedidoService : IPedidoService
              */
             _context.ChangeTracker.Clear();
 
-            var repetido = await BuscarConfirmacao(usuarioId, revisao.ChaveConfirmacao);
+            var repetido = await BuscarConfirmacao(pedido.UsuarioId, pedido.ChaveConfirmacao!.Value);
 
             if(repetido.HasValue)
                 return repetido.Value;

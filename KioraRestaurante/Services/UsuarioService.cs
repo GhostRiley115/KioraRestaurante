@@ -34,7 +34,7 @@ namespace KioraRestaurante.Services
 
         private static string NormalizarEmail(string email)
         {
-            return email.Trim().ToLower();
+            return email.Trim().ToLowerInvariant();
         }
 
         /*Converte a entidade Usuario em um UsuarioResponseDTO.
@@ -159,7 +159,7 @@ namespace KioraRestaurante.Services
         {
             //Procura um usuário que possua exatamente o token informado.
             var usuario = _context.Usuarios
-                .FirstOrDefault(u => u.TokenRecuperacaoSenha == dto.Token);
+                .FirstOrDefault(u => u.TokenRecuperacaoSenha == dto.Token && u.Ativo);
 
             //Se não encontrou usuário com esse token, a recuperação não pode continuar.
             if (usuario == null)
@@ -211,7 +211,7 @@ namespace KioraRestaurante.Services
         {
             //Localiza o usuário existente no banco de dados através do id recebido.
             var usuario = _context.Usuarios
-                .FirstOrDefault(u => u.Id == usuarioId);
+                .FirstOrDefault(u => u.Id == usuarioId && u.Ativo);
 
             //Caso o usuário não seja encontrado, encerra a operação sem realizar alterações.
             if (usuario == null)
@@ -231,7 +231,7 @@ namespace KioraRestaurante.Services
         public bool AlterarSenha(int usuarioId, UsuarioAlterarSenhaDTO dto)
         {
             var usuario = _context.Usuarios
-                .FirstOrDefault(u => u.Id == usuarioId);
+                .FirstOrDefault(u => u.Id == usuarioId  && u.Ativo);
 
             if (usuario == null)
                 return false;

@@ -3,6 +3,7 @@ using System.Security.Claims;
 using KioraRestaurante.Services;
 using KioraRestaurante.Services.Interfaces;
 using KioraRestaurante.ViewModels;
+using KioraRestaurante.Services.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

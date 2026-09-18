@@ -6,10 +6,10 @@ namespace KioraRestaurante.DTOs.Usuario
     {
         [Required(ErrorMessage = "O nome é obrigatório.")]
         [MaxLength(100, ErrorMessage = "O nome deve possuir no máximo 100 caracteres.")]
-        public string Nome { get; set; }
+        public string Nome { get; set; } = string.Empty;
         [EmailAddress(ErrorMessage = "Informe um e-mail válido.")]
         [Required(ErrorMessage = "O e-mail é obrigatório.")]
         [MaxLength(150, ErrorMessage = "O e-mail deve possuir no máximo 150 caracteres.")]
-        public string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
     }
 }

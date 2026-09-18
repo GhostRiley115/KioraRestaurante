@@ -20,7 +20,7 @@ namespace KioraRestaurante.ViewModels
         [EmailAddress(ErrorMessage = "Informe um e-mail válido.")]
 
         // Armazena o e-mail informado pelo usuário.
-        public string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
 
 
         // ================================================================
@@ -34,7 +34,7 @@ namespace KioraRestaurante.ViewModels
         //
         // A senha será enviada ao Controller apenas para
         // ser verificada pelo UsuarioServices.
-        public string Senha { get; set; }
+        public string Senha { get; set; } = string.Empty;
     }
 }
 

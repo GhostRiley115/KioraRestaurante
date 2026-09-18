@@ -11,10 +11,6 @@ namespace KioraRestaurante.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropIndex(
-                name: "IX_Pedidos_UsuarioId",
-                table: "Pedidos");
-
             migrationBuilder.AddColumn<Guid>(
                 name: "ChaveConfirmacao",
                 table: "Pedidos",
@@ -39,11 +35,6 @@ namespace KioraRestaurante.Migrations
             migrationBuilder.DropColumn(
                 name: "ChaveConfirmacao",
                 table: "Pedidos");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Pedidos_UsuarioId",
-                table: "Pedidos",
-                column: "UsuarioId");
         }
     }
 }

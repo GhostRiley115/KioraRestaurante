@@ -15,7 +15,7 @@ namespace KioraRestaurante.ViewModels
         
         // Caso o usuário tente cadastrar sem informar o nome, o ModelState será considerado inválido.
         [Required(ErrorMessage = "O nome é obrigatório.")]
-        public string Nome { get; set; }
+        public string Nome { get; set; } = string.Empty;
 
         // E-MAIL
 
@@ -28,7 +28,7 @@ namespace KioraRestaurante.ViewModels
         
         // Exemplo inválido: usuario
         [EmailAddress(ErrorMessage = "Digite um e-mail válido.")]
-        public string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
 
 
         // SENHA
@@ -41,7 +41,7 @@ namespace KioraRestaurante.ViewModels
        
         // Neste caso, a senha precisa possuir pelo menos 6 caracteres.
         [MinLength(6, ErrorMessage = "A senha deve possuir pelo menos 6 caracteres.")]
-        public string Senha { get; set; }
+        public string Senha { get; set; } = string.Empty;
 
 
         // CONFIRMAÇÃO DA SENHA
@@ -63,6 +63,6 @@ namespace KioraRestaurante.ViewModels
         // ConfirmarSenha: 123457        
         // Resultado: inválido.
         [Compare("Senha", ErrorMessage = "As senhas não são iguais.")]
-        public string ConfirmarSenha { get; set; }
+        public string ConfirmarSenha { get; set; } = string.Empty;
     }
 }

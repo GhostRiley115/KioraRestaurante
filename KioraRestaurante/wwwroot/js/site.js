@@ -234,6 +234,22 @@ if (
 // LOGIN
 // ================================================================
 
+// Abre o modal quando o servidor redireciona para a página com ?abrirLogin=true.
+// O site.js é carregado depois do HTML dos modais e do JavaScript do Bootstrap.
+(() => {
+    const endereco = new URL(window.location.href);
+    if (endereco.searchParams.get("abrirLogin")?.toLowerCase() !== "true") return;
+
+    const elementoLogin = document.getElementById("modalLogin");
+    if (!elementoLogin || typeof bootstrap === "undefined") return;
+
+    bootstrap.Modal.getOrCreateInstance(elementoLogin).show();
+
+    // Consome o pedido de abertura para não reabrir o modal após o login recarregar a página.
+    endereco.searchParams.delete("abrirLogin");
+    window.history.replaceState(window.history.state, "", endereco.href);
+})();
+
 // Obtém o formulário de login.
 const formLogin = document.getElementById("formLogin");
 

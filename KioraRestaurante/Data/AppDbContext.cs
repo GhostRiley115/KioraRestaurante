@@ -24,6 +24,10 @@ namespace KioraRestaurante.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            // Mantém explicitamente o índice utilizado na relação com o usuário.
+            modelBuilder.Entity<Pedido>()
+                .HasIndex(p => p.UsuarioId);
+
             // Uma confirmação só pode gerar um pedido para aquele usuário.
             modelBuilder.Entity<Pedido>()
                 .HasIndex(p => new

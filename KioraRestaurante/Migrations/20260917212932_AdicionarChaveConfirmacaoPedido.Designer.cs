@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KioraRestaurante.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260917205003_AdicionarChaveConfirmacaoPedido")]
+    [Migration("20260917212932_AdicionarChaveConfirmacaoPedido")]
     partial class AdicionarChaveConfirmacaoPedido
     {
         /// <inheritdoc />
@@ -258,6 +258,8 @@ namespace KioraRestaurante.Migrations
                         .HasColumnType("decimal(10,2)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UsuarioId");
 
                     b.HasIndex("UsuarioId", "ChaveConfirmacao")
                         .IsUnique();

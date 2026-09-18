@@ -54,7 +54,7 @@ namespace KioraRestaurante.Services
             return await ConsultaCompleta()
                 .FirstOrDefaultAsync(c =>
                     c.Id == carrinhoId.Value
-                    && c.Usuario == null
+                    && c.UsuarioId == null
                     && c.ExpiraEmUtc != null
                     && c.ExpiraEmUtc > agora);
         }
