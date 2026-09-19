@@ -1176,4 +1176,31 @@ if (formEsqueciSenha) {
 }
 
 
+// PAINEL DA CONTA: fecha o painel antes de abrir login ou cadastro.
+// Assim os dois componentes não disputam o foco ou deixam fundos sobrepostos.
+const painelConta = document.getElementById("painelConta");
+if (painelConta) {
+    painelConta.querySelectorAll("[data-conta-modal]").forEach(botao => {
+        botao.addEventListener("click", evento => {
+            evento.preventDefault();
+            const destino = document.querySelector(botao.dataset.contaDestino);
+            if (!destino) return;
+            painelConta.addEventListener("hidden.bs.offcanvas", () => {
+                bootstrap.Modal.getOrCreateInstance(destino).show();
+            }, { once: true });
+            bootstrap.Offcanvas.getOrCreateInstance(painelConta).hide();
+        });
+    });
+}
+
+// Abrir conta ou carrinho também recolhe a lista de páginas no celular.
+["painelConta", "painelCarrinho"].forEach(id => {
+    document.getElementById(id)?.addEventListener("show.bs.offcanvas", () => {
+        const paginas = document.getElementById("navbarKiora");
+        if (paginas?.classList.contains("show")) {
+            bootstrap.Collapse.getOrCreateInstance(paginas, { toggle: false }).hide();
+        }
+    });
+});
+
 })();

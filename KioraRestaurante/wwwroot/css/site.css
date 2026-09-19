@@ -2171,61 +2171,40 @@ HOVER DO BOTÃO ALTERAR SENHA
 
 
 /* ================================================================
-   NAVEGAÇÃO NO CELULAR E TABLET
-   O dropdown acompanha o fluxo do menu, sem sair pelas bordas.
-   O limite corresponde ao navbar-expand-lg usado no layout.
+   CABEÇALHO RESPONSIVO: marca, páginas, conta e carrinho.
+   Os ícones ficam fora do collapse para estarem sempre acessíveis.
    ================================================================ */
-@media (max-width: 991.98px) {
-    .navbar-kiora {
-        /* Permite alcançar todas as opções em celulares baixos e na horizontal. */
-        max-height: 100vh;
-        max-height: 100dvh;
+.navbar-kiora .navbar-brand { order: 0; }
+.navbar-kiora .navbar-collapse { order: 1; }
+.navbar-acoes-fixas { order: 2; display: flex; align-items: center; gap: 8px; margin-left: 16px; }
+.navbar-kiora .navbar-toggler { order: 3; }
+.navbar-acoes-fixas .login-icon,
+.navbar-acoes-fixas .carrinho-kiora {
+    width: 44px;
+    min-height: 44px;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    flex-shrink: 0;
+}
+.navbar-acoes-fixas button:focus-visible { outline: 2px solid #D9B27A; outline-offset: 2px; }
+
+@media (max-width: 1199.98px) {
+    .navbar-kiora .container { gap: 8px; }
+    .navbar-kiora .navbar-brand { margin-right: auto; min-width: 0; }
+    .navbar-kiora .logo-navbar { width: clamp(100px, 25vw, 145px); max-width: 100%; }
+    .navbar-acoes-fixas { margin-left: 0; gap: 2px; }
+    .navbar-kiora .navbar-toggler { padding: 6px; min-height: 44px; }
+    .navbar-kiora .navbar-collapse {
+        order: 4;
+        flex-basis: 100%;
+        /* Só a lista de páginas rola; os ícones permanecem no cabeçalho. */
+        max-height: calc(100vh - 90px);
+        max-height: calc(100dvh - 90px);
         overflow-y: auto;
+        text-align: center;
     }
-
-    .navbar-kiora .navbar-acoes {
-        width: 100%;
-        align-items: flex-start !important;
-        padding-bottom: 16px;
-    }
-
-    .navbar-acoes > .dropdown {
-        flex: 1;
-        min-width: 0;
-    }
-
-    .navbar-acoes .login-icon {
-        min-width: 44px;
-        min-height: 44px;
-        max-width: 100%;
-        justify-content: flex-start;
-        /* O botão não cresce ao toque nem empurra as bordas. */
-        transform: none;
-    }
-
-    .navbar-acoes .nome-usuario-menu {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-
-    .navbar-acoes .menu-usuario {
-        /* As opções ocupam a largura disponível abaixo da conta. */
-        position: static !important;
-        inset: auto !important;
-        transform: none !important;
-        animation: none;
-        width: 100%;
-        min-width: 0;
-        max-width: 100%;
-    }
-
-    .navbar-acoes .dropdown-item,
-    .navbar-acoes .dropdown-item-text {
-        white-space: normal;
-        overflow-wrap: anywhere;
-    }
-
-    .navbar-acoes .dropdown-item { min-height: 44px; }
-    .navbar-acoes .carrinho-kiora { flex-shrink: 0; min-height: 44px; }
+    .navbar-kiora .navbar-collapse .btn-reserva { margin-bottom: 16px; }
 }
