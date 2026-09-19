@@ -780,6 +780,18 @@ button,
     margin-top: 25px;
 }
 
+/* =========================================================
+   NOME DO USUÁRIO AUTENTICADO
+   ========================================================= */
+
+/*
+   Destaca o nome do usuário na Hero quando ele está logado.
+   A cor dourada segue a identidade visual da KIORA.
+*/
+.hero-nome-usuario {
+    color: #D9B27A;
+}
+
 
 /* =========================================================
    BOTÃO LOGIN
