@@ -638,3 +638,63 @@ html {
 }
 /* ÍCONES LOCAIS DAS CATEGORIAS: herdam a cor normal, ativa e de hover. */
 .categoria-icone { width: 24px; height: 24px; flex-shrink: 0; }
+
+/* ================================================================
+   CARDÁPIO RESPONSIVO
+   Reduz as colunas gradualmente e mantém os controles dentro dos cards.
+   ================================================================ */
+.cardapio-categorias,
+.produto-card { min-width: 0; }
+
+.categoria-item {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    padding-inline: 14px;
+}
+
+.produto-informacoes { overflow-wrap: anywhere; }
+
+/* O ícone vetorial usa a cor do link, inclusive na categoria selecionada. */
+.categorias-menu .categoria-icone { color: currentColor; border: 0; border-radius: 0; }
+
+@media (max-width: 1199.98px) {
+    .cardapio-conteudo { grid-template-columns: 220px minmax(0, 1fr); gap: 24px; }
+    .produtos-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 991.98px) {
+    .cardapio-kiora { padding: 40px 20px 60px; }
+    .cardapio-cabecalho { margin-bottom: 32px; }
+    .cardapio-conteudo { grid-template-columns: minmax(0, 1fr); }
+    .categorias-card { position: static; padding: 18px; }
+    .categorias-titulo { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .categorias-titulo h2 { margin: 0; font-size: 1.1rem; }
+    /* Os filtros quebram para a próxima linha, sem rolagem horizontal na página. */
+    .categorias-menu { flex-direction: row; flex-wrap: wrap; gap: 8px; }
+    .categoria-item { width: auto; max-width: 100%; min-height: 44px; gap: 8px; font-size: .9rem; }
+    .produto-informacoes { padding: 20px; }
+}
+
+@media (max-width: 575.98px) {
+    .cardapio-kiora { padding: 30px 12px 48px; }
+    .cardapio-cabecalho h1 { font-size: 2.25rem; }
+    .cardapio-cabecalho p { font-size: .95rem; }
+    .produtos-grid { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+    .produto-card { min-height: 0; }
+    .produto-imagem { height: auto; aspect-ratio: 4 / 3; }
+    .produto-informacoes { padding: 20px 16px; }
+    .categoria-cabecalho h2 { font-size: 1.65rem; overflow-wrap: anywhere; }
+    .cardapio-kiora .produto-controles button,
+    .cardapio-kiora .produto-controles input { height: 44px; }
+    .cardapio-kiora .produto-controles button { width: 44px; }
+    .cardapio-kiora .btn-adicionar-produto { min-height: 44px; font-size: .95rem; }
+}
+
+/* Evita que os efeitos de mouse deixem o card deslocado após um toque. */
+@media (hover: none) {
+    .produto-card:hover,
+    .produto-card:hover .produto-informacoes h3,
+    .produto-card:hover .produto-informacoes p,
+    .produto-card:hover .produto-preco,
+    .btn-adicionar-produto:hover { transform: none; }
+}
