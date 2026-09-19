@@ -1,0 +1,144 @@
+<!--
+                        =================================================
+                        MENU DO USUÁRIO
+                        =================================================
+                    -->
+<!-- PAINEL DA CONTA: opções para visitante, cliente e administrador. -->
+<aside class="offcanvas offcanvas-end painel-conta" tabindex="-1" id="painelConta" aria-labelledby="tituloPainelConta">
+    <div class="offcanvas-header">
+        <h2 class="offcanvas-title" id="tituloPainelConta">Sua conta</h2>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Fechar conta"></button>
+    </div>
+    <div class="offcanvas-body">
+        <!-- Os links abaixo preservam as ações e permissões já existentes. -->
+                        <!-- MENU DO USUÁRIO -->
+
+                        <ul class="conta-opcoes"
+                        aria-label="Opções da conta">
+
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            <!-- =====================================================
+                                 USUÁRIO AUTENTICADO
+                                 ===================================================== -->
+
+                            <li>
+
+                                <span class="dropdown-item-text usuario-logado">
+
+                                    <i class="bi bi-person-circle"></i>
+
+                                    Olá, @User.Identity.Name!
+
+                                </span>
+
+                            </li>
+
+                            <li>
+
+                                <hr class="dropdown-divider">
+
+                            </li>
+
+                            <li>
+                                <a class="conta-opcao"
+                                   asp-controller="Pedido"
+                                   asp-action="MeusPedidos">
+                                    <i class="bi bi-receipt" aria-hidden="true"></i>
+                                    Meus pedidos
+                                </a>
+                            </li>
+
+
+                            <!-- ADMINISTRAÇÃO: somente administradores veem esta opção. -->
+                            @if (User.IsInRole("Administrador"))
+                            {
+                                <li>
+                                    <a class="conta-opcao" asp-controller="ProdutosAdmin" asp-action="Cadastrar">
+                                        <i class="bi bi-plus-circle" aria-hidden="true"></i>
+                                        Cadastrar produto
+                                    </a>
+                                </li>
+                            }
+
+                            <!-- MEU PERFIL -->
+
+                            <li>
+
+                                <a class="conta-opcao"
+                                   asp-controller="Conta"
+                                   asp-action="MeuPerfil">
+
+                                    <i class="bi bi-person"></i>
+
+                                    Meu perfil
+
+                                </a>
+
+                            </li>
+
+
+                            <!-- DIVISOR -->
+
+                            <li>
+
+                                <hr class="dropdown-divider">
+
+                            </li>
+
+                            <!-- SAIR -->
+                            <li>
+                                <form asp-controller="Conta"
+                                      asp-action="Logout"
+                                      method="post">
+                                    <button type="submit" class="conta-opcao">
+                                        Sair
+                                    </button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <!-- =====================================================
+                                 USUÁRIO NÃO AUTENTICADO
+                                 ===================================================== -->
+
+                            <!-- ENTRAR -->
+
+                            <li>
+
+                                <a class="conta-opcao"
+                                   href="#"
+                                   data-conta-modal
+                                   data-conta-destino="#modalLogin">
+
+                                    <i class="bi bi-box-arrow-in-right"></i>
+
+                                    Entrar
+
+                                </a>
+
+                            </li>
+
+
+                            <!-- CRIAR CONTA -->
+
+                            <li>
+
+                                <a class="conta-opcao"
+                                   href="#"
+                                   data-conta-modal
+                                   data-conta-destino="#modalCadastro">
+
+                                    <i class="bi bi-person-plus"></i>
+
+                                    Criar conta
+
+                                </a>
+
+                            </li>
+                        }
+
+                    </ul>
+    </div>
+</aside>

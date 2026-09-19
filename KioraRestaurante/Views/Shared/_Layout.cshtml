@@ -167,7 +167,7 @@ CSS DOS PEDIDOS
         ============================================================
     -->
 
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-kiora">
+    <nav class="navbar navbar-expand-xl navbar-dark navbar-kiora">
 
         <div class="container">
 
@@ -321,172 +321,22 @@ CSS DOS PEDIDOS
                     =================================================
                 -->
 
-                <div class="navbar-acoes d-flex justify-content-center align-items-center gap-3 mt-3 mt-lg-0">
-
                     <!--
                         =================================================
-                        MENU DO USUÁRIO
+                        RESERVAR MESA
                         =================================================
                     -->
 
-                    <div class="dropdown">
+                    <a class="btn btn-reserva"
+                       href="#">
 
-                        <a href="#"
-                           class="login-icon dropdown-toggle"
-                           id="menuUsuario"
-                           role="button"
-                           data-bs-toggle="dropdown"
-                           aria-expanded="false"
-                           aria-label="Menu do usuário"
-                           title="Conta">
+                        Reservar Mesa
 
-                           <i class="bi bi-person-circle"></i>
+                    </a>
+            </div>
 
-                           @if (User.Identity != null && User.Identity.IsAuthenticated)
-                           {
-                                <span class="nome-usuario-menu">
-
-                                    @User.Identity.Name
-
-                                </span>
-                            }
-
-                        </a>
-
-
-                        <!-- MENU DO USUÁRIO -->
-
-                        <ul class="dropdown-menu dropdown-menu-end menu-usuario"
-                        aria-labelledby="menuUsuario">
-
-                        @if (User.Identity != null && User.Identity.IsAuthenticated)
-                        {
-                            <!-- =====================================================
-                                 USUÁRIO AUTENTICADO
-                                 ===================================================== -->
-
-                            <li>
-
-                                <span class="dropdown-item-text usuario-logado">
-
-                                    <i class="bi bi-person-circle"></i>
-
-                                    Olá, @User.Identity.Name!
-
-                                </span>
-
-                            </li>
-
-                            <li>
-
-                                <hr class="dropdown-divider">
-
-                            </li>
-
-                            <li>
-                                <a class="dropdown-item"
-                                   asp-controller="Pedido"
-                                   asp-action="MeusPedidos">
-                                    <i class="bi bi-receipt" aria-hidden="true"></i>
-                                    Meus pedidos
-                                </a>
-                            </li>
-
-
-                            <!-- ADMINISTRAÇÃO: somente administradores veem esta opção. -->
-                            @if (User.IsInRole("Administrador"))
-                            {
-                                <li>
-                                    <a class="dropdown-item" asp-controller="ProdutosAdmin" asp-action="Cadastrar">
-                                        <i class="bi bi-plus-circle" aria-hidden="true"></i>
-                                        Cadastrar produto
-                                    </a>
-                                </li>
-                            }
-
-                            <!-- MEU PERFIL -->
-
-                            <li>
-
-                                <a class="dropdown-item"
-                                   asp-controller="Conta"
-                                   asp-action="MeuPerfil">
-
-                                    <i class="bi bi-person"></i>
-
-                                    Meu perfil
-
-                                </a>
-
-                            </li>
-
-
-                            <!-- DIVISOR -->
-
-                            <li>
-
-                                <hr class="dropdown-divider">
-
-                            </li>
-
-                            <!-- SAIR -->
-                            <li>
-                                <form asp-controller="Conta"
-                                      asp-action="Logout"
-                                      method="post">
-                                    <button type="submit" class="dropdown-item">
-                                        Sair
-                                    </button>
-                                </form>
-                            </li>
-                        }
-                        else
-                        {
-                            <!-- =====================================================
-                                 USUÁRIO NÃO AUTENTICADO
-                                 ===================================================== -->
-
-                            <!-- ENTRAR -->
-
-                            <li>
-
-                                <a class="dropdown-item"
-                                   href="#"
-                                   data-bs-toggle="modal"
-                                   data-bs-target="#modalLogin">
-
-                                    <i class="bi bi-box-arrow-in-right"></i>
-
-                                    Entrar
-
-                                </a>
-
-                            </li>
-
-
-                            <!-- CRIAR CONTA -->
-
-                            <li>
-
-                                <a class="dropdown-item"
-                                   href="#"
-                                   data-bs-toggle="modal"
-                                   data-bs-target="#modalCadastro">
-
-                                    <i class="bi bi-person-plus"></i>
-
-                                    Criar conta
-
-                                </a>
-
-                            </li>
-                        }
-
-                    </ul>
-
-                    </div>
-
-
+            <!-- AÇÕES SEMPRE VISÍVEIS: independentes do menu de páginas. -->
+            <div class="navbar-acoes-fixas">
                     <!--
                         =================================================
                         CARRINHO
@@ -509,22 +359,12 @@ CSS DOS PEDIDOS
                             0
                         </span>
                     </button>
-
-                    <!--
-                        =================================================
-                        RESERVAR MESA
-                        =================================================
-                    -->
-
-                    <a class="btn btn-reserva"
-                       href="#">
-
-                        Reservar Mesa
-
-                    </a>
-
-                </div>
-
+                <!-- MENU DO USUÁRIO: abre o painel lateral da conta. -->
+                <button type="button" class="login-icon" id="menuUsuario"
+                        data-bs-toggle="offcanvas" data-bs-target="#painelConta"
+                        aria-controls="painelConta" aria-label="Abrir sua conta" title="Sua conta">
+                    <i class="bi bi-person-circle" aria-hidden="true"></i>
+                </button>
             </div>
 
         </div>
@@ -546,6 +386,8 @@ CSS DOS PEDIDOS
 
 </main>
 
+
+<partial name="_PainelConta" />
 
 <!-- MODAIS COMPARTILHADOS: cada partial mantém seu HTML e comentários. -->
 <partial name="Modais/_ModalLogin" />
