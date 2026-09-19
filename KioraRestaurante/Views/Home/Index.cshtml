@@ -27,85 +27,143 @@
     -->
     <div class="hero-overlay"></div>
 
+        <!--
+            Conteúdo principal da Hero.
+        -->
+        <div class="hero-conteudo">
 
-    <!--
-        Conteúdo principal da Hero.
-    -->
-    <div class="hero-conteudo">
+            <div class="container">
 
-        <div class="container">
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <!--
+                        =========================================================
+                        HERO PARA USUÁRIO AUTENTICADO
+                        =========================================================
 
-            <!--
-                Subtítulo da página.
-            -->
-            <span class="hero-subtitulo">
-                SABORES DO JAPÃO
-            </span>
+                        Apresenta uma saudação personalizada ao usuário,
+                        mantendo a identidade visual institucional da KIORA.
+                    -->
 
+                    <span class="hero-subtitulo">
+                        EXPERIÊNCIA KIORA
+                    </span>
 
-            <!--
-                Título principal da página inicial.
+                    <h1>
+                        Olá,
+                        <span class="hero-nome-usuario">
+                            @User.Identity.Name!
+                        </span>
+                    </h1>
 
-                A tag <br /> cria uma quebra de linha entre "sabor" e "e sofisticação".
-            -->
-            <h1>
-                Tradição, sabor<br />
-                e sofisticação.
-            </h1>
-
-
-            <!--
-                Texto de apresentação da KIORA.
-            -->
-            <p>
-                Uma celebração da culinária japonesa, com o ramen como protagonista. Caldos preparados com cuidado,
-                ingredientes selecionados e receitas que unem técnicas tradicionais a uma identidade própria.
-            </p>
-
-
-            <!--
-                BOTÕES DA HERO 
-            -->
-            <div class="hero-botoes">
-
-                <!--
-                    BOTÃO LOGIN 
-
-                    Ao clicar, abre o Modal de Login.
-
-                    O modal deverá possuir: id="modalLogin"
-                -->
-                <a href="#"
-                   class="btn btn-login"
-                   data-bs-toggle="modal"
-                   data-bs-target="#modalLogin">
-
-                    Fazer Login
-
-                </a>
+                    <p>
+                        Sua experiência japonesa continua aqui.
+                        Descubra nossos sabores e faça seu próximo pedido.
+                    </p>
 
 
-                <!--
-                    BOTÃO CADASTRO 
+                    <!--
+                        BOTÕES PARA USUÁRIO AUTENTICADO
+                    -->
+                    <div class="hero-botoes">
 
-                    Ao clicar, abre o Modal de Cadastro.
+                        <!--
+                            BOTÃO PRINCIPAL
 
-                    O modal deverá possuir: id="modalCadastro"
-                -->
-                <a href="#"
-                   class="btn btn-cadastrar"
-                   data-bs-toggle="modal"
-                   data-bs-target="#modalCadastro">
+                            Direciona o usuário para o Cardápio.
+                        -->
+                        <a asp-controller="Home"
+                           asp-action="Cardapio"
+                           class="btn btn-login">
 
-                    Cadastrar
+                            Ver Cardápio
 
-                </a>
+                        </a>
+
+
+                        <!--
+                            BOTÃO SECUNDÁRIO
+
+                            Direciona o usuário para seu perfil.
+                        -->
+                        <a asp-controller="Account"
+                           asp-action="MeuPerfil"
+                           class="btn btn-cadastrar">
+
+                            Meu Perfil
+
+                        </a>
+
+                    </div>
+                }
+                else
+                {
+                    <!--
+                        =========================================================
+                        HERO PARA USUÁRIO NÃO AUTENTICADO
+                        =========================================================
+
+                        Mantém a apresentação original da KIORA.
+                    -->
+
+                    <span class="hero-subtitulo">
+                        SABORES DO JAPÃO
+                    </span>
+
+
+                    <h1>
+                        Tradição, sabor<br />
+                        e sofisticação.
+                    </h1>
+
+
+                    <p>
+                        Uma celebração da culinária japonesa, com o ramen como protagonista. Caldos preparados com cuidado,
+                        ingredientes selecionados e receitas que unem técnicas tradicionais a uma identidade própria.
+                    </p>
+
+
+                    <!--
+                        BOTÕES PARA USUÁRIO NÃO AUTENTICADO
+                    -->
+                    <div class="hero-botoes">
+
+                        <!--
+                            BOTÃO LOGIN
+
+                            Abre o Modal de Login.
+                        -->
+                        <a href="#"
+                           class="btn btn-login"
+                           data-bs-toggle="modal"
+                           data-bs-target="#modalLogin">
+
+                            Fazer Login
+
+                        </a>
+
+
+                        <!--
+                            BOTÃO CADASTRO
+
+                            Abre o Modal de Cadastro.
+                        -->
+                        <a href="#"
+                           class="btn btn-cadastrar"
+                           data-bs-toggle="modal"
+                           data-bs-target="#modalCadastro">
+
+                            Cadastrar
+
+                        </a>
+
+                    </div>
+                }
 
             </div>
 
         </div>
 
-    </div>
 
 </section>
 
