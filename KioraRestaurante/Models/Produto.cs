@@ -17,7 +17,7 @@ namespace KioraRestaurante.Models
         public string Descricao { get; set; } = null!;
 
         // Atribui um preço mínimo e máximo à propriedade.
-        [Range(typeof(decimal), "0.01", "99999999")]
+        [Range(typeof(decimal), "0.01", "99999999", ParseLimitsInInvariantCulture = true)]
         // Cria uma coluna e evita que o mysql mapeie de forma padrão o decimal como numeric
         [Column(TypeName = "decimal(10,2)")]
         public decimal Preco { get; set; }

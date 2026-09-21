@@ -11,6 +11,7 @@ public class CriarProdutoRequestDTO
     [StringLength(500)]
     public string Descricao { get; set; } = string.Empty;
     [Range(typeof(decimal), "0.01", "99999999",
+        ParseLimitsInInvariantCulture = true,
         ErrorMessage = "Informe um preço maior que zero e dentro do limite permitido.")]
     public decimal Preco { get; set; }
     [Range(1, int.MaxValue, ErrorMessage = "Selecione uma categoria.")]
