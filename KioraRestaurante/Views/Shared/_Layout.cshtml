@@ -403,7 +403,7 @@ CSS DOS PEDIDOS
                             <li>
 
                                 <a class="dropdown-item"
-                                   asp-controller="Conta"
+                                   asp-controller="Account"
                                    asp-action="MeuPerfil">
 
                                     <i class="bi bi-person"></i>
@@ -423,15 +423,23 @@ CSS DOS PEDIDOS
 
                             </li>
 
+
                             <!-- SAIR -->
+
                             <li>
-                                <form asp-controller="Conta"
+
+                                <form asp-controller="Account"
                                       asp-action="Logout"
                                       method="post">
+
                                     <button type="submit" class="dropdown-item">
+
                                         Sair
+
                                     </button>
+
                                 </form>
+
                             </li>
                         }
                         else

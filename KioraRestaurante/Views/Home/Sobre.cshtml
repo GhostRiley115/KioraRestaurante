@@ -681,25 +681,22 @@
 
 
         <!--
-            Botão de chamada para o cardápio.
+            ================================================================
+            BOTÃO PARA O CARDÁPIO
+            ================================================================
 
-            A página de cardápio ainda não está criada, portanto o link não possui uma rota definida.
+            Este botão direciona o usuário para a página de Cardápio
+            utilizando os Tag Helpers do ASP.NET Core MVC.
 
-            O "#" evita que seja necessário criar uma página inexistente neste momento.
-
-            Quando o cardápio estiver pronto, o botão poderá ser alterado para:
-
-            <a asp-controller="Menu"
-               asp-action="Index"
-               class="btn btn-reserva-sobre">
-
-                Conheça nosso Cardápio
-
-            </a>
+            A página de Cardápio está disponível no HomeController,
+            através da action Cardapio().
         -->
-        <a href="#"
+        <a asp-controller="Home"
+           asp-action="Cardapio"
            class="btn btn-reserva-sobre">
+
             Conheça nosso Cardápio
+
         </a>
 
     </div>
