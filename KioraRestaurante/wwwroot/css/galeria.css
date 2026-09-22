@@ -1,0 +1,742 @@
+﻿verifique o css
+/* =========================================================
+   CABEÇALHO
+   ========================================================= */
+.galeria-header {
+    background-color: #0E0E0E;
+    padding: 80px 0 45px;
+    text-align: center;
+}
+
+.galeria-subtitulo {
+    display: block;
+    margin-bottom: 12px;
+    color: #D9B27A;
+    font-family: 'Lato', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 4px;
+}
+
+.galeria-header h1 {
+    margin: 0;
+    color: #FFFFFF;
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3.4rem);
+    font-weight: 500;
+}
+
+.galeria-header p {
+    max-width: 650px;
+    margin: 20px auto 0;
+    color: rgba(255, 255, 255, 0.72);
+    font-family: 'Lato', sans-serif;
+    font-size: 1rem;
+    line-height: 1.8;
+}
+
+
+/* =========================================================
+   CATEGORIAS
+   ========================================================= */
+
+.galeria-categorias {
+    background-color: #0E0E0E;
+    padding: 15px 0 50px;
+}
+
+.categorias-galeria {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.categoria-galeria {
+    padding: 10px 22px;
+    border: 1px solid rgba(217, 178, 122, 0.35);
+    border-radius: 30px;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.75);
+    font-family: 'Lato', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .categoria-galeria:hover {
+        border-color: #D9B27A;
+        color: #D9B27A;
+        transform: translateY(-2px);
+    }
+
+    .categoria-galeria.ativo {
+        background-color: #D9B27A;
+        border-color: #D9B27A;
+        color: #0E0E0E;
+        box-shadow: 0 5px 18px rgba(217, 178, 122, 0.18);
+    }
+
+
+/* =========================================================
+   CARROSSEL
+   ========================================================= */
+
+.galeria-carrossel {
+    background-color: #0E0E0E;
+    padding: 0 0 80px;
+}
+
+#carouselGaleria {
+    overflow: hidden;
+    border-radius: 4px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+}
+
+    #carouselGaleria .carousel-item {
+        height: 580px;
+        background-color: #161616;
+    }
+
+        #carouselGaleria .carousel-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.68);
+            transition: transform 0.8s ease, filter 0.8s ease;
+        }
+
+        #carouselGaleria .carousel-item.active img {
+            transform: scale(1.02);
+        }
+
+
+    /* =========================================================
+   TEXTO DO CARROSSEL
+   ========================================================= */
+
+    #carouselGaleria .carousel-caption {
+        right: 10%;
+        left: 10%;
+        bottom: 12%;
+        text-align: left;
+    }
+
+        #carouselGaleria .carousel-caption span {
+            display: block;
+            margin-bottom: 10px;
+            color: #D9B27A;
+            font-family: 'Lato', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+        }
+
+        #carouselGaleria .carousel-caption h2 {
+            margin: 0;
+            color: #FFFFFF;
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.8rem, 4vw, 3.2rem);
+            font-weight: 500;
+        }
+
+
+    /* =========================================================
+   CONTROLES DO CARROSSEL
+   ========================================================= */
+
+    #carouselGaleria .carousel-control-prev,
+    #carouselGaleria .carousel-control-next {
+        width: 8%;
+    }
+
+    #carouselGaleria .carousel-control-prev-icon,
+    #carouselGaleria .carousel-control-next-icon {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+
+
+/* =========================================================
+   SEÇÃO DE FOTOS
+   ========================================================= */
+
+.galeria-fotos {
+    background-color: #0E0E0E;
+    padding: 20px 0 100px;
+    scroll-margin-top: 100px;
+}
+
+
+/* =========================================================
+   CABEÇALHO DA GRADE
+   ========================================================= */
+
+.galeria-fotos-header {
+    max-width: 720px;
+    margin: 0 auto 45px;
+    text-align: center;
+}
+
+    .galeria-fotos-header h2 {
+        margin: 0;
+        color: #FFFFFF;
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(1.8rem, 4vw, 2.8rem);
+        font-weight: 500;
+    }
+
+    .galeria-fotos-header p {
+        margin: 18px auto 0;
+        color: rgba(255, 255, 255, 0.68);
+        font-family: 'Lato', sans-serif;
+        line-height: 1.8;
+    }
+
+
+/* =========================================================
+   GRADE DE FOTOS
+   ========================================================= */
+
+.galeria-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 280px;
+    gap: 14px;
+}
+
+
+/* =========================================================
+   ITEM DA GALERIA
+   ========================================================= */
+
+.galeria-item {
+    position: relative;
+    overflow: hidden;
+    min-height: 280px;
+    background-color: #161616;
+    cursor: pointer;
+    border-radius: 4px;
+    isolation: isolate;
+    transition: transform 0.4s ease, box-shadow 0.4s ease, opacity 0.35s ease;
+}
+
+
+/* =========================================================
+   ITEM GRANDE
+   ========================================================= */
+
+.galeria-item-grande {
+    grid-column: span 2;
+}
+
+
+/* =========================================================
+   IMAGEM
+   ========================================================= */
+
+.galeria-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transform: scale(1);
+    transition: transform 0.7s ease, filter 0.7s ease;
+}
+
+
+/* =========================================================
+   OVERLAY
+   ========================================================= */
+
+.galeria-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding: 28px;
+    /*
+     * Gradiente escuro na parte inferior.
+     *
+     * Dessa forma o texto permanece legível,
+     * sem esconder completamente a imagem.
+     */
+    background: linear-gradient( to top, rgba(14, 14, 14, 0.92), rgba(14, 14, 14, 0.25), rgba(14, 14, 14, 0) );
+    opacity: 0;
+    transition: opacity 0.45s ease;
+}
+
+
+    /* =========================================================
+   CATEGORIA DO CARD
+   ========================================================= */
+
+    .galeria-overlay span {
+        display: block;
+        margin-bottom: 8px;
+        color: #D9B27A;
+        font-family: 'Lato', sans-serif;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        transform: translateY(12px);
+        opacity: 0;
+        transition: transform 0.45s ease, opacity 0.45s ease;
+    }
+
+
+    /* =========================================================
+   TÍTULO DO CARD
+   ========================================================= */
+
+    .galeria-overlay h3 {
+        margin: 0;
+        color: #FFFFFF;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.5rem;
+        font-weight: 500;
+        line-height: 1.2;
+        transform: translateY(15px);
+        opacity: 0;
+        transition: transform 0.5s ease 0.05s, opacity 0.5s ease 0.05s;
+    }
+
+
+    /* =========================================================
+   BOTÃO "+"
+   ========================================================= */
+
+    .galeria-overlay i {
+        position: absolute;
+        top: 24px;
+        right: 24px;
+        width: 42px;
+        height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        border: 1px solid rgba(217, 178, 122, 0.7);
+        border-radius: 50%;
+        background-color: transparent;
+        color: #D9B27A;
+        font-size: 1rem;
+        transform: scale(0.7);
+        opacity: 0;
+        transition: transform 0.45s ease, opacity 0.45s ease, background-color 0.3s ease, color 0.3s ease;
+    }
+
+
+/* =========================================================
+   HOVER DO CARD
+   ========================================================= */
+
+.galeria-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+}
+
+
+    /* =========================================================
+   HOVER DA IMAGEM
+   ========================================================= */
+
+    .galeria-item:hover img {
+        transform: scale(1.08);
+        filter: brightness(0.72);
+    }
+
+
+    /* =========================================================
+   HOVER DO OVERLAY
+   ========================================================= */
+
+    .galeria-item:hover .galeria-overlay {
+        opacity: 1;
+    }
+
+
+        /* =========================================================
+   ANIMAÇÃO DO CONTEÚDO
+   ========================================================= */
+
+        .galeria-item:hover .galeria-overlay span,
+        .galeria-item:hover .galeria-overlay h3 {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+
+        /* =========================================================
+   ANIMAÇÃO DO "+"
+   ========================================================= */
+
+        .galeria-item:hover .galeria-overlay i {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+
+/* =========================================================
+   HOVER DO "+"
+   ========================================================= */
+
+.galeria-overlay i:hover {
+    background-color: #D9B27A;
+    color: #0E0E0E;
+    transform: scale(1.08);
+}
+
+
+/* =========================================================
+   LIGHTBOX
+   ========================================================= */
+
+/*
+ * Fundo principal do Lightbox.
+ *
+ * Ele começa escondido.
+ * O JavaScript adiciona a classe "ativo"
+ * quando uma imagem é selecionada.
+ */
+
+.lightbox-galeria {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    background-color: rgba(0, 0, 0, 0.94);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+
+
+    /* =========================================================
+   LIGHTBOX ATIVO
+   ========================================================= */
+
+    .lightbox-galeria.ativo {
+        opacity: 1;
+        visibility: visible;
+    }
+
+
+/* =========================================================
+   FUNDO DO LIGHTBOX
+   ========================================================= */
+
+.lightbox-fundo {
+    position: absolute;
+    inset: 0;
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   CONTEÚDO DO LIGHTBOX
+   ========================================================= */
+
+.lightbox-conteudo {
+    position: relative;
+    z-index: 2;
+    max-width: 1100px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: lightboxEntrada 0.35s ease;
+}
+
+
+/* =========================================================
+   ANIMAÇÃO DE ENTRADA
+   ========================================================= */
+
+@keyframes lightboxEntrada {
+
+    from {
+        opacity: 0;
+        transform: scale(0.94);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+
+/* =========================================================
+   IMAGEM DO LIGHTBOX
+   ========================================================= */
+
+#lightboxImagem {
+    display: block;
+    max-width: 100%;
+    max-height: 75vh;
+    object-fit: contain;
+    border-radius: 3px;
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.65);
+}
+
+
+/* =========================================================
+   LEGENDA
+   ========================================================= */
+
+.lightbox-legenda {
+    width: 100%;
+    margin-top: 18px;
+    text-align: center;
+}
+
+    .lightbox-legenda span {
+        display: block;
+        margin-bottom: 6px;
+        color: #D9B27A;
+        font-family: 'Lato', sans-serif;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 3px;
+    }
+
+    .lightbox-legenda h3 {
+        margin: 0;
+        color: #FFFFFF;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.5rem;
+        font-weight: 500;
+    }
+
+
+/* =========================================================
+   BOTÃO FECHAR
+   ========================================================= */
+
+.lightbox-fechar {
+    position: absolute;
+    top: 25px;
+    right: 30px;
+    z-index: 5;
+    width: 46px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(217, 178, 122, 0.45);
+    border-radius: 50%;
+    background: rgba(14, 14, 14, 0.75);
+    color: #FFFFFF;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+    .lightbox-fechar:hover {
+        background-color: #D9B27A;
+        color: #0E0E0E;
+        transform: rotate(90deg);
+    }
+
+
+/* =========================================================
+   CONTROLES LATERAIS
+   ========================================================= */
+
+.lightbox-controle {
+    position: absolute;
+    top: 50%;
+    z-index: 5;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(217, 178, 122, 0.45);
+    border-radius: 50%;
+    background-color: rgba(14, 14, 14, 0.75);
+    color: #FFFFFF;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transform: translateY(-50%);
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+    .lightbox-controle:hover {
+        background-color: #D9B27A;
+        color: #0E0E0E;
+    }
+
+
+/* =========================================================
+   BOTÃO ANTERIOR
+   ========================================================= */
+
+.lightbox-anterior {
+    left: 30px;
+}
+
+    .lightbox-anterior:hover {
+        transform: translate(-3px, -50%);
+    }
+
+
+/* =========================================================
+   BOTÃO PRÓXIMO
+   ========================================================= */
+
+.lightbox-proximo {
+    right: 30px;
+}
+
+    .lightbox-proximo:hover {
+        transform: translate(3px, -50%);
+    }
+
+
+/* =========================================================
+   RESPONSIVIDADE - TABLET
+   ========================================================= */
+
+@media (max-width: 992px) {
+
+    .galeria-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-auto-rows: 260px;
+    }
+
+    .galeria-item-grande {
+        grid-column: span 2;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVIDADE - CELULAR
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .galeria-header {
+        padding: 55px 20px 35px;
+    }
+
+    .galeria-categorias {
+        padding: 10px 15px 35px;
+    }
+
+    .categorias-galeria {
+        gap: 8px;
+    }
+
+    .categoria-galeria {
+        padding: 8px 16px;
+        font-size: 0.8rem;
+    }
+
+    #carouselGaleria .carousel-item {
+        height: 420px;
+    }
+
+    #carouselGaleria .carousel-caption {
+        right: 8%;
+        left: 8%;
+        bottom: 10%;
+    }
+
+    .galeria-grid {
+        grid-template-columns: 1fr;
+        grid-auto-rows: 280px;
+        gap: 10px;
+    }
+
+    .galeria-item-grande {
+        grid-column: span 1;
+    }
+
+    /*
+     * No celular o overlay permanece visível,
+     * já que não existe hover da mesma forma
+     * que no computador.
+     */
+    .galeria-overlay {
+        padding: 20px;
+        opacity: 1;
+    }
+
+        .galeria-overlay span,
+        .galeria-overlay h3 {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .galeria-overlay h3 {
+            font-size: 1.25rem;
+        }
+
+        .galeria-overlay i {
+            top: 20px;
+            right: 20px;
+            transform: scale(1);
+            opacity: 1;
+        }
+
+    .lightbox-galeria {
+        padding: 20px;
+    }
+
+    #lightboxImagem {
+        max-width: 90vw;
+        max-height: 70vh;
+    }
+
+    .lightbox-fechar {
+        top: 15px;
+        right: 15px;
+        width: 42px;
+        height: 42px;
+    }
+
+    .lightbox-controle {
+        width: 42px;
+        height: 42px;
+    }
+
+    .lightbox-anterior {
+        left: 10px;
+    }
+
+    .lightbox-proximo {
+        right: 10px;
+    }
+
+    .lightbox-legenda h3 {
+        font-size: 1.25rem;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVIDADE - CELULAR PEQUENO
+   ========================================================= */
+
+@media (max-width: 576px) {
+
+    .galeria-fotos {
+        padding: 10px 0 70px;
+    }
+
+    .galeria-fotos-header {
+        margin-bottom: 30px;
+    }
+}

@@ -115,16 +115,6 @@
 
 
 <!--
-    ================================================================
-    CSS GERADO PELO ASP.NET
-    ================================================================
--->
-
-<link rel="stylesheet"
-      href="~/Kiora.styles.css"
-      asp-append-version="true" />
-
-<!--
 ================================================================
 CSS DO CARRINHO
 ================================================================
@@ -272,8 +262,12 @@ CSS DOS PEDIDOS
 
                     <li class="nav-item">
 
-                        <a class="nav-link" href="#">
+                        <a class="nav-link"
+                           asp-controller="Home"
+                           asp-action="Galeria">
+
                             Galeria
+
                         </a>
 
                     </li>

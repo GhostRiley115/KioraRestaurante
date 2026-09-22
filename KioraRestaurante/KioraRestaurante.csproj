@@ -24,7 +24,6 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\imagens\home\" />
-    <Folder Include="wwwroot\imagens\galeria\" />
     <Folder Include="wwwroot\imagens\sobre\" />
   </ItemGroup>
 
