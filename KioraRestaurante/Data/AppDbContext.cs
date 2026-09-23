@@ -47,14 +47,17 @@ namespace KioraRestaurante.Data
             modelBuilder.Entity<Produto>()
                 .Property(p => p.Disponivel)
                 .HasDefaultValue(true);
+
             //Define Ativo em Produto -> true como default
             modelBuilder.Entity<Produto>()
                 .Property(p => p.Ativo)
                 .HasDefaultValue(true);
+
             //Define Ativo em Usuario -> true como default
             modelBuilder.Entity<Usuario>()
                 .Property(u => u.Ativo)
                 .HasDefaultValue(true);
+
             //Define Ativo em Categoria -> true como default
             modelBuilder.Entity<Categoria>()
                 .Property(c => c.Ativa)
