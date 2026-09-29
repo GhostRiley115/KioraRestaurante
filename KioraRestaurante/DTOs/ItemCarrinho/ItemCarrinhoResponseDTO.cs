@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace KioraRestaurante.DTOs.ItemCarrinho
 {
-    //Define o que a API precisa devolver do carrinho
+    // Define o que a API precisa devolver do carrinho
     public class ItemCarrinhoResponseDTO
     {
         public int ProdutoId { get; set; }
