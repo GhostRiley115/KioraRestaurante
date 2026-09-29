@@ -2,213 +2,479 @@
     ViewData["Title"] = "Galeria";
 }
 
-<section class="galeria-kiora">
+@section Styles
+{
+    <!-- Carrega o CSS específico da página Galeria -->
+    <link rel="stylesheet"
+          href="~/css/galeria.css"
+          asp-append-version="true" />
+}
 
-    <!-- =========================================================
-         CABEÇALHO DA GALERIA
-         ========================================================= -->
 
-    <div class="galeria-cabecalho">
+<!-- =========================================================
+     CABEÇALHO DA GALERIA
+     ========================================================= -->
+
+<section class="galeria-header">
+
+    <div class="container">
 
         <span class="galeria-subtitulo">
-            MOMENTOS KIORA
+            NOSSO UNIVERSO
         </span>
 
         <h1>
-            Nossa Galeria
+            GALERIA
         </h1>
 
         <p>
-            Uma experiência além do sabor, traduzida em cada detalhe.
+            Um olhar sobre os espaços, as pessoas e os momentos
+            que fazem parte da experiência Kiora.
         </p>
-
-    </div>
-
-
-    <!-- =========================================================
-         GALERIA DE IMAGENS
-         ========================================================= -->
-
-    <div class="galeria-grid">
-
-        <!-- =====================================================
-             IMAGEM 01
-             ===================================================== -->
-
-        <button class="galeria-item galeria-item-grande"
-                type="button"
-                data-imagem="~/imagens/galeria/galeria-01.jpg"
-                data-titulo="Experiência KIORA">
-
-            <img src="~/imagens/galeria/galeria-01.jpg"
-                 alt="Experiência KIORA"
-                 loading="lazy">
-
-            <span class="galeria-overlay">
-
-                <i class="bi bi-plus-lg"></i>
-
-            </span>
-
-        </button>
-
-
-        <!-- =====================================================
-             IMAGEM 02
-             ===================================================== -->
-
-        <button class="galeria-item"
-                type="button"
-                data-imagem="~/imagens/galeria/galeria-02.jpg"
-                data-titulo="Culinária KIORA">
-
-            <img src="~/imagens/galeria/galeria-02.jpg"
-                 alt="Culinária KIORA"
-                 loading="lazy">
-
-            <span class="galeria-overlay">
-
-                <i class="bi bi-plus-lg"></i>
-
-            </span>
-
-        </button>
-
-
-        <!-- =====================================================
-             IMAGEM 03
-             ===================================================== -->
-
-        <button class="galeria-item"
-                type="button"
-                data-imagem="~/imagens/galeria/galeria-03.jpg"
-                data-titulo="Sabores KIORA">
-
-            <img src="~/imagens/galeria/galeria-03.jpg"
-                 alt="Sabores KIORA"
-                 loading="lazy">
-
-            <span class="galeria-overlay">
-
-                <i class="bi bi-plus-lg"></i>
-
-            </span>
-
-        </button>
-
-
-        <!-- =====================================================
-             IMAGEM 04
-             ===================================================== -->
-
-        <button class="galeria-item"
-                type="button"
-                data-imagem="~/imagens/galeria/galeria-04.jpg"
-                data-titulo="Detalhes KIORA">
-
-            <img src="~/imagens/galeria/galeria-04.jpg"
-                 alt="Detalhes KIORA"
-                 loading="lazy">
-
-            <span class="galeria-overlay">
-
-                <i class="bi bi-plus-lg"></i>
-
-            </span>
-
-        </button>
-
-
-        <!-- =====================================================
-             IMAGEM 05
-             ===================================================== -->
-
-        <button class="galeria-item"
-                type="button"
-                data-imagem="~/imagens/galeria/galeria-05.jpg"
-                data-titulo="Lamen KIORA">
-
-            <img src="~/imagens/galeria/galeria-05.jpg"
-                 alt="Lamen KIORA"
-                 loading="lazy">
-
-            <span class="galeria-overlay">
-
-                <i class="bi bi-plus-lg"></i>
-
-            </span>
-
-        </button>
-
-
-        <!-- =====================================================
-             IMAGEM 06
-             ===================================================== -->
-
-        <button class="galeria-item galeria-item-grande"
-                type="button"
-                data-imagem="~/imagens/galeria/galeria-06.jpg"
-                data-titulo="Uma experiência além do sabor">
-
-            <img src="~/imagens/galeria/galeria-06.jpg"
-                 alt="Uma experiência além do sabor"
-                 loading="lazy">
-
-            <span class="galeria-overlay">
-
-                <i class="bi bi-plus-lg"></i>
-
-            </span>
-
-        </button>
 
     </div>
 
 </section>
 
 
-<!-- =============================================================
-     MODAL DA GALERIA
-     ============================================================= -->
+<!-- =========================================================
+     FILTROS POR CATEGORIA
+     
+     O atributo "data-categoria" é utilizado pelo JavaScript
+     para identificar quais imagens devem ser exibidas.
+     ========================================================= -->
 
-<div class="modal fade"
-     id="modalGaleria"
-     tabindex="-1"
-     aria-labelledby="modalGaleriaTitulo"
-     aria-hidden="true">
+<section class="galeria-categorias">
 
-    <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="container">
 
-        <div class="modal-content modal-galeria-kiora">
+        <div class="categorias-galeria">
 
-            <!-- BOTÃO FECHAR -->
-
+            <!-- Exibe todas as imagens -->
             <button type="button"
-                    class="modal-galeria-fechar"
-                    data-bs-dismiss="modal"
-                    aria-label="Fechar">
+                    class="categoria-galeria ativo"
+                    data-categoria="todos">
 
-                <i class="bi bi-x-lg"></i>
+                Todos
 
             </button>
 
+            <!-- Filtra as imagens da categoria Ambiente -->
+            <button type="button"
+                    class="categoria-galeria"
+                    data-categoria="ambiente">
 
-            <!-- IMAGEM AMPLIADA -->
+                Ambiente
 
-            <div class="modal-galeria-imagem">
+            </button>
 
-                <img id="imagemGaleriaModal"
-                     src=""
-                     alt="">
+            <!-- Filtra as imagens da categoria Instalações -->
+            <button type="button"
+                    class="categoria-galeria"
+                    data-categoria="instalacoes">
+
+                Instalações
+
+            </button>
+
+            <!-- Filtra as imagens da categoria Equipe -->
+            <button type="button"
+                    class="categoria-galeria"
+                    data-categoria="equipe">
+
+                Equipe
+
+            </button>
+
+            <!-- Filtra as imagens da categoria Produtos -->
+            <button type="button"
+                    class="categoria-galeria"
+                    data-categoria="produtos">
+
+                Produtos
+
+            </button>
+
+            <!-- Filtra as imagens da categoria Bastidores -->
+            <button type="button"
+                    class="categoria-galeria"
+                    data-categoria="bastidores">
+
+                Bastidores
+
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     CARROSSEL PRINCIPAL
+     
+     O Bootstrap controla automaticamente a troca dos slides.
+     ========================================================= -->
+
+<section class="galeria-carrossel">
+
+    <div class="container">
+
+        <div id="carouselGaleria"
+             class="carousel slide"
+             data-bs-ride="carousel"
+             data-bs-interval="4000">
+
+
+            <!-- Indicadores para selecionar cada slide -->
+
+            <div class="carousel-indicators">
+
+                <button type="button"
+                        data-bs-target="#carouselGaleria"
+                        data-bs-slide-to="0"
+                        class="active"
+                        aria-current="true"
+                        aria-label="Slide 1">
+                </button>
+
+                <button type="button"
+                        data-bs-target="#carouselGaleria"
+                        data-bs-slide-to="1"
+                        aria-label="Slide 2">
+                </button>
+
+                <button type="button"
+                        data-bs-target="#carouselGaleria"
+                        data-bs-slide-to="2"
+                        aria-label="Slide 3">
+                </button>
 
             </div>
 
 
-            <!-- TÍTULO -->
+            <!-- Conteúdo dos slides -->
 
-            <div class="modal-galeria-titulo">
+            <div class="carousel-inner">
 
-                <h2 id="modalGaleriaTitulo"></h2>
+
+                <!-- Slide principal -->
+
+                <div class="carousel-item active">
+
+                    <img src="~/imagens/galeria/ambiente-01.png"
+                         class="d-block w-100"
+                         alt="Ambiente Kiora">
+
+                    <div class="carousel-caption">
+
+                        <h2>
+                            A atmosfera Kiora
+                        </h2>
+
+                        <p>
+                            Um ambiente pensado para proporcionar
+                            uma experiência única.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Slide da equipe -->
+
+                <div class="carousel-item">
+
+                    <img src="~/imagens/galeria/equipe-01.png"
+                         class="d-block w-100"
+                         alt="Equipe Kiora">
+
+                    <div class="carousel-caption">
+
+                        <h2>
+                            Quem faz acontecer
+                        </h2>
+
+                        <p>
+                            Pessoas que ajudam a construir a identidade Kiora.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Slide dos bastidores -->
+
+                <div class="carousel-item">
+
+                    <img src="~/imagens/galeria/bastidores-01.png"
+                         class="d-block w-100"
+                         alt="Bastidores Kiora">
+
+                    <div class="carousel-caption">
+
+                        <h2>
+                            Por trás da experiência
+                        </h2>
+
+                        <p>
+                            Momentos que fazem parte da nossa história.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Botão para voltar ao slide anterior -->
+
+            <button class="carousel-control-prev"
+                    type="button"
+                    data-bs-target="#carouselGaleria"
+                    data-bs-slide="prev">
+
+                <span class="carousel-control-prev-icon"
+                      aria-hidden="true">
+                </span>
+
+                <span class="visually-hidden">
+                    Anterior
+                </span>
+
+            </button>
+
+
+            <!-- Botão para avançar para o próximo slide -->
+
+            <button class="carousel-control-next"
+                    type="button"
+                    data-bs-target="#carouselGaleria"
+                    data-bs-slide="next">
+
+                <span class="carousel-control-next-icon"
+                      aria-hidden="true">
+                </span>
+
+                <span class="visually-hidden">
+                    Próximo
+                </span>
+
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     GALERIA DE FOTOS
+     
+     Esta seção contém as imagens que podem ser filtradas
+     pelas categorias e abertas no lightbox.
+     ========================================================= -->
+
+<section class="galeria-fotos">
+
+    <div class="container">
+
+
+        <!-- Título e descrição da galeria -->
+
+        <div class="galeria-fotos-header">
+
+            <span class="galeria-subtitulo">
+                NOSSO UNIVERSO
+            </span>
+
+            <h2>
+                Momentos que fazem parte da experiência.
+            </h2>
+
+            <p>
+                Cada detalhe, cada pessoa e cada espaço ajudam a
+                construir a identidade da Kiora.
+            </p>
+
+        </div>
+
+
+        <!-- =====================================================
+             GRID DE IMAGENS
+             
+             Cada item possui:
+             - data-categoria: usado pelo filtro
+             - data-imagem: imagem utilizada no lightbox
+             - data-titulo: título exibido no lightbox
+             ===================================================== -->
+
+        <div class="galeria-grid">
+
+
+            <!-- Ambiente -->
+
+            <div class="galeria-item galeria-item-grande"
+                 data-categoria="ambiente"
+                 data-imagem="/imagens/galeria/ambiente-02.png"
+                 data-titulo="A atmosfera Kiora">
+
+                <img src="~/imagens/galeria/ambiente-02.png"
+                     alt="Ambiente Kiora">
+
+                <div class="galeria-overlay">
+
+                    <span>
+                        Ambiente
+                    </span>
+
+                    <h3>
+                        A atmosfera Kiora
+                    </h3>
+
+                    <i class="bi bi-plus-lg"></i>
+
+                </div>
+
+            </div>
+
+
+            <!-- Equipe -->
+
+            <div class="galeria-item"
+                 data-categoria="equipe"
+                 data-imagem="/imagens/galeria/equipe-02.png"
+                 data-titulo="Quem faz acontecer">
+
+                <img src="~/imagens/galeria/equipe-02.png"
+                     alt="Equipe Kiora">
+
+                <div class="galeria-overlay">
+
+                    <span>
+                        Equipe
+                    </span>
+
+                    <h3>
+                        Quem faz acontecer
+                    </h3>
+
+                    <i class="bi bi-plus-lg"></i>
+
+                </div>
+
+            </div>
+
+
+            <!-- Instalações -->
+
+            <div class="galeria-item"
+                 data-categoria="instalacoes"
+                 data-imagem="/imagens/galeria/instalacoes-01.png"
+                 data-titulo="Cada detalhe importa">
+
+                <img src="~/imagens/galeria/instalacoes-01.png"
+                     alt="Instalações Kiora">
+
+                <div class="galeria-overlay">
+
+                    <span>
+                        Instalações
+                    </span>
+
+                    <h3>
+                        Cada detalhe importa
+                    </h3>
+
+                    <i class="bi bi-plus-lg"></i>
+
+                </div>
+
+            </div>
+
+
+            <!-- Bastidores -->
+
+            <div class="galeria-item"
+                 data-categoria="bastidores"
+                 data-imagem="/imagens/galeria/bastidores-02.png"
+                 data-titulo="Por trás da experiência">
+
+                <img src="~/imagens/galeria/bastidores-02.png"
+                     alt="Bastidores Kiora">
+
+                <div class="galeria-overlay">
+
+                    <span>
+                        Bastidores
+                    </span>
+
+                    <h3>
+                        Por trás da experiência
+                    </h3>
+
+                    <i class="bi bi-plus-lg"></i>
+
+                </div>
+
+            </div>
+
+
+            <!-- Produtos -->
+
+            <div class="galeria-item galeria-item-grande"
+                 data-categoria="produtos"
+                 data-imagem="/imagens/galeria/produtos-01.png"
+                 data-titulo="Muito além do cardápio">
+
+                <img src="~/imagens/galeria/produtos-01.png"
+                     alt="Produtos Kiora">
+
+                <div class="galeria-overlay">
+
+                    <span>
+                        Produtos
+                    </span>
+
+                    <h3>
+                        Muito além do cardápio
+                    </h3>
+
+                    <i class="bi bi-plus-lg"></i>
+
+                </div>
+
+            </div>
+
+
+            <!-- Segunda imagem da categoria Ambiente -->
+
+            <div class="galeria-item"
+                 data-categoria="ambiente"
+                 data-imagem="/imagens/galeria/ambiente-03.png"
+                 data-titulo="A identidade Kiora">
+
+                <img src="~/imagens/galeria/ambiente-03.png"
+                     alt="Identidade visual Kiora">
+
+                <div class="galeria-overlay">
+
+                    <span>
+                        Ambiente
+                    </span>
+
+                    <h3>
+                        A identidade Kiora
+                    </h3>
+
+                    <i class="bi bi-plus-lg"></i>
+
+                </div>
 
             </div>
 
@@ -216,53 +482,92 @@
 
     </div>
 
+</section>
+
+
+<!-- =========================================================
+     LIGHTBOX
+     
+     Exibe a imagem selecionada em tamanho maior.
+     O JavaScript controla abertura, fechamento e navegação.
+     ========================================================= -->
+
+<div id="lightboxGaleria"
+     class="lightbox-galeria">
+
+
+    <!-- Fundo escuro que também permite fechar o lightbox -->
+
+    <div class="lightbox-fundo"></div>
+
+
+    <!-- Botão para fechar o lightbox -->
+
+    <button type="button"
+            id="lightboxFechar"
+            class="lightbox-fechar"
+            aria-label="Fechar imagem">
+
+        <i class="bi bi-x-lg"></i>
+
+    </button>
+
+
+    <!-- Botão para visualizar a imagem anterior -->
+
+    <button type="button"
+            id="lightboxAnterior"
+            class="lightbox-controle lightbox-anterior"
+            aria-label="Imagem anterior">
+
+        <i class="bi bi-chevron-left"></i>
+
+    </button>
+
+
+    <!-- Conteúdo principal do lightbox -->
+
+    <div class="lightbox-conteudo">
+
+        <img id="lightboxImagem"
+             src=""
+             alt="">
+
+        <div class="lightbox-legenda">
+
+            <span id="lightboxCategoria"></span>
+
+            <h3 id="lightboxTitulo"></h3>
+
+        </div>
+
+    </div>
+
+
+    <!-- Botão para visualizar a próxima imagem -->
+
+    <button type="button"
+            id="lightboxProximo"
+            class="lightbox-controle lightbox-proximo"
+            aria-label="Próxima imagem">
+
+        <i class="bi bi-chevron-right"></i>
+
+    </button>
+
 </div>
 
 
-@section Scripts {
+<!-- =========================================================
+     JAVASCRIPT DA GALERIA
+     
+     O arquivo controla os filtros, o lightbox e a navegação
+     entre as imagens.
+     ========================================================= -->
 
-    <script>
-
-        document.addEventListener("DOMContentLoaded", function () {
-
-            const itensGaleria =
-                document.querySelectorAll(".galeria-item");
-
-            const imagemModal =
-                document.getElementById("imagemGaleriaModal");
-
-            const tituloModal =
-                document.getElementById("modalGaleriaTitulo");
-
-            const modalElemento =
-                document.getElementById("modalGaleria");
-
-            const modal =
-                new bootstrap.Modal(modalElemento);
-
-
-            itensGaleria.forEach(function (item) {
-
-                item.addEventListener("click", function () {
-
-                    const imagem =
-                        item.getAttribute("data-imagem");
-
-                    const titulo =
-                        item.getAttribute("data-titulo");
-
-                    imagemModal.src = imagem;
-                    imagemModal.alt = titulo;
-                    tituloModal.textContent = titulo;
-
-                    modal.show();
-
-                });
-
-            });
-
-        });
-
+@section Scripts
+{
+    <script src="~/js/galeria.js"
+            asp-append-version="true">
     </script>
-
 }
