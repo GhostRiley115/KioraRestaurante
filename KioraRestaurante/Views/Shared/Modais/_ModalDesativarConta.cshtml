@@ -1,0 +1,117 @@
+﻿<!-- ================================================================
+     MODAL DESATIVAR CONTA
+     ================================================================ -->
+
+<div class="modal fade"
+     id="modalDesativarConta"
+     tabindex="-1"
+     aria-labelledby="modalDesativarContaTitulo"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered modal-alterar-senha-dialog">
+
+        <div class="modal-content modal-alterar-senha">
+
+            <!-- ====================================================
+                 CABEÇALHO DO MODAL
+                 ==================================================== -->
+
+            <div class="modal-header modal-alterar-senha-header">
+
+                <h5 class="modal-title"
+                    id="modalDesativarContaTitulo">
+
+                    Desativar minha conta
+
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Fechar">
+                </button>
+
+            </div>
+
+
+            <!-- ====================================================
+                 CORPO DO MODAL
+                 ==================================================== -->
+
+            <div class="modal-body modal-alterar-senha-body">
+
+                <!-- =================================================
+                     MENSAGEM DE RETORNO
+                     ================================================= -->
+
+                <div id="mensagemDesativarConta"
+                     class="mensagem-alterar-senha"
+                     role="alert"
+                     style="display: none;">
+                </div>
+
+
+                <!-- =================================================
+                     AVISO SOBRE A DESATIVAÇÃO
+                     ================================================= -->
+
+                <div class="mb-3">
+
+                    <p>
+                        Tem certeza de que deseja desativar sua conta?
+                    </p>
+
+                    <p>
+                        Ao desativar sua conta, você perderá o acesso
+                        à sua conta e será desconectado.
+                    </p>
+
+                    <p>
+                        Seus dados permanecerão armazenados no sistema
+                        e sua conta não será excluída do banco de dados.
+                    </p>
+
+                </div>
+
+
+                <!-- =================================================
+                     TOKEN ANTIFORGERY
+                     ================================================= -->
+
+                @Html.AntiForgeryToken()
+
+
+                <!-- =================================================
+                     BOTÃO CANCELAR
+                     ================================================= -->
+
+                <button type="button"
+                        class="btn-salvar-senha-kiora"
+                        data-bs-dismiss="modal">
+
+                    Cancelar
+
+                </button>
+
+
+                <!-- =================================================
+                     BOTÃO CONFIRMAR
+                     ================================================= -->
+
+                <button type="button"
+                        id="btnConfirmarDesativacao"
+                        class="btn-salvar-senha-kiora">
+
+                    Desativar minha conta
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Fim do modal Desativar Conta. -->

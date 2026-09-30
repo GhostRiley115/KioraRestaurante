@@ -1193,6 +1193,118 @@ if (painelConta) {
     });
 }
 
+    // ================================================================
+    // DESATIVAR CONTA
+    // ================================================================
+
+    // Localiza o botão responsável por confirmar
+    // a desativação da conta.
+    const btnConfirmarDesativacao =
+        document.getElementById("btnConfirmarDesativacao");
+
+    // Localiza o modal de desativação da conta.
+    const modalDesativarConta =
+        document.getElementById("modalDesativarConta");
+
+    // Verifica se os elementos existem na página.
+    if (
+        btnConfirmarDesativacao &&
+        modalDesativarConta
+    ) {
+
+        // Captura o clique no botão de confirmação.
+        btnConfirmarDesativacao.addEventListener(
+            "click",
+            async function () {
+
+                // ========================================================
+                // TOKEN ANTIFORGERY
+                // ========================================================
+
+                // Localiza o token de segurança existente
+                // dentro do modal de desativação.
+                const token =
+                    modalDesativarConta.querySelector(
+                        'input[name="__RequestVerificationToken"]'
+                    );
+
+                // Verifica se o token foi encontrado.
+                if (!token) {
+
+                    console.error(
+                        "Token antiforgery não encontrado."
+                    );
+
+                    return;
+                }
+
+                // ========================================================
+                // ENVIAR SOLICITAÇÃO PARA O CONTROLLER
+                // ========================================================
+
+                try {
+
+                    // Cria os dados que serão enviados ao Controller.
+                    const dados = new FormData();
+
+                    // Adiciona o token antiforgery aos dados da requisição.
+                    dados.append(
+                        "__RequestVerificationToken",
+                        token.value
+                    );
+
+                    // Envia a solicitação para a action
+                    // DesativarConta do ContaController.
+                    const resposta = await fetch(
+                        "/Conta/DesativarConta",
+                        {
+                            method: "POST",
+                            body: dados
+                        }
+                    );
+
+                    // Converte a resposta do Controller para JSON.
+                    const resultado =
+                        await resposta.json();
+
+                    // Localiza o espaço onde a mensagem
+                    // da desativação será exibida no modal.
+                    const mensagemDesativarConta =
+                        document.getElementById("mensagemDesativarConta");
+
+                    // Verifica se o elemento da mensagem existe.
+                    if (mensagemDesativarConta) {
+
+                        // Coloca a mensagem retornada pelo Controller
+                        // dentro do modal.
+                        mensagemDesativarConta.innerHTML =
+                            resultado.mensagem;
+
+                        // Torna a mensagem visível.
+                        mensagemDesativarConta.style.display =
+                            "block";
+                    }
+
+                    // Mantém a resposta no console para facilitar
+                    // o acompanhamento durante os testes.
+                    console.log(
+                        "Resposta da desativação:",
+                        resultado
+                    );
+
+                } catch (erro) {
+
+                    // Exibe qualquer erro de comunicação
+                    // no console do navegador.
+                    console.error(
+                        "Erro ao desativar conta:",
+                        erro
+                    );
+                }
+            }
+        );
+    }   
+
 // Abrir conta ou carrinho também recolhe a lista de páginas no celular.
 ["painelConta", "painelCarrinho"].forEach(id => {
     document.getElementById(id)?.addEventListener("show.bs.offcanvas", () => {

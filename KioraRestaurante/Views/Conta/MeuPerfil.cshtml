@@ -104,6 +104,36 @@ ViewData["Title"] = "Meu Perfil";
 
     </button>
 
+    <!-- ========================================================
+         DESATIVAR CONTA
+         ======================================================== -->
+
+    <!--
+        Área separada para a ação de desativação da conta.
+
+        A conta não será excluída do banco de dados.
+        Apenas o campo Ativo será alterado para false.
+    -->
+    <div class="perfil-kiora-desativar-conta">
+
+        <!-- Texto explicativo da ação. -->
+        <p class="perfil-kiora-desativar-texto">
+            Deseja deixar de utilizar sua conta?
+        </p>
+
+        <!--
+            Botão que posteriormente abrirá a confirmação
+            para desativação da conta.
+        -->
+        <button type="button"
+                id="btnDesativarConta"
+                class="btn-desativar-conta-kiora"
+                data-bs-toggle="modal"
+                data-bs-target="#modalDesativarConta">
+            Desativar minha conta
+        </button>
+
+    </div>
 
 </div>
 <!-- Fim do card do perfil. -->
@@ -115,3 +145,4 @@ ViewData["Title"] = "Meu Perfil";
 <!-- MODAIS DO PERFIL: extraídos sem alterar os campos e identificadores. -->
 <partial name="_ModalEditarPerfil" model="Model" />
 <partial name="_ModalAlterarSenha" />
+<partial name="~/Views/Shared/Modais/_ModalDesativarConta.cshtml" />

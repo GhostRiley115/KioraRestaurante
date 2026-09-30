@@ -377,5 +377,49 @@ namespace KioraRestaurante.Controllers
                 mensagem = "Senha alterada com sucesso!"
             });
         }
+
+        /* ---- DESATIVAR CONTA ---- */
+        //Permite acesso somente para usuários autenticados.
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> DesativarConta()
+        {
+            //Obtém o Id do usuário através do Cookie de autenticação.
+            var usuarioId = ObterUsuarioId();
+
+            //Verifica se foi possível identificar o usuário logado.
+            if (usuarioId == null)
+            {
+                return BadRequest(new
+                {
+                    sucesso = false,
+                    mensagem = "Não foi possível identificar o usuário."
+                });
+            }
+
+            //Solicita ao Service a desativação da conta.
+            var desativado = _usuarioService.DesativarConta(usuarioId.Value);
+
+            //Caso o usuário não seja encontrado ou já esteja desativado.
+            if (!desativado)
+            {
+                return BadRequest(new
+                {
+                    sucesso = false,
+                    mensagem = "Não foi possível desativar a conta."
+                });
+            }
+
+            //Remove o Cookie de autenticação e encerra a sessão.
+            await HttpContext.SignOutAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme);
+
+            //Informa ao JavaScript que a conta foi desativada com sucesso.
+            return Ok(new
+            {
+                sucesso = true,
+                mensagem = "Sua conta foi desativada com sucesso."
+            });
+        }
     }
 }
