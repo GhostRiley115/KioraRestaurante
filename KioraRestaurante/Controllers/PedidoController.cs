@@ -16,11 +16,13 @@ public class PedidoController : Controller
 {
     private readonly IPedidoService _pedidoService;
     private readonly CarrinhoCookie _cookie;
+    private readonly EnderecoUsuarioService _enderecoService;
 
-    public PedidoController(IPedidoService pedidoService, CarrinhoCookie cookie)
+    public PedidoController(IPedidoService pedidoService, CarrinhoCookie cookie, EnderecoUsuarioService enderecoService)
     {
         _pedidoService = pedidoService;
         _cookie = cookie;
+        _enderecoService = enderecoService;
     }
 
     private int? ObterUsuarioId()
@@ -41,6 +43,10 @@ public class PedidoController : Controller
 
     private async Task PrepararPagina(CheckoutViewModel model, AcessoCarrinho acesso)
     {
+        // Recarrega as opções tanto no GET quanto na volta de um POST com erro.
+        model.Enderecos = await _enderecoService.Listar(
+            acesso.UsuarioId!.Value);
+
         var resposta =
             await _pedidoService.PrepararCheckout(acesso);
 
@@ -67,10 +73,22 @@ public class PedidoController : Controller
         try
         {
             await PrepararPagina(model, ObterAcesso(usuarioId.Value));
+            // Seleção inicial apenas ao abrir uma nova revisão.
+            var primeiro = model.Enderecos.FirstOrDefault();
+
+            if (primeiro != null)
+            {
+                model.Dados.EnderecoId = primeiro.Id;
+                model.Dados.EnderecoVersao = primeiro.Versao;
+            }
         }
         catch (RegraPedidoException ex)
         {
             ModelState.AddModelError("", ex.Message);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Forbid();
         }
 
         return View(model);
@@ -108,6 +126,10 @@ public class PedidoController : Controller
                 ModelState.AddModelError("",
                         "O carrinho mudou durante a confirmação. Confira os dados e tente novamente.");
             }
+            catch (UnauthorizedAccessException)
+            {
+                return Forbid();
+            }
         }
 
         try
@@ -122,6 +144,10 @@ public class PedidoController : Controller
 
             ModelState.Remove("Dados.TokenRevisao");
             ModelState.AddModelError("", ex.Message);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Forbid();
         }
 
         return View(model);

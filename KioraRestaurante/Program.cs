@@ -62,12 +62,18 @@ builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 builder.Services.AddScoped<IImagemProdutoService, ImagemProdutoService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<ValidarSessaoUsuario>();
+builder.Services.AddScoped<EnderecoUsuarioService>();
+builder.Services.AddAntiforgery(options => { options.HeaderName = "X-CSRF-TOKEN"; });
+// Cache em memória para consultas públicas de CEP.
+builder.Services.AddMemoryCache();
 
-builder.Services.
-    AddAntiforgery(options =>
-    {
-    options.HeaderName = "X-CSRF-TOKEN";
-    });
+// HttpClient gerenciado pelo ASP.NET.
+builder.Services.AddHttpClient<CepService>(http =>
+{
+    http.BaseAddress = new Uri("https://viacep.com.br/ws/");
+    http.Timeout = TimeSpan.FromSeconds(8);
+});
+
 
 var app = builder.Build();
 

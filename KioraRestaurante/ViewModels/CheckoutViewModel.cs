@@ -12,4 +12,8 @@ public class CheckoutViewModel
     // Informações que o servidor utiliza para montar a página
     [ValidateNever]
     public CarrinhoResponseDTO Resumo { get; set; } = new();
+
+    [Microsoft.AspNetCore.Mvc.ModelBinding.BindNever]
+    [ValidateNever]
+    public List<KioraRestaurante.Models.EnderecoUsuario> Enderecos { get; set; } = new();
 }

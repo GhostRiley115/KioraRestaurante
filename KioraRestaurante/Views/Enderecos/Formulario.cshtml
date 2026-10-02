@@ -1,0 +1,100 @@
+@model KioraRestaurante.DTOs.Endereco.SalvarEnderecoRequestDTO
+
+@{
+    var id = ViewData["EnderecoId"];
+    ViewData["Title"] = id == null ? "Novo endereço" : "Editar endereço";
+}
+
+<section class="container pedido-pagina">
+    <h1>@ViewData["Title"]</h1>
+
+    <div asp-validation-summary="All"
+         class="pedido-erros"
+         role="alert"></div>
+
+    <form asp-action="Salvar"
+          asp-route-id="@id"
+          method="post"
+          id="formEndereco"
+          data-cep-base="@Url.Content("~/api/cep/")"
+          class="pedido-box">
+
+        <input asp-for="Versao" type="hidden" />
+
+        <div class="row g-3">
+            <div class="col-12">
+                <label asp-for="Apelido">Nome do endereço</label>
+                <input asp-for="Apelido"
+                       class="form-control"
+                       placeholder="Casa, Trabalho, Namorado(a)..." />
+                <span asp-validation-for="Apelido"></span>
+            </div>
+
+            <div class="col-12 col-sm-6">
+                <label asp-for="Cep">CEP</label>
+                <input asp-for="Cep"
+                       class="form-control"
+                       inputmode="numeric"
+                       autocomplete="postal-code"
+                       maxlength="9" />
+            </div>
+
+            <div class="col-12 col-sm-6 d-flex align-items-end">
+                <button type="button" id="buscarCep" class="pedido-botao">
+                    Buscar CEP
+                </button>
+            </div>
+
+            <div class="col-12">
+                <p id="mensagemCep" role="status" aria-live="polite"></p>
+            </div>
+
+            <div class="col-12">
+                <label asp-for="Logradouro">Rua ou avenida</label>
+                <input asp-for="Logradouro"
+                       class="form-control"
+                       autocomplete="address-line1" />
+            </div>
+
+            <div class="col-12 col-sm-4">
+                <label asp-for="Numero">Número</label>
+                <input asp-for="Numero" class="form-control" />
+            </div>
+
+            <div class="col-12 col-sm-8">
+                <label asp-for="Bairro">Bairro</label>
+                <input asp-for="Bairro" class="form-control" />
+            </div>
+
+            <div class="col-12">
+                <label asp-for="Complemento">Complemento — opcional</label>
+                <input asp-for="Complemento" class="form-control" />
+            </div>
+
+            <div class="col-12">
+                <label asp-for="Referencia">Referência — opcional</label>
+                <input asp-for="Referencia" class="form-control" />
+            </div>
+        </div>
+
+        <p class="pedido-texto-suave mt-3">
+            Cidade e estado são identificados automaticamente pelo CEP.
+            Confira o endereço antes de salvar.
+        </p>
+
+        <div class="d-flex gap-3 flex-wrap mt-4">
+            <button type="submit" class="pedido-botao">
+                Salvar endereço
+            </button>
+
+            <a asp-action="Index" class="pedido-link">
+                Voltar aos endereços
+            </a>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/endereco.js" asp-append-version="true"></script>
+}
