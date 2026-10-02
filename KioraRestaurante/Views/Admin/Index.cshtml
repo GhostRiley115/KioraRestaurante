@@ -1,0 +1,12 @@
+@model PainelAdminDTO
+@{ ViewData["Title"] = "Administração"; }
+<h1>Visão geral</h1>
+<p class="admin-suave">Acompanhe os pedidos e gerencie o acesso dos clientes.</p>
+<!-- Contadores são consultas ao banco, sem valores fictícios. -->
+<div class="admin-resumo">
+    <a asp-action="Usuarios" asp-route-Ativo="true" class="admin-card"><span>Usuários ativos</span><strong>@Model.UsuariosAtivos</strong></a>
+    <a asp-action="Usuarios" asp-route-Ativo="false" class="admin-card"><span>Usuários inativos</span><strong>@Model.UsuariosInativos</strong></a>
+    <a asp-action="Pedidos" class="admin-card"><span>Pedidos registrados</span><strong>@Model.TotalPedidos</strong></a>
+    <div class="admin-card"><span>Pedidos em andamento</span><strong>@Model.PedidosEmAndamento</strong><small>Recebidos, em preparo ou em entrega</small></div>
+</div>
+<p class="admin-suave mt-4">Desativar uma conta mantém o histórico de pedidos e bloqueia o acesso na próxima requisição.</p>

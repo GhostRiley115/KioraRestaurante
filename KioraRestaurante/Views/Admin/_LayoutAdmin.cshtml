@@ -1,0 +1,24 @@
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
+}
+<div class="container admin-pagina">
+    <span class="admin-sobretitulo">KIORA · ADMINISTRAÇÃO</span>
+    <!-- Links acessíveis em todas as telas administrativas. -->
+    <nav class="admin-nav" aria-label="Administração">
+        <a asp-controller="Admin" asp-action="Index">Visão geral</a>
+        <a asp-controller="Admin" asp-action="Pedidos">Pedidos</a>
+        <a asp-controller="Admin" asp-action="Usuarios">Usuários</a>
+        <a asp-controller="ProdutosAdmin" asp-action="Cadastrar">Cadastrar produto</a>
+    </nav>
+    @if (TempData["AdminSucesso"] is string sucesso) { <p class="admin-aviso" role="status">@sucesso</p> }
+    @if (TempData["AdminErro"] is string erro) { <p class="admin-erro" role="alert">@erro</p> }
+    @RenderBody()
+</div>
+@section Scripts {
+    <script src="~/js/admin.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+}

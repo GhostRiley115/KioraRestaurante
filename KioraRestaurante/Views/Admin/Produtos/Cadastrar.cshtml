@@ -54,10 +54,10 @@
 
             <!-- FOTO E PRÉVIA: a prévia é local; o servidor envia a imagem ao confirmar. -->
             <div class="col-12 col-lg-5">
-                <label asp-for="Foto">Foto do produto</label>
-                <input asp-for="Foto" type="file" class="form-control" accept="image/jpeg,image/png,image/webp" />
+                <label asp-for="Foto">Foto do produto (obrigatória)</label>
+                <input asp-for="Foto" type="file" class="form-control" accept="image/jpeg,image/png,image/webp" required aria-describedby="fotoProdutoAjuda" />
                 <span asp-validation-for="Foto" class="produto-admin-erros"></span>
-                <p class="produto-admin-ajuda mt-2">JPG, PNG ou WebP. Máximo de 5 MB.
+                <p id="fotoProdutoAjuda" class="produto-admin-ajuda mt-2">Selecione uma foto para cadastrar o produto. JPG, PNG ou WebP. Máximo de 5 MB.
                     Se o formulário voltar com erro, selecione a foto novamente.</p>
                 <img id="previewProduto" class="produto-admin-preview" alt="Prévia da foto selecionada" hidden />
             </div>

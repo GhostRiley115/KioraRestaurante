@@ -1,0 +1,48 @@
+@model UsuariosAdminViewModel
+@{
+    ViewData["Title"] = "Administrar usuários";
+    var f = Model.Filtros;
+    var retorno = Context.Request.PathBase + Context.Request.Path + Context.Request.QueryString;
+    var paginacao = new PaginacaoAdminViewModel { Acao = "Usuarios", Pagina = Model.Resultado.Pagina,
+        TotalPaginas = Model.Resultado.TotalPaginas, Filtros = new() {
+            ["Busca"] = f.Busca ?? "", ["Ativo"] = f.Ativo?.ToString() ?? "", ["Tipo"] = f.Tipo?.ToString() ?? ""
+        }};
+}
+<h1>Usuários</h1>
+<p class="admin-suave">Pesquise clientes e consulte seus pedidos. Contas administrativas ficam protegidas nesta tela.</p>
+<div asp-validation-summary="All" class="admin-erro" role="alert"></div>
+<!-- Filtros por GET: a busca pode ser guardada no endereço e compartilhada entre administradores. -->
+<form method="get" asp-controller="Admin" asp-action="Usuarios" class="admin-filtros">
+    <div><label for="Busca">Nome ou e-mail</label><input id="Busca" name="Busca" value="@f.Busca" maxlength="150" type="search" /></div>
+    <div><label for="Ativo">Situação</label><select id="Ativo" name="Ativo">
+        <option value="">Todas</option><option value="true" selected="@(f.Ativo == true)">Ativos</option><option value="false" selected="@(f.Ativo == false)">Inativos</option>
+    </select></div>
+    <div><label for="Tipo">Perfil</label><select id="Tipo" name="Tipo">
+        <option value="">Todos</option>
+        @foreach (var tipo in Enum.GetValues<TipoUsuario>()) { <option value="@tipo" selected="@(f.Tipo == tipo)">@tipo</option> }
+    </select></div>
+    <div class="admin-acoes"><button type="submit">Filtrar</button><a asp-action="Usuarios">Limpar</a></div>
+</form>
+<p class="admin-suave">@Model.Resultado.Total usuário(s) encontrado(s).</p>
+@if (Model.Resultado.Itens.Count == 0) { <p class="admin-vazio">Nenhum usuário encontrado para os filtros informados.</p> }
+else {
+<div class="admin-tabela-scroll" tabindex="0" role="region" aria-label="Lista de usuários">
+<table class="admin-tabela">
+    <thead><tr><th scope="col">Usuário</th><th scope="col">Perfil</th><th scope="col">Situação</th><th scope="col">Pedidos</th><th scope="col">Ações</th></tr></thead>
+    <tbody>@foreach (var usuario in Model.Resultado.Itens) {
+        <tr><td><strong>@usuario.Nome</strong><span class="admin-texto-bloco">@usuario.Email</span><small>#@usuario.Id</small></td>
+        <td>@usuario.Tipo</td><td><span class="admin-etiqueta">@(usuario.Ativo ? "Ativo" : "Inativo")</span></td>
+        <td><a asp-action="Pedidos" asp-route-UsuarioId="@usuario.Id">Ver pedidos (@usuario.QuantidadePedidos)</a></td>
+        <td>@if (usuario.Tipo == TipoUsuario.Cliente) {
+            <!-- POST com antiforgery: a situação nunca é alterada por um link GET. -->
+            <form asp-action="AlterarSituacaoUsuario" method="post" data-confirmar="@(usuario.Ativo ? $"Desativar a conta de {usuario.Nome}? O acesso será bloqueado e os pedidos serão mantidos." : $"Reativar a conta de {usuario.Nome}?")">
+                <input type="hidden" name="UsuarioId" value="@usuario.Id" />
+                <input type="hidden" name="Ativo" value="@((!usuario.Ativo).ToString().ToLowerInvariant())" />
+                <input type="hidden" name="Retorno" value="@retorno" />
+                <button type="submit" class="@(usuario.Ativo ? "admin-perigo" : "")">@(usuario.Ativo ? "Desativar" : "Ativar")</button>
+            </form>
+        } else { <span class="admin-suave">Conta protegida</span> }</td></tr>
+    }</tbody>
+</table></div>
+}
+<partial name="~/Views/Admin/_Paginacao.cshtml" model="paginacao" />

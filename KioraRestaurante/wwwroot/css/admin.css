@@ -1,0 +1,42 @@
+/* ADMINISTRAÇÃO: cores e tipografia do Kiora, com filtros e tabelas responsivos. */
+.admin-pagina { padding-top: 38px; padding-bottom: 64px; color: #eee; }
+.admin-sobretitulo { color: #D9B27A; letter-spacing: 2px; font-size: .8rem; }
+.admin-pagina h1 { font-size: clamp(1.9rem, 5vw, 2.6rem); margin: 24px 0 12px; }
+.admin-pagina h2 { color: #D9B27A; font-size: 1.35rem; }
+.admin-nav, .admin-acoes, .admin-paginacao { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+.admin-nav { padding: 18px 0; border-bottom: 1px solid #D9B27A50; }
+.admin-pagina a { color: #D9B27A; text-underline-offset: 4px; }
+.admin-pagina a:focus-visible, .admin-pagina button:focus-visible { outline: 2px solid #D9B27A; outline-offset: 3px; }
+.admin-suave, .admin-texto-bloco { color: #bbb; }
+.admin-texto-bloco { display: block; font-size: .88rem; margin: 5px 0; }
+.admin-resumo { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
+.admin-card, .admin-box { padding: 22px; background: #191919; border: 1px solid #D9B27A40; border-radius: 10px; }
+.admin-card { text-decoration: none; display: flex; flex-direction: column; gap: 12px; }
+.admin-card strong { font-size: 2rem; color: #fff; }
+.admin-card small { color: #bbb; }
+.admin-filtros { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; padding: 22px; margin: 22px 0; background: #191919; border-radius: 10px; }
+.admin-filtros > div { min-width: 0; }
+.admin-filtros label { display: block; margin-bottom: 7px; }
+.admin-filtros input, .admin-filtros select { width: 100%; min-width: 0; min-height: 44px; background: #101010; color: #fff; border: 1px solid #777; border-radius: 5px; padding: 8px; color-scheme: dark; }
+.admin-acoes { align-self: end; }
+.admin-pagina button { min-height: 44px; padding: 9px 16px; color: #fff; background: #7D1F1F; border: 1px solid #D9B27A; border-radius: 5px; }
+.admin-pagina button:disabled { opacity: .6; }
+.admin-aviso, .admin-erro, .admin-vazio { padding: 14px; border-radius: 6px; }
+.admin-aviso { background: #18382a; color: #b9e9c6; }
+.admin-erro:not(:empty) { background: #421d1d; color: #ffc9c9; }
+.admin-vazio { border: 1px dashed #D9B27A70; }
+.admin-tabela-scroll { overflow-x: auto; border: 1px solid #D9B27A40; border-radius: 8px; }
+.admin-tabela { width: 100%; min-width: 720px; background: #171717; }
+.admin-tabela th, .admin-tabela td { padding: 16px; text-align: left; border-bottom: 1px solid #444; vertical-align: middle; overflow-wrap: anywhere; max-width: 300px; }
+.admin-tabela th { color: #D9B27A; background: #202020; }
+.admin-etiqueta { display: inline-block; border: 1px solid #777; padding: 3px 8px; border-radius: 20px; }
+.admin-valor { white-space: nowrap; }
+.admin-paginacao { justify-content: center; margin-top: 24px; }
+.admin-detalhes { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 20px; }
+.admin-box { overflow-wrap: anywhere; }
+.admin-item, .admin-total { display: flex; justify-content: space-between; gap: 16px; padding: 16px 0; border-bottom: 1px solid #444; }
+.admin-item > div { min-width: 0; }
+.admin-total { color: #D9B27A; font-size: 1.2rem; }
+/* A rolagem horizontal pertence à tabela, sem empurrar a página inteira. */
+@media(max-width: 991.98px) { .admin-resumo { grid-template-columns: repeat(2, minmax(0, 1fr)); } .admin-filtros { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media(max-width: 575.98px) { .admin-filtros, .admin-detalhes { grid-template-columns: minmax(0, 1fr); } .admin-filtros { padding: 16px; } .admin-nav { gap: 12px; } .admin-card { padding: 16px; } }
