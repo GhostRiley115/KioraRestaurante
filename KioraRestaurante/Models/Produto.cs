@@ -23,8 +23,7 @@ namespace KioraRestaurante.Models
         public decimal Preco { get; set; }
 
         [MaxLength(500)]
-        public string? Imagem { get; set; } // Nesse primeiro momento de testes a imagem não é obrigatória
-        // Identifica a imagem no Cloudinary para futuras alterações ou exclusões.
+        public string Imagem { get; set; } = string.Empty;
         [MaxLength(200)]
         public string? ImagemPublicId { get; set; }
         public bool Disponivel { get; set; } = true;

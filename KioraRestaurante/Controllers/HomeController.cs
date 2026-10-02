@@ -22,6 +22,13 @@ namespace KioraRestaurante.Controllers
             return View();
         }
 
+        // Retorna 403 sem expor informações internas das páginas protegidas.
+        public IActionResult AcessoNegado()
+        {
+            Response.StatusCode = StatusCodes.Status403Forbidden;
+            return View();
+        }
+
         public IActionResult Sobre()
         {
             return View();

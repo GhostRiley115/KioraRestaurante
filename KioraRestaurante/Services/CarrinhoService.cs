@@ -67,9 +67,6 @@ namespace KioraRestaurante.Services
         /*
          * Verifica se o objeto AcessoCarrinho possui um ID no usuarioId, se tiver ->
          * Valida se o usuário está ativo -> Consulta o carrinho que possui o id do usuário e retorna.
-         *
-         * Se o usuario não tiver um valor de ID então ele é um visitante e o método
-         * BuscarVisitante é chamado, retornando um carrinho de visitante.
          */
         private async Task<Carrinho?> BuscarEntidade(AcessoCarrinho acesso)
         {
@@ -167,7 +164,7 @@ namespace KioraRestaurante.Services
         {
             var itens = carrinho?.ItensCarrinho //"?" -> Só acesse ItensCarrinho se carrinho não for null.
                 .Select(MontarItem) // Transforma cada item do visitante/usuário em um ItemCarrinhoResponseDTO.
-                .ToList()// Faz uma lista com os itens.
+                .ToList() // Faz uma lista com os itens.
                 ?? new List<ItemCarrinhoResponseDTO>(); // "??" -> Se a lista for null, use uma lista nova vazia.
 
             // Só preciso verificar mesclagem pendente se a pessoa estiver logada.

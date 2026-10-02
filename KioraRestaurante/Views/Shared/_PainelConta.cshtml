@@ -53,6 +53,10 @@
                             <!-- ADMINISTRAÇÃO: somente administradores veem esta opção. -->
                             @if (User.IsInRole("Administrador"))
                             {
+                                <!-- Central administrativa: pedidos, usuários e atalhos. -->
+                                <li><a class="conta-opcao" asp-controller="Admin" asp-action="Index">
+                                    <i class="bi bi-speedometer2" aria-hidden="true"></i>Administração
+                                </a></li>
                                 <li>
                                     <a class="conta-opcao" asp-controller="ProdutosAdmin" asp-action="Cadastrar">
                                         <i class="bi bi-plus-circle" aria-hidden="true"></i>

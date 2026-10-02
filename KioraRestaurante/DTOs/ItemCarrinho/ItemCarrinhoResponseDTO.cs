@@ -8,7 +8,7 @@ namespace KioraRestaurante.DTOs.ItemCarrinho
     {
         public int ProdutoId { get; set; }
         public string NomeProduto { get; set; } = string.Empty;
-        public string? ImagemUrl { get; set; }
+        public string ImagemUrl { get; set; } = string.Empty;
         public decimal PrecoUnitario { get; set; }
         public int Quantidade { get; set; }
         public decimal Subtotal { get; set; }

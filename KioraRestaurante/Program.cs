@@ -29,6 +29,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
         // Define o caminho utilizado para sair da conta.
         options.LogoutPath = "/Conta/Logout";
+        // Clientes que tentam acessar a administração recebem uma página explicativa.
+        options.AccessDeniedPath = "/Home/AcessoNegado";
 
         // Define o tempo de validade do Cookie.
         options.ExpireTimeSpan = TimeSpan.FromHours(2);
@@ -36,6 +38,9 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         // Renova automaticamente o Cookie enquanto o usuário
         // continuar utilizando o sistema.
         options.SlidingExpiration = true;
+
+        // Confere se a conta continua ativa em cada requisição autenticada.
+        options.EventsType = typeof(ValidarSessaoUsuario);
     });
 
 // Adiciona suporte aos Controllers e às Views do ASP.NET Core MVC.
@@ -54,6 +59,8 @@ builder.Services.AddScoped<IPedidoService, PedidoService>();
 builder.Services.AddScoped<IProdutoService, ProdutoService>();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 builder.Services.AddScoped<IImagemProdutoService, ImagemProdutoService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
+builder.Services.AddScoped<ValidarSessaoUsuario>();
 
 builder.Services.
     AddAntiforgery(options =>
