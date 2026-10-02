@@ -1,0 +1,130 @@
+@model KioraRestaurante.ViewModels.EditarProdutoViewModel
+
+@{
+    ViewData["Title"] = "Editar produto";
+
+    var categoriaAtualDisponivel =
+        Model.Categorias.Any(c => c.Id == Model.CategoriaId);
+}
+
+<section class="produto-admin">
+    <h1>Editar produto</h1>
+
+    <p class="produto-admin-ajuda">
+        Altere os dados abaixo. Se não selecionar outra foto,
+        a imagem atual será mantida.
+    </p>
+
+    <div asp-validation-summary="All"
+         class="produto-admin-erros"
+         role="alert"></div>
+
+    <!-- O formulário envia texto e, opcionalmente, uma nova imagem. -->
+    <form asp-controller="ProdutosAdmin"
+          asp-action="Editar"
+          method="post"
+          enctype="multipart/form-data"
+          id="formEditarProduto"
+          class="produto-admin-form">
+
+        <input asp-for="Id" type="hidden" />
+
+        <div class="row g-4">
+            <div class="col-12 col-lg-7">
+                <label asp-for="Nome">Nome do produto</label>
+                <input asp-for="Nome"
+                       class="form-control"
+                       maxlength="100" />
+                <span asp-validation-for="Nome"
+                      class="produto-admin-erros"></span>
+
+                <label asp-for="Descricao" class="mt-3">
+                    Descrição
+                </label>
+                <textarea asp-for="Descricao"
+                          class="form-control"
+                          rows="5"
+                          maxlength="500"></textarea>
+                <span asp-validation-for="Descricao"
+                      class="produto-admin-erros"></span>
+
+                <label asp-for="CategoriaId" class="mt-3">
+                    Categoria
+                </label>
+                <select asp-for="CategoriaId" class="form-select">
+                    <option value="">Selecione uma categoria ativa</option>
+
+                    @if (!categoriaAtualDisponivel)
+                    {
+                        <option value="@Model.CategoriaId" disabled>
+                            Categoria atual indisponível — escolha outra
+                        </option>
+                    }
+
+                    @foreach (var categoria in Model.Categorias)
+                    {
+                        <option value="@categoria.Id">
+                            @categoria.Nome
+                        </option>
+                    }
+                </select>
+                <span asp-validation-for="CategoriaId"
+                      class="produto-admin-erros"></span>
+
+                <label asp-for="PrecoTexto" class="mt-3">
+                    Preço em reais
+                </label>
+                <input asp-for="PrecoTexto"
+                       class="form-control"
+                       inputmode="decimal"
+                       placeholder="39,90" />
+                <span asp-validation-for="PrecoTexto"
+                      class="produto-admin-erros"></span>
+            </div>
+
+            <div class="col-12 col-lg-5">
+                <label asp-for="Foto">Substituir foto</label>
+                <input asp-for="Foto"
+                       type="file"
+                       class="form-control"
+                       accept="image/jpeg,image/png,image/webp"
+                       aria-describedby="ajudaFotoEdicao" />
+
+                <span asp-validation-for="Foto"
+                      class="produto-admin-erros"></span>
+
+                <p id="ajudaFotoEdicao"
+                   class="produto-admin-ajuda mt-2">
+                    Opcional. JPG, PNG ou WebP, com até 5 MB.
+                    Se ocorrer um erro, selecione novamente a nova foto.
+                </p>
+
+                <!-- Começa exibindo a imagem já cadastrada. -->
+                <img id="previewProdutoEdicao"
+                     src="@Model.ImagemAtual"
+                     alt="Foto do produto"
+                     class="produto-admin-preview"
+                     hidden="@(string.IsNullOrWhiteSpace(Model.ImagemAtual))" />
+            </div>
+        </div>
+
+        <div class="d-flex gap-3 align-items-center flex-wrap mt-4">
+            <button type="submit"
+                    id="salvarProduto"
+                    class="produto-admin-botao"
+                    disabled="@(Model.Categorias.Count == 0)">
+                Salvar alterações
+            </button>
+
+            <a asp-action="Index" class="produto-admin-link">
+                Cancelar
+            </a>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/produto-editar.js"
+            asp-append-version="true"></script>
+}
