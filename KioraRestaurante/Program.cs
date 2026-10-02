@@ -9,12 +9,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Pega a string de conexão do arquivo appsettings.json.
 var connectionString = builder.Configuration.GetConnectionString("ConexaoNuvem");
 
-// Configura o Entity Framework para utilizar o MySQL.
+// Descobre a versão do MySQL uma vez durante a inicialização.
+// Evita repetir essa conexão ao configurar novos contextos.
+var versaoMySql = ServerVersion.AutoDetect(connectionString);
+
+// Os contextos reutilizam a informação já descoberta.
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(
-        connectionString,
-        ServerVersion.AutoDetect(connectionString)
-    ));
+    options.UseMySql(connectionString, versaoMySql));
 
 // AUTENTICAÇÃO POR COOKIE
 // Configura o sistema de autenticação do ASP.NET Core.

@@ -13,6 +13,7 @@
         <a asp-controller="Admin" asp-action="Pedidos">Pedidos</a>
         <a asp-controller="Admin" asp-action="Usuarios">Usuários</a>
         <a asp-controller="ProdutosAdmin" asp-action="Cadastrar">Cadastrar produto</a>
+        <a asp-controller="ProdutosAdmin" asp-action="Index">Produtos</a>
     </nav>
     @if (TempData["AdminSucesso"] is string sucesso) { <p class="admin-aviso" role="status">@sucesso</p> }
     @if (TempData["AdminErro"] is string erro) { <p class="admin-erro" role="alert">@erro</p> }
