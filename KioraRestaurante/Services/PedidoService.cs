@@ -19,12 +19,15 @@ public class PedidoService : IPedidoService
     private readonly ICarrinhoService _carrinhoService;
     // Proteger a informação da revisão
     private readonly IDataProtector _protetor;
+    private readonly EnderecoUsuarioService _enderecoService;
 
-    public PedidoService(AppDbContext context, ICarrinhoService carrinhoService, IDataProtectionProvider provider)
+    public PedidoService(AppDbContext context, ICarrinhoService carrinhoService,
+        IDataProtectionProvider provider , EnderecoUsuarioService enderecoService)
     {
         _context = context;
         _carrinhoService = carrinhoService;
         _protetor = provider.CreateProtector("Kiora.Checkout.v1");
+        _enderecoService = enderecoService;
     }
 
     // Pede outra confirmação caso o valor dos itens mude
@@ -181,6 +184,12 @@ public class PedidoService : IPedidoService
          * Assim, a regra não depende apenas do controller.
          */
         Validator.ValidateObject(dto, new ValidationContext(dto), true);
+        // Confere propriedade, versão e área de entrega.
+        // O resultado é uma nova entidade, independente do endereço salvo.
+        var enderecoEntrega = await _enderecoService.CriarCopiaParaPedido(
+            usuarioId,
+            dto.EnderecoId!.Value,
+            dto.EnderecoVersao!.Value);
 
         var resumoAtual = await _carrinhoService.RevisarCarrinho(acesso);
         if (!resumoAtual.PodeProsseguir)
@@ -206,7 +215,7 @@ public class PedidoService : IPedidoService
             StatusPedido = StatusPedido.Recebido,
             StatusPagamento = StatusPagamento.Pendente,
 
-            EnderecoEntrega = CriarEndereco(dto)
+            EnderecoEntrega = enderecoEntrega
         };
 
         CopiarItensParaPedido(carrinho, pedido);
@@ -248,22 +257,6 @@ public class PedidoService : IPedidoService
             }
         }
 
-    }
-
-    // Monta o endereço do pedido com os dados já validados do formulário.
-    private static EnderecoEntrega CriarEndereco(CriarPedidoRequestDTO dto)
-    {
-        return new EnderecoEntrega
-        {
-            Cep = dto.Cep.Trim(),
-            Logradouro = dto.Logradouro.Trim(),
-            Numero = dto.Numero.Trim(),
-            Bairro = dto.Bairro.Trim(),
-            Cidade = dto.Cidade.Trim(),
-            Uf = dto.Uf.Trim(),
-            Complemento = dto.Complemento?.Trim(),
-            Referencia = dto.Referencia?.Trim(),
-        };
     }
 
     // Copia os dados da compra para preservar o histórico e calcula o total.

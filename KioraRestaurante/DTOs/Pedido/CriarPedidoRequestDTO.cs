@@ -9,42 +9,13 @@ public class CriarPedidoRequestDTO
     public string TokenRevisao { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Escolha a forma de pagamento.")]
-    [EnumDataType(
-        typeof(FormaPagamento),
-        ErrorMessage = "Forma de pagamento inválida.")]
+    [EnumDataType(typeof(FormaPagamento))]
     public FormaPagamento? FormaPagamento { get; set; }
 
-    [Required(ErrorMessage = "Informe o CEP.")]
-    [RegularExpression(
-        @"^\d{5}-?\d{3}$",
-        ErrorMessage = "Informe um CEP como 12345-678.")]
-    public string Cep { get; set; } = string.Empty;
+    [Required(ErrorMessage = "Escolha um endereço.")]
+    [Range(1, int.MaxValue)]
+    public int? EnderecoId { get; set; }
 
-    [Required(ErrorMessage = "Informe a rua ou avenida.")]
-    [StringLength(150)]
-    public string Logradouro { get; set; } = string.Empty;
-
-    [Required(ErrorMessage = "Informe o número.")]
-    [StringLength(20)]
-    public string Numero { get; set; } = string.Empty;
-
-    [Required(ErrorMessage = "Informe o bairro.")]
-    [StringLength(100)]
-    public string Bairro { get; set; } = string.Empty;
-
-    [Required(ErrorMessage = "Informe a cidade.")]
-    [StringLength(100)]
-    public string Cidade { get; set; } = string.Empty;
-
-    [Required(ErrorMessage = "Informe o estado.")]
-    [RegularExpression(
-        "^(AC|AL|AP|AM|BA|CE|DF|ES|GO|MA|MT|MS|MG|PA|PB|PR|PE|PI|RJ|RN|RS|RO|RR|SC|SP|SE|TO)$",
-        ErrorMessage = "Selecione um estado válido.")]
-    public string Uf { get; set; } = string.Empty;
-
-    [StringLength(200)]
-    public string? Complemento { get; set; }
-
-    [StringLength(200)]
-    public string? Referencia { get; set; }
+    [Required(ErrorMessage = "Atualize a revisão do endereço.")]
+    public Guid? EnderecoVersao { get; set; }
 }

@@ -16,7 +16,8 @@
 
     var podeConfirmar =
         Model.Resumo.PodeProsseguir
-        && !string.IsNullOrWhiteSpace(Model.Dados.TokenRevisao);
+        && !string.IsNullOrWhiteSpace(Model.Dados.TokenRevisao)
+        && Model.Enderecos.Count > 0;
 }
 
 <section class="container pedido-pagina">
@@ -54,81 +55,47 @@
                 <section class="pedido-box">
                     <h2>Endereço de entrega</h2>
 
-                    <div class="row g-3">
-                        <div class="col-12 col-sm-5">
-                            <label asp-for="Dados.Cep">CEP</label>
-                            <input asp-for="Dados.Cep"
-                                   class="form-control"
-                                   autocomplete="postal-code"
-                                   maxlength="9"
-                                   placeholder="12345-678" />
-                        </div>
+                    <input asp-for="Dados.EnderecoVersao" type="hidden" />
 
-                        <div class="col-12">
-                            <label asp-for="Dados.Logradouro">
-                                Rua ou avenida
-                            </label>
-                            <input asp-for="Dados.Logradouro"
-                                   class="form-control"
-                                   autocomplete="address-line1"
-                                   maxlength="150" />
-                        </div>
+                    @if (Model.Enderecos.Count == 0)
+                    {
+                        <p>Cadastre um endereço para continuar.</p>
+                    }
 
-                        <div class="col-12 col-sm-4">
-                            <label asp-for="Dados.Numero">Número</label>
-                            <input asp-for="Dados.Numero"
-                                   class="form-control"
-                                   maxlength="20" />
-                        </div>
+                    @foreach (var endereco in Model.Enderecos)
+                    {
+                        var identificador = $"endereco-{endereco.Id}";
 
-                        <div class="col-12 col-sm-8">
-                            <label asp-for="Dados.Bairro">Bairro</label>
-                            <input asp-for="Dados.Bairro"
-                                   class="form-control"
-                                   maxlength="100" />
-                        </div>
+                        <div class="mb-3">
+                            <input asp-for="Dados.EnderecoId"
+                                   type="radio"
+                                   id="@identificador"
+                                   value="@endereco.Id"
+                                   data-endereco-versao="@endereco.Versao" />
 
-                        <div class="col-12 col-sm-8">
-                            <label asp-for="Dados.Cidade">Cidade</label>
-                            <input asp-for="Dados.Cidade"
-                                   class="form-control"
-                                   autocomplete="address-level2"
-                                   maxlength="100" />
-                        </div>
+                            <label for="@identificador">
+                                <strong>@endereco.Apelido</strong><br />
 
-                        <div class="col-12 col-sm-4">
-                            <label asp-for="Dados.Uf">Estado</label>
-                            <select asp-for="Dados.Uf"
-                                    class="form-select"
-                                    autocomplete="address-level1">
-                                <option value="">Selecione</option>
+                                @endereco.Logradouro, @endereco.Numero<br />
 
-                                @foreach (var uf in estados)
+                                @endereco.Bairro — @endereco.Cidade/@endereco.Uf<br />
+
+                                CEP @endereco.Cep
+
+                                @if (!string.IsNullOrWhiteSpace(endereco.Complemento))
                                 {
-                                    <option value="@uf">@uf</option>
+                                    <br />
+                                    @endereco.Complemento
                                 }
-                            </select>
-                        </div>
-
-                        <div class="col-12">
-                            <label asp-for="Dados.Complemento">
-                                Complemento — opcional
                             </label>
-                            <input asp-for="Dados.Complemento"
-                                   class="form-control"
-                                   autocomplete="address-line2"
-                                   maxlength="200" />
                         </div>
+                    }
 
-                        <div class="col-12">
-                            <label asp-for="Dados.Referencia">
-                                Ponto de referência — opcional
-                            </label>
-                            <input asp-for="Dados.Referencia"
-                                   class="form-control"
-                                   maxlength="200" />
-                        </div>
-                    </div>
+                    <a asp-controller="Enderecos"
+                       asp-action="Index"
+                       class="pedido-link">
+                        Cadastrar ou editar meus endereços
+                    </a>
                 </section>
 
                 <section class="pedido-box mt-4">
@@ -236,6 +203,14 @@
 
         const inicialmenteDesabilitado =
             confirmarPedido.disabled;
+
+        // Guarda a versão do endereço que o cliente escolheu nesta revisão.
+        document.querySelectorAll("[data-endereco-versao]").forEach(opcao => {
+            opcao.addEventListener("change", () => {
+                document.getElementById("Dados_EnderecoVersao").value =
+                    opcao.dataset.enderecoVersao;
+            });
+        });
 
         formularioCheckout.addEventListener("submit", function () {
             // A validação jQuery pode impedir o envio.
