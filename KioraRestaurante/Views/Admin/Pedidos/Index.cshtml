@@ -1,0 +1,40 @@
+@model PedidosAdminViewModel
+@{
+    ViewData["Title"] = "Administrar pedidos";
+    var f = Model.Filtros;
+    var cultura = CultureInfo.GetCultureInfo("pt-BR");
+    var paginacao = new PaginacaoAdminViewModel { Acao = "Pedidos", Pagina = Model.Resultado.Pagina,
+        TotalPaginas = Model.Resultado.TotalPaginas, Filtros = new() {
+            ["Busca"] = f.Busca ?? "", ["PedidoId"] = f.PedidoId?.ToString() ?? "", ["UsuarioId"] = f.UsuarioId?.ToString() ?? "",
+            ["Status"] = f.Status?.ToString() ?? "", ["Pagamento"] = f.Pagamento?.ToString() ?? "",
+            ["Inicio"] = f.Inicio?.ToString("yyyy-MM-dd") ?? "", ["Fim"] = f.Fim?.ToString("yyyy-MM-dd") ?? ""
+        }};
+}
+<h1>Pedidos</h1>
+<p class="admin-suave">Mais recentes primeiro. Datas e horários de Brasília. Consulte também pedidos de clientes inativos.</p>
+<div asp-validation-summary="All" class="admin-erro" role="alert"></div>
+<form method="get" asp-controller="Admin" asp-action="Pedidos" class="admin-filtros">
+    <div><label for="Busca">Nome ou e-mail do cliente</label><input id="Busca" name="Busca" type="search" value="@f.Busca" maxlength="150" /></div>
+    <div><label for="PedidoId">Número do pedido</label><input id="PedidoId" name="PedidoId" type="number" min="1" value="@f.PedidoId" /></div>
+    <div><label for="UsuarioId">Código do usuário</label><input id="UsuarioId" name="UsuarioId" type="number" min="1" value="@f.UsuarioId" /></div>
+    <div><label for="Status">Situação do pedido</label><select id="Status" name="Status"><option value="">Todas</option>
+    @foreach(var status in Enum.GetValues<StatusPedido>()) { <option value="@status" selected="@(f.Status == status)">@TextosAdmin.Pedido(status)</option> }</select></div>
+    <div><label for="Pagamento">Situação do pagamento</label><select id="Pagamento" name="Pagamento"><option value="">Todas</option>
+    @foreach(var status in Enum.GetValues<StatusPagamento>()) { <option value="@status" selected="@(f.Pagamento == status)">@status</option> }</select></div>
+    <div><label for="Inicio">De</label><input id="Inicio" name="Inicio" type="date" value="@f.Inicio?.ToString("yyyy-MM-dd")" min="2000-01-01" max="2100-12-31" /></div>
+    <div><label for="Fim">Até</label><input id="Fim" name="Fim" type="date" value="@f.Fim?.ToString("yyyy-MM-dd")" min="2000-01-01" max="2100-12-31" /></div>
+    <div class="admin-acoes"><button type="submit">Filtrar</button><a asp-action="Pedidos">Limpar</a></div>
+</form>
+<p class="admin-suave">@Model.Resultado.Total pedido(s) encontrado(s).</p>
+@if(Model.Resultado.Itens.Count == 0) { <p class="admin-vazio">Nenhum pedido encontrado para os filtros informados.</p> }
+else {
+<div class="admin-tabela-scroll" tabindex="0" role="region" aria-label="Lista de pedidos">
+<table class="admin-tabela"><thead><tr><th scope="col">Pedido</th><th scope="col">Cliente</th><th scope="col">Situação</th><th scope="col">Pagamento</th><th scope="col">Total</th><th scope="col">Ações</th></tr></thead>
+<tbody>@foreach(var pedido in Model.Resultado.Itens) {
+<tr><td><strong>#@pedido.Id</strong><span class="admin-texto-bloco">@HorarioRestaurante.ParaLocal(pedido.DataPedido).ToString("dd/MM/yyyy HH:mm")</span></td>
+<td>@pedido.NomeCliente<span class="admin-texto-bloco">@pedido.EmailCliente</span></td>
+<td>@TextosAdmin.Pedido(pedido.StatusPedido)</td><td>@pedido.StatusPagamento<span class="admin-texto-bloco">@TextosAdmin.Pagamento(pedido.FormaPagamento)</span></td>
+<td class="admin-valor">@pedido.ValorTotal.ToString("C", cultura)</td><td><a asp-action="DetalhesPedido" asp-route-id="@pedido.Id">Ver detalhes</a></td></tr>
+}</tbody></table></div>
+}
+<partial name="~/Views/Admin/_Paginacao.cshtml" model="paginacao" />

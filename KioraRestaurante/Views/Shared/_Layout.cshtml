@@ -331,12 +331,10 @@ CSS DOS PEDIDOS
                         =================================================
                     -->
 
-                    <a class="btn btn-reserva"
-                       href="#">
-
-                        Reservar Mesa
-
-                    </a>
+                <!-- RESERVA NO CELULAR/TABLET: aparece dentro do menu expansível. -->
+                <a class="btn btn-reserva d-xl-none" href="#">
+                    Reservar Mesa
+                </a>
             </div>
 
             <!-- AÇÕES SEMPRE VISÍVEIS: independentes do menu de páginas. -->
@@ -369,6 +367,11 @@ CSS DOS PEDIDOS
                         aria-controls="painelConta" aria-label="Abrir sua conta" title="Sua conta">
                     <i class="bi bi-person-circle" aria-hidden="true"></i>
                 </button>
+
+                <!-- RESERVA NO DESKTOP: aparece depois dos ícones. -->
+                <a class="btn btn-reserva d-none d-xl-inline-flex ms-2" href="#">
+                    Reservar Mesa
+                </a>
             </div>
 
         </div>

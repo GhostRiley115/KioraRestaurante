@@ -17,7 +17,8 @@ namespace KioraRestaurante.Data
         public DbSet<ItemCarrinho> ItensCarrinho { get; set; }
         public DbSet<Pedido> Pedidos { get; set; }
         public DbSet<ItemPedido> ItensPedido { get; set; }
-        public DbSet<EnderecoEntrega> EnderecoEntregas { get; set; } 
+        public DbSet<EnderecoEntrega> EnderecoEntregas { get; set; }
+        public DbSet<EnderecoUsuario> EnderecosUsuario { get; set; }
 
         //Cria a relação entre tabelas
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -62,6 +63,22 @@ namespace KioraRestaurante.Data
             modelBuilder.Entity<Categoria>()
                 .Property(c => c.Ativa)
                 .HasDefaultValue(true);
+
+            // Os endereços salvos pertencem a um usuário.
+            modelBuilder.Entity<EnderecoUsuario>()
+                .HasOne(e => e.Usuario)
+                .WithMany()
+                .HasForeignKey(e => e.UsuarioId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Ajuda as consultas dos endereços de um usuário.
+            modelBuilder.Entity<EnderecoUsuario>()
+                .HasIndex(e => e.UsuarioId);
+
+            // O EF detectará uma edição concorrente pela versão.
+            modelBuilder.Entity<EnderecoUsuario>()
+                .Property(e => e.Versao)
+                .IsConcurrencyToken();
 
             //Categoria 1 : N Produto
             modelBuilder.Entity<Produto>()

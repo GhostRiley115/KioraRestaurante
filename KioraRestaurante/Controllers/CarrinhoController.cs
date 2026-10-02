@@ -25,44 +25,44 @@ public class CarrinhoController : ControllerBase
 
     private AcessoCarrinho ObterAcesso()
     {
-        //Por enquanto, considero que não temos usuário logado.
+        // Por enquanto, considero que não temos usuário logado.
         int? usuarioId = null;
 
-        //Se estiver logado
+        // Se estiver logado
         if (User.Identity?.IsAuthenticated == true)
         {
-            //Guarda o ID do usuário.
+            // Guarda o ID do usuário.
             var valor = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            //Tenta converter para int, se não conseguir -> excessão
+            // Tenta converter para int, se não conseguir -> excessão
             if(!int.TryParse(valor, out var id) || id <= 0)
                 throw new UnauthorizedAccessException();
 
             usuarioId = id;
         }
 
-        //Monta a ficha de quem está acessando.
+        // Monta a ficha de quem está acessando.
         return new AcessoCarrinho
         {
             UsuarioId = usuarioId,
-            //Usa o método da classe Cookie para ler o cookie do usuário.
+            // Usa o método da classe Cookie para ler o cookie do usuário.
             CarrinhoVisitanteId = _cookie.Ler(HttpContext)
         };
     }
 
-    //Cria uma operação padrão para todas as ações que alteram o carrinho.
-    //Uma função que recebe AcessoCarrinho e devolve um Task<CarrinhoResponseDTO>.
+    // Cria uma operação padrão para todas as ações que alteram o carrinho.
+    // Uma função que recebe AcessoCarrinho e devolve um Task<CarrinhoResponseDTO>.
     private Task<IActionResult> Alterar(Func<AcessoCarrinho, Task<CarrinhoResponseDTO>> operacao)
     {
         return Executar(async () =>
         {
             var acesso = ObterAcesso();
 
-            //Executa a operação que foi passada, remover, adicionar e etc...
+            // Executa a operação que foi passada, remover, adicionar e etc...
             var resposta = await operacao(acesso);
 
-            //Só criamos ou renovamos o cookie anônimo depois de salvar a alteração com sucesso.
-            //Se não for usuário logado e a resposta tiver um ID de carrinho, grave esse ID no cookie.
+            // Só criamos ou renovamos o cookie anônimo depois de salvar a alteração com sucesso.
+            // Se não for usuário logado e a resposta tiver um ID de carrinho, grave esse ID no cookie.
             if (!acesso.UsuarioId.HasValue && resposta.CarrinhoId.HasValue)
             {
                 _cookie.Gravar(HttpContext, resposta.CarrinhoId.Value);
@@ -71,33 +71,33 @@ public class CarrinhoController : ControllerBase
         });
     }
 
-    //tratador central de erros.
+    // tratador central de erros.
     private async Task<IActionResult> Executar(Func<Task<IActionResult>> operacao)
     {
         try
         {
-            //Executa a operação. Se der tudo certo: retorna resposta. Se der erro: vai para o catch correspondente.
+            // Executa a operação. Se der tudo certo: retorna resposta. Se der erro: vai para o catch correspondente.
             return await operacao();
         }
         catch (UnauthorizedAccessException)
         {
-            //HTTP 401
+            // HTTP 401
             return Unauthorized();
         }
         catch (ArgumentException ex)
         {
-            //HTTP 400
+            // HTTP 400
             return BadRequest(new { mensagem = ex.Message});
         }
         catch (KeyNotFoundException ex)
         {
-            //HTTP 404
+            // HTTP 404
             return NotFound(new { mensagem = ex.Message });
         }
-        //"Outra operação alterou esse carrinho antes de você salvar sua alteração."
+        // "Outra operação alterou esse carrinho antes de você salvar sua alteração."
         catch (DbUpdateConcurrencyException)
         {
-            //HTTP 409
+            // HTTP 409
             return Conflict(new
             {
                 mensagem = "O carrinho foi alterado por outra operação." +
@@ -112,7 +112,7 @@ public class CarrinhoController : ControllerBase
     }
 
     [HttpGet]
-    //Monta a ficha de quem está acessando.
+    // Monta a ficha de quem está acessando.
     public Task<IActionResult> Buscar()
     {
         return Executar(async () =>
@@ -124,7 +124,7 @@ public class CarrinhoController : ControllerBase
     }
 
     [HttpGet("revisao")]
-    //Busca um carrinho
+    // Busca um carrinho
     public Task<IActionResult> Revisar()
     {
         return Executar(async () =>
@@ -170,7 +170,7 @@ public class CarrinhoController : ControllerBase
             if (!resultado.Concluida)
                 return Conflict(resultado);
 
-            //Se deu tudo certo na mesclagem, remove o cookie do carrinho temporário.
+            // Se deu tudo certo na mesclagem, remove o cookie do carrinho temporário.
             _cookie.Remover(HttpContext);
 
             return Ok(resultado);

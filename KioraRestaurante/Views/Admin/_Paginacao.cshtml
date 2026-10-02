@@ -1,0 +1,11 @@
+@model PaginacaoAdminViewModel
+@{
+    // Mantém os filtros ao avançar ou voltar; cada consulta carrega até 20 registros.
+    var anterior = new Dictionary<string, string>(Model.Filtros) { ["Pagina"] = (Model.Pagina - 1).ToString() };
+    var proxima = new Dictionary<string, string>(Model.Filtros) { ["Pagina"] = (Model.Pagina + 1).ToString() };
+}
+<nav class="admin-paginacao" aria-label="Paginação">
+    @if (Model.Pagina > 1) { <a asp-controller="Admin" asp-action="@Model.Acao" asp-all-route-data="anterior">Anterior</a> }
+    <span>Página @Model.Pagina de @Model.TotalPaginas</span>
+    @if (Model.Pagina < Model.TotalPaginas) { <a asp-controller="Admin" asp-action="@Model.Acao" asp-all-route-data="proxima">Próxima</a> }
+</nav>

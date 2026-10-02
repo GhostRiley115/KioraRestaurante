@@ -45,7 +45,7 @@ namespace KioraRestaurante.Migrations
                     b.HasIndex("UsuarioId")
                         .IsUnique();
 
-                    b.ToTable("Carrinhos", (string)null);
+                    b.ToTable("Carrinhos");
                 });
 
             modelBuilder.Entity("KioraRestaurante.Models.Categoria", b =>
@@ -68,7 +68,7 @@ namespace KioraRestaurante.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categorias", (string)null);
+                    b.ToTable("Categorias");
 
                     b.HasData(
                         new
@@ -151,7 +151,77 @@ namespace KioraRestaurante.Migrations
                     b.HasIndex("PedidoId")
                         .IsUnique();
 
-                    b.ToTable("EnderecoEntregas", (string)null);
+                    b.ToTable("EnderecoEntregas");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.EnderecoUsuario", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Apelido")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("varchar(40)");
+
+                    b.Property<string>("Bairro")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("Cep")
+                        .IsRequired()
+                        .HasMaxLength(9)
+                        .HasColumnType("varchar(9)");
+
+                    b.Property<string>("Cidade")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("Complemento")
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
+
+                    b.Property<string>("Logradouro")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)");
+
+                    b.Property<string>("MunicipioIbge")
+                        .IsRequired()
+                        .HasMaxLength(7)
+                        .HasColumnType("varchar(7)");
+
+                    b.Property<string>("Numero")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<string>("Referencia")
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
+
+                    b.Property<string>("Uf")
+                        .IsRequired()
+                        .HasMaxLength(2)
+                        .HasColumnType("varchar(2)");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("Versao")
+                        .IsConcurrencyToken()
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("EnderecosUsuario");
                 });
 
             modelBuilder.Entity("KioraRestaurante.Models.ItemCarrinho", b =>
@@ -178,7 +248,7 @@ namespace KioraRestaurante.Migrations
                     b.HasIndex("CarrinhoId", "ProdutoId")
                         .IsUnique();
 
-                    b.ToTable("ItensCarrinho", (string)null);
+                    b.ToTable("ItensCarrinho");
                 });
 
             modelBuilder.Entity("KioraRestaurante.Models.ItemPedido", b =>
@@ -216,7 +286,7 @@ namespace KioraRestaurante.Migrations
 
                     b.HasIndex("ProdutoId");
 
-                    b.ToTable("ItensPedido", (string)null);
+                    b.ToTable("ItensPedido");
                 });
 
             modelBuilder.Entity("KioraRestaurante.Models.Pedido", b =>
@@ -261,7 +331,7 @@ namespace KioraRestaurante.Migrations
                     b.HasIndex("UsuarioId", "ChaveConfirmacao")
                         .IsUnique();
 
-                    b.ToTable("Pedidos", (string)null);
+                    b.ToTable("Pedidos");
                 });
 
             modelBuilder.Entity("KioraRestaurante.Models.Produto", b =>
@@ -291,6 +361,7 @@ namespace KioraRestaurante.Migrations
                         .HasDefaultValue(true);
 
                     b.Property<string>("Imagem")
+                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("varchar(500)");
 
@@ -310,7 +381,7 @@ namespace KioraRestaurante.Migrations
 
                     b.HasIndex("CategoriaId");
 
-                    b.ToTable("Produtos", (string)null);
+                    b.ToTable("Produtos");
                 });
 
             modelBuilder.Entity("KioraRestaurante.Models.Usuario", b =>
@@ -357,7 +428,7 @@ namespace KioraRestaurante.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("Usuarios", (string)null);
+                    b.ToTable("Usuarios");
                 });
 
             modelBuilder.Entity("KioraRestaurante.Models.Carrinho", b =>
@@ -378,6 +449,17 @@ namespace KioraRestaurante.Migrations
                         .IsRequired();
 
                     b.Navigation("Pedido");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.EnderecoUsuario", b =>
+                {
+                    b.HasOne("KioraRestaurante.Models.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("KioraRestaurante.Models.ItemCarrinho", b =>

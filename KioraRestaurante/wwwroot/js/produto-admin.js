@@ -18,7 +18,9 @@
         foto.setCustomValidity("");
         const arquivo = foto.files[0];
         if (!arquivo) return;
-        if (arquivo.size > 5 * 1024 * 1024) {
+        if (arquivo.size === 0) {
+            foto.setCustomValidity("A foto está vazia. Selecione outro arquivo.");
+        } else if (arquivo.size > 5 * 1024 * 1024) {
             foto.setCustomValidity("A foto deve ter no máximo 5 MB.");
         } else if (!["image/jpeg", "image/png", "image/webp"].includes(arquivo.type)) {
             foto.setCustomValidity("Selecione uma foto JPG, PNG ou WebP.");
@@ -30,8 +32,12 @@
     });
 
     // O formulário continua usando POST normal, com validação e antiforgery.
-    formulario.addEventListener("submit", () => {
-        if (!$(formulario).valid()) return;
+    formulario.addEventListener("submit", evento => {
+        // Confere também required e erros do arquivo, mesmo com a validação do jQuery.
+        if (!formulario.reportValidity() || !$(formulario).valid()) {
+            evento.preventDefault();
+            return;
+        }
         botao.disabled = true;
         botao.textContent = "Cadastrando…";
     });

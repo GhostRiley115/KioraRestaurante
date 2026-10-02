@@ -1,0 +1,216 @@
+@model KioraRestaurante.ViewModels.Admin.ProdutosAdminViewModel
+
+@{
+    ViewData["Title"] = "Administrar produtos";
+    var filtro = Model.Filtros;
+    var resultado = Model.Resultado;
+}
+
+<h1>Produtos</h1>
+
+<p class="admin-suave">
+    Edite os produtos e controle o que aparece no cardápio
+    e o que está disponível para compra.
+</p>
+
+<div class="admin-acoes">
+    <a asp-controller="ProdutosAdmin" asp-action="Cadastrar">
+        Cadastrar produto
+    </a>
+
+    <a asp-controller="Home" asp-action="Cardapio">
+        Ver cardápio
+    </a>
+</div>
+
+<div asp-validation-summary="All"
+     class="admin-erro"
+     role="alert"></div>
+
+<!-- GET apenas consulta; os filtros ficam registrados na URL. -->
+<form asp-controller="ProdutosAdmin"
+      asp-action="Index"
+      method="get"
+      class="admin-filtros">
+
+    <div>
+        <label for="Busca">Nome do produto</label>
+        <input id="Busca"
+               name="Busca"
+               type="search"
+               value="@filtro.Busca"
+               maxlength="100" />
+    </div>
+
+    <div>
+        <label for="Ativo">Situação</label>
+        <select id="Ativo" name="Ativo">
+            <option value="">Todas</option>
+            <option value="true" selected="@(filtro.Ativo == true)">
+                Ativos
+            </option>
+            <option value="false" selected="@(filtro.Ativo == false)">
+                Inativos
+            </option>
+        </select>
+    </div>
+
+    <div>
+        <label for="Disponivel">Disponibilidade</label>
+        <select id="Disponivel" name="Disponivel">
+            <option value="">Todas</option>
+            <option value="true" selected="@(filtro.Disponivel == true)">
+                Disponíveis
+            </option>
+            <option value="false" selected="@(filtro.Disponivel == false)">
+                Indisponíveis
+            </option>
+        </select>
+    </div>
+
+    <div class="admin-acoes">
+        <button type="submit">Filtrar</button>
+        <a asp-action="Index">Limpar</a>
+    </div>
+</form>
+
+<p class="admin-suave">
+    @resultado.Total produto(s) encontrado(s).
+</p>
+
+@if (resultado.Itens.Count == 0)
+{
+    <p class="admin-vazio">
+        Nenhum produto encontrado para os filtros informados.
+    </p>
+}
+else
+{
+    <!-- Os mesmos cartões se reorganizam conforme a largura da tela. -->
+    <div class="admin-produtos-grid">
+        @foreach (var produto in resultado.Itens)
+        {
+            <article class="admin-produto-card">
+                @if (!string.IsNullOrWhiteSpace(produto.ImagemUrl))
+                {
+                    <img src="@produto.ImagemUrl"
+                         alt="@produto.Nome"
+                         class="admin-produto-foto"
+                         loading="lazy" />
+                }
+
+                <div class="admin-produto-conteudo">
+                    <span class="admin-suave">
+                        #@produto.Id · @produto.NomeCategoria
+                    </span>
+
+                    <h2>@produto.Nome</h2>
+
+                    <p class="admin-produto-preco">
+                        @produto.Preco.ToString(
+                            "C",
+                            System.Globalization.CultureInfo.GetCultureInfo("pt-BR"))
+                    </p>
+
+                    <div class="admin-produto-etiquetas">
+                        <span class="admin-etiqueta">
+                            @(produto.Ativo ? "Ativo" : "Inativo")
+                        </span>
+
+                        <span class="admin-etiqueta">
+                            @(produto.Disponivel ? "Disponível" : "Indisponível")
+                        </span>
+                    </div>
+
+                    @if (!produto.CategoriaAtiva)
+                    {
+                        <p class="admin-erro">
+                            A categoria está inativa.
+                            Este produto não aparece no cardápio.
+                        </p>
+                    }
+
+                    <!-- As alterações usam POST, nunca links GET. -->
+                    <div class="admin-produto-acoes">
+                        <a asp-action="Editar"
+                           asp-route-id="@produto.Id">
+                            Editar produto
+                        </a>
+
+                        @if (produto.Ativo)
+                        {
+                            <form asp-action="AlterarDisponibilidade"
+                                  method="post"
+                                  data-confirmar="@(produto.Disponivel
+                                      ? $"Indisponibilizar {produto.Nome}?"
+                                      : $"Disponibilizar {produto.Nome} para compra?")">
+
+                                <input type="hidden"
+                                       name="id"
+                                       value="@produto.Id" />
+
+                                <input type="hidden"
+                                       name="valor"
+                                       value="@((!produto.Disponivel).ToString().ToLowerInvariant())" />
+
+                                <button type="submit">
+                                    @(produto.Disponivel
+                                        ? "Indisponibilizar"
+                                        : "Disponibilizar")
+                                </button>
+                            </form>
+                        }
+
+                        <form asp-action="AlterarAtivo"
+                              method="post"
+                              data-confirmar="@(produto.Ativo
+                                  ? $"Desativar {produto.Nome}? Ele será retirado do cardápio."
+                                  : $"Reativar {produto.Nome}?")">
+
+                            <input type="hidden"
+                                   name="id"
+                                   value="@produto.Id" />
+
+                            <input type="hidden"
+                                   name="valor"
+                                   value="@((!produto.Ativo).ToString().ToLowerInvariant())" />
+
+                            <button type="submit">
+                                @(produto.Ativo ? "Desativar" : "Reativar")
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </article>
+        }
+    </div>
+}
+
+<!-- Mantém os filtros quando o administrador troca de página. -->
+<nav class="admin-paginacao" aria-label="Paginação dos produtos">
+    @if (resultado.Pagina > 1)
+    {
+        <a asp-action="Index"
+           asp-route-Pagina="@(resultado.Pagina - 1)"
+           asp-route-Busca="@filtro.Busca"
+           asp-route-Ativo="@filtro.Ativo"
+           asp-route-Disponivel="@filtro.Disponivel">
+            Anterior
+        </a>
+    }
+
+    <span>
+        Página @resultado.Pagina de @resultado.TotalPaginas
+    </span>
+
+    @if (resultado.Pagina < resultado.TotalPaginas)
+    {
+        <a asp-action="Index"
+           asp-route-Pagina="@(resultado.Pagina + 1)"
+           asp-route-Busca="@filtro.Busca"
+           asp-route-Ativo="@filtro.Ativo"
+           asp-route-Disponivel="@filtro.Disponivel">
+            Próxima
+        </a>
+    }
+</nav>
