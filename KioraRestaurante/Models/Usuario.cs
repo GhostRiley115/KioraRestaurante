@@ -15,6 +15,10 @@ namespace KioraRestaurante.Models
         public string SenhaHash { get; set; } = null!;
         public bool Ativo { get; set; } = true;
 
+        // Registra se o usuário aceitou os Termos de Uso
+        // e a Política de Privacidade no momento do cadastro.
+        public bool AceitouTermos { get; set; }
+
         public TipoUsuario Tipo { get; set; } = TipoUsuario.Cliente;
         [MaxLength(255)]
         public string? TokenRecuperacaoSenha { get; set; }

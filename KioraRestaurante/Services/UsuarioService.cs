@@ -80,7 +80,8 @@ namespace KioraRestaurante.Services
                 Nome = dto.Nome.Trim(),
                 Email = NormalizarEmail(dto.Email),
                 Tipo = TipoUsuario.Cliente, //impede que escolha "Administrador" durante o cadastro.
-                Ativo = true
+                Ativo = true,
+                AceitouTermos = dto.AceiteTermos
             };
 
             /*A senha digitada pelo usuário NÃO será armazenada diretamente no banco.

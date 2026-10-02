@@ -111,7 +111,8 @@ namespace KioraRestaurante.Controllers
                 Nome = model.Nome,
                 Email = model.Email,
                 Senha = model.Senha,
-                ConfirmarSenha = model.ConfirmarSenha
+                ConfirmarSenha = model.ConfirmarSenha,
+                AceiteTermos = model.AceiteTermos
             };
 
             _usuarioService.Cadastrar(dto);

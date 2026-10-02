@@ -58,8 +58,26 @@ namespace KioraRestaurante.Controllers
 
             return View(model);
         }
-
+                
         public IActionResult Galeria()
+        {
+            return View();
+        }
+
+        // =========================================================
+        // PÁGINA DE TERMOS DE USO
+        // =========================================================
+
+        public IActionResult TermosUso()
+        {
+            return View();
+        }
+
+        // =========================================================
+        // PÁGINA DE POLÍTICA DE PRIVACIDADE
+        // =========================================================
+
+        public IActionResult PoliticaPrivacidade()
         {
             return View();
         }
