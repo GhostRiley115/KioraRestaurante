@@ -1,0 +1,251 @@
+﻿/* =========================================================
+DOCUMENTOS INSTITUCIONAIS - KIORA
+Termos de Uso e Política de Privacidade
+========================================================= */
+
+/* =========================================================
+PÁGINA PRINCIPAL
+========================================================= */
+
+.documento-page {
+    min-height: calc(100vh - 90px);
+    background-color: #0E0E0E;
+    padding: 70px 0 90px;
+}
+
+/* =========================================================
+CONTAINER DO DOCUMENTO
+========================================================= */
+
+.documento-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 25px;
+}
+
+/* =========================================================
+CABEÇALHO
+========================================================= */
+
+.documento-header {
+    text-align: center;
+    margin-bottom: 45px;
+}
+
+    .documento-header .documento-label {
+        display: block;
+        margin-bottom: 12px;
+        color: #D9B27A;
+        font-family: 'Lato', sans-serif;
+        font-size: 0.85rem;
+        font-weight: 700;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+    }
+
+    .documento-header h1 {
+        margin: 0;
+        color: #FFFFFF;
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(2.2rem, 5vw, 3.5rem);
+        font-weight: 600;
+    }
+
+    .documento-header .documento-data {
+        display: block;
+        margin-top: 15px;
+        color: #A8A8A8;
+        font-family: 'Lato', sans-serif;
+        font-size: 0.9rem;
+    }
+
+/* =========================================================
+CARTÃO DO DOCUMENTO
+========================================================= */
+
+.documento-card {
+    background-color: #FFFFFF;
+    border: 8px solid #D9B27A;
+    border-radius: 6px;
+    padding: 50px 60px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+}
+
+    /* =========================================================
+TÍTULOS
+========================================================= */
+
+    .documento-card h2 {
+        margin-top: 35px;
+        margin-bottom: 15px;
+        color: #0E0E0E;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.55rem;
+        font-weight: 600;
+    }
+
+        .documento-card h2:first-child {
+            margin-top: 0;
+        }
+
+    .documento-card h3 {
+        margin-top: 25px;
+        margin-bottom: 12px;
+        color: #7D1F1F;
+        font-family: 'Lato', sans-serif;
+        font-size: 1.1rem;
+        font-weight: 700;
+    }
+
+    /* =========================================================
+TEXTOS
+========================================================= */
+
+    .documento-card p {
+        margin-bottom: 15px;
+        color: #333333;
+        font-family: 'Lato', sans-serif;
+        font-size: 1rem;
+        line-height: 1.8;
+    }
+
+    .documento-card strong {
+        color: #0E0E0E;
+    }
+
+    /* =========================================================
+LISTAS
+========================================================= */
+
+    .documento-card ul {
+        margin: 10px 0 20px;
+        padding-left: 25px;
+    }
+
+    .documento-card li {
+        margin-bottom: 8px;
+        color: #333333;
+        font-family: 'Lato', sans-serif;
+        line-height: 1.7;
+    }
+
+    /* =========================================================
+LINKS
+========================================================= */
+
+    .documento-card a {
+        color: #7D1F1F;
+        font-weight: 700;
+        text-decoration: underline;
+        text-decoration-color: rgba(125, 31, 31, 0.35);
+        text-underline-offset: 3px;
+        transition: color 0.2s ease;
+    }
+
+        .documento-card a:hover {
+            color: #D9B27A;
+        }
+
+/* =========================================================
+DIVISÓRIAS
+========================================================= */
+
+.documento-divider {
+    width: 70px;
+    height: 2px;
+    margin: 25px 0;
+    background-color: #D9B27A;
+}
+
+/* =========================================================
+RODAPÉ DO DOCUMENTO
+========================================================= */
+
+.documento-footer {
+    margin-top: 40px;
+    padding-top: 25px;
+    border-top: 1px solid #DDDDDD;
+    text-align: center;
+}
+
+    .documento-footer p {
+        margin-bottom: 5px;
+        color: #777777;
+        font-size: 0.9rem;
+    }
+
+/* =========================================================
+BOTÃO VOLTAR
+========================================================= */
+
+.documento-voltar {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 30px;
+    padding: 11px 22px;
+    border: 1px solid #D9B27A;
+    border-radius: 3px;
+    background-color: transparent;
+    color: #D9B27A;
+    font-family: 'Lato', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-decoration: none !important;
+    transition: all 0.25s ease;
+}
+
+    .documento-voltar:hover {
+        background-color: #D9B27A;
+        color: #0E0E0E !important;
+    }
+
+/* =========================================================
+RESPONSIVIDADE
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .documento-page {
+        padding: 50px 0 70px;
+    }
+
+    .documento-container {
+        padding: 0 15px;
+    }
+
+    .documento-card {
+        padding: 35px 25px;
+    }
+
+    .documento-header {
+        margin-bottom: 30px;
+    }
+
+    .documento-card h2 {
+        font-size: 1.35rem;
+    }
+
+    .documento-card p,
+    .documento-card li {
+        font-size: 0.95rem;
+    }
+
+}
+
+@media (max-width: 480px) {
+
+    
+    .documento-card {
+        padding: 30px 20px;
+    }
+
+    .documento-header h1 {
+        font-size: 2rem;
+    }
+
+    .documento-header .documento-label {
+        font-size: 0.75rem;
+        letter-spacing: 2px;
+    }
+}

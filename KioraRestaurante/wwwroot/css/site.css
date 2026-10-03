@@ -2220,3 +2220,64 @@ HOVER DO BOTÃO ALTERAR SENHA
     }
     .navbar-kiora .navbar-collapse .btn-reserva { margin-bottom: 16px; }
 }
+
+/* ================================================================
+   BOTÃO DESATIVAR CONTA
+   ================================================================ */
+
+/* Estiliza o botão de desativação da conta. */
+.btn-desativar-conta-kiora {
+    /* Define o fundo vinho padrão do Kiora. */
+    background-color: #7D1F1F;
+    /* Define a borda dourada padrão do Kiora. */
+    border: 1px solid #D9B27A;
+    /* Define a cor branca para o texto. */
+    color: #FFFFFF;
+    /* Utiliza a fonte Lato do projeto. */
+    font-family: 'Lato', sans-serif;
+    /* Deixa o texto do botão em negrito. */
+    font-weight: 700;
+    /* Define o tamanho do texto. */
+    font-size: 16px;
+    /* Define o espaçamento interno do botão. */
+    padding: 10px 25px;
+    /* Arredonda os cantos do botão. */
+    border-radius: 5px;
+    /* Remove qualquer sublinhado. */
+    text-decoration: none;
+    /* Permite controlar o tamanho e espaçamento do botão. */
+    display: inline-block;
+    /* Define o cursor como ponteiro ao passar sobre o botão. */
+    cursor: pointer;
+    /* Cria uma transição suave entre as cores. */
+    transition: all 0.3s ease;
+}
+
+
+    /* ================================================================
+   HOVER DO BOTÃO DESATIVAR CONTA
+   ================================================================ */
+
+    /* Aplica o efeito quando o mouse passa sobre o botão. */
+    .btn-desativar-conta-kiora:hover {
+        /* Transforma o fundo do botão em dourado. */
+        background-color: #D9B27A;
+        /* Mantém a borda dourada. */
+        border-color: #D9B27A;
+        /* Muda o texto para o fundo escuro do Kiora. */
+        color: #0E0E0E;
+        /* Remove qualquer sublinhado. */
+        text-decoration: none;
+    }
+
+/* ================================================================
+   ÁREA DE DESATIVAÇÃO DA CONTA
+   ================================================================ */
+
+/* Cria um espaço maior entre os botões superiores
+   e a área de desativação da conta. */
+.perfil-kiora-desativar-conta {
+    margin-top: 45px;
+    padding-top: 25px;
+    border-top: 1px solid rgba(217, 178, 122, 0.25);
+}

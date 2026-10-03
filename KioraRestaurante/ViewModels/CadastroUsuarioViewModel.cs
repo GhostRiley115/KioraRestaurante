@@ -66,5 +66,16 @@ namespace KioraRestaurante.ViewModels
         // Resultado: inválido.
         [Compare("Senha", ErrorMessage = "As senhas não são iguais.")]
         public string ConfirmarSenha { get; set; } = string.Empty;
+
+
+        // ACEITE DOS TERMOS
+
+        // Define se o usuário confirmou que leu e concorda
+        // com os Termos de Uso e a Política de Privacidade.
+        //
+        // O campo é obrigatório para concluir o cadastro.
+        [Range(typeof(bool), "true", "true",
+            ErrorMessage = "É necessário aceitar os Termos de Uso e a Política de Privacidade.")]
+        public bool AceiteTermos { get; set; }
     }
 }

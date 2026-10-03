@@ -80,7 +80,8 @@ namespace KioraRestaurante.Services
                 Nome = dto.Nome.Trim(),
                 Email = NormalizarEmail(dto.Email),
                 Tipo = TipoUsuario.Cliente, //impede que escolha "Administrador" durante o cadastro.
-                Ativo = true
+                Ativo = true,
+                AceitouTermos = dto.AceiteTermos
             };
 
             /*A senha digitada pelo usuário NÃO será armazenada diretamente no banco.
@@ -245,6 +246,29 @@ namespace KioraRestaurante.Services
 
             usuario.SenhaHash = _passwordHasher.HashPassword(usuario,dto.NovaSenha);
 
+            _context.SaveChanges();
+
+            return true;
+        }
+
+        /* ---- DESATIVAR CONTA ---- */
+        //Desativa a conta sem excluir o usuário do banco de dados.
+        public bool DesativarConta(int usuarioId)
+        {
+            //Localiza o usuário pelo Id e verifica se a conta ainda está ativa.
+            var usuario = _context.Usuarios
+                .FirstOrDefault(u => u.Id == usuarioId && u.Ativo);
+
+            //Caso o usuário não seja encontrado ou já esteja desativado,
+            //a operação não será realizada.
+            if (usuario == null)
+                return false;
+
+            //Desativa a conta logicamente.
+            //O registro do usuário continuará existindo no banco.
+            usuario.Ativo = false;
+
+            //Salva a alteração no banco de dados.
             _context.SaveChanges();
 
             return true;

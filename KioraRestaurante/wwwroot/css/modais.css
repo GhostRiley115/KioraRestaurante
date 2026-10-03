@@ -938,6 +938,127 @@
             color: #FFFFFF;
         }
 
+/* =========================================================
+   TERMOS DE USO E POLÍTICA DE PRIVACIDADE
+   ========================================================= */
+
+/* Configura a área de aceite */
+.modal-cadastro-termos {
+    /* Cria espaçamento acima */
+    margin-top: 20px;
+    /* Cria espaçamento abaixo */
+    margin-bottom: 22px;
+}
+
+
+/* Configura a área do checkbox */
+.modal-cadastro-termos-check {
+    /* Ativa Flexbox */
+    display: flex;
+    /* Alinha no topo */
+    align-items: flex-start;
+    /* Cria pequeno espaço */
+    gap: 10px;
+}
+
+
+    /* Configura o checkbox */
+    .modal-cadastro-termos-check input[type="checkbox"] {
+        /* Define tamanho */
+        width: 17px;
+        /* Define altura */
+        height: 17px;
+        /* Remove aparência padrão */
+        appearance: none;
+        /* Cria borda */
+        border: 1px solid #D9B27A;
+        /* Arredonda levemente */
+        border-radius: 3px;
+        /* Mantém fundo escuro */
+        background-color: transparent;
+        /* Impede que diminua */
+        flex-shrink: 0;
+        /* Cria espaço superior */
+        margin-top: 2px;
+        /* Permite posicionamento */
+        position: relative;
+        /* Mostra que é clicável */
+        cursor: pointer;
+        /* Cria transição */
+        transition: all 0.2s ease;
+    }
+
+
+        /* Checkbox marcado */
+        .modal-cadastro-termos-check input[type="checkbox"]:checked {
+            /* Define fundo dourado */
+            background-color: #D9B27A;
+            /* Mantém borda dourada */
+            border-color: #D9B27A;
+        }
+
+
+            /* Símbolo de confirmação */
+            .modal-cadastro-termos-check input[type="checkbox"]:checked::after {
+                /* Cria conteúdo */
+                content: "✓";
+                /* Posiciona */
+                position: absolute;
+                /* Centraliza horizontalmente */
+                left: 50%;
+                /* Centraliza verticalmente */
+                top: 50%;
+                /* Ajusta posição */
+                transform: translate(-50%, -52%);
+                /* Define cor */
+                color: #0E0E0E;
+                /* Define tamanho */
+                font-size: 12px;
+                /* Define peso */
+                font-weight: 700;
+            }
+
+
+    /* Configura o texto */
+    .modal-cadastro-termos-check label {
+        /* Remove margem padrão */
+        margin: 0;
+        /* Define cor */
+        color: #B8B8B8;
+        /* Define fonte */
+        font-family: 'Lato', sans-serif;
+        /* Define tamanho */
+        font-size: 0.82rem;
+        /* Define altura das linhas */
+        line-height: 1.5;
+        /* Mostra que pode clicar */
+        cursor: pointer;
+    }
+
+
+        /* Links dos documentos */
+        .modal-cadastro-termos-check label a {
+            /* Define dourado */
+            color: #D9B27A;
+            /* Define peso */
+            font-weight: 700;
+            /* Remove sublinhado padrão */
+            text-decoration: none;
+            /* Cria transição */
+            transition: color 0.2s ease;
+        }
+
+
+            /* Hover dos links */
+            .modal-cadastro-termos-check label a:hover {
+                /* Muda para branco */
+                color: #FFFFFF;
+                /* Adiciona sublinhado */
+                text-decoration: underline;
+                /* Ajusta distância */
+                text-underline-offset: 3px;
+            }
+
 
 /* =========================================================
    LOGO
