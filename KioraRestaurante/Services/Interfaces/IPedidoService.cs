@@ -12,4 +12,5 @@ public interface IPedidoService
     Task<Pedido?> BuscarPedido(int usuarioId, int pedidoId);
 
     Task<List<Pedido>> ListarPedidos(int usuarioId);
+
 }

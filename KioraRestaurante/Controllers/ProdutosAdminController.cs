@@ -28,6 +28,7 @@ public class ProdutosAdminController : Controller
 
     private const string ViewLista = "~/Views/Admin/Produtos/Index.cshtml";
     private const string ViewEdicao = "~/Views/Admin/Produtos/Editar.cshtml";
+    private const string ViewDesconto = "~/Views/Admin/Produtos/Desconto.cshtml";
     private int AdministradorId =>
         int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var id) ? id : 0;
 
@@ -43,12 +44,21 @@ public class ProdutosAdminController : Controller
     [HttpGet]
     public async Task<IActionResult> Cadastrar()
     {
-        var model = new CadastrarProdutoViewModel
+        try
         {
-            Categorias = await _categoriaService.ListarTodas()
-        };
+            var model = new CadastrarProdutoViewModel
+            {
+                Categorias = await _categoriaService.ListarTodas()
+            };
 
-        return View(ViewCadastro, model);
+            model.Combo.Opcoes = await _produtoService.ListarOpcoesComponentes(AdministradorId);
+
+            return View(ViewCadastro, model);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Forbid();
+        }
     }
 
     // Cadastra um novo produto pela tela de Admin.
@@ -86,7 +96,10 @@ public class ProdutosAdminController : Controller
                     Descricao = model.Descricao,
                     Preco = preco,
                     CategoriaId = model.CategoriaId,
-                    Disponivel = model.Disponivel
+                    Disponivel = model.Disponivel,
+                    // Transfere os campos da tela para o contrato do service.
+                    EhCombo = model.Combo.EhCombo,
+                    Componentes = model.Combo.Componentes
                 };
 
                 try
@@ -120,8 +133,19 @@ public class ProdutosAdminController : Controller
             }
         }
 
-        // Na volta com erro, precisamos montar o select novamente.
+        // Na volta com erro, precisamos montar os selects novamente.
         model.Categorias = await _categoriaService.ListarTodas();
+
+        try
+        {
+            model.Combo.Opcoes =
+                await _produtoService.ListarOpcoesComponentes(
+                    AdministradorId);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Forbid();
+        }
 
         return View(ViewCadastro, model);
     }
@@ -173,7 +197,19 @@ public class ProdutosAdminController : Controller
                 PrecoTexto = produto.Preco.ToString("0.00", CultureInfo.GetCultureInfo("pt-BR")),
                 CategoriaId = produto.CategoriaId,
                 ImagemAtual = produto.ImagemUrl,
-                Categorias = await _categoriaService.ListarTodas()
+                Categorias = await _categoriaService.ListarTodas(),
+                Combo = new ComposicaoProdutoViewModel
+                {
+                    EhCombo = produto.EhCombo,
+                    Componentes = produto.Componentes
+                        .Select(c => new ComboComponenteRequestDTO
+                        {
+                            ProdutoId = c.ProdutoId,
+                            Quantidade = c.Quantidade
+                        }).ToList(),
+
+                    Opcoes = await _produtoService.ListarOpcoesComponentes(AdministradorId, produto.Id)
+                }
             };
 
             return View(ViewEdicao, model);
@@ -207,9 +243,7 @@ public class ProdutosAdminController : Controller
 
                 if (!precoValido)
                 {
-                    ModelState.AddModelError(
-                        nameof(model.PrecoTexto),
-                        "Informe um preço válido.");
+                    ModelState.AddModelError(nameof(model.PrecoTexto), "Informe um preço válido.");
                 }
                 else
                 {
@@ -218,7 +252,9 @@ public class ProdutosAdminController : Controller
                         Nome = model.Nome,
                         Descricao = model.Descricao,
                         Preco = preco,
-                        CategoriaId = model.CategoriaId
+                        CategoriaId = model.CategoriaId,
+                        EhCombo = model.Combo.EhCombo,
+                        Componentes = model.Combo.Componentes
                     };
 
                     try
@@ -248,7 +284,10 @@ public class ProdutosAdminController : Controller
 
             // Reconstrói os dados que não são enviados pelo formulário.
             model.ImagemAtual = produto.ImagemUrl;
+
             model.Categorias = await _categoriaService.ListarTodas();
+
+            model.Combo.Opcoes = await _produtoService.ListarOpcoesComponentes(AdministradorId, model.Id);
 
             return View(ViewEdicao, model);
         }
@@ -322,5 +361,126 @@ public class ProdutosAdminController : Controller
         }
 
         return RedirectToAction(nameof(Index));
+    }
+
+    // Abre a tela com o percentual atual.
+    [HttpGet]
+    public async Task<IActionResult> Desconto(int id)
+    {
+        try
+        {
+            var produto = await _produtoService.BuscarAdmin(
+                AdministradorId,
+                id);
+
+            if (produto == null)
+            {
+                return NotFound();
+            }
+
+            var model = new AlterarDescontoViewModel
+            {
+                Id = produto.Id,
+                NomeProduto = produto.Nome,
+                PrecoOriginal = produto.Preco,
+
+                PercentualTexto = produto.DescontoPercentual.ToString(
+                    "0.##",
+                    CultureInfo.GetCultureInfo("pt-BR"))
+            };
+
+            return View(ViewDesconto, model);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Forbid();
+        }
+    }
+
+    // Recebe o formulário e altera somente o desconto.
+    [HttpPost]
+    public async Task<IActionResult> Desconto(
+        AlterarDescontoViewModel model)
+    {
+        try
+        {
+            var produto = await _produtoService.BuscarAdmin(
+                AdministradorId,
+                model.Id);
+
+            if (produto == null)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                // Padroniza a entrada:
+                // "10,50" e "10.50" passam a usar ponto.
+                var texto = model.PercentualTexto.Replace(',', '.');
+
+                var convertido = decimal.TryParse(
+                    texto,
+                    NumberStyles.AllowDecimalPoint,
+                    CultureInfo.InvariantCulture,
+                    out var percentual);
+
+                if (!convertido)
+                {
+                    ModelState.AddModelError(
+                        nameof(model.PercentualTexto),
+                        "Informe um percentual válido.");
+                }
+                else
+                {
+                    try
+                    {
+                        await _produtoService.AlterarDesconto(
+                            AdministradorId,
+                            model.Id,
+                            new AlterarDescontoRequestDTO
+                            {
+                                Percentual = percentual
+                            });
+
+                        TempData["AdminSucesso"] =
+                            "Desconto atualizado com sucesso.";
+
+                        return RedirectToAction(nameof(Index));
+                    }
+                    catch (ValidationException ex)
+                    {
+                        ModelState.AddModelError(
+                            nameof(model.PercentualTexto),
+                            ex.Message);
+                    }
+                    catch (RegraProdutoException ex)
+                    {
+                        ModelState.AddModelError("", ex.Message);
+                    }
+                    catch (DbUpdateException)
+                    {
+                        ModelState.AddModelError(
+                            "",
+                            "Não foi possível confirmar a alteração. " +
+                            "Confira o produto antes de tentar novamente.");
+                    }
+                }
+            }
+
+            // Recupera informações de exibição na volta com erro.
+            model.NomeProduto = produto.Nome;
+            model.PrecoOriginal = produto.Preco;
+
+            return View(ViewDesconto, model);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Forbid();
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
     }
 }

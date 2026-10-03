@@ -21,4 +21,11 @@ public class ProdutoAdminResponseDTO
     public bool Ativo { get; set; }
 
     public bool Disponivel { get; set; }
+
+    public bool EhCombo { get; set; }
+
+    public decimal DescontoPercentual { get; set; }
+
+    // Dados necessários para preencher a edição de um combo.
+    public List<ComboComponenteRequestDTO> Componentes { get; set; } = new();
 }

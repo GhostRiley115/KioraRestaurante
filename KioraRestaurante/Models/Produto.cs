@@ -43,5 +43,18 @@ namespace KioraRestaurante.Models
          *navegação do produto para cada ItemPedido que ele esteja.
          */
         public List<ItemPedido> ItensPedido { get; set; } = new();
+
+        // Identifica se esse produto representa um conjunto de produtos.
+        public bool EhCombo { get; set; }
+
+        // Zero significa que não existe desconto aplicado.
+        [Range(typeof(decimal), "0", "90",
+            ParseLimitsInInvariantCulture = true,
+            ErrorMessage = "Informe um desconto entre 0% e 90%.")]
+        [Column(TypeName = "decimal(5,2)")]
+        public decimal DescontoPercentual { get; set; }
+
+        // Componentes que fazem parte deste produto quando ele é um combo.
+        public List<ComboComponente> Componentes { get; set; } = new();
     }
 }

@@ -23,6 +23,17 @@ namespace KioraRestaurante.Models
         [Column(TypeName = "decimal(10,2)")]
         public decimal PrecoUnitario { get; set; }
 
+        // Nulos nos pedidos antigos, que não possuíam esses registros.
+        [Column(TypeName = "decimal(10,2)")]
+        public decimal? PrecoOriginalUnitario { get; set; }
+
+        [Column(TypeName = "decimal(5,2)")]
+        public decimal? DescontoPercentual { get; set; }
+
+        // Texto histórico, independente da composição atual do produto.
+        [Column(TypeName = "text")]
+        public string? Composicao { get; set; }
+
         //snapshot do nome do produto
         [Required]
         [MaxLength(100)]

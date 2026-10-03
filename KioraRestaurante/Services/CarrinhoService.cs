@@ -27,6 +27,12 @@ namespace KioraRestaurante.Services
             return _context.Carrinhos
                 .Include(c => c.ItensCarrinho)
                 .ThenInclude(i => i.Produto)
+                .ThenInclude(p => p.Categoria)
+
+                .Include(c => c.ItensCarrinho)
+                .ThenInclude(i => i.Produto)
+                .ThenInclude(p => p.Componentes)
+                .ThenInclude(c => c.Produto)
                 .ThenInclude(p => p.Categoria);
         }
 
@@ -99,7 +105,8 @@ namespace KioraRestaurante.Services
         
         private static void ValidarProduto(Produto produto)
         {
-            if (!produto.Ativo || !produto.Disponivel || !produto.Categoria.Ativa)
+            // A mesma regra do cardápio também verifica os componentes de combos.
+            if (!ProdutoVenda.EstaDisponivel(produto))
                 throw new InvalidOperationException("Este produto não está disponível para compra.");
         }
 
@@ -125,7 +132,7 @@ namespace KioraRestaurante.Services
          */
         private static ItemCarrinhoResponseDTO MontarItem(ItemCarrinho item)
         {
-            var disponivel = item.Produto.Ativo && item.Produto.Disponivel && item.Produto.Categoria.Ativa;
+            var disponivel = ProdutoVenda.EstaDisponivel(item.Produto);
 
             /*
              * Cria uma lista de avisos gerais que se inicia null -> a cada verificação,
@@ -139,6 +146,8 @@ namespace KioraRestaurante.Services
             else if (item.Quantidade < 1 || item.Quantidade > QuantidadeMaxima)
                 aviso = $"Ajuste a quantidade para um valor entre 1 e {QuantidadeMaxima}.";
 
+            var precoFinal = PrecoProduto.Calcular(item.Produto.Preco, item.Produto.DescontoPercentual);
+
             /*
              * Pega as propriedades do produto de cada item que tem no
              * ItemCarrinho do banco e joga para as propriedades do DTO.
@@ -148,12 +157,16 @@ namespace KioraRestaurante.Services
                 ProdutoId = item.ProdutoId,
                 NomeProduto = item.Produto.Nome,
                 ImagemUrl = item.Produto.Imagem,
-                PrecoUnitario = item.Produto.Preco,
+                PrecoOriginalUnitario = item.Produto.Preco,
+                DescontoPercentual = item.Produto.DescontoPercentual,
+                PrecoUnitario = precoFinal,
                 Quantidade = item.Quantidade,
-                Subtotal = item.Quantidade * item.Produto.Preco, /*
-                                                                  * Multiplica a quantidade de item dentro do ItemCarrinho
-                                                                  * pelo preço do produto.
-                                                                  */
+                Subtotal = item.Quantidade * precoFinal, /*
+                                                          * Multiplica a quantidade de item dentro do ItemCarrinho
+                                                          * pelo preço do produto.
+                                                          */
+                EhCombo = item.Produto.EhCombo,
+                Composicao = ProdutoVenda.DescreverComposicao(item.Produto),
                 DisponivelParaCompra = disponivel,
                 Aviso = aviso
             };
@@ -340,10 +353,19 @@ namespace KioraRestaurante.Services
             // Consulta o banco para encontrar o produto com o ID recebido.
             var produto = await _context.Produtos
                 .Include(p => p.Categoria)
+                .Include(p => p.Componentes)
+                .ThenInclude(c => c.Produto)
+                .ThenInclude(p => p.Categoria)
                 .SingleOrDefaultAsync(p => p.Id == dto.ProdutoId);
 
             if(produto == null)
                 throw new KeyNotFoundException("Produto não encontrado");
+
+            if (!ProdutoVenda.EstaDisponivel(produto))
+            {
+                throw new InvalidOperationException(
+                    "Este produto ou um componente do combo está indisponível.");
+            }
             
             // Verifica se o produto está ativo ou disponível.
             ValidarProduto(produto);

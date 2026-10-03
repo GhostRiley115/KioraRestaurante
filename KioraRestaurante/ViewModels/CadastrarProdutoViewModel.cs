@@ -33,4 +33,7 @@ public class CadastrarProdutoViewModel
     [BindNever]
     [ValidateNever]
     public List<CategoriaResponseDTO> Categorias { get; set; } = new();
+
+    // Agrupa os campos usados para configurar a composição.
+    public ComposicaoProdutoViewModel Combo { get; set; } = new();
 }

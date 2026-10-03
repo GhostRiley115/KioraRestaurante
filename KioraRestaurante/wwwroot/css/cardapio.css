@@ -637,7 +637,7 @@ html {
     color: #D9B27A;
 }
 /* ÍCONES LOCAIS DAS CATEGORIAS: herdam a cor normal, ativa e de hover. */
-.categoria-icone { width: 24px; height: 24px; flex-shrink: 0; }
+.categorias-menu .categoria-icone { width: 24px; height: 24px; flex-shrink: 0; }
 
 /* ================================================================
    CARDÁPIO RESPONSIVO
@@ -691,10 +691,70 @@ html {
 }
 
 /* Evita que os efeitos de mouse deixem o card deslocado após um toque. */
-@media (hover: none) {
+@media (hover: none), (pointer: coarse) {
     .produto-card:hover,
     .produto-card:hover .produto-informacoes h3,
     .produto-card:hover .produto-informacoes p,
     .produto-card:hover .produto-preco,
-    .btn-adicionar-produto:hover { transform: none; }
+    .btn-adicionar-produto:hover,
+    .btn-adicionar-produto:hover i,
+    .btn-adicionar-produto:hover span,
+    .produto-card:hover .produto-imagem img { transform: none; }
+}
+
+/* ETIQUETAS: identifica combos e descontos sem alterar o tamanho do card. */
+.cardapio-kiora .produto-etiqueta {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    background: #7d1f1f;
+    color: #f8f5f2;
+    font-size: 0.8rem;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+/* PREÇO ANTERIOR E DESCONTO: permite quebrar linha no celular. */
+.cardapio-kiora .produto-desconto {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.4rem;
+}
+
+.cardapio-kiora .produto-desconto del {
+    color: var(--k-texto-suave, #BDBDBD);
+    font-size: 0.9rem;
+}
+
+/* ORGANIZAÇÃO DO PREÇO: a descrição não encosta na área de compra.
+   O desconto pode quebrar linha sem empurrar o conteúdo para fora do card. */
+.cardapio-kiora .produto-rodape {
+    margin-top: auto;
+    padding-top: 16px;
+}
+
+.cardapio-kiora .produto-rodape > div { width: 100%; min-width: 0; }
+.cardapio-kiora .produto-informacoes > p { margin-bottom: 20px; }
+.cardapio-kiora .produto-informacoes > .produto-etiqueta { margin-bottom: 10px; }
+.cardapio-kiora .produto-desconto del { white-space: nowrap; }
+
+/* O título das categorias tem a mesma organização no desktop e no celular. */
+.categorias-titulo { display: flex; align-items: center; gap: 10px; }
+.categorias-titulo h2 { margin: 0; font-size: 1.1rem; }
+
+/* Respeita quem prefere menos movimento, mantendo os indicadores visuais. */
+@media (prefers-reduced-motion: reduce) {
+    .cardapio-kiora *,
+    .cardapio-kiora *::before,
+    .cardapio-kiora *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+    .cardapio-kiora .produto-card:hover,
+    .cardapio-kiora .produto-card:hover *,
+    .cardapio-kiora .btn-adicionar-produto:active { transform: none; }
 }

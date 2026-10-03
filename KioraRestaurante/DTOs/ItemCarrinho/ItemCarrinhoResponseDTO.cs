@@ -17,5 +17,9 @@ namespace KioraRestaurante.DTOs.ItemCarrinho
         public bool DisponivelParaCompra { get; set; }
         // Mensagem que a interface pode mostrar ao cliente.
         public string? Aviso { get; set; }
+        public decimal PrecoOriginalUnitario { get; set; }
+        public decimal DescontoPercentual { get; set; }
+        public bool EhCombo { get; set; }
+        public string? Composicao { get; set; }
     }
 }

@@ -10,4 +10,7 @@ public class ProdutoResponseDTO
     public bool Disponivel { get; set; }
     public int CategoriaId { get; set; }
     public string NomeCategoria { get; set; } = string.Empty;
+    public decimal PrecoOriginal { get; set; }
+    public decimal DescontoPercentual { get; set; }
+    public bool EhCombo { get; set; }
 }
