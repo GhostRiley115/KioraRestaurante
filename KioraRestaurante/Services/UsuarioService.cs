@@ -157,6 +157,26 @@ namespace KioraRestaurante.Services
             return codigo;
         }
 
+        // Valida se o código existe, pertence a um usuário ativo e ainda está dentro do prazo.
+        public bool ValidarCodigoRecuperacao(string codigo)
+        {
+            var usuario = _context.Usuarios
+                .FirstOrDefault(u =>
+                    u.TokenRecuperacaoSenha == codigo &&
+                    u.Ativo);
+
+            if (usuario == null)
+                return false;
+
+            if (usuario.ExpiracaoTokenRecuperacaoSenha == null)
+                return false;
+
+            if (usuario.ExpiracaoTokenRecuperacaoSenha < DateTime.UtcNow)
+                return false;
+
+            return true;
+        }
+
         /* ---- REDEFINE A SENHA UTILIZANDO UM TOKEN VALIDO. ---- */
         public bool RedefinirSenha(UsuarioRedefinirSenhaDTO dto)
         {

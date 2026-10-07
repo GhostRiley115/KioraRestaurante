@@ -228,6 +228,39 @@ namespace KioraRestaurante.Controllers
             });
         }
 
+        // Valida o código enviado por e-mail para recuperação de senha.
+        [HttpPost]
+        public IActionResult ValidarCodigoRecuperacao(
+            [FromForm] ValidarCodigoRecuperacaoViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new
+                {
+                    sucesso = false,
+                    mensagem = "Informe um código de 6 dígitos."
+                });
+            }
+
+            var codigoValido = _usuarioService
+                .ValidarCodigoRecuperacao(model.Codigo);
+
+            if (!codigoValido)
+            {
+                return BadRequest(new
+                {
+                    sucesso = false,
+                    mensagem = "Código inválido ou expirado."
+                });
+            }
+
+            return Ok(new
+            {
+                sucesso = true,
+                mensagem = "Código validado com sucesso."
+            });
+        }
+
         /* ---- LOGOUT ---- */
         //Permite acesso somente para usuários autenticados.
         [Authorize]
