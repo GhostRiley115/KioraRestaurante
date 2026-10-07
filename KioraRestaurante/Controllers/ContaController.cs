@@ -20,14 +20,21 @@ namespace KioraRestaurante.Controllers
     [AutoValidateAntiforgeryToken]
     public class ContaController : Controller
     {
-        //Guarda uma referência para a interface IUsuarioServices.
+        // Guarda uma referência para o serviço de usuários.
         private readonly IUsuarioService _usuarioService;
 
-        //instância de IUsuarioServices.
-        public ContaController(IUsuarioService usuarioService)
+        // Guarda uma referência para o serviço responsável pelo envio de e-mails.
+        private readonly IEmailService _emailService;
+
+        public ContaController(
+            IUsuarioService usuarioService,
+            IEmailService emailService)
         {
-            //Guarda o Service recebido na variável privada.
+            // Guarda o Service recebido na variável privada.
             _usuarioService = usuarioService;
+
+            // Guarda o serviço de e-mail recebido pela injeção de dependência.
+            _emailService = emailService;
         }
 
         /* ---- MÉTODOS AUXILIARES ---- */
@@ -179,7 +186,8 @@ namespace KioraRestaurante.Controllers
         }
 
         [HttpPost]
-        public IActionResult EsqueciSenha([FromForm] EsqueciSenhaViewModel model)
+        public async Task<IActionResult> EsqueciSenha(
+    [FromForm] EsqueciSenhaViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -195,15 +203,28 @@ namespace KioraRestaurante.Controllers
                 Email = model.Email
             };
 
-            _usuarioService.GerarTokenRecuperacao(dto);
+            // Gera o código de recuperação e salva no banco.
+            var codigo = _usuarioService.GerarTokenRecuperacao(dto);
 
-            /*Não informamos se o e-mail existe ou não,
-            evitando a enumeração de contas cadastradas.*/
+            /*
+             * Não informamos se o e-mail existe ou não,
+             * evitando a enumeração de contas cadastradas.
+             *
+             * Porém, somente enviamos o código caso o usuário
+             * realmente exista e esteja ativo.
+             */
+            if (codigo != null)
+            {
+                await _emailService.EnviarCodigoRecuperacaoSenhaAsync(
+                    model.Email,
+                    codigo);
+            }
+
             return Ok(new
             {
                 sucesso = true,
                 mensagem =
-                    "Se o e-mail estiver cadastrado, você receberá um link para redefinir sua senha."
+                    "Se o e-mail estiver cadastrado, você receberá um código para recuperar sua senha."
             });
         }
 

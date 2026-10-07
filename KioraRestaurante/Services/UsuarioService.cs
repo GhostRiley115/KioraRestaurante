@@ -136,23 +136,25 @@ namespace KioraRestaurante.Services
 
             var usuario = _context.Usuarios
                 .FirstOrDefault(u => u.Email == email && u.Ativo);
-            if(usuario == null) 
+
+            if (usuario == null)
                 return null;
 
-            //Gera um identificador único.
-            var token = Guid.NewGuid().ToString();
+            // Gera um código numérico de 6 dígitos.
+            var codigo = Random.Shared.Next(100000, 1000000).ToString();
 
-            //Salva o token no usuário.
-            usuario.TokenRecuperacaoSenha = token;
-            /*Define por quanto tempo o token será válido.
-            Neste caso: token criado agora + 30 minutos de validade.*/
-            usuario.ExpiracaoTokenRecuperacaoSenha = DateTime.UtcNow.AddMinutes(30);
+            // Salva o código no campo que já existe no banco.
+            usuario.TokenRecuperacaoSenha = codigo;
 
-            //Salva o token e a data de expiração no banco.
+            // Define a validade do código para 10 minutos.
+            usuario.ExpiracaoTokenRecuperacaoSenha =
+                DateTime.UtcNow.AddMinutes(10);
+
+            // Salva o código e sua validade no banco.
             _context.SaveChanges();
 
-            //Retorna o token para quem chamou o método.
-            return token;
+            // Retorna o código para que o Controller possa enviá-lo por e-mail.
+            return codigo;
         }
 
         /* ---- REDEFINE A SENHA UTILIZANDO UM TOKEN VALIDO. ---- */
