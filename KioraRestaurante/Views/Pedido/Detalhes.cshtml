@@ -1,6 +1,7 @@
 @model KioraRestaurante.Models.Pedido
 @using System.Globalization
 @using KioraRestaurante.Models.Enums
+@using KioraRestaurante.Helpers
 
 @{
     ViewData["Title"] = $"Pedido #{Model.Id}";
@@ -80,11 +81,11 @@
             <section class="pedido-box">
                 <h2>Informações do pedido</h2>
 
-                <p><strong>Situação:</strong> @status</p>
+                <p><strong>Situação:</strong> <span class="status-etiqueta @StatusVisual.Pedido(Model.StatusPedido)">@status</span></p>
                 <p><strong>Forma de pagamento:</strong> @pagamento</p>
                 <p>
                     <strong>Pagamento:</strong>
-                    @Model.StatusPagamento
+                    <span class="status-etiqueta @StatusVisual.Pagamento(Model.StatusPagamento)">@Model.StatusPagamento</span>
                 </p>
 
                 <h2 class="mt-4">Entrega</h2>
