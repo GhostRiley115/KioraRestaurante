@@ -20,6 +20,9 @@ namespace KioraRestaurante.Services.Interfaces
         //Gera um token para recuperação de senha.
         string? GerarTokenRecuperacao(UsuarioSolicitarRecuperacaoDTO dto);
 
+        // Valida o código enviado para recuperação de senha.
+        bool ValidarCodigoRecuperacao(string codigo);
+
         //Redefine a senha utilizando o token
         bool RedefinirSenha(UsuarioRedefinirSenhaDTO dto);
 
