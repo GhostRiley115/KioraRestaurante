@@ -2,21 +2,24 @@ using KioraRestaurante.DTOs.Usuario;
 using KioraRestaurante.Services.Interfaces;
 using KioraRestaurante.ViewModels;
 
-/*Permite utilizar Controller, IActionResult, HttpGet, HttpPost
-e outros recursos do ASP.NET Core MVC.*/
+/* Permite utilizar Controller, IActionResult, HttpGet, HttpPost
+   e outros recursos do ASP.NET Core MVC. */
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-//recursos de autenticação do ASP.NET Core.
+
+// Recursos de autenticação do ASP.NET Core.
 using Microsoft.AspNetCore.Authentication;
-//esquema de autenticação por Cookie.
+
+// Esquema de autenticação por Cookie.
 using Microsoft.AspNetCore.Authentication.Cookies;
-/*Permite criar as informações que serão armazenadas
-dentro do Cookie de autenticação.*/
+
+/* Permite criar as informações que serão armazenadas
+   dentro do Cookie de autenticação. */
 using System.Security.Claims;
 
 namespace KioraRestaurante.Controllers
 {
-    //Controller responsável pelas operações relacionadas à conta do usuário.
+    // Controller responsável pelas operações relacionadas à conta do usuário.
     [AutoValidateAntiforgeryToken]
     public class ContaController : Controller
     {
@@ -38,7 +41,8 @@ namespace KioraRestaurante.Controllers
         }
 
         /* ---- MÉTODOS AUXILIARES ---- */
-        //Obtém o Id do usuário armazenado no cookie de autenticação.
+
+        // Obtém o Id do usuário armazenado no cookie de autenticação.
         private int? ObterUsuarioId()
         {
             var id = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -49,40 +53,54 @@ namespace KioraRestaurante.Controllers
             return usuarioId;
         }
 
-        /*Cria as informações do usuário que serão armazenadas
-        no cookie de autenticação.*/
+        /* Cria as informações do usuário que serão armazenadas
+           no cookie de autenticação. */
         private static ClaimsPrincipal CriarPrincipal(
             UsuarioResponseDTO usuario)
         {
-            //Cria as informações que serão armazenadas no Cookie de autenticação.
+            // Cria as informações que serão armazenadas no Cookie de autenticação.
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
-                new Claim(ClaimTypes.Name, usuario.Nome),
-                new Claim(ClaimTypes.Email, usuario.Email),
-                new Claim(ClaimTypes.Role, usuario.Tipo.ToString())
+                new Claim(
+                    ClaimTypes.NameIdentifier,
+                    usuario.Id.ToString()),
+
+                new Claim(
+                    ClaimTypes.Name,
+                    usuario.Nome),
+
+                new Claim(
+                    ClaimTypes.Email,
+                    usuario.Email),
+
+                new Claim(
+                    ClaimTypes.Role,
+                    usuario.Tipo.ToString())
             };
 
-            //Cria a identidade utilizando o esquema e autenticação por Cookie.
+            // Cria a identidade utilizando o esquema de autenticação por Cookie.
             var identidade = new ClaimsIdentity(
-                claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                claims,
+                CookieAuthenticationDefaults.AuthenticationScheme);
 
-            //Cria o objeto que representa o usuário autenticado.
+            // Cria o objeto que representa o usuário autenticado.
             return new ClaimsPrincipal(identidade);
         }
 
-        //Retorna a primeira mensagem gerada pelas validações do formulário.
+        // Retorna a primeira mensagem gerada pelas validações do formulário.
         private string ObterPrimeiroErroValidacao()
         {
-            //Obtém a primeira mensagem de validação encontrada. Dessa forma, o sistema poderá apresentar mensagens ao usuário.
+            // Obtém a primeira mensagem de validação encontrada.
+            // Dessa forma, o sistema poderá apresentar mensagens ao usuário.
             return ModelState.Values
                 .SelectMany(v => v.Errors)
                 .Select(e => e.ErrorMessage)
                 .FirstOrDefault()
-                ?? "Verifique os dados informados."; //Caso nenhuma mensagem seja encontrada, utiliza uma mensagem padrão.
+                ?? "Verifique os dados informados.";
         }
 
-        /*---- CADASTRO ---- */
+        /* ---- CADASTRO ---- */
+
         [HttpGet]
         public IActionResult Cadastro()
         {
@@ -92,7 +110,8 @@ namespace KioraRestaurante.Controllers
         [HttpPost]
         public IActionResult Cadastro(CadastroUsuarioViewModel model)
         {
-            //Verifica se os dados enviados pelo formulário passaram pelas validações do ViewModel.
+            // Verifica se os dados enviados pelo formulário
+            // passaram pelas validações do ViewModel.
             if (!ModelState.IsValid)
             {
                 return BadRequest(new
@@ -102,7 +121,8 @@ namespace KioraRestaurante.Controllers
                 });
             }
 
-            //Verifica se já existe um usuário cadastrado utilizando o e-mail informado.
+            // Verifica se já existe um usuário cadastrado
+            // utilizando o e-mail informado.
             if (_usuarioService.EmailExiste(model.Email))
             {
                 return BadRequest(new
@@ -112,7 +132,8 @@ namespace KioraRestaurante.Controllers
                 });
             }
 
-            //Cria uma nova entidade Usuario utilizando os dados recebidos do formulário.
+            // Cria uma nova entidade Usuario utilizando
+            // os dados recebidos do formulário.
             var dto = new UsuarioCadastroDTO
             {
                 Nome = model.Nome,
@@ -148,7 +169,7 @@ namespace KioraRestaurante.Controllers
                 return BadRequest(new
                 {
                     sucesso = false,
-                    mensagem = ObterPrimeiroErroValidacao(),
+                    mensagem = ObterPrimeiroErroValidacao()
                 });
             }
 
@@ -158,7 +179,7 @@ namespace KioraRestaurante.Controllers
                 Senha = model.Senha
             };
 
-            //Procura o usuário pelo e-mail e verifica a senha.
+            // Procura o usuário pelo e-mail e verifica a senha.
             var usuario = _usuarioService.Autenticar(dto);
 
             if (usuario == null)
@@ -170,12 +191,15 @@ namespace KioraRestaurante.Controllers
                 });
             }
 
-            //Cria o objeto que representa o usuário autenticado.
+            // Cria o objeto que representa o usuário autenticado.
             var principal = CriarPrincipal(usuario);
 
-            /*Cria o Cookie de autenticação no navegador. A partir deste momento o ASP.NET Core
-            poderá reconhecer o usuário nas próximas requisições.*/
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+            /* Cria o Cookie de autenticação no navegador.
+               A partir deste momento o ASP.NET Core poderá
+               reconhecer o usuário nas próximas requisições. */
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                principal);
 
             return Ok(new
             {
@@ -185,9 +209,11 @@ namespace KioraRestaurante.Controllers
             });
         }
 
+        /* ---- RECUPERAÇÃO DE SENHA ---- */
+
         [HttpPost]
         public async Task<IActionResult> EsqueciSenha(
-    [FromForm] EsqueciSenhaViewModel model)
+            [FromForm] EsqueciSenhaViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -261,43 +287,94 @@ namespace KioraRestaurante.Controllers
             });
         }
 
+        // Redefine a senha utilizando o código de recuperação validado.
+        [HttpPost]
+        public IActionResult RedefinirSenha(
+            [FromForm] RedefinirSenhaViewModel model)
+        {
+            // Verifica se os dados enviados pela etapa de redefinição
+            // passaram pelas validações da ViewModel.
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new
+                {
+                    sucesso = false,
+                    mensagem = ObterPrimeiroErroValidacao()
+                });
+            }
+
+            // Converte os dados recebidos da ViewModel
+            // para o DTO utilizado pelo UsuarioService.
+            var dto = new UsuarioRedefinirSenhaDTO
+            {
+                Token = model.Codigo,
+                NovaSenha = model.NovaSenha,
+                ConfirmarNovaSenha = model.ConfirmarNovaSenha
+            };
+
+            // Solicita ao Service a alteração da senha.
+            var senhaRedefinida = _usuarioService.RedefinirSenha(dto);
+
+            // Caso o código seja inválido ou esteja expirado.
+            if (!senhaRedefinida)
+            {
+                return BadRequest(new
+                {
+                    sucesso = false,
+                    mensagem = "Código inválido ou expirado."
+                });
+            }
+
+            // Informa ao JavaScript que a senha foi alterada.
+            return Ok(new
+            {
+                sucesso = true,
+                mensagem = "Senha redefinida com sucesso!"
+            });
+        }
+
         /* ---- LOGOUT ---- */
-        //Permite acesso somente para usuários autenticados.
+
+        // Permite acesso somente para usuários autenticados.
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
-            //Remove o Cookie que mantém o usuário autenticado.
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            // Remove o Cookie que mantém o usuário autenticado.
+            await HttpContext.SignOutAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme);
 
-            //Depois de sair, retorna para a página inicial.
+            // Depois de sair, retorna para a página inicial.
             return RedirectToAction("Index", "Home");
         }
 
         /* ---- MEU PERFIL ---- */
-        //Permite acesso somente para usuários autenticados.
+
+        // Permite acesso somente para usuários autenticados.
         [Authorize]
         [HttpGet]
         public IActionResult MeuPerfil()
         {
             var usuarioId = ObterUsuarioId();
 
-            //Verifica se o id foi encontrado no Cookie de autenticação.
+            // Verifica se o id foi encontrado no Cookie de autenticação.
             if (usuarioId == null)
                 return RedirectToAction("Index", "Home");
 
-            //Procura o usuário no banco de dados utilizando o id.
+            // Procura o usuário no banco de dados utilizando o id.
             var usuario = _usuarioService.BuscarPorId(usuarioId.Value);
 
             if (usuario == null)
                 return RedirectToAction("Index", "Home");
 
-            //Envia o usuário encontrado para a View MeuPerfil.cshtml.
+            // Envia o usuário encontrado para a View MeuPerfil.cshtml.
             return View(usuario);
         }
 
         /* ---- EDITAR PERFIL ---- */
-        //Esta ação será responsável por carregar os dados atuais do usuário para a edição do perfil.
+
+        // Esta ação será responsável por carregar os dados atuais
+        // do usuário para a edição do perfil.
         [Authorize]
         [HttpGet]
         public IActionResult EditarPerfil()
@@ -305,10 +382,12 @@ namespace KioraRestaurante.Controllers
             return RedirectToAction(nameof(MeuPerfil));
         }
 
-        /*---- EDITAR PERFIL ---- */
+        /* ---- EDITAR PERFIL ---- */
+
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> EditarPerfil(EditarPerfilViewModel model)
+        public async Task<IActionResult> EditarPerfil(
+            EditarPerfilViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -337,7 +416,8 @@ namespace KioraRestaurante.Controllers
                 return BadRequest(new
                 {
                     sucesso = false,
-                    mensagem = "Este e-mail já está sendo utilizado por outra conta."
+                    mensagem =
+                        "Este e-mail já está sendo utilizado por outra conta."
                 });
             }
 
@@ -347,7 +427,9 @@ namespace KioraRestaurante.Controllers
                 Email = model.Email
             };
 
-            var atualizado = _usuarioService.AtualizarPerfil(usuarioId.Value, dto);
+            var atualizado = _usuarioService.AtualizarPerfil(
+                usuarioId.Value,
+                dto);
 
             if (!atualizado)
             {
@@ -358,7 +440,7 @@ namespace KioraRestaurante.Controllers
                 });
             }
 
-            //Busca os dados atualizados para renovar o cookie.
+            // Busca os dados atualizados para renovar o cookie.
             var usuario = _usuarioService.BuscarPorId(usuarioId.Value);
 
             if (usuario == null)
@@ -372,8 +454,9 @@ namespace KioraRestaurante.Controllers
 
             var principal = CriarPrincipal(usuario);
 
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults
-                .AuthenticationScheme,principal);
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                principal);
 
             return Ok(new
             {
@@ -384,9 +467,11 @@ namespace KioraRestaurante.Controllers
         }
 
         /* ---- ALTERAR SENHA ---- */
+
         [Authorize]
         [HttpPost]
-        public IActionResult AlterarSenha(AlterarSenhaViewModel model)
+        public IActionResult AlterarSenha(
+            AlterarSenhaViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -415,7 +500,9 @@ namespace KioraRestaurante.Controllers
                 ConfirmarNovaSenha = model.ConfirmarNovaSenha
             };
 
-            var senhaAlterada = _usuarioService.AlterarSenha(usuarioId.Value, dto);
+            var senhaAlterada = _usuarioService.AlterarSenha(
+                usuarioId.Value,
+                dto);
 
             if (!senhaAlterada)
             {
@@ -434,15 +521,16 @@ namespace KioraRestaurante.Controllers
         }
 
         /* ---- DESATIVAR CONTA ---- */
-        //Permite acesso somente para usuários autenticados.
+
+        // Permite acesso somente para usuários autenticados.
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> DesativarConta()
         {
-            //Obtém o Id do usuário através do Cookie de autenticação.
+            // Obtém o Id do usuário através do Cookie de autenticação.
             var usuarioId = ObterUsuarioId();
 
-            //Verifica se foi possível identificar o usuário logado.
+            // Verifica se foi possível identificar o usuário logado.
             if (usuarioId == null)
             {
                 return BadRequest(new
@@ -452,10 +540,11 @@ namespace KioraRestaurante.Controllers
                 });
             }
 
-            //Solicita ao Service a desativação da conta.
-            var desativado = _usuarioService.DesativarConta(usuarioId.Value);
+            // Solicita ao Service a desativação da conta.
+            var desativado = _usuarioService.DesativarConta(
+                usuarioId.Value);
 
-            //Caso o usuário não seja encontrado ou já esteja desativado.
+            // Caso o usuário não seja encontrado ou já esteja desativado.
             if (!desativado)
             {
                 return BadRequest(new
@@ -465,11 +554,11 @@ namespace KioraRestaurante.Controllers
                 });
             }
 
-            //Remove o Cookie de autenticação e encerra a sessão.
+            // Remove o Cookie de autenticação e encerra a sessão.
             await HttpContext.SignOutAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme);
 
-            //Informa ao JavaScript que a conta foi desativada com sucesso.
+            // Informa ao JavaScript que a conta foi desativada com sucesso.
             return Ok(new
             {
                 sucesso = true,
