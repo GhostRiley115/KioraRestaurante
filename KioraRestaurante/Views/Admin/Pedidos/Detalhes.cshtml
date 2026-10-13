@@ -17,8 +17,8 @@
         <p><strong>@Model.NomeCliente</strong><br />@Model.EmailCliente</p>
         <p>Conta @(Model.ClienteAtivo ? "ativa" : "inativa") · Usuário #@Model.UsuarioId</p>
         <a asp-action="Pedidos" asp-route-UsuarioId="@Model.UsuarioId">Ver pedidos deste cliente</a>
-        <p class="mt-3">Pedido: @TextosAdmin.Pedido(Model.StatusPedido)</p>
-        <p>Pagamento: @Model.StatusPagamento · @TextosAdmin.Pagamento(Model.FormaPagamento)</p>
+        <p class="mt-3">Pedido: <span class="status-etiqueta @StatusVisual.Pedido(Model.StatusPedido)">@TextosAdmin.Pedido(Model.StatusPedido)</span></p>
+        <p>Pagamento: <span class="status-etiqueta @StatusVisual.Pagamento(Model.StatusPagamento)">@Model.StatusPagamento</span> · @TextosAdmin.Pagamento(Model.FormaPagamento)</p>
         <h2>Entrega</h2>
         @if(Model.Endereco is { } endereco) {
             <p>@endereco.Logradouro, @endereco.Numero<br />@endereco.Bairro<br />@endereco.Cidade — @endereco.Uf<br />CEP @endereco.Cep</p>

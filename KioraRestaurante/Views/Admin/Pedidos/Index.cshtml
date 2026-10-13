@@ -33,7 +33,12 @@ else {
 <tbody>@foreach(var pedido in Model.Resultado.Itens) {
 <tr><td><strong>#@pedido.Id</strong><span class="admin-texto-bloco">@HorarioRestaurante.ParaLocal(pedido.DataPedido).ToString("dd/MM/yyyy HH:mm")</span></td>
 <td>@pedido.NomeCliente<span class="admin-texto-bloco">@pedido.EmailCliente</span></td>
-<td>@TextosAdmin.Pedido(pedido.StatusPedido)</td><td>@pedido.StatusPagamento<span class="admin-texto-bloco">@TextosAdmin.Pagamento(pedido.FormaPagamento)</span></td>
+<td>
+    <div class="admin-pagamento">
+        <span class="status-etiqueta @StatusVisual.Pagamento(pedido.StatusPagamento)">@pedido.StatusPagamento</span>
+        <span class="admin-texto-bloco">@TextosAdmin.Pagamento(pedido.FormaPagamento)</span>
+    </div>
+</td>
 <td class="admin-valor">@pedido.ValorTotal.ToString("C", cultura)</td><td><a asp-action="DetalhesPedido" asp-route-id="@pedido.Id">Ver detalhes</a></td></tr>
 }</tbody></table></div>
 }
