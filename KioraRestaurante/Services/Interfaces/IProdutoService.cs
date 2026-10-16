@@ -13,5 +13,7 @@ namespace KioraRestaurante.Services.Interfaces
         Task Editar(int administradorId, int produtoId, EditarProdutoRequestDTO dto, IFormFile? foto);
         Task AlterarAtivo(int administradorId, int produtoId, bool ativo);
         Task AlterarDisponibilidade(int administradorId, int produtoId, bool disponivel);
+        Task AlterarDesconto(int administradorId, int produtoId, AlterarDescontoRequestDTO dto);
+        Task<List<OpcaoComponenteDTO>> ListarOpcoesComponentes(int administradorId, int? produtoAtualId = null);
     }
 }

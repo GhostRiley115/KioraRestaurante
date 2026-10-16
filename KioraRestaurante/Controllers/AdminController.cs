@@ -16,6 +16,7 @@ public class AdminController : Controller
 {
     private readonly IAdminService _service;
     private readonly ILogger<AdminController> _logger;
+
     public AdminController(IAdminService service, ILogger<AdminController> logger) { _service = service; _logger = logger; }
     private int AdministradorId => int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var id) ? id : 0;
 
@@ -69,4 +70,5 @@ public class AdminController : Controller
         return !string.IsNullOrEmpty(dados.Retorno) && Url.IsLocalUrl(dados.Retorno)
             ? LocalRedirect(dados.Retorno) : RedirectToAction(nameof(Usuarios));
     }
+
 }

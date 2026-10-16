@@ -2281,3 +2281,55 @@ HOVER DO BOTÃO ALTERAR SENHA
     padding-top: 25px;
     border-top: 1px solid rgba(217, 178, 122, 0.25);
 }
+
+
+/* =========================================================
+   ETIQUETAS DE STATUS (PEDIDO E PAGAMENTO)
+   ========================================================= */
+
+
+/* 
+    O current Color é um valor próprio do CSS que um elemento acompanhe a cor de outro
+    elemento já definido.
+*/
+.status-etiqueta{
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid currentColor;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.status-recebido {
+    color: #7CC4FF;
+}
+
+.status-empreparo {
+    color: #FFD666;
+}
+
+.status-saiuparaentrega {
+    color: #C9A3FF;
+}
+
+.status-entregue {
+    color: #8FE3A6;
+}
+
+.status-cancelado {
+    color: #9A9A9A;
+}
+
+
+.status-pendente {
+    color: #FFD666;
+}
+
+.status-aprovado {
+    color: #8FE3A6;
+}
+
+.status-recusado {
+    color: #FF8A8A;
+}

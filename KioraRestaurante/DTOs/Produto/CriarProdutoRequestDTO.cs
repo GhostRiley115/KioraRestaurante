@@ -17,4 +17,9 @@ public class CriarProdutoRequestDTO
     [Range(1, int.MaxValue, ErrorMessage = "Selecione uma categoria.")]
     public int CategoriaId { get; set; }
     public bool Disponivel { get; set; }
+
+    public bool EhCombo { get; set; }
+
+    public List<ComboComponenteRequestDTO> Componentes
+    { get; set; } = new();
 }
