@@ -42,5 +42,32 @@ namespace KioraRestaurante.Controllers.Api
                 usuario
             });
         }
+
+
+        // POST: api/usuarios/login
+        [HttpPost("login")]
+        public IActionResult Login([FromBody] UsuarioLoginDTO dto)
+        {
+            // Reutiliza a autenticação já implementada no serviço.
+            var usuario = _usuarioService.Autenticar(dto);
+
+            // Retorna erro quando as credenciais forem inválidas.
+            if (usuario == null)
+            {
+                return Unauthorized(new
+                {
+                    sucesso = false,
+                    mensagem = "E-mail ou senha inválidos."
+                });
+            }
+
+            // Retorna apenas os dados públicos do usuário autenticado.
+            return Ok(new
+            {
+                sucesso = true,
+                mensagem = "Login realizado com sucesso.",
+                usuario
+            });
+        }
     }
 }
