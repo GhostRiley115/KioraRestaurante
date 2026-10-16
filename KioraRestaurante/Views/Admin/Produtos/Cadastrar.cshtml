@@ -45,6 +45,9 @@
                         <input asp-for="PrecoTexto" class="form-control" inputmode="decimal" placeholder="39,90" />
                         <span asp-validation-for="PrecoTexto" class="produto-admin-erros"></span>
                     </div>
+                    <!-- TIPO E COMPOSIÇÃO DO PRODUTO -->
+                    <partial name="~/Views/Admin/Produtos/_Composicao.cshtml"
+                             model="Model.Combo" />
                 </div>
                 <div class="form-check mt-4">
                     <input asp-for="Disponivel" class="form-check-input" />
@@ -76,4 +79,5 @@
     <!-- Validação carregada antes do comportamento específico do formulário. -->
     <partial name="_ValidationScriptsPartial" />
     <script src="~/js/produto-admin.js" asp-append-version="true"></script>
+    <script src="~/js/produto-composicao.js" asp-append-version="true"></script>
 }

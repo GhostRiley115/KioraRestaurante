@@ -106,10 +106,19 @@ else
 
                     <h2>@produto.Nome</h2>
 
+                    <!-- O preço cadastrado é preservado; o valor de venda usa a regra compartilhada. -->
+                    @if (produto.DescontoPercentual > 0)
+                    {
+                        <p class="admin-suave">
+                            Preço original:
+                            <del>@produto.Preco.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("pt-BR"))</del>
+                            · @produto.DescontoPercentual.ToString("0.##", System.Globalization.CultureInfo.GetCultureInfo("pt-BR"))% de desconto
+                        </p>
+                    }
                     <p class="admin-produto-preco">
-                        @produto.Preco.ToString(
-                            "C",
-                            System.Globalization.CultureInfo.GetCultureInfo("pt-BR"))
+                        <span class="visually-hidden">Preço de venda:</span>
+                        @(KioraRestaurante.Services.PrecoProduto.Calcular(produto.Preco, produto.DescontoPercentual)
+                            .ToString("C", System.Globalization.CultureInfo.GetCultureInfo("pt-BR")))
                     </p>
 
                     <div class="admin-produto-etiquetas">
@@ -135,6 +144,10 @@ else
                         <a asp-action="Editar"
                            asp-route-id="@produto.Id">
                             Editar produto
+                        </a>
+                        <a asp-action="Desconto"
+                           asp-route-id="@produto.Id">
+                            Alterar desconto
                         </a>
 
                         @if (produto.Ativo)

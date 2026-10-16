@@ -26,7 +26,7 @@ public class PedidoService : IPedidoService
     {
         _context = context;
         _carrinhoService = carrinhoService;
-        _protetor = provider.CreateProtector("Kiora.Checkout.v1");
+        _protetor = provider.CreateProtector("Kiora.Checkout.v2");
         _enderecoService = enderecoService;
     }
 
@@ -49,11 +49,31 @@ public class PedidoService : IPedidoService
             {
                 i.ProdutoId,
                 i.Quantidade,
+
                 Nome = i.Produto.Nome,
-                Preco = i.Produto.Preco,
-                CategoriaAtiva = i.Produto.Categoria.Ativa,
-                i.Produto.Ativo,
-                i.Produto.Disponivel
+                PrecoOriginal = i.Produto.Preco,
+                i.Produto.DescontoPercentual,
+
+                PrecoFinal = PrecoProduto.Calcular(
+                    i.Produto.Preco,
+                    i.Produto.DescontoPercentual),
+
+                i.Produto.EhCombo,
+
+                Disponivel = ProdutoVenda.EstaDisponivel(i.Produto),
+
+                Componentes = i.Produto.Componentes
+                    .OrderBy(c => c.ProdutoId)
+                    .Select(c => new
+                    {
+                        c.ProdutoId,
+                        c.Quantidade,
+                        Nome = c.Produto.Nome,
+                        c.Produto.Ativo,
+                        c.Produto.Disponivel,
+                        CategoriaAtiva = c.Produto.Categoria.Ativa
+                    })
+                    .ToList()
             });
 
         return JsonSerializer.Serialize(itens);
@@ -107,6 +127,13 @@ public class PedidoService : IPedidoService
             .Include(c => c.ItensCarrinho)
             .ThenInclude(i => i.Produto)
             .ThenInclude(p => p.Categoria)
+
+            .Include(c => c.ItensCarrinho)
+            .ThenInclude(i => i.Produto)
+            .ThenInclude(p => p.Componentes)
+            .ThenInclude(c => c.Produto)
+            .ThenInclude(p => p.Categoria)
+
             .SingleOrDefaultAsync(c => c.UsuarioId == usuarioId);
     }
 
@@ -241,22 +268,37 @@ public class PedidoService : IPedidoService
     {
         foreach (var item in carrinho.ItensCarrinho)
         {
+            // A quantidade deve respeitar o limite permitido por item.
             if (item.Quantidade < 1 || item.Quantidade > 30)
             {
-                throw new RegraPedidoException("Existe uma quantidade inválida no carrinho.");
+                throw new RegraPedidoException(
+                    "Existe uma quantidade inválida no carrinho.");
             }
 
-            if (!item.Produto.Ativo || !item.Produto.Disponivel || !item.Produto.Categoria.Ativa)
+            // Confere o produto, sua categoria e, se for combo,
+            // a disponibilidade dos produtos que fazem parte dele.
+            if (!ProdutoVenda.EstaDisponivel(item.Produto))
             {
-                throw new RegraPedidoException($"{item.Produto.Nome} não está disponível.");
+                throw new RegraPedidoException(
+                    $"{item.Produto.Nome} está indisponível.");
             }
 
-            if (item.Produto.Preco <= 0)
+            try
             {
-                throw new RegraPedidoException($"{item.Produto.Nome} está com preço inválido.");
+                // Além de calcular, este método valida o preço original,
+                // o percentual de desconto e o preço final.
+                PrecoProduto.Calcular(
+                    item.Produto.Preco,
+                    item.Produto.DescontoPercentual);
+            }
+            catch (ValidationException ex)
+            {
+                // Apresenta a falha como uma regra do pedido,
+                // identificando qual produto está com problema.
+                throw new RegraPedidoException(
+                    $"{item.Produto.Nome}: {ex.Message}");
             }
         }
-
     }
 
     // Copia os dados da compra para preservar o histórico e calcula o total.
@@ -264,12 +306,23 @@ public class PedidoService : IPedidoService
     {
         foreach (var item in carrinho.ItensCarrinho)
         {
+            var produto = item.Produto;
+
+            var precoFinal = PrecoProduto.Calcular(
+                produto.Preco,
+                produto.DescontoPercentual);
+
             pedido.ItensPedido.Add(new ItemPedido
             {
-                ProdutoId = item.ProdutoId,
-                NomeProduto = item.Produto.Nome,
-                PrecoUnitario = item.Produto.Preco,
-                Quantidade = item.Quantidade
+                ProdutoId = produto.Id,
+                NomeProduto = produto.Nome,
+                Quantidade = item.Quantidade,
+
+                PrecoOriginalUnitario = produto.Preco,
+                DescontoPercentual = produto.DescontoPercentual,
+                PrecoUnitario = precoFinal,
+
+                Composicao = ProdutoVenda.DescreverComposicao(produto)
             });
         }
 
@@ -280,7 +333,6 @@ public class PedidoService : IPedidoService
             throw new RegraPedidoException(
                 "O valor do pedido ultrapassa o limite permitido.");
         }
-
     }
 
     // Salva a compra e a limpeza do carrinho na mesma operação.
