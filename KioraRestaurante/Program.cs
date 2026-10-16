@@ -124,6 +124,9 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
+// Mapeia os endpoints que utilizam atributos de rota.
+app.MapControllers();
+
 // INICIA A APLICAÇÃO
 // Inicia o servidor.
 app.Run();
