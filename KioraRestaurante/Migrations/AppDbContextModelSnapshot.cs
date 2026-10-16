@@ -97,6 +97,33 @@ namespace KioraRestaurante.Migrations
                         });
                 });
 
+            modelBuilder.Entity("KioraRestaurante.Models.ComboComponente", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ComboId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProdutoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantidade")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProdutoId");
+
+                    b.HasIndex("ComboId", "ProdutoId")
+                        .IsUnique();
+
+                    b.ToTable("ComboComponentes");
+                });
+
             modelBuilder.Entity("KioraRestaurante.Models.EnderecoEntrega", b =>
                 {
                     b.Property<int>("Id")
@@ -259,6 +286,12 @@ namespace KioraRestaurante.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Composicao")
+                        .HasColumnType("text");
+
+                    b.Property<decimal?>("DescontoPercentual")
+                        .HasColumnType("decimal(5,2)");
+
                     b.Property<string>("NomeProduto")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -270,6 +303,9 @@ namespace KioraRestaurante.Migrations
 
                     b.Property<int>("PedidoId")
                         .HasColumnType("int");
+
+                    b.Property<decimal?>("PrecoOriginalUnitario")
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<decimal>("PrecoUnitario")
                         .HasColumnType("decimal(10,2)");
@@ -350,6 +386,9 @@ namespace KioraRestaurante.Migrations
                     b.Property<int>("CategoriaId")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("DescontoPercentual")
+                        .HasColumnType("decimal(5,2)");
+
                     b.Property<string>("Descricao")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -359,6 +398,9 @@ namespace KioraRestaurante.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValue(true);
+
+                    b.Property<bool>("EhCombo")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Imagem")
                         .IsRequired()
@@ -441,6 +483,25 @@ namespace KioraRestaurante.Migrations
                         .HasForeignKey("KioraRestaurante.Models.Carrinho", "UsuarioId");
 
                     b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.ComboComponente", b =>
+                {
+                    b.HasOne("KioraRestaurante.Models.Produto", "Combo")
+                        .WithMany("Componentes")
+                        .HasForeignKey("ComboId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("KioraRestaurante.Models.Produto", "Produto")
+                        .WithMany()
+                        .HasForeignKey("ProdutoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Combo");
+
+                    b.Navigation("Produto");
                 });
 
             modelBuilder.Entity("KioraRestaurante.Models.EnderecoEntrega", b =>
@@ -545,6 +606,8 @@ namespace KioraRestaurante.Migrations
 
             modelBuilder.Entity("KioraRestaurante.Models.Produto", b =>
                 {
+                    b.Navigation("Componentes");
+
                     b.Navigation("ItensCarrinho");
 
                     b.Navigation("ItensPedido");

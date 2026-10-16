@@ -19,6 +19,7 @@ namespace KioraRestaurante.Data
         public DbSet<ItemPedido> ItensPedido { get; set; }
         public DbSet<EnderecoEntrega> EnderecoEntregas { get; set; }
         public DbSet<EnderecoUsuario> EnderecosUsuario { get; set; }
+        public DbSet<ComboComponente> ComboComponentes { get; set; }
 
         //Cria a relação entre tabelas
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -79,6 +80,26 @@ namespace KioraRestaurante.Data
             modelBuilder.Entity<EnderecoUsuario>()
                 .Property(e => e.Versao)
                 .IsConcurrencyToken();
+
+            // Um combo possui vários componentes.
+            modelBuilder.Entity<ComboComponente>()
+                .HasOne(c => c.Combo)
+                .WithMany(p => p.Componentes)
+                .HasForeignKey(c => c.ComboId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Um produto comum pode participar de diferentes combos.
+            modelBuilder.Entity<ComboComponente>()
+                .HasOne(c => c.Produto)
+                .WithMany()
+                .HasForeignKey(c => c.ProdutoId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // O mesmo produto aparece uma vez na composição.
+            // Para duas unidades, usamos Quantidade = 2.
+            modelBuilder.Entity<ComboComponente>()
+                .HasIndex(c => new { c.ComboId, c.ProdutoId })
+                .IsUnique();
 
             //Categoria 1 : N Produto
             modelBuilder.Entity<Produto>()

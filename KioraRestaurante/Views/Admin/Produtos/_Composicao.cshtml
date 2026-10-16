@@ -1,0 +1,158 @@
+@model KioraRestaurante.ViewModels.ComposicaoProdutoViewModel
+
+<!-- COMPOSIÇÃO: compartilhada pelo cadastro e pela edição. -->
+<div class="mt-4" data-composicao>
+    <div class="form-check">
+        <input type="checkbox"
+               id="EhCombo"
+               name="Combo.EhCombo"
+               value="true"
+               checked="@Model.EhCombo"
+               class="form-check-input"
+               data-eh-combo
+               aria-controls="camposComposicao" />
+
+        <!-- Checkbox desmarcado não envia valor.
+             Este campo permite enviar false nesse caso. -->
+        <input type="hidden"
+               name="Combo.EhCombo"
+               value="false" />
+
+        <label for="EhCombo" class="form-check-label">
+            Este produto é um combo
+        </label>
+    </div>
+
+    <fieldset id="camposComposicao"
+              class="mt-3"
+              hidden="@(!Model.EhCombo)"
+              disabled="@(!Model.EhCombo)"
+              data-campos-composicao>
+
+        <legend class="h5">Composição do combo</legend>
+
+        <p class="produto-admin-ajuda">
+            Selecione os produtos e suas quantidades.
+            O preço do combo é o preço informado no formulário,
+            não a soma automática dos componentes.
+        </p>
+
+        <div data-lista-componentes>
+            @for (var i = 0; i < Model.Componentes.Count; i++)
+            {
+                var componente = Model.Componentes[i];
+
+                <div class="row g-2 align-items-end mb-3"
+                     data-componente>
+
+                    <!-- Índices explícitos permitem remover linhas
+                         sem perder os componentes seguintes no POST. -->
+                    <input type="hidden"
+                           name="Combo.Componentes.Index"
+                           value="@i" />
+
+                    <div class="col-12 col-sm-7">
+                        <label for="componente-produto-@i">
+                            Produto
+                        </label>
+
+                        <select id="componente-produto-@i"
+                                name="Combo.Componentes[@i].ProdutoId"
+                                class="form-select"
+                                required>
+                            <option value="">Selecione</option>
+
+                            @foreach (var opcao in Model.Opcoes)
+                            {
+                                <option value="@opcao.Id"
+                                        selected="@(opcao.Id == componente.ProdutoId)">
+                                    @opcao.Nome
+                                </option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-8 col-sm-3">
+                        <label for="componente-quantidade-@i">
+                            Quantidade
+                        </label>
+
+                        <input id="componente-quantidade-@i"
+                               name="Combo.Componentes[@i].Quantidade"
+                               value="@componente.Quantidade"
+                               type="number"
+                               min="1"
+                               max="30"
+                               step="1"
+                               required
+                               class="form-control" />
+                    </div>
+
+                    <div class="col-4 col-sm-2">
+                        <button type="button"
+                                class="btn btn-outline-danger"
+                                data-remover-componente
+                                aria-label="Remover componente">
+                            Remover
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <button type="button"
+                class="produto-admin-botao"
+                data-adicionar-componente>
+            Adicionar componente
+        </button>
+    </fieldset>
+
+    <!-- Modelo de uma nova linha.
+         O JavaScript preenche os nomes e identificadores. -->
+    <template data-modelo-componente>
+        <div class="row g-2 align-items-end mb-3"
+             data-componente>
+
+            <input type="hidden" data-indice />
+
+            <div class="col-12 col-sm-7">
+                <label data-label-produto>Produto</label>
+
+                <select class="form-select"
+                        required
+                        data-produto>
+                    <option value="">Selecione</option>
+
+                    @foreach (var opcao in Model.Opcoes)
+                    {
+                        <option value="@opcao.Id">
+                            @opcao.Nome
+                        </option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-8 col-sm-3">
+                <label data-label-quantidade>Quantidade</label>
+
+                <input type="number"
+                       min="1"
+                       max="30"
+                       step="1"
+                       value="1"
+                       required
+                       class="form-control"
+                       data-quantidade />
+            </div>
+
+            <div class="col-4 col-sm-2">
+                <button type="button"
+                        class="btn btn-outline-danger"
+                        data-remover-componente
+                        aria-label="Remover componente">
+                    Remover
+                </button>
+            </div>
+        </div>
+    </template>
+</div>

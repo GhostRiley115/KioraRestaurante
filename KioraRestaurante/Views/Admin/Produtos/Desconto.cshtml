@@ -1,0 +1,62 @@
+@model KioraRestaurante.ViewModels.AlterarDescontoViewModel
+@using System.Globalization
+
+@{
+    ViewData["Title"] = "Alterar desconto";
+    var cultura = CultureInfo.GetCultureInfo("pt-BR");
+}
+
+<section class="container produto-admin">
+    <h1>Alterar desconto</h1>
+
+    <p class="produto-admin-ajuda">
+        Produto: <strong>@Model.NomeProduto</strong><br />
+        Preço original: @Model.PrecoOriginal.ToString("C", cultura)
+    </p>
+
+    <div asp-validation-summary="All"
+         class="produto-admin-erros"
+         role="alert"></div>
+
+    <!-- Altera apenas o percentual; o preço original é preservado. -->
+    <form asp-controller="ProdutosAdmin"
+          asp-action="Desconto"
+          method="post"
+          class="produto-admin-form">
+
+        <input asp-for="Id" type="hidden" />
+
+        <label asp-for="PercentualTexto">
+            Percentual de desconto
+        </label>
+
+        <input asp-for="PercentualTexto"
+               type="text"
+               inputmode="decimal"
+               class="form-control"
+               placeholder="10,50"
+               aria-describedby="ajudaDesconto" />
+
+        <span asp-validation-for="PercentualTexto"
+              class="produto-admin-erros"></span>
+
+        <p id="ajudaDesconto" class="produto-admin-ajuda mt-2">
+            Informe de 0 a 90, sem o símbolo %.
+            Use 0 para remover o desconto.
+        </p>
+
+        <div class="d-flex gap-3 flex-wrap mt-4">
+            <button type="submit" class="produto-admin-botao">
+                Salvar desconto
+            </button>
+
+            <a asp-action="Index" class="produto-admin-link">
+                Cancelar
+            </a>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
