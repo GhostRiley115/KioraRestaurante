@@ -2,6 +2,7 @@
 using KioraRestaurante.DTOs.Usuario;
 using KioraRestaurante.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace KioraRestaurante.Controllers.Api
 {
@@ -10,12 +11,18 @@ namespace KioraRestaurante.Controllers.Api
     [Route("api/usuarios")]
     public class UsuarioApiController : ControllerBase
     {
-        private readonly IUsuarioService _usuarioService;
 
-        public UsuarioApiController(IUsuarioService usuarioService)
+        private readonly IUsuarioService _usuarioService;
+        private readonly IJwtService _jwtService;
+
+        public UsuarioApiController(
+            IUsuarioService usuarioService,
+            IJwtService jwtService)
         {
             _usuarioService = usuarioService;
+            _jwtService = jwtService;
         }
+
 
         // POST: api/usuarios/cadastro
         [HttpPost("cadastro")]
@@ -44,6 +51,7 @@ namespace KioraRestaurante.Controllers.Api
         }
 
 
+
         // POST: api/usuarios/login
         [HttpPost("login")]
         public IActionResult Login([FromBody] UsuarioLoginDTO dto)
@@ -61,13 +69,64 @@ namespace KioraRestaurante.Controllers.Api
                 });
             }
 
-            // Retorna apenas os dados públicos do usuário autenticado.
+            // Gera o token JWT para o aplicativo mobile.
+            var token = _jwtService.GerarToken(usuario);
+
+            // Retorna o token e os dados públicos do usuário.
             return Ok(new
             {
                 sucesso = true,
                 mensagem = "Login realizado com sucesso.",
+                token,
+                tipoToken = "Bearer",
                 usuario
             });
         }
+
+
+        // GET: api/usuarios/perfil
+        // Retorna o perfil do usuário autenticado pelo JWT.
+        [HttpGet("perfil")]
+        [Microsoft.AspNetCore.Authorization.Authorize(
+            AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public IActionResult Perfil()
+        {
+            // Recupera o ID do usuário a partir do token JWT.
+            var idUsuarioTexto = User.FindFirst(
+                System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            // Verifica se o token contém um ID válido.
+            if (!int.TryParse(idUsuarioTexto, out var idUsuario))
+            {
+                return Unauthorized(new
+                {
+                    sucesso = false,
+                    mensagem = "Não foi possível identificar o usuário autenticado."
+                });
+            }
+
+            // Busca os dados atuais do usuário no banco de dados.
+            var usuario = _usuarioService.BuscarPorId(idUsuario);
+
+            // Impede o acesso ao perfil se o usuário não existir ou estiver inativo.
+            if (usuario == null)
+            {
+                return NotFound(new
+                {
+                    sucesso = false,
+                    mensagem = "Usuário não encontrado ou inativo."
+                });
+            }
+
+            // Retorna os dados públicos do usuário.
+            return Ok(new
+            {
+                sucesso = true,
+                mensagem = "Perfil carregado com sucesso.",
+                usuario
+            });
+        }
+
+
     }
 }

@@ -3,8 +3,36 @@ using Microsoft.EntityFrameworkCore;
 using KioraRestaurante.Services;
 using KioraRestaurante.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddEndpointsApiExplorer();
+
+// Configura a documentação da API para aceitar autenticação JWT.
+
+builder.Services.AddSwaggerGen(options =>
+{
+    // Define a autenticação por token JWT.
+    options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = Microsoft.OpenApi.SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = Microsoft.OpenApi.ParameterLocation.Header,
+        Description = "Informe o token JWT para autenticar as requisições."
+    });
+
+    // Permite utilizar o token nas requisições da API.
+    options.AddSecurityRequirement(document => new Microsoft.OpenApi.OpenApiSecurityRequirement
+    {
+        [new Microsoft.OpenApi.OpenApiSecuritySchemeReference("Bearer", document)] = new List<string>()
+    });
+});
+
 
 // Pega a string de conexão do arquivo appsettings.json.
 var connectionString = builder.Configuration.GetConnectionString("ConexaoNuvem");
@@ -17,11 +45,13 @@ var versaoMySql = ServerVersion.AutoDetect(connectionString);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(connectionString, versaoMySql));
 
-// AUTENTICAÇÃO POR COOKIE
-// Configura o sistema de autenticação do ASP.NET Core.
-// O Cookie será utilizado para manter o usuário autenticado
-// depois que ele realizar o login.
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+// AUTENTICAÇÃO POR COOKIE E JWT
+// Mantém os Cookies como padrão para o site.
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+})
     .AddCookie(options =>
     {
         // Define para onde o usuário será enviado
@@ -42,7 +72,38 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
         // Confere se a conta continua ativa em cada requisição autenticada.
         options.EventsType = typeof(ValidarSessaoUsuario);
+    })
+
+    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+    {
+        // Recupera a chave secreta armazenada no User Secrets.
+        var chaveSecreta = builder.Configuration["Jwt:ChaveSecreta"];
+
+        // Impede a inicialização caso a chave não esteja configurada.
+        if (string.IsNullOrWhiteSpace(chaveSecreta))
+        {
+            throw new InvalidOperationException(
+                "A chave secreta do JWT não foi configurada.");
+        }
+
+        // Define como os tokens JWT serão validados.
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(chaveSecreta)),
+
+            ValidateIssuer = true,
+            ValidIssuer = "KioraRestauranteAPI",
+
+            ValidateAudience = true,
+            ValidAudience = "AppKiora",
+
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.FromSeconds(30)
+        };
     });
+
 
 // Adiciona suporte aos Controllers e às Views do ASP.NET Core MVC.
 builder.Services.AddControllersWithViews();
@@ -52,6 +113,7 @@ builder.Services.AddControllersWithViews();
 // possa fornecer automaticamente uma instância dele
 // para os Controllers que precisarem do serviço.
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<ICarrinhoService, CarrinhoService>();
 builder.Services.AddHttpClient<IEmailService, EmailService>();
 builder.Services.AddDataProtection();
@@ -78,15 +140,22 @@ builder.Services.AddHttpClient<CepService>(http =>
 
 var app = builder.Build();
 
+// Disponibiliza o Swagger somente durante o desenvolvimento.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
 // Verifica se a aplicação não está em ambiente de desenvolvimento.
 if (!app.Environment.IsDevelopment())
-    {
-        // Utiliza uma página de erro personalizada.
-        app.UseExceptionHandler("/Home/Error");
+{
+    // Utiliza uma página de erro personalizada.
+    app.UseExceptionHandler("/Home/Error");
 
-        // Ativa o HSTS para aumentar a segurança da aplicação.
-        app.UseHsts();
-    }
+    // Ativa o HSTS para aumentar a segurança da aplicação.
+    app.UseHsts();
+}
 
 // Redireciona requisições HTTP para HTTPS.
 app.UseHttpsRedirection();
