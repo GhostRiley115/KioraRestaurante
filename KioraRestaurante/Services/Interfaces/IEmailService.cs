@@ -1,8 +1,8 @@
-﻿namespace KioraRestaurante.Services.Interfaces
+namespace KioraRestaurante.Services.Interfaces
 {
     public interface IEmailService
     {
-        Task EnviarCodigoRecuperacaoSenhaAsync(
+        Task<bool> EnviarCodigoRecuperacaoSenhaAsync(
             string emailDestino,
             string codigo);
     }

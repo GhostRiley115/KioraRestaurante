@@ -1,5 +1,7 @@
+using KioraRestaurante.Filters;
 using KioraRestaurante.DTOs.Usuario;
 using KioraRestaurante.Services.Interfaces;
+using KioraRestaurante.Services;
 using KioraRestaurante.ViewModels;
 
 /* Permite utilizar Controller, IActionResult, HttpGet, HttpPost
@@ -23,6 +25,7 @@ namespace KioraRestaurante.Controllers
     [AutoValidateAntiforgeryToken]
     public class ContaController : Controller
     {
+        //Guarda uma referência para a interface IUsuarioServices.
         // Guarda uma referência para o serviço de usuários.
         private readonly IUsuarioService _usuarioService;
 
@@ -33,6 +36,7 @@ namespace KioraRestaurante.Controllers
             IUsuarioService usuarioService,
             IEmailService emailService)
         {
+            //instância de IUsuarioServices.
             // Guarda o Service recebido na variável privada.
             _usuarioService = usuarioService;
 
@@ -56,28 +60,19 @@ namespace KioraRestaurante.Controllers
         /* Cria as informações do usuário que serão armazenadas
            no cookie de autenticação. */
         private static ClaimsPrincipal CriarPrincipal(
-            UsuarioResponseDTO usuario)
+            UsuarioResponseDTO usuario, Guid? versaoSessao = null)
         {
             // Cria as informações que serão armazenadas no Cookie de autenticação.
             var claims = new List<Claim>
             {
-                new Claim(
-                    ClaimTypes.NameIdentifier,
-                    usuario.Id.ToString()),
-
-                new Claim(
-                    ClaimTypes.Name,
-                    usuario.Nome),
-
-                new Claim(
-                    ClaimTypes.Email,
-                    usuario.Email),
-
-                new Claim(
-                    ClaimTypes.Role,
-                    usuario.Tipo.ToString())
+                new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
+                new Claim(ClaimTypes.Name, usuario.Nome),
+                new Claim(ClaimTypes.Email, usuario.Email),
+                new Claim(ClaimTypes.Role, usuario.Tipo.ToString()),
+                new Claim(ValidarSessaoUsuario.ClaimVersaoSessao, (versaoSessao ?? usuario.VersaoSessao).ToString())
             };
 
+            //Cria a identidade utilizando o esquema e autenticação por Cookie.
             // Cria a identidade utilizando o esquema de autenticação por Cookie.
             var identidade = new ClaimsIdentity(
                 claims,
@@ -153,15 +148,26 @@ namespace KioraRestaurante.Controllers
         }
 
         [HttpGet]
-        public IActionResult Login()
+        public IActionResult Login(string? returnUrl = null)
         {
             return RedirectToAction(
                 "Index",
                 "Home",
-                new { abrirLogin = true });
+                new
+                {
+                    abrirLogin = true,
+                    returnUrl = ObterDestinoLocal(returnUrl)
+                });
+        }
+
+        // Somente caminhos locais podem ser retomados após a autenticação.
+        private string? ObterDestinoLocal(string? returnUrl)
+        {
+            return Url.IsLocalUrl(returnUrl) ? Url.Content(returnUrl) : null;
         }
 
         [HttpPost]
+        [ServiceFilter(typeof(LimitarTentativasLogin))]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (!ModelState.IsValid)
@@ -205,13 +211,15 @@ namespace KioraRestaurante.Controllers
             {
                 sucesso = true,
                 mensagem = $"Bem-vindo(a), {usuario.Nome}!",
-                nome = usuario.Nome
+                nome = usuario.Nome,
+                redirecionarPara = ObterDestinoLocal(model.ReturnUrl)
             });
         }
 
         /* ---- RECUPERAÇÃO DE SENHA ---- */
 
         [HttpPost]
+        [ServiceFilter(typeof(LimitarRecuperacaoSenha))]
         public async Task<IActionResult> EsqueciSenha(
             [FromForm] EsqueciSenhaViewModel model)
         {
@@ -239,11 +247,13 @@ namespace KioraRestaurante.Controllers
              * Porém, somente enviamos o código caso o usuário
              * realmente exista e esteja ativo.
              */
+            /*Não informamos se o e-mail existe ou não,
+            evitando a enumeração de contas cadastradas.*/
             if (codigo != null)
             {
-                await _emailService.EnviarCodigoRecuperacaoSenhaAsync(
-                    model.Email,
-                    codigo);
+                // Usa o endereço cadastrado, evitando enviar para uma variação aceita pela collation do banco.
+                var enviado = await _emailService.EnviarCodigoRecuperacaoSenhaAsync(codigo.Email, codigo.Codigo);
+                if (!enviado) _usuarioService.InvalidarCodigoRecuperacao(codigo);
             }
 
             return Ok(new
@@ -256,6 +266,7 @@ namespace KioraRestaurante.Controllers
 
         // Valida o código enviado por e-mail para recuperação de senha.
         [HttpPost]
+        [ServiceFilter(typeof(LimitarRecuperacaoSenha))]
         public IActionResult ValidarCodigoRecuperacao(
             [FromForm] ValidarCodigoRecuperacaoViewModel model)
         {
@@ -269,7 +280,7 @@ namespace KioraRestaurante.Controllers
             }
 
             var codigoValido = _usuarioService
-                .ValidarCodigoRecuperacao(model.Codigo);
+                .ValidarCodigoRecuperacao(model.Email, model.Codigo);
 
             if (!codigoValido)
             {
@@ -289,6 +300,7 @@ namespace KioraRestaurante.Controllers
 
         // Redefine a senha utilizando o código de recuperação validado.
         [HttpPost]
+        [ServiceFilter(typeof(LimitarRecuperacaoSenha))]
         public IActionResult RedefinirSenha(
             [FromForm] RedefinirSenhaViewModel model)
         {
@@ -307,6 +319,7 @@ namespace KioraRestaurante.Controllers
             // para o DTO utilizado pelo UsuarioService.
             var dto = new UsuarioRedefinirSenhaDTO
             {
+                Email = model.Email,
                 Token = model.Codigo,
                 NovaSenha = model.NovaSenha,
                 ConfirmarNovaSenha = model.ConfirmarNovaSenha
@@ -399,8 +412,10 @@ namespace KioraRestaurante.Controllers
             }
 
             var usuarioId = ObterUsuarioId();
+            var versaoValida = Guid.TryParse(User.FindFirstValue(ValidarSessaoUsuario.ClaimVersaoSessao), out var versaoSessao)
+                && versaoSessao != Guid.Empty;
 
-            if (usuarioId == null)
+            if (usuarioId == null || !versaoValida)
             {
                 return BadRequest(new
                 {
@@ -452,7 +467,8 @@ namespace KioraRestaurante.Controllers
                 });
             }
 
-            var principal = CriarPrincipal(usuario);
+            // Mantém a versão recebida: editar o perfil não pode restaurar uma sessão revogada durante a requisição.
+            var principal = CriarPrincipal(usuario, versaoSessao);
 
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
@@ -470,8 +486,7 @@ namespace KioraRestaurante.Controllers
 
         [Authorize]
         [HttpPost]
-        public IActionResult AlterarSenha(
-            AlterarSenhaViewModel model)
+        public async Task<IActionResult> AlterarSenha(AlterarSenhaViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -483,8 +498,10 @@ namespace KioraRestaurante.Controllers
             }
 
             var usuarioId = ObterUsuarioId();
+            var versaoValida = Guid.TryParse(User.FindFirstValue(ValidarSessaoUsuario.ClaimVersaoSessao), out var versaoSessao)
+                && versaoSessao != Guid.Empty;
 
-            if (usuarioId == null)
+            if (usuarioId == null || !versaoValida)
             {
                 return BadRequest(new
                 {
@@ -500,23 +517,27 @@ namespace KioraRestaurante.Controllers
                 ConfirmarNovaSenha = model.ConfirmarNovaSenha
             };
 
-            var senhaAlterada = _usuarioService.AlterarSenha(
-                usuarioId.Value,
-                dto);
+            var novaVersao = _usuarioService.AlterarSenha(usuarioId.Value, dto, versaoSessao);
 
-            if (!senhaAlterada)
+            if (novaVersao == null)
             {
                 return BadRequest(new
                 {
                     sucesso = false,
-                    mensagem = "A senha Atual está incorreta."
+                    mensagem = "A senha atual está incorreta ou sua sessão expirou. Entre novamente se necessário."
                 });
             }
+
+            // Somente esta sessão recebe a versão criada pela alteração; as demais são recusadas no próximo acesso.
+            var claims = User.Claims.Where(c => c.Type != ValidarSessaoUsuario.ClaimVersaoSessao).ToList();
+            claims.Add(new Claim(ValidarSessaoUsuario.ClaimVersaoSessao, novaVersao.Value.ToString()));
+            var identidade = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identidade));
 
             return Ok(new
             {
                 sucesso = true,
-                mensagem = "Senha alterada com sucesso!"
+                mensagem = "Senha alterada com sucesso! As outras sessões foram encerradas."
             });
         }
 
@@ -562,7 +583,8 @@ namespace KioraRestaurante.Controllers
             return Ok(new
             {
                 sucesso = true,
-                mensagem = "Sua conta foi desativada com sucesso."
+                mensagem = "Sua conta foi desativada com sucesso.",
+                redirecionarPara = Url.Action("Index", "Home") ?? "/"
             });
         }
     }

@@ -92,7 +92,8 @@ public class AdminService : IAdminService
             ClienteAtivo = p.Usuario.Ativo, DataPedido = p.DataPedido, ValorTotal = p.ValorTotal,
             StatusPedido = p.StatusPedido, StatusPagamento = p.StatusPagamento, FormaPagamento = p.FormaPagamento,
             Itens = p.ItensPedido.OrderBy(i => i.Id).Select(i => new ItemPedidoAdminDTO {
-                Nome = i.NomeProduto, Quantidade = i.Quantidade, PrecoUnitario = i.PrecoUnitario, Observacao = i.Observacao
+                Nome = i.NomeProduto, Quantidade = i.Quantidade, PrecoUnitario = i.PrecoUnitario,
+                Composicao = i.Composicao, Observacao = i.Observacao
             }).ToList(),
             Endereco = p.EnderecoEntrega == null ? null : new EnderecoPedidoAdminDTO {
                 Logradouro = p.EnderecoEntrega.Logradouro, Numero = p.EnderecoEntrega.Numero,
@@ -113,8 +114,10 @@ public class AdminService : IAdminService
 
         // Altera somente a situação; preserva os pedidos e impede modificar um administrador.
         // Limpa tokens antigos de recuperação, que não devem sobreviver à mudança de situação.
+        var novaVersao = Guid.NewGuid();
         var alterados = await _context.Usuarios.Where(u => u.Id == usuarioId && u.Tipo == TipoUsuario.Cliente)
             .ExecuteUpdateAsync(set => set.SetProperty(u => u.Ativo, ativo)
+                .SetProperty(u => u.VersaoSessao, novaVersao)
                 .SetProperty(u => u.TokenRecuperacaoSenha, (string?)null)
                 .SetProperty(u => u.ExpiracaoTokenRecuperacaoSenha, (DateTime?)null));
         if (alterados == 0) throw new ValidationException("A conta mudou. Atualize a listagem antes de tentar novamente.");

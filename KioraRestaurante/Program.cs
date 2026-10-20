@@ -1,4 +1,5 @@
 using KioraRestaurante.Data;
+using KioraRestaurante.Filters;
 using Microsoft.EntityFrameworkCore;
 using KioraRestaurante.Services;
 using KioraRestaurante.Services.Interfaces;
@@ -53,7 +54,7 @@ builder.Services.AddControllersWithViews();
 // para os Controllers que precisarem do serviço.
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<ICarrinhoService, CarrinhoService>();
-builder.Services.AddHttpClient<IEmailService, EmailService>();
+builder.Services.AddHttpClient<IEmailService, EmailService>(http => http.Timeout = TimeSpan.FromSeconds(15));
 builder.Services.AddDataProtection();
 builder.Services.AddScoped<CarrinhoCookie>();
 builder.Services.AddHostedService<LimpezaCarrinhosService>();
@@ -63,6 +64,14 @@ builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 builder.Services.AddScoped<IImagemProdutoService, ImagemProdutoService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<ValidarSessaoUsuario>();
+// Limita o login por e-mail e, opcionalmente, por IP antes de executar a autenticação.
+builder.Services.AddSingleton(_ => new LimitadorLogin(
+    builder.Configuration.GetValue<bool>("Seguranca:LimitarLoginPorIp")));
+builder.Services.AddScoped<LimitarTentativasLogin>();
+// Envio e conferência de códigos têm limites próprios, sem consumir as tentativas de login.
+builder.Services.AddSingleton(_ => new LimitadorRecuperacaoSenha(
+    builder.Configuration.GetValue<bool>("Seguranca:LimitarLoginPorIp")));
+builder.Services.AddScoped<LimitarRecuperacaoSenha>();
 builder.Services.AddScoped<EnderecoUsuarioService>();
 builder.Services.AddAntiforgery(options => { options.HeaderName = "X-CSRF-TOKEN"; });
 // Cache em memória para consultas públicas de CEP.

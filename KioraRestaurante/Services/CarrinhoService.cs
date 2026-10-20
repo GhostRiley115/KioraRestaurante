@@ -102,6 +102,17 @@ namespace KioraRestaurante.Services
             if (quantidade < 1 || quantidade > QuantidadeMaxima)
                 throw new ArgumentException($"A quantidade deve estar entre 1 e {QuantidadeMaxima} unidades.");
         }
+
+        private static void ValidarVersao(Carrinho carrinho, Guid? versaoEsperada)
+        {
+            if (!versaoEsperada.HasValue || versaoEsperada.Value == Guid.Empty)
+                throw new ArgumentException("Atualize o carrinho antes de alterá-lo.");
+
+            // Confere a versão vista na tela antes de modificar qualquer item.
+            // O concurrency token também protege alterações ocorridas entre esta leitura e o SaveChanges.
+            if (carrinho.Versao != versaoEsperada.Value)
+                throw new DbUpdateConcurrencyException("O carrinho foi alterado por outra operação.");
+        }
         
         private static void ValidarProduto(Produto produto)
         {
@@ -206,6 +217,7 @@ namespace KioraRestaurante.Services
             return new CarrinhoResponseDTO
             {
                 CarrinhoId = carrinho?.Id,
+                Versao = carrinho?.Versao,
                 // A lista de itens do DTO vai receber a lista de ItensDTO criado agora.
                 Itens = itens,
                 // Soma todos os subtotais dos itens e joga o resultado dentro de Total do DTO.
@@ -425,6 +437,7 @@ namespace KioraRestaurante.Services
         {
             ValidarQuantidade(dto.Quantidade);
             var carrinho = await ExigirCarrinho(acesso);
+            ValidarVersao(carrinho, dto.VersaoEsperada);
             
             var item = carrinho.ItensCarrinho.SingleOrDefault(i => i.ProdutoId == produtoId);
 
@@ -439,9 +452,10 @@ namespace KioraRestaurante.Services
             return await MontarResposta(acesso, carrinho);
         }
 
-        public async Task<CarrinhoResponseDTO> RemoverProduto(AcessoCarrinho acesso, int produtoId)
+        public async Task<CarrinhoResponseDTO> RemoverProduto(AcessoCarrinho acesso, int produtoId, Guid? versaoEsperada)
         {
             var carrinho = await ExigirCarrinho(acesso);
+            ValidarVersao(carrinho, versaoEsperada);
             
             var item = carrinho.ItensCarrinho.SingleOrDefault(i => i.ProdutoId == produtoId);
             if (item == null)
@@ -455,9 +469,10 @@ namespace KioraRestaurante.Services
             return await MontarResposta(acesso, carrinho);
         }
 
-        public async Task<CarrinhoResponseDTO> EsvaziarCarrinho(AcessoCarrinho acesso)
+        public async Task<CarrinhoResponseDTO> EsvaziarCarrinho(AcessoCarrinho acesso, Guid? versaoEsperada)
         {
             var carrinho = await ExigirCarrinho(acesso);
+            ValidarVersao(carrinho, versaoEsperada);
             _context.ItensCarrinho.RemoveRange(carrinho.ItensCarrinho);
             
             carrinho.ItensCarrinho.Clear();

@@ -27,6 +27,7 @@ namespace KioraRestaurante.ViewModels
         // Caso o usuário tente salvar o formulário
         // sem informar o nome, esta mensagem será exibida.
         [Required(ErrorMessage = "O nome é obrigatório.")]
+        [MaxLength(100, ErrorMessage = "O nome deve possuir no máximo 100 caracteres.")]
 
         // Guarda o novo nome informado pelo usuário.
         public string Nome { get; set; } = null!;
@@ -42,6 +43,7 @@ namespace KioraRestaurante.ViewModels
         // Verifica se o valor informado possui
         // um formato válido de endereço de e-mail.
         [EmailAddress(ErrorMessage = "Digite um e-mail válido.")]
+        [MaxLength(150, ErrorMessage = "O e-mail deve possuir no máximo 150 caracteres.")]
 
         // Guarda o novo e-mail informado pelo usuário.
         public string Email { get; set; } = null!;

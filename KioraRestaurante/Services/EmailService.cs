@@ -1,4 +1,4 @@
-﻿using System.Net.Http.Headers;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using KioraRestaurante.Services.Interfaces;
@@ -9,16 +9,18 @@ namespace KioraRestaurante.Services
     {
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<EmailService> _logger;
 
         public EmailService(
             HttpClient httpClient,
-            IConfiguration configuration)
+            IConfiguration configuration, ILogger<EmailService> logger)
         {
             _httpClient = httpClient;
             _configuration = configuration;
+            _logger = logger;
         }
 
-        public async Task EnviarCodigoRecuperacaoSenhaAsync(
+        public async Task<bool> EnviarCodigoRecuperacaoSenhaAsync(
             string emailDestino,
             string codigo)
         {
@@ -26,13 +28,12 @@ namespace KioraRestaurante.Services
             var remetenteNome = _configuration["Brevo:RemetenteNome"];
             var remetenteEmail = _configuration["Brevo:RemetenteEmail"];
 
-            if (string.IsNullOrWhiteSpace(apiKey))
-                throw new InvalidOperationException(
-                    "A API Key da Brevo não foi configurada.");
-
-            if (string.IsNullOrWhiteSpace(remetenteEmail))
-                throw new InvalidOperationException(
-                    "O e-mail remetente da Brevo não foi configurado.");
+            if (string.IsNullOrWhiteSpace(apiKey) || apiKey.StartsWith("SUA_", StringComparison.OrdinalIgnoreCase)
+                || string.IsNullOrWhiteSpace(remetenteEmail))
+            {
+                _logger.LogWarning("Recuperação de senha indisponível: configure a chave e o remetente da Brevo.");
+                return false;
+            }
 
             var dadosEmail = new
             {
@@ -102,16 +103,23 @@ namespace KioraRestaurante.Services
                 Encoding.UTF8,
                 "application/json");
 
-            var resposta = await _httpClient.SendAsync(requisicao);
-
-            if (!resposta.IsSuccessStatusCode)
+            try
             {
-                var erro = await resposta.Content.ReadAsStringAsync();
-
-                throw new InvalidOperationException(
-                    $"Erro ao enviar e-mail pela Brevo. " +
-                    $"Status: {(int)resposta.StatusCode}. " +
-                    $"Detalhes: {erro}");
+                using var resposta = await _httpClient.SendAsync(requisicao);
+                if (resposta.IsSuccessStatusCode) return true;
+                // Não registra corpo, código de recuperação, destinatário ou credenciais do provedor.
+                _logger.LogWarning("Falha no envio de recuperação pela Brevo. HTTP {Status}.", (int)resposta.StatusCode);
+                return false;
+            }
+            catch (HttpRequestException)
+            {
+                _logger.LogWarning("Falha de comunicação com a Brevo ao enviar recuperação de senha.");
+                return false;
+            }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning("Tempo de envio de recuperação de senha esgotado.");
+                return false;
             }
         }
     }

@@ -56,6 +56,13 @@
                         <div>
                             <strong>@item.NomeProduto</strong>
 
+                            @if (!string.IsNullOrWhiteSpace(item.Composicao))
+                            {
+                                <p class="pedido-texto-suave mb-0">
+                                    Composição por combo: @item.Composicao
+                                </p>
+                            }
+
                             <p class="pedido-texto-suave mb-0">
                                 @item.Quantidade ×
                                 @item.PrecoUnitario.ToString("C", cultura)

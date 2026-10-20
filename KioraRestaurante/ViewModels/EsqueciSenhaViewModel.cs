@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace KioraRestaurante.ViewModels
 {
@@ -29,6 +29,7 @@ namespace KioraRestaurante.ViewModels
         )]
 
         // Guarda o e-mail informado pelo usuário.
+        [StringLength(150, ErrorMessage = "O e-mail deve ter no máximo 150 caracteres.")]
         public string Email { get; set; } = null!;
     }
 }

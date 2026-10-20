@@ -8,15 +8,20 @@ namespace KioraRestaurante.Services;
 // O login já recusava inativos. Esta verificação também bloqueia cookies emitidos antes da desativação.
 public class ValidarSessaoUsuario : CookieAuthenticationEvents
 {
+    public const string ClaimVersaoSessao = "kiora:versao-sessao";
+
     private readonly AppDbContext _context;
     public ValidarSessaoUsuario(AppDbContext context) => _context = context;
     public override async Task ValidatePrincipal(CookieValidatePrincipalContext context)
     {
         var valor = context.Principal?.FindFirstValue(ClaimTypes.NameIdentifier);
         var id = int.TryParse(valor, out var numero) ? numero : 0;
+        var versaoValida = Guid.TryParse(context.Principal?.FindFirstValue(ClaimVersaoSessao), out var versao)
+            && versao != Guid.Empty;
         var usuario = await _context.Usuarios.AsNoTracking().Where(u => u.Id == id)
-            .Select(u => new { u.Ativo, u.Tipo }).SingleOrDefaultAsync();
-        if (usuario == null || !usuario.Ativo || context.Principal?.FindFirstValue(ClaimTypes.Role) != usuario.Tipo.ToString()) {
+            .Select(u => new { u.Ativo, u.Tipo, u.VersaoSessao }).SingleOrDefaultAsync();
+        if (usuario == null || !usuario.Ativo || !versaoValida || versao != usuario.VersaoSessao
+            || context.Principal?.FindFirstValue(ClaimTypes.Role) != usuario.Tipo.ToString()) {
             context.RejectPrincipal();
             await context.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         }
