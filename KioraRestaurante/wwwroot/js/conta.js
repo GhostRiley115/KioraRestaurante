@@ -252,6 +252,9 @@ if (
 
     // Consome o pedido de abertura para não reabrir o modal após o login recarregar a página.
     endereco.searchParams.delete("abrirLogin");
+    // O destino já está no formulário; não precisa permanecer na barra de endereço.
+    endereco.searchParams.delete("returnUrl");
+    endereco.searchParams.delete("ReturnUrl");
     window.history.replaceState(window.history.state, "", endereco.href);
 })();
 
@@ -330,8 +333,13 @@ if (formLogin) {
                 // Limpa o formulário.
                 formLogin.reset();
 
-                // Recarrega a página para atualizar o menu.
-                window.location.reload();
+                // Retoma o caminho local validado pelo servidor, inclusive ao entrar pelo checkout.
+                if (resultado.redirecionarPara) {
+                    window.location.assign(resultado.redirecionarPara);
+                } else {
+                    // Recarrega a página para atualizar o menu.
+                    window.location.reload();
+                }
 
             } else {
 
@@ -1212,10 +1220,13 @@ if (painelConta) {
         modalDesativarConta
     ) {
 
+        let desativandoConta = false;
+
         // Captura o clique no botão de confirmação.
         btnConfirmarDesativacao.addEventListener(
             "click",
             async function () {
+                if (desativandoConta) return;
 
                 // ========================================================
                 // TOKEN ANTIFORGERY
@@ -1237,6 +1248,12 @@ if (painelConta) {
 
                     return;
                 }
+
+                desativandoConta = true;
+                btnConfirmarDesativacao.disabled = true;
+                const textoOriginal = btnConfirmarDesativacao.textContent;
+                btnConfirmarDesativacao.textContent = "Desativando...";
+                let redirecionando = false;
 
                 // ========================================================
                 // ENVIAR SOLICITAÇÃO PARA O CONTROLLER
@@ -1277,8 +1294,11 @@ if (painelConta) {
 
                         // Coloca a mensagem retornada pelo Controller
                         // dentro do modal.
-                        mensagemDesativarConta.innerHTML =
-                            resultado.mensagem;
+                        mensagemDesativarConta.textContent =
+                            resultado.mensagem || "Não foi possível desativar a conta.";
+                        mensagemDesativarConta.className = resposta.ok && resultado.sucesso
+                            ? "mensagem-kiora mensagem-kiora-sucesso"
+                            : "mensagem-kiora mensagem-kiora-erro";
 
                         // Torna a mensagem visível.
                         mensagemDesativarConta.style.display =
@@ -1292,6 +1312,12 @@ if (painelConta) {
                         resultado
                     );
 
+                    // A nova página passa a refletir a sessão já encerrada pelo servidor.
+                    if (resposta.ok && resultado.sucesso) {
+                        redirecionando = true;
+                        window.location.assign(resultado.redirecionarPara || "/");
+                    }
+
                 } catch (erro) {
 
                     // Exibe qualquer erro de comunicação
@@ -1300,6 +1326,19 @@ if (painelConta) {
                         "Erro ao desativar conta:",
                         erro
                     );
+                    const mensagem = document.getElementById("mensagemDesativarConta");
+                    if (mensagem) {
+                        mensagem.textContent = "Não foi possível desativar a conta. Tente novamente.";
+                        mensagem.className = "mensagem-kiora mensagem-kiora-erro";
+                        mensagem.style.display = "block";
+                    }
+                } finally {
+                    // Em caso de erro, permite uma nova tentativa sem deixar o botão travado.
+                    if (!redirecionando) {
+                        desativandoConta = false;
+                        btnConfirmarDesativacao.disabled = false;
+                        btnConfirmarDesativacao.textContent = textoOriginal;
+                    }
                 }
             }
         );

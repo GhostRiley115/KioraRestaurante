@@ -8,6 +8,7 @@
         <!-- Valores históricos da compra: mudanças no cardápio não alteram este resumo. -->
         @foreach(var item in Model.Itens) {
             <div class="admin-item"><div><strong>@item.Nome</strong><p>@item.Quantidade × @item.PrecoUnitario.ToString("C", cultura)</p>
+            @if(!string.IsNullOrWhiteSpace(item.Composicao)) { <p>Composição por combo: @item.Composicao</p> }
             @if(!string.IsNullOrWhiteSpace(item.Observacao)) { <p>Observação: @item.Observacao</p> }</div>
             <strong>@item.Subtotal.ToString("C", cultura)</strong></div>
         }

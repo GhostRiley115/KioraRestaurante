@@ -12,6 +12,7 @@ public class ItemPedidoAdminDTO
     public string Nome { get; set; } = "";
     public int Quantidade { get; set; }
     public decimal PrecoUnitario { get; set; }
+    public string? Composicao { get; set; }
     public string? Observacao { get; set; }
     public decimal Subtotal => Quantidade * PrecoUnitario;
 }

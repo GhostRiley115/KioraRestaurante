@@ -1,5 +1,7 @@
+﻿using KioraRestaurante.Filters;
 using KioraRestaurante.DTOs.Usuario;
 using KioraRestaurante.Services.Interfaces;
+using KioraRestaurante.Services;
 using KioraRestaurante.ViewModels;
 
 /*Permite utilizar Controller, IActionResult, HttpGet, HttpPost
@@ -45,7 +47,7 @@ namespace KioraRestaurante.Controllers
         /*Cria as informações do usuário que serão armazenadas
         no cookie de autenticação.*/
         private static ClaimsPrincipal CriarPrincipal(
-            UsuarioResponseDTO usuario)
+            UsuarioResponseDTO usuario, Guid? versaoSessao = null)
         {
             //Cria as informações que serão armazenadas no Cookie de autenticação.
             var claims = new List<Claim>
@@ -53,7 +55,8 @@ namespace KioraRestaurante.Controllers
                 new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
                 new Claim(ClaimTypes.Name, usuario.Nome),
                 new Claim(ClaimTypes.Email, usuario.Email),
-                new Claim(ClaimTypes.Role, usuario.Tipo.ToString())
+                new Claim(ClaimTypes.Role, usuario.Tipo.ToString()),
+                new Claim(ValidarSessaoUsuario.ClaimVersaoSessao, (versaoSessao ?? usuario.VersaoSessao).ToString())
             };
 
             //Cria a identidade utilizando o esquema e autenticação por Cookie.
@@ -125,15 +128,26 @@ namespace KioraRestaurante.Controllers
         }
 
         [HttpGet]
-        public IActionResult Login()
+        public IActionResult Login(string? returnUrl = null)
         {
             return RedirectToAction(
                 "Index",
                 "Home",
-                new { abrirLogin = true });
+                new
+                {
+                    abrirLogin = true,
+                    returnUrl = ObterDestinoLocal(returnUrl)
+                });
+        }
+
+        // Somente caminhos locais podem ser retomados após a autenticação.
+        private string? ObterDestinoLocal(string? returnUrl)
+        {
+            return Url.IsLocalUrl(returnUrl) ? Url.Content(returnUrl) : null;
         }
 
         [HttpPost]
+        [ServiceFilter(typeof(LimitarTentativasLogin))]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (!ModelState.IsValid)
@@ -174,7 +188,8 @@ namespace KioraRestaurante.Controllers
             {
                 sucesso = true,
                 mensagem = $"Bem-vindo(a), {usuario.Nome}!",
-                nome = usuario.Nome
+                nome = usuario.Nome,
+                redirecionarPara = ObterDestinoLocal(model.ReturnUrl)
             });
         }
 
@@ -266,8 +281,10 @@ namespace KioraRestaurante.Controllers
             }
 
             var usuarioId = ObterUsuarioId();
+            var versaoValida = Guid.TryParse(User.FindFirstValue(ValidarSessaoUsuario.ClaimVersaoSessao), out var versaoSessao)
+                && versaoSessao != Guid.Empty;
 
-            if (usuarioId == null)
+            if (usuarioId == null || !versaoValida)
             {
                 return BadRequest(new
                 {
@@ -316,7 +333,8 @@ namespace KioraRestaurante.Controllers
                 });
             }
 
-            var principal = CriarPrincipal(usuario);
+            // Mantém a versão recebida: editar o perfil não pode restaurar uma sessão revogada durante a requisição.
+            var principal = CriarPrincipal(usuario, versaoSessao);
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults
                 .AuthenticationScheme,principal);
@@ -332,7 +350,7 @@ namespace KioraRestaurante.Controllers
         /* ---- ALTERAR SENHA ---- */
         [Authorize]
         [HttpPost]
-        public IActionResult AlterarSenha(AlterarSenhaViewModel model)
+        public async Task<IActionResult> AlterarSenha(AlterarSenhaViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -344,8 +362,10 @@ namespace KioraRestaurante.Controllers
             }
 
             var usuarioId = ObterUsuarioId();
+            var versaoValida = Guid.TryParse(User.FindFirstValue(ValidarSessaoUsuario.ClaimVersaoSessao), out var versaoSessao)
+                && versaoSessao != Guid.Empty;
 
-            if (usuarioId == null)
+            if (usuarioId == null || !versaoValida)
             {
                 return BadRequest(new
                 {
@@ -361,21 +381,27 @@ namespace KioraRestaurante.Controllers
                 ConfirmarNovaSenha = model.ConfirmarNovaSenha
             };
 
-            var senhaAlterada = _usuarioService.AlterarSenha(usuarioId.Value, dto);
+            var novaVersao = _usuarioService.AlterarSenha(usuarioId.Value, dto, versaoSessao);
 
-            if (!senhaAlterada)
+            if (novaVersao == null)
             {
                 return BadRequest(new
                 {
                     sucesso = false,
-                    mensagem = "A senha Atual está incorreta."
+                    mensagem = "A senha atual está incorreta ou sua sessão expirou. Entre novamente se necessário."
                 });
             }
+
+            // Somente esta sessão recebe a versão criada pela alteração; as demais são recusadas no próximo acesso.
+            var claims = User.Claims.Where(c => c.Type != ValidarSessaoUsuario.ClaimVersaoSessao).ToList();
+            claims.Add(new Claim(ValidarSessaoUsuario.ClaimVersaoSessao, novaVersao.Value.ToString()));
+            var identidade = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identidade));
 
             return Ok(new
             {
                 sucesso = true,
-                mensagem = "Senha alterada com sucesso!"
+                mensagem = "Senha alterada com sucesso! As outras sessões foram encerradas."
             });
         }
 
@@ -419,7 +445,8 @@ namespace KioraRestaurante.Controllers
             return Ok(new
             {
                 sucesso = true,
-                mensagem = "Sua conta foi desativada com sucesso."
+                mensagem = "Sua conta foi desativada com sucesso.",
+                redirecionarPara = Url.Action("Index", "Home") ?? "/"
             });
         }
     }

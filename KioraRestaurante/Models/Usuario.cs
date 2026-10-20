@@ -15,6 +15,9 @@ namespace KioraRestaurante.Models
         public string SenhaHash { get; set; } = null!;
         public bool Ativo { get; set; } = true;
 
+        // Cada mudança de segurança invalida os cookies emitidos com a versão anterior.
+        public Guid VersaoSessao { get; set; } = Guid.NewGuid();
+
         // Registra se o usuário aceitou os Termos de Uso
         // e a Política de Privacidade no momento do cadastro.
         public bool AceitouTermos { get; set; }

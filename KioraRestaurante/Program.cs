@@ -1,4 +1,5 @@
 using KioraRestaurante.Data;
+using KioraRestaurante.Filters;
 using Microsoft.EntityFrameworkCore;
 using KioraRestaurante.Services;
 using KioraRestaurante.Services.Interfaces;
@@ -62,6 +63,10 @@ builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 builder.Services.AddScoped<IImagemProdutoService, ImagemProdutoService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<ValidarSessaoUsuario>();
+// Limita o login por e-mail e, opcionalmente, por IP antes de executar a autenticação.
+builder.Services.AddSingleton(_ => new LimitadorLogin(
+    builder.Configuration.GetValue<bool>("Seguranca:LimitarLoginPorIp")));
+builder.Services.AddScoped<LimitarTentativasLogin>();
 builder.Services.AddScoped<EnderecoUsuarioService>();
 builder.Services.AddAntiforgery(options => { options.HeaderName = "X-CSRF-TOKEN"; });
 // Cache em memória para consultas públicas de CEP.

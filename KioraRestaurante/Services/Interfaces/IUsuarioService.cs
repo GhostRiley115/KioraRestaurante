@@ -33,7 +33,7 @@ namespace KioraRestaurante.Services.Interfaces
         //Neste momento serão atualizados somente: Nome e e-mail
         bool AtualizarPerfil(int usuarioId, UsuarioAtualizarPerfilDTO dto);
 
-        bool AlterarSenha(int usuarioId, UsuarioAlterarSenhaDTO dto);
+        Guid? AlterarSenha(int usuarioId, UsuarioAlterarSenhaDTO dto, Guid versaoSessao);
 
         //Desativa a conta do usuário sem excluir seu registro do banco.
         bool DesativarConta(int usuarioId);
