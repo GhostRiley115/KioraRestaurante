@@ -10,6 +10,11 @@ namespace KioraRestaurante.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            // A relação já existe; remove a regra Cascade antes de substituí-la por Restrict.
+            migrationBuilder.DropForeignKey(
+                name: "FK_ItensCarrinho_Produtos_ProdutoId",
+                table: "ItensCarrinho");
+
             migrationBuilder.DropColumn(
                 name: "Estado",
                 table: "EnderecoEntregas");

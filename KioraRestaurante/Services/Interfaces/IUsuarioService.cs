@@ -18,10 +18,13 @@ namespace KioraRestaurante.Services.Interfaces
 
         /* ---- RECUPERAÇÃO DE SENHA ---- */
         //Gera um token para recuperação de senha.
-        string? GerarTokenRecuperacao(UsuarioSolicitarRecuperacaoDTO dto);
+        RecuperacaoSenhaGeradaDTO? GerarTokenRecuperacao(UsuarioSolicitarRecuperacaoDTO dto);
 
         // Valida o código enviado para recuperação de senha.
-        bool ValidarCodigoRecuperacao(string codigo);
+        bool ValidarCodigoRecuperacao(string email, string codigo);
+
+        // Cancela somente a solicitação que não pôde ser entregue.
+        void InvalidarCodigoRecuperacao(RecuperacaoSenhaGeradaDTO recuperacao);
 
         //Redefine a senha utilizando o token
         bool RedefinirSenha(UsuarioRedefinirSenhaDTO dto);
@@ -36,7 +39,7 @@ namespace KioraRestaurante.Services.Interfaces
         //Neste momento serão atualizados somente: Nome e e-mail
         bool AtualizarPerfil(int usuarioId, UsuarioAtualizarPerfilDTO dto);
 
-        bool AlterarSenha(int usuarioId, UsuarioAlterarSenhaDTO dto);
+        Guid? AlterarSenha(int usuarioId, UsuarioAlterarSenhaDTO dto, Guid versaoSessao);
 
         //Desativa a conta do usuário sem excluir seu registro do banco.
         bool DesativarConta(int usuarioId);

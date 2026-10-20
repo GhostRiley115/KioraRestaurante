@@ -12,10 +12,6 @@ namespace KioraRestaurante.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropIndex(
-                name: "IX_ItensCarrinho_CarrinhoId",
-                table: "ItensCarrinho");
-
             migrationBuilder.AlterColumn<string>(
                 name: "Tipo",
                 table: "Usuarios",
@@ -132,6 +128,11 @@ namespace KioraRestaurante.Migrations
                 columns: new[] { "CarrinhoId", "ProdutoId" },
                 unique: true);
 
+            // A chave estrangeira precisa de um índice em CarrinhoId durante toda a troca.
+            migrationBuilder.DropIndex(
+                name: "IX_ItensCarrinho_CarrinhoId",
+                table: "ItensCarrinho");
+
             migrationBuilder.CreateIndex(
                 name: "IX_ItensPedido_PedidoId",
                 table: "ItensPedido",
@@ -156,6 +157,12 @@ namespace KioraRestaurante.Migrations
 
             migrationBuilder.DropTable(
                 name: "Pedidos");
+
+            // Restaura o índice simples antes de remover o que sustenta a chave estrangeira.
+            migrationBuilder.CreateIndex(
+                name: "IX_ItensCarrinho_CarrinhoId",
+                table: "ItensCarrinho",
+                column: "CarrinhoId");
 
             migrationBuilder.DropIndex(
                 name: "IX_ItensCarrinho_CarrinhoId_ProdutoId",
@@ -194,11 +201,6 @@ namespace KioraRestaurante.Migrations
                 oldType: "varchar(20)",
                 oldMaxLength: 20)
                 .OldAnnotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ItensCarrinho_CarrinhoId",
-                table: "ItensCarrinho",
-                column: "CarrinhoId");
         }
     }
 }

@@ -35,6 +35,9 @@ namespace KioraRestaurante.ViewModels
         // A senha será enviada ao Controller apenas para
         // ser verificada pelo UsuarioServices.
         public string Senha { get; set; } = string.Empty;
+
+        // Destino original da navegação, validado novamente pelo Controller antes de retornar ao navegador.
+        public string? ReturnUrl { get; set; }
     }
 }
 

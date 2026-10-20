@@ -100,6 +100,7 @@ public class CarrinhoController : ControllerBase
             // HTTP 409
             return Conflict(new
             {
+                codigo = "carrinho_desatualizado",
                 mensagem = "O carrinho foi alterado por outra operação." +
                            " Atualize os dados antes de tentar novamente."
 
@@ -148,15 +149,15 @@ public class CarrinhoController : ControllerBase
     }
 
     [HttpDelete("itens/{produtoId:int}")]
-    public Task<IActionResult> Remover(int produtoId)
+    public Task<IActionResult> Remover(int produtoId, [FromBody] VersaoCarrinhoRequestDTO dto)
     {
-        return Alterar(acesso => _service.RemoverProduto(acesso, produtoId));
+        return Alterar(acesso => _service.RemoverProduto(acesso, produtoId, dto.VersaoEsperada));
     }
 
     [HttpDelete("itens")]
-    public Task<IActionResult> Esvaziar()
+    public Task<IActionResult> Esvaziar([FromBody] VersaoCarrinhoRequestDTO dto)
     {
-        return Alterar(acesso => _service.EsvaziarCarrinho(acesso));
+        return Alterar(acesso => _service.EsvaziarCarrinho(acesso, dto.VersaoEsperada));
     }
 
     [Authorize]

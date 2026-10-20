@@ -185,7 +185,10 @@
                         : "Não foi possível concluir a operação.";
             }
 
-            throw new Error(mensagem);
+            const erro = new Error(mensagem);
+            erro.carrinhoDesatualizado = resposta.status === 409
+                && dados?.codigo === "carrinho_desatualizado";
+            throw erro;
         }
 
         //A API deveria ter devolvido dados.
@@ -262,6 +265,17 @@
             //Depois de um erro, os dados precisam ser atualizados novamente.
             dadosConfiaveis = false;
 
+            if (erro.carrinhoDesatualizado) {
+                try {
+                    // Recupera o estado atual, sem reenviar a alteração feita sobre uma versão antiga.
+                    await sincronizar();
+                    avisar("O carrinho mudou em outra aba. Os dados foram atualizados; confira as quantidades antes de tentar novamente.", true);
+                    return;
+                } catch {
+                    dadosConfiaveis = false;
+                }
+            }
+
             avisar(
                 `${erro.message} Use “Atualizar” no carrinho antes de tentar novamente.`,
                 true
@@ -335,6 +349,12 @@
             // Preenche o nome do produto.
             copia.querySelector(".kc-item-nome").textContent =
                 item.nomeProduto;
+
+            const composicao = copia.querySelector(".kc-item-composicao");
+            composicao.textContent = item.composicao
+                ? `Composição por combo: ${item.composicao}`
+                : "";
+            composicao.hidden = !item.composicao;
 
             // Mostra o preço por unidade.
             copia.querySelector(".kc-item-preco").textContent =
@@ -502,6 +522,11 @@
 
         // Mostra o carrinho final.
         renderizar(resultado.carrinho);
+
+        // A revisão do checkout deve usar o carrinho que acabou de ser reunido.
+        if (document.getElementById("formCheckout")) {
+            window.location.reload();
+        }
     }
 
     //Busca o carrinho novamente na API e atualiza a interface.
@@ -671,6 +696,8 @@
 
         if (!item) return;
 
+        const versaoEsperada = carrinho.versao;
+
         await executar(async () => {
             let resposta;
 
@@ -683,7 +710,8 @@
                 // DELETE /api/carrinho/itens/{produtoId}
                 resposta = await chamarApi(
                     `/itens/${produtoId}`,
-                    "DELETE"
+                    "DELETE",
+                    { versaoEsperada }
                 );
             } else {
                 // Aumenta ou diminui uma unidade.
@@ -694,7 +722,7 @@
                 resposta = await chamarApi(
                     `/itens/${produtoId}`,
                     "PUT",
-                    { quantidade }
+                    { quantidade, versaoEsperada }
                 );
             }
 
@@ -720,9 +748,11 @@
         // Não faz nada se não houver itens
         if (!carrinho?.itens.length) return;
 
+        const versaoEsperada = carrinho.versao;
+
         executar(async () => {
             // DELETE /api/carrinho/itens
-            const resposta = await chamarApi("/itens", "DELETE");
+            const resposta = await chamarApi("/itens", "DELETE", { versaoEsperada });
 
             renderizar(resposta);
             avisar("Carrinho esvaziado.");
@@ -738,6 +768,9 @@
             avisar("Abra o menu da conta para entrar.", true);
             return;
         }
+
+        const retornoLogin = document.getElementById("loginReturnUrl");
+        if (retornoLogin) retornoLogin.value = configuracao.dataset.checkout;
 
         // Função responsável por abrir o modal.
         const mostrarLogin = () => {

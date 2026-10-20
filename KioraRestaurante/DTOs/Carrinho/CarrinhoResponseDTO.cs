@@ -7,6 +7,7 @@ namespace KioraRestaurante.DTOs.Carrinho
     {
         // Nulo quando ainda não existe um carrinho salvo
         public int? CarrinhoId { get; set; }
+        public Guid? Versao { get; set; }
         public List<ItemCarrinhoResponseDTO> Itens { get; set; } = new();
         public decimal Total { get; set; }
 

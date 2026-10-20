@@ -4,6 +4,12 @@
     ================================================================
 -->
 
+@{
+    // O retorno também é validado ao renderizar a página, inclusive em acessos diretos à Home.
+    var retornoSolicitado = Context.Request.Query["ReturnUrl"].ToString();
+    var retornoLogin = Url.IsLocalUrl(retornoSolicitado) ? Url.Content(retornoSolicitado) : "";
+}
+
 <div class="modal fade"
      id="modalLogin"
      tabindex="-1"
@@ -70,6 +76,7 @@
                 <form id="formLogin" asp-controller="Conta" asp-action="Login"
                   method="post" asp-antiforgery="false">
                     @Html.AntiForgeryToken()
+                    <input type="hidden" id="loginReturnUrl" name="ReturnUrl" value="@retornoLogin" />
                     <!-- Mensagem de retorno do login -->
                     <div id="mensagemLogin"
                          class="mensagem-kiora"
