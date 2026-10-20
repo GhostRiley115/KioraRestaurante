@@ -1102,86 +1102,600 @@ if (
     );
 }
 
-// ================================================================
-// RECUPERAÇÃO DE SENHA
-// ================================================================
+    // ================================================================
+    // RECUPERAÇÃO DE SENHA
+    // ================================================================
 
-// Localiza o formulário de recuperação de senha.
-const formEsqueciSenha = document.getElementById("formEsqueciSenha");
+    // Localiza o formulário de recuperação de senha.
+    const formEsqueciSenha =
+        document.getElementById("formEsqueciSenha");
 
-// Localiza a área onde serão exibidas as mensagens.
-const mensagemEsqueciSenha = document.getElementById("mensagemEsqueciSenha");
+    // Localiza a área onde serão exibidas as mensagens.
+    const mensagemEsqueciSenha =
+        document.getElementById("mensagemEsqueciSenha");
 
+    // Localiza a segunda etapa da recuperação.
+    const etapaCodigoRecuperacao =
+        document.getElementById("etapaCodigoRecuperacao");
 
-// Verifica se o formulário existe na página.
-if (formEsqueciSenha) {
-
-    // Detecta o envio do formulário.
-    formEsqueciSenha.addEventListener("submit", async function (event) {
-
-        // Impede o comportamento padrão do formulário.
-        event.preventDefault();
-
-
-        // ============================================================
-        // LIMPAR MENSAGEM ANTERIOR
-        // ============================================================
-
-        mensagemEsqueciSenha.style.display = "none";
-        mensagemEsqueciSenha.innerHTML = "";
+    // Localiza a terceira etapa da recuperação.
+    const etapaRedefinirSenha =
+        document.getElementById("etapaRedefinirSenha");
 
 
-        // ============================================================
-        // PEGAR DADOS DO FORMULÁRIO
-        // ============================================================
 
-        const dados = new FormData(formEsqueciSenha);
+    const modalRecuperacaoSenha = document.getElementById("modalEsqueciSenha");
+    const etapaEmailRecuperacao = document.getElementById("etapaEmailRecuperacao");
+    const voltarEmailRecuperacao = document.getElementById("voltarEmailRecuperacao");
+    let geracaoRecuperacao = 0;
+    let pedidoRecuperacao = null;
+    let finalizouRecuperacao = false;
+    let timerRecuperacao = null;
 
+    function controlesRecuperacao(desabilitar) {
+        modalRecuperacaoSenha?.querySelectorAll("input, button[type='submit'], #voltarEmailRecuperacao")
+            .forEach(elemento => { elemento.disabled = desabilitar; });
+    }
 
-        try {
+    function iniciarRecuperacao() {
+        const pedido = { geracao: geracaoRecuperacao, controller: new AbortController() };
+        pedidoRecuperacao = pedido;
+        controlesRecuperacao(true);
+        return pedido;
+    }
 
-            // ========================================================
-            // ENVIAR SOLICITAÇÃO
-            // ========================================================
+    function concluirRequisicaoRecuperacao(pedido) {
+        if (pedido.geracao !== geracaoRecuperacao) return;
+        pedidoRecuperacao = null;
+        controlesRecuperacao(finalizouRecuperacao);
+    }
 
-            const resposta = await fetch(formEsqueciSenha.action, {
-                method: "POST",
-                body: dados
-            });
+    function reiniciarRecuperacao(manterEmail = false) {
+        const campoEmail = document.getElementById("esqueciSenhaEmail");
+        const email = manterEmail ? campoEmail?.value : "";
+        geracaoRecuperacao++;
+        pedidoRecuperacao?.controller.abort();
+        pedidoRecuperacao = null;
+        clearTimeout(timerRecuperacao);
+        finalizouRecuperacao = false;
+        ["formEsqueciSenha", "formValidarCodigo", "formRedefinirSenha"].forEach(id => {
+            const form = document.getElementById(id);
+            form?.reset();
+            if (form) form.style.display = "";
+        });
+        ["mensagemEsqueciSenha", "mensagemValidarCodigo", "mensagemRedefinirSenha"].forEach(id => {
+            const mensagem = document.getElementById(id);
+            if (mensagem) { mensagem.textContent = ""; mensagem.style.display = "none"; }
+        });
+        ["emailCodigoRecuperacao", "emailRedefinicao", "codigoRedefinicao"].forEach(id => {
+            const campo = document.getElementById(id);
+            if (campo) campo.value = "";
+        });
+        if (campoEmail) campoEmail.value = email || "";
+        if (etapaEmailRecuperacao) etapaEmailRecuperacao.style.display = "block";
+        if (etapaCodigoRecuperacao) etapaCodigoRecuperacao.style.display = "none";
+        if (etapaRedefinirSenha) etapaRedefinirSenha.style.display = "none";
+        if (voltarEmailRecuperacao) voltarEmailRecuperacao.hidden = true;
+        controlesRecuperacao(false);
+    }
 
-
-            // Converte a resposta para JSON.
-            const resultado = await resposta.json();
-
-
-            // ========================================================
-            // EXIBIR MENSAGEM
-            // ========================================================
-
-            mensagemEsqueciSenha.innerHTML = resultado.mensagem;
-
-            mensagemEsqueciSenha.style.display = "block";
-
-
-        } catch (erro) {
-
-            // ========================================================
-            // ERRO DE COMUNICAÇÃO
-            // ========================================================
-
-            mensagemEsqueciSenha.innerHTML =
-                "Não foi possível realizar a solicitação. Tente novamente.";
-
-            mensagemEsqueciSenha.style.display = "block";
-
-            console.error(
-                "Erro na recuperação de senha:",
-                erro
-            );
-        }
-
+    // Fechar o modal cancela a interface pendente; uma resposta antiga não muda uma nova tentativa.
+    modalRecuperacaoSenha?.addEventListener("hidden.bs.modal", () => reiniciarRecuperacao());
+    voltarEmailRecuperacao?.addEventListener("click", () => {
+        if (pedidoRecuperacao) return;
+        reiniciarRecuperacao(true);
+        document.getElementById("esqueciSenhaEmail")?.focus();
     });
-}
+
+    // ================================================================
+    // EXIBIR MENSAGEM
+    // ETAPA 1 - ENVIO DO E-MAIL
+    // ================================================================
+
+    // Verifica se o formulário existe na página.
+    if (formEsqueciSenha) {
+
+        // Detecta o envio do formulário.
+        formEsqueciSenha.addEventListener(
+            "submit",
+            async function (event) {
+
+                // Impede o comportamento padrão do formulário.
+                event.preventDefault();
+                if (pedidoRecuperacao || finalizouRecuperacao) return;
+
+
+                // ====================================================
+                // LIMPAR MENSAGEM ANTERIOR
+                // ====================================================
+
+                mensagemEsqueciSenha.style.display =
+                    "none";
+
+                mensagemEsqueciSenha.textContent = "";
+
+
+                // ====================================================
+                // PEGAR DADOS DO FORMULÁRIO
+                // ====================================================
+
+                const dados =
+                    new FormData(formEsqueciSenha);
+                const pedido = iniciarRecuperacao();
+
+
+                try {
+
+                    // ====================================================
+                    // ENVIAR SOLICITAÇÃO
+                    // ====================================================
+
+                    const resposta = await fetch(
+                        formEsqueciSenha.action,
+                        {
+                            method: "POST",
+                            body: dados,
+                            signal: pedido.controller.signal
+                        }
+                    );
+
+
+                    // Converte a resposta para JSON.
+                    const resultado =
+                        await resposta.json();
+                    if (pedido.geracao !== geracaoRecuperacao) return;
+
+
+                    // ====================================================
+                    // VERIFICAR RESULTADO
+                    // ====================================================
+
+                    if (
+                        resposta.ok &&
+                        resultado.sucesso
+                    ) {
+
+                        // Mostra a mensagem de sucesso.
+                        mensagemEsqueciSenha.textContent =
+                            resultado.mensagem;
+
+                        mensagemEsqueciSenha.className =
+                            "mensagem-kiora mensagem-kiora-sucesso";
+
+                        mensagemEsqueciSenha.style.display =
+                            "block";
+
+
+                        // Esconde a etapa do e-mail.
+                        etapaEmailRecuperacao.style.display = "none";
+                        const email = dados.get("Email").trim();
+                        document.getElementById("emailCodigoRecuperacao").value = email;
+                        document.getElementById("emailRedefinicao").value = email;
+                        if (voltarEmailRecuperacao) voltarEmailRecuperacao.hidden = false;
+
+
+                        // Mostra a etapa de validação do código.
+                        if (etapaCodigoRecuperacao) {
+                            etapaCodigoRecuperacao.style.display =
+                                "block";
+                        }
+
+                    } else {
+
+                        // Mostra a mensagem de erro.
+                        mensagemEsqueciSenha.textContent =
+                            resultado.mensagem ||
+                            "Não foi possível enviar o código.";
+
+                        mensagemEsqueciSenha.className =
+                            "mensagem-kiora mensagem-kiora-erro";
+
+                        mensagemEsqueciSenha.style.display =
+                            "block";
+                    }
+
+
+                } catch (erro) {
+                    if (pedido.geracao !== geracaoRecuperacao || erro.name === "AbortError") return;
+
+                    // ====================================================
+                    // ERRO DE COMUNICAÇÃO
+                    // ====================================================
+
+                    mensagemEsqueciSenha.textContent =
+                        "Não foi possível realizar a solicitação. Tente novamente.";
+
+                    mensagemEsqueciSenha.className =
+                        "mensagem-kiora mensagem-kiora-erro";
+
+                    mensagemEsqueciSenha.style.display =
+                        "block";
+
+
+                    // Mostra o erro no console.
+                    console.error(
+                        "Erro na recuperação de senha:",
+                        erro
+                    );
+                } finally {
+                    concluirRequisicaoRecuperacao(pedido);
+                }
+
+            }
+        );
+    }
+
+
+    // ================================================================
+    // ETAPA 2 - VALIDAÇÃO DO CÓDIGO DE RECUPERAÇÃO
+    // ================================================================
+
+    // Localiza o formulário responsável pela validação do código.
+    const formValidarCodigo =
+        document.getElementById("formValidarCodigo");
+
+    // Localiza a área onde serão exibidas as mensagens do código.
+    const mensagemValidarCodigo =
+        document.getElementById("mensagemValidarCodigo");
+
+    // Localiza o campo oculto da etapa de redefinição de senha.
+    const codigoRedefinicao =
+        document.getElementById("codigoRedefinicao");
+
+
+    // Verifica se o formulário existe na página.
+    if (formValidarCodigo) {
+
+        // Detecta o envio do formulário.
+        formValidarCodigo.addEventListener(
+            "submit",
+            async function (event) {
+
+                // Impede o envio tradicional do formulário.
+                event.preventDefault();
+                if (pedidoRecuperacao || finalizouRecuperacao) return;
+
+
+                // ====================================================
+                // LIMPAR MENSAGEM ANTERIOR
+                // ====================================================
+
+                mensagemValidarCodigo.style.display =
+                    "none";
+
+                mensagemValidarCodigo.textContent = "";
+
+
+                // ====================================================
+                // PEGAR DADOS DO FORMULÁRIO
+                // ====================================================
+
+                const dados =
+                    new FormData(formValidarCodigo);
+                const pedido = iniciarRecuperacao();
+
+
+                try {
+
+                    // ====================================================
+                    // ENVIAR CÓDIGO PARA O CONTROLLER
+                    // ====================================================
+
+                    const resposta = await fetch(
+                        formValidarCodigo.action,
+                        {
+                            method: "POST",
+                            body: dados,
+                            signal: pedido.controller.signal
+                        }
+                    );
+
+
+                    // Converte a resposta para JSON.
+                    const resultado =
+                        await resposta.json();
+                    if (pedido.geracao !== geracaoRecuperacao) return;
+
+
+                    // ====================================================
+                    // VERIFICAR RESULTADO
+                    // ====================================================
+
+                    if (
+                        resposta.ok &&
+                        resultado.sucesso
+                    ) {
+
+                        // Copia o código validado para a etapa
+                        // de redefinição de senha.
+                        if (codigoRedefinicao) {
+
+                            const campoCodigoRecuperacao =
+                                document.getElementById(
+                                    "codigoRecuperacao"
+                                );
+
+                            if (campoCodigoRecuperacao) {
+
+                                codigoRedefinicao.value =
+                                    campoCodigoRecuperacao.value;
+                            }
+                        }
+
+
+                        // Mostra a mensagem de sucesso.
+                        mensagemValidarCodigo.textContent =
+                            resultado.mensagem;
+
+                        mensagemValidarCodigo.className =
+                            "mensagem-kiora mensagem-kiora-sucesso";
+
+                        mensagemValidarCodigo.style.display =
+                            "block";
+
+
+                        // =================================================
+                        // AVANÇAR PARA A ETAPA DA NOVA SENHA
+                        // =================================================
+
+                        // Esconde a etapa do código.
+                        etapaCodigoRecuperacao.style.display = "none";
+
+
+                        // Mostra a etapa da nova senha.
+                        if (etapaRedefinirSenha) {
+
+                            etapaRedefinirSenha.style.display =
+                                "block";
+                        }
+
+                    } else {
+
+                        // =================================================
+                        // CÓDIGO INVÁLIDO OU EXPIRADO
+                        // =================================================
+
+                        mensagemValidarCodigo.textContent =
+                            resultado.mensagem ||
+                            "Código inválido ou expirado.";
+
+                        mensagemValidarCodigo.className =
+                            "mensagem-kiora mensagem-kiora-erro";
+
+                        mensagemValidarCodigo.style.display =
+                            "block";
+                    }
+
+
+                } catch (erro) {
+                    if (pedido.geracao !== geracaoRecuperacao || erro.name === "AbortError") return;
+
+                    // ====================================================
+                    // ERRO DE COMUNICAÇÃO
+                    // ====================================================
+
+                    mensagemValidarCodigo.textContent =
+                        "Não foi possível validar o código. Tente novamente.";
+
+                    mensagemValidarCodigo.className =
+                        "mensagem-kiora mensagem-kiora-erro";
+
+                    mensagemValidarCodigo.style.display =
+                        "block";
+
+
+                    // Mostra o erro no console.
+                    console.error(
+                        "Erro na validação do código:",
+                        erro
+                    );
+                } finally {
+                    concluirRequisicaoRecuperacao(pedido);
+                }
+
+            }
+        );
+    }
+
+
+    // ================================================================
+    // ETAPA 3 - REDEFINIÇÃO DA SENHA
+    // ================================================================
+
+    // Localiza o formulário responsável pela redefinição da senha.
+    const formRedefinirSenha =
+        document.getElementById("formRedefinirSenha");
+
+    // Localiza a área onde serão exibidas as mensagens
+    // da redefinição da senha.
+    const mensagemRedefinirSenha =
+        document.getElementById("mensagemRedefinirSenha");
+
+
+    // Verifica se o formulário existe na página.
+    if (formRedefinirSenha) {
+
+        // Detecta o envio do formulário.
+        formRedefinirSenha.addEventListener(
+            "submit",
+            async function (event) {
+
+                // Impede o envio tradicional do formulário.
+                event.preventDefault();
+                if (pedidoRecuperacao || finalizouRecuperacao) return;
+
+
+                // ====================================================
+                // LIMPAR MENSAGEM ANTERIOR
+                // ====================================================
+
+                mensagemRedefinirSenha.style.display =
+                    "none";
+
+                mensagemRedefinirSenha.textContent = "";
+
+
+                // ====================================================
+                // PEGAR DADOS DO FORMULÁRIO
+                // ====================================================
+
+                const dados =
+                    new FormData(formRedefinirSenha);
+                const pedido = iniciarRecuperacao();
+
+
+                try {
+
+                    // ====================================================
+                    // ENVIAR DADOS PARA O CONTROLLER
+                    // ====================================================
+
+                    const resposta = await fetch(
+                        formRedefinirSenha.action,
+                        {
+                            method: "POST",
+                            body: dados,
+                            signal: pedido.controller.signal
+                        }
+                    );
+
+
+                    // Converte a resposta para JSON.
+                    const resultado =
+                        await resposta.json();
+                    if (pedido.geracao !== geracaoRecuperacao) return;
+
+
+                    // ====================================================
+                    // VERIFICAR RESULTADO
+                    // ====================================================
+
+                    if (
+                        resposta.ok &&
+                        resultado.sucesso
+                    ) {
+                        // Exibe a mensagem informando que a senha
+                        // foi redefinida com sucesso.
+                        mensagemRedefinirSenha.textContent =
+                            resultado.mensagem +
+                            " Você já pode fazer login novamente.";
+
+                        mensagemRedefinirSenha.className =
+                            "mensagem-kiora mensagem-kiora-sucesso";
+
+                        mensagemRedefinirSenha.style.display =
+                            "block";
+
+                        // Desabilita os campos e o botão para impedir
+                        // um novo envio durante o fechamento do modal.
+                        finalizouRecuperacao = true;
+                        formRedefinirSenha
+                            .querySelectorAll(
+                                "input, button"
+                            )
+                            .forEach(
+                                function (elemento) {
+                                    elemento.disabled =
+                                        true;
+                                }
+                            );
+
+                        // Aguarda alguns segundos para o usuário
+                        // conseguir visualizar a mensagem de sucesso.
+                        timerRecuperacao = setTimeout(
+                            function () {
+                                if (pedido.geracao !== geracaoRecuperacao) return;
+
+                                // Localiza o modal de recuperação de senha.
+                                const modalRecuperacao =
+                                    document.getElementById(
+                                        "modalEsqueciSenha"
+                                    );
+
+                                // Localiza o modal de login.
+                                const modalLogin =
+                                    document.getElementById(
+                                        "modalLogin"
+                                    );
+
+                                // Fecha o modal de recuperação.
+                                if (modalRecuperacao) {
+                                    const instanciaRecuperacao =
+                                        bootstrap.Modal.getInstance(
+                                            modalRecuperacao
+                                        );
+
+                                    if (instanciaRecuperacao) {
+                                        // Aguarda o fechamento para não sobrepor fundos e foco dos modais.
+                                        modalRecuperacao.addEventListener("hidden.bs.modal", () => {
+                                            if (modalLogin) bootstrap.Modal.getOrCreateInstance(modalLogin).show();
+                                        }, { once: true });
+                                        instanciaRecuperacao.hide();
+                                        return;
+                                    }
+                                }
+
+                                // Abre novamente o modal de login.
+                                if (modalLogin) {
+                                    const instanciaLogin =
+                                        bootstrap.Modal.getOrCreateInstance(
+                                            modalLogin
+                                        );
+
+                                    instanciaLogin.show();
+                                }
+
+                            },
+                            2500
+                        );
+                    } else {
+
+                        // =================================================
+                        // ERRO NA REDEFINIÇÃO
+                        // =================================================
+
+                        mensagemRedefinirSenha.textContent =
+                            resultado.mensagem ||
+                            "Não foi possível redefinir a senha.";
+
+                        mensagemRedefinirSenha.className =
+                            "mensagem-kiora mensagem-kiora-erro";
+
+                        mensagemRedefinirSenha.style.display =
+                            "block";
+                    }
+
+
+                } catch (erro) {
+                    if (pedido.geracao !== geracaoRecuperacao || erro.name === "AbortError") return;
+
+                    // ====================================================
+                    // ERRO DE COMUNICAÇÃO
+                    // ====================================================
+
+                    mensagemRedefinirSenha.textContent =
+                        "Não foi possível redefinir a senha. Tente novamente.";
+
+                    mensagemRedefinirSenha.className =
+                        "mensagem-kiora mensagem-kiora-erro";
+
+                    mensagemRedefinirSenha.style.display =
+                        "block";
+
+
+                    // Mostra o erro no console.
+                    console.error(
+                        "Erro ao redefinir a senha:",
+                        erro
+                    );
+                } finally {
+                    concluirRequisicaoRecuperacao(pedido);
+                }
+
+            }
+        );
+    }
+
 
 
 // PAINEL DA CONTA: fecha o painel antes de abrir login ou cadastro.
@@ -1344,6 +1858,7 @@ if (painelConta) {
         );
     }   
 
+// OFFCANVAS NO MOBILE
 // Abrir conta ou carrinho também recolhe a lista de páginas no celular.
 ["painelConta", "painelCarrinho"].forEach(id => {
     document.getElementById(id)?.addEventListener("show.bs.offcanvas", () => {

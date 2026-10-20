@@ -1,5 +1,6 @@
-﻿using KioraRestaurante.Data;
+using KioraRestaurante.Data;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
 using KioraRestaurante.DTOs.Usuario;
 using KioraRestaurante.Models;
@@ -140,37 +141,97 @@ namespace KioraRestaurante.Services
 
         /* ---- RECUPERAÇÃO DE SENHA ---- */
         //Gera um token para recuperação de senha.
-        public string? GerarTokenRecuperacao(UsuarioSolicitarRecuperacaoDTO dto)
+        public RecuperacaoSenhaGeradaDTO? GerarTokenRecuperacao(UsuarioSolicitarRecuperacaoDTO dto)
         {
             var email = NormalizarEmail(dto.Email);
 
-            var usuario = _context.Usuarios
+            var usuario = _context.Usuarios.AsNoTracking()
                 .FirstOrDefault(u => u.Email == email && u.Ativo);
-            if(usuario == null) 
+
+            if (usuario == null)
                 return null;
 
+            // Comentários do mecanismo anterior, preservados como histórico (GUID e validade de 30 minutos).
             //Gera um identificador único.
-            var token = Guid.NewGuid().ToString();
-
             //Salva o token no usuário.
-            usuario.TokenRecuperacaoSenha = token;
             /*Define por quanto tempo o token será válido.
             Neste caso: token criado agora + 30 minutos de validade.*/
-            usuario.ExpiracaoTokenRecuperacaoSenha = DateTime.UtcNow.AddMinutes(30);
-
             //Salva o token e a data de expiração no banco.
-            _context.SaveChanges();
-
             //Retorna o token para quem chamou o método.
-            return token;
+            // O fluxo atual abaixo usa código protegido e validade de 10 minutos.
+            // Gera um código numérico de 6 dígitos.
+            var codigo = RandomNumberGenerator.GetInt32(100000, 1000000).ToString();
+
+            // Salva o código no campo que já existe no banco.
+            // O código fica protegido com salt e hash; não é armazenado em texto puro.
+            var identificador = "otp:" + _passwordHasher.HashPassword(usuario, codigo);
+
+            // Define a validade do código para 10 minutos.
+            var expiracao = DateTime.UtcNow.AddMinutes(10);
+
+            // Salva o código e sua validade no banco.
+            // Uma alteração de senha ou desativação concorrente não pode ser desfeita pelo envio.
+            var atualizados = _context.Usuarios
+                .Where(u => u.Id == usuario.Id && u.Ativo && u.VersaoSessao == usuario.VersaoSessao)
+                .ExecuteUpdate(set => set.SetProperty(u => u.TokenRecuperacaoSenha, identificador)
+                    .SetProperty(u => u.ExpiracaoTokenRecuperacaoSenha, expiracao));
+            if (atualizados != 1) return null;
+
+            // Retorna o código para que o Controller possa enviá-lo por e-mail.
+            return new RecuperacaoSenhaGeradaDTO(usuario.Email, codigo, identificador);
+        }
+
+        // Valida se o código existe, pertence a um usuário ativo e ainda está dentro do prazo.
+        public bool ValidarCodigoRecuperacao(string email, string codigo)
+        {
+            var usuario = BuscarContaRecuperacao(email, codigo);
+
+            if (usuario == null)
+                return false;
+
+            if (usuario.ExpiracaoTokenRecuperacaoSenha == null)
+                return false;
+
+            if (usuario.ExpiracaoTokenRecuperacaoSenha < DateTime.UtcNow)
+                return false;
+
+            return true;
+        }
+
+        private Usuario? BuscarContaRecuperacao(string email, string codigo)
+        {
+            if (string.IsNullOrWhiteSpace(email) || email.Trim().Length > 150
+                || codigo is null || codigo.Length != 6 || codigo.Any(c => c < '0' || c > '9')) return null;
+            var normalizado = NormalizarEmail(email);
+            var usuario = _context.Usuarios.AsNoTracking()
+                .FirstOrDefault(u => u.Email == normalizado && u.Ativo);
+            if (usuario?.TokenRecuperacaoSenha is not { } token || !token.StartsWith("otp:", StringComparison.Ordinal)
+                || usuario.ExpiracaoTokenRecuperacaoSenha is not { } validade || validade <= DateTime.UtcNow) return null;
+            try
+            {
+                return _passwordHasher.VerifyHashedPassword(usuario, token[4..], codigo)
+                    == PasswordVerificationResult.Failed ? null : usuario;
+            }
+            catch (FormatException) { return null; }
+        }
+
+        public void InvalidarCodigoRecuperacao(RecuperacaoSenhaGeradaDTO recuperacao)
+        {
+            // Não apaga um código mais recente, caso outro envio tenha ocorrido em paralelo.
+            _context.Usuarios.Where(u => u.Email == recuperacao.Email
+                    && u.TokenRecuperacaoSenha == recuperacao.Identificador)
+                .ExecuteUpdate(set => set.SetProperty(u => u.TokenRecuperacaoSenha, (string?)null)
+                    .SetProperty(u => u.ExpiracaoTokenRecuperacaoSenha, (DateTime?)null));
         }
 
         /* ---- REDEFINE A SENHA UTILIZANDO UM TOKEN VALIDO. ---- */
         public bool RedefinirSenha(UsuarioRedefinirSenhaDTO dto)
         {
             //Procura um usuário que possua exatamente o token informado.
-            var usuario = _context.Usuarios.AsNoTracking()
-                .FirstOrDefault(u => u.TokenRecuperacaoSenha == dto.Token && u.Ativo);
+            // O código é conferido somente na conta informada, nunca em todas as contas.
+            if (!Validator.TryValidateObject(dto, new ValidationContext(dto), new List<ValidationResult>(), true))
+                return false;
+            var usuario = BuscarContaRecuperacao(dto.Email, dto.Token);
 
             //Se não encontrou usuário com esse token, a recuperação não pode continuar.
             if (usuario == null)
@@ -195,7 +256,7 @@ namespace KioraRestaurante.Services
             // A condição atômica também impede reutilizar o token em duas requisições simultâneas.
             var atualizados = _context.Usuarios
                 .Where(u => u.Id == usuario.Id && u.Ativo && u.VersaoSessao == usuario.VersaoSessao
-                    && u.TokenRecuperacaoSenha == dto.Token
+                    && u.TokenRecuperacaoSenha == usuario.TokenRecuperacaoSenha
                     && u.ExpiracaoTokenRecuperacaoSenha >= DateTime.UtcNow)
                 .ExecuteUpdate(set => set.SetProperty(u => u.SenhaHash, senhaHash)
                     .SetProperty(u => u.VersaoSessao, novaVersao)

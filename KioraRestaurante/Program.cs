@@ -54,6 +54,7 @@ builder.Services.AddControllersWithViews();
 // para os Controllers que precisarem do serviço.
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<ICarrinhoService, CarrinhoService>();
+builder.Services.AddHttpClient<IEmailService, EmailService>(http => http.Timeout = TimeSpan.FromSeconds(15));
 builder.Services.AddDataProtection();
 builder.Services.AddScoped<CarrinhoCookie>();
 builder.Services.AddHostedService<LimpezaCarrinhosService>();
@@ -67,6 +68,10 @@ builder.Services.AddScoped<ValidarSessaoUsuario>();
 builder.Services.AddSingleton(_ => new LimitadorLogin(
     builder.Configuration.GetValue<bool>("Seguranca:LimitarLoginPorIp")));
 builder.Services.AddScoped<LimitarTentativasLogin>();
+// Envio e conferência de códigos têm limites próprios, sem consumir as tentativas de login.
+builder.Services.AddSingleton(_ => new LimitadorRecuperacaoSenha(
+    builder.Configuration.GetValue<bool>("Seguranca:LimitarLoginPorIp")));
+builder.Services.AddScoped<LimitarRecuperacaoSenha>();
 builder.Services.AddScoped<EnderecoUsuarioService>();
 builder.Services.AddAntiforgery(options => { options.HeaderName = "X-CSRF-TOKEN"; });
 // Cache em memória para consultas públicas de CEP.

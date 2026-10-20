@@ -1,63 +1,62 @@
-<!--
-    ================================================================
-    MODAL DE RECUPERAÇÃO DE SENHA KIORA
-    ================================================================
--->
+<!-- ================================================================ MODAL DE RECUPERAÇÃO DE SENHA KIORA ================================================================ -->
 
-<div class="modal fade"
-     id="modalEsqueciSenha"
-     tabindex="-1"
-     aria-labelledby="modalEsqueciSenhaTitulo"
-     aria-hidden="true">
+<div class="modal fade" id="modalEsqueciSenha" tabindex="-1" aria-labelledby="modalEsqueciSenhaTitulo" aria-hidden="true">
 
-    <div class="modal-dialog modal-dialog-centered modal-login-dialog">
+<div class="modal-dialog modal-dialog-centered modal-login-dialog">
 
-        <div class="modal-content modal-login-kiora">
+    <div class="modal-content modal-login-kiora">
+
+        <!--
+            ====================================================
+            BOTÃO FECHAR
+            ====================================================
+        -->
+
+        <button type="button"
+                class="btn-close modal-login-fechar"
+                data-bs-dismiss="modal"
+                aria-label="Fechar">
+
+            <i class="bi bi-x-lg"></i>
+
+        </button>
+
+
+        <!--
+            ====================================================
+            CONTEÚDO
+            ====================================================
+        -->
+
+        <div class="modal-body modal-login-body">
 
             <!--
-                ====================================================
-                BOTÃO FECHAR
-                ====================================================
+                =================================================
+                LOGO
+                =================================================
             -->
 
-            <button type="button"
-                    class="btn-close modal-login-fechar"
-                    data-bs-dismiss="modal"
-                    aria-label="Fechar">
+            <div class="modal-login-logo">
 
-                <i class="bi bi-x-lg"></i>
+                <img src="~/imagens/logo-kiora-v.png"
+                     alt="Kiora Japanese Cuisine">
 
-            </button>
+            </div>
 
 
             <!--
-                ====================================================
-                CONTEÚDO
-                ====================================================
+                =================================================
+                ETAPA 1 - E-MAIL
+                =================================================
             -->
 
-            <div class="modal-body modal-login-body">
-
-                <!--
-                    =================================================
-                    LOGO
-                    =================================================
-                -->
-
-                <div class="modal-login-logo">
-
-                    <img src="~/imagens/logo-kiora-v.png"
-                         alt="Kiora Japanese Cuisine">
-
-                </div>
-
+            <div id="etapaEmailRecuperacao">
 
                 <!--
                     =================================================
                     CABEÇALHO
                     =================================================
                 -->
-
                 <div class="modal-login-header">
 
                     <span class="modal-login-subtitulo">
@@ -74,8 +73,8 @@
 
                     <p>
 
-                        Informe seu e-mail para receber o link
-                        de redefinição de senha.
+                        Informe seu e-mail para receber um
+                        código de recuperação de senha.
 
                     </p>
 
@@ -84,13 +83,23 @@
 
                 <!--
                     =================================================
-                    FORMULÁRIO
+                    FORMULÁRIO DO E-MAIL
                     =================================================
                 -->
 
-                <form id="formEsqueciSenha" asp-controller="Conta" asp-action="EsqueciSenha"
-                  method="post" asp-antiforgery="false">
+                <!--
+                    =================================================
+                    FORMULÁRIO
+                    =================================================
+                -->
+                <form id="formEsqueciSenha"
+                      asp-controller="Conta"
+                      asp-action="EsqueciSenha"
+                      method="post"
+                      asp-antiforgery="false">
+
                     @Html.AntiForgeryToken()
+
 
                     <!--
                     =================================================
@@ -131,6 +140,7 @@
 
                             <input type="email"
                                    id="esqueciSenhaEmail"
+                                   maxlength="150"
                                    name="Email"
                                    placeholder="Digite seu e-mail"
                                    autocomplete="email"
@@ -150,7 +160,7 @@
                     <button type="submit"
                             class="btn-modal-login">
 
-                        ENVIAR LINK
+                        ENVIAR CÓDIGO
 
                     </button>
 
@@ -184,10 +194,303 @@
 
             </div>
 
+
+            <!--
+            =================================================
+            ETAPA 2 - VALIDAÇÃO DO CÓDIGO
+            =================================================
+
+            Esta etapa ficará escondida inicialmente.
+
+            O JavaScript irá exibi-la depois que o
+            código for enviado para o e-mail.
+            -->
+
+            <div id="etapaCodigoRecuperacao"
+                 style="display: none;">
+
+                <div class="modal-login-header">
+
+                    <span class="modal-login-subtitulo">
+
+                        CONFIRMAÇÃO
+
+                    </span>
+
+                    <h2>
+
+                        Digite o código
+
+                    </h2>
+
+                    <p>
+
+                        Confira seu e-mail e a pasta de spam.
+                        O código recebido vale por 10 minutos.
+
+                    </p>
+
+                </div>
+
+
+                <!--
+                =================================================
+                FORMULÁRIO DO CÓDIGO
+                =================================================
+                -->
+
+                <form id="formValidarCodigo"
+                      asp-controller="Conta"
+                      asp-action="ValidarCodigoRecuperacao"
+                      method="post"
+                      asp-antiforgery="false">
+
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="emailCodigoRecuperacao" name="Email">
+
+
+                    <!--
+                    =================================================
+                    MENSAGEM
+                    =================================================
+                    -->
+
+                    <div id="mensagemValidarCodigo"
+                         class="mensagem-kiora"
+                         role="alert"
+                         style="display: none;">
+
+                    </div>
+
+
+                    <!--
+                    =================================================
+                    CÓDIGO
+                    =================================================
+                    -->
+
+                    <div class="modal-login-grupo">
+
+                        <label for="codigoRecuperacao">
+
+                            Código de recuperação
+
+                        </label>
+
+                        <div class="modal-login-input">
+
+                            <i class="bi bi-shield-lock"></i>
+
+                            <input type="text"
+                                   id="codigoRecuperacao"
+                                   name="Codigo"
+                                   placeholder="Digite o código de 6 dígitos"
+                                   maxlength="6"
+                                   pattern="[0-9]{6}"
+                                   inputmode="numeric"
+                                   autocomplete="one-time-code"
+                                   required>
+
+                        </div>
+
+                    </div>
+
+
+                    <!--
+                    =================================================
+                    BOTÃO VALIDAR
+                    =================================================
+                    -->
+
+                    <button type="submit"
+                            class="btn-modal-login">
+
+                        VALIDAR CÓDIGO
+
+                    </button>
+
+                </form>
+
+            </div>
+
+
+            <!--
+            =================================================
+            ETAPA 3 - NOVA SENHA
+            =================================================
+
+            Esta etapa ficará escondida inicialmente.
+
+            O JavaScript irá exibi-la somente depois que
+            o código de recuperação for validado.
+            -->
+
+            <div id="etapaRedefinirSenha"
+                 style="display: none;">
+
+                <div class="modal-login-header">
+
+                    <span class="modal-login-subtitulo">
+
+                        NOVA SENHA
+
+                    </span>
+
+                    <h2>
+
+                        Crie uma nova senha
+
+                    </h2>
+
+                    <p>
+
+                        Informe sua nova senha para recuperar
+                        o acesso à sua conta.
+
+                    </p>
+
+                </div>
+
+
+                <!--
+                =================================================
+                FORMULÁRIO DA NOVA SENHA
+                =================================================
+                -->
+
+                <form id="formRedefinirSenha"
+                      asp-controller="Conta"
+                      asp-action="RedefinirSenha"
+                      method="post"
+                      asp-antiforgery="false">
+
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="emailRedefinicao" name="Email">
+
+
+                    <!--
+                    =================================================
+                    MENSAGEM
+                    =================================================
+                    -->
+
+                    <div id="mensagemRedefinirSenha"
+                         class="mensagem-kiora"
+                         role="alert"
+                         style="display: none;">
+
+                    </div>
+
+
+                    <!--
+                    =================================================
+                    CÓDIGO DE RECUPERAÇÃO
+                    =================================================
+
+                    Este campo permanece oculto para o usuário.
+
+                    O JavaScript irá copiar para ele o código
+                    que foi validado na etapa anterior.
+
+                    Assim, o Controller receberá o código junto
+                    com a nova senha.
+                    -->
+
+                    <input type="hidden"
+                           id="codigoRedefinicao"
+                           name="Codigo">
+
+
+                    <!--
+                    =================================================
+                    NOVA SENHA
+                    =================================================
+                    -->
+
+                    <p id="regraSenhaRecuperacao">@KioraRestaurante.Validacoes.RegrasSenha.Mensagem</p>
+
+                    <div class="modal-login-grupo">
+
+                        <label for="novaSenhaRecuperacao">
+
+                            Nova senha
+
+                        </label>
+
+                        <div class="modal-login-input">
+
+                            <i class="bi bi-lock"></i>
+
+                            <input type="password"
+                                   id="novaSenhaRecuperacao"
+                                   minlength="8"
+                                   aria-describedby="regraSenhaRecuperacao"
+                                   name="NovaSenha"
+                                   placeholder="Digite sua nova senha"
+                                   autocomplete="new-password"
+                                   required>
+
+                        </div>
+
+                    </div>
+
+
+                    <!--
+                    =================================================
+                    CONFIRMAR NOVA SENHA
+                    =================================================
+                    -->
+
+                    <div class="modal-login-grupo">
+
+                        <label for="confirmarNovaSenhaRecuperacao">
+
+                            Confirmar nova senha
+
+                        </label>
+
+                        <div class="modal-login-input">
+
+                            <i class="bi bi-lock-fill"></i>
+
+                            <input type="password"
+                                   id="confirmarNovaSenhaRecuperacao"
+                                   minlength="8"
+                                   name="ConfirmarNovaSenha"
+                                   placeholder="Confirme sua nova senha"
+                                   autocomplete="new-password"
+                                   required>
+
+                        </div>
+
+                    </div>
+
+
+                    <!--
+                    =================================================
+                    BOTÃO REDEFINIR
+                    =================================================
+                    -->
+
+                    <button type="submit"
+                            class="btn-modal-login">
+
+                        REDEFINIR SENHA
+
+                    </button>
+
+                </form>
+
+            </div>
+
+            <button type="button" id="voltarEmailRecuperacao" class="btn btn-outline-light w-100 mt-3" hidden>
+                Corrigir e-mail ou solicitar novo código
+            </button>
+
         </div>
 
     </div>
 
 </div>
 
-
+</div>

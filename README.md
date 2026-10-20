@@ -101,6 +101,44 @@ dotnet run -- --environment Development
 
 Abra o endereço exibido no terminal. A conexão MySQL precisa funcionar já na inicialização, pois a aplicação detecta a versão do servidor. A configuração `Entrega:MunicipiosIbge` define os municípios atendidos e deve corresponder ao cenário de teste. Use dados fictícios para explorar os fluxos.
 
+## Testes e atualização de sessões
+
+Na raiz do repositório, execute `dotnet test KioraRestaurante.slnx`. Os testes de sessão usam SQLite em memória, cookies protegidos e usuários fictícios; não acessam o Aiven.
+
+Antes de executar esta versão com um banco existente, aplique a migration `AdicionarVersaoSessaoUsuario` pelo procedimento acima, usando a conexão do ambiente desejado. Ela acrescenta uma versão de sessão às contas existentes. Os usuários precisarão entrar novamente após a atualização, pois cookies anteriores não possuem essa versão.
+
+Ao trocar a senha, apenas a sessão que fez a alteração permanece aberta. As outras são recusadas na próxima requisição. Redefinir a senha ou desativar a conta também invalida sessões anteriores.
+
+O login permite **5 tentativas por e-mail a cada minuto**, incluindo tentativas bem-sucedidas. Variações de e-mail reconhecidas pelo banco contam para a mesma conta, e `/Conta/Login` e `/Account/Login` compartilham a mesma proteção. Ao atingir o limite, a resposta é HTTP 429 com uma mensagem de espera e o cabeçalho `Retry-After`.
+
+O limite é mantido na memória de cada instância e reinicia junto com a aplicação. Há um limite adicional opcional de **20 tentativas por IP por minuto**, ativado com `Seguranca__LimitarLoginPorIp=true`. Em hospedagens com proxy, como o Render, só o habilite após configurar a identificação confiável do IP de origem: sem isso, usuários diferentes podem compartilhar o IP do proxy e o mesmo limite. O aplicativo não confia diretamente no `X-Forwarded-For` enviado pelo cliente. Veja a [orientação oficial do ASP.NET Core sobre proxies confiáveis](https://learn.microsoft.com/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-10.0).
+
+## Carrinho, combos e navegação
+
+O carrinho e o checkout exibem a composição por unidade do combo. Os detalhes do cliente e do administrador usam a composição gravada no item do pedido, preservando o histórico mesmo após alterações no catálogo. Pedidos antigos sem composição registrada continuam sendo exibidos sem inventar componentes.
+
+As respostas de carrinho incluem `versao`. Para alterar uma quantidade, remover um item ou esvaziar o carrinho, envie `versaoEsperada` no corpo JSON da requisição. Uma versão antiga recebe HTTP 409 com `codigo: "carrinho_desatualizado"`. A interface recarrega o carrinho e avisa o cliente, sem repetir automaticamente a alteração. A adição pelo cardápio continua somando unidades no servidor.
+
+O login retoma somente destinos locais validados. Ao entrar pelo checkout, a reunião dos carrinhos visitante/conta termina antes de uma nova revisão do pedido. Depois de desativar a conta, a interface volta à Home com a sessão encerrada; o botão impede envios repetidos e permite tentar novamente se houver erro.
+
+Além de `dotnet test KioraRestaurante.slnx`, os testes dos scripts podem ser executados com Node.js, sem instalar pacotes:
+
+```bash
+node --test KioraRestaurante.Tests/JavaScript/interface.test.cjs
+```
+
+## Recuperação de senha por e-mail
+
+O fluxo tem três etapas: informar o e-mail, conferir o código recebido e escolher a nova senha. O servidor confere novamente o código junto com a conta ao redefinir a senha. Os códigos têm seis dígitos, são gerados com aleatoriedade criptográfica, armazenados com salt e hash no campo já existente e expiram após dez minutos. Um novo envio substitui o anterior. Redefinir a senha consome o código e revoga as sessões anteriores.
+
+Por conta e por instância da aplicação, são permitidos três pedidos de envio a cada dez minutos e dez tentativas compartilhadas entre validar o código e redefinir a senha no mesmo intervalo. As rotas `Conta` e `Account` usam a mesma proteção. A resposta HTTP 429 inclui `Retry-After`. Os limites ficam em memória e reiniciam com a aplicação; uma futura hospedagem com várias instâncias precisará de contadores compartilhados. O limite opcional por IP segue `Seguranca:LimitarLoginPorIp` e as mesmas exigências de proxy confiável descritas acima.
+
+O envio usa a Brevo e sempre recebe o endereço armazenado na conta. Configure `Brevo:ApiKey`, `Brevo:RemetenteEmail` e `Brevo:RemetenteNome` nos **User Secrets do Rider**. No Render, use as variáveis `Brevo__ApiKey`, `Brevo__RemetenteEmail` e `Brevo__RemetenteNome`. O remetente precisa estar autorizado na conta Brevo. O valor de exemplo do repositório não envia mensagens; não substitua esse exemplo por uma chave real em arquivos versionados.
+
+Falhas de configuração, conexão ou recusa do provedor são registradas no servidor sem expor credenciais, código ou destinatário. O código cujo envio falhou é cancelado. A resposta pública permanece genérica para não revelar quais contas existem; por isso, ausência de e-mail deve ser investigada nos logs da aplicação e na configuração do provedor.
+
+Esta integração não exige uma nova migration. Códigos de recuperação emitidos pelo mecanismo anterior devem ser solicitados novamente. Os testes usam SQLite em memória e transporte de e-mail simulado, sem enviar mensagens reais nem consultar o Aiven.
+
 ## Contexto
 
 Projeto acadêmico apresentado no ecossistema **Jujuba’s Dev**. Kiora é uma marca fictícia; sua presença visual foi criada para dar contexto à solução de software.
