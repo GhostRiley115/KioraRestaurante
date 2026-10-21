@@ -13,6 +13,37 @@ const formCadastro = document.getElementById("formCadastro");
 // Obtém o elemento responsável por mostrar as mensagens do cadastro.
 const mensagemCadastro = document.getElementById("mensagemCadastro");
 
+// ================================================================
+// MENSAGEM DE ACEITE DOS TERMOS
+// ================================================================
+
+// Obtém a caixa de aceite dos Termos de Uso e da Política de Privacidade.
+    const cadastroAceiteTermos =
+        document.getElementById("cadastroAceiteTermos");
+
+    if (cadastroAceiteTermos) {
+
+        // Personaliza o aviso quando o navegador identifica a caixa desmarcada.
+        cadastroAceiteTermos.addEventListener("invalid", function () {
+            cadastroAceiteTermos.setCustomValidity(
+                cadastroAceiteTermos.checked
+                    ? ""
+                    : "É necessário aceitar os Termos de Uso e a Política de Privacidade para criar sua conta."
+            );
+        });
+
+        // Remove o erro personalizado quando o usuário altera a seleção.
+        cadastroAceiteTermos.addEventListener("change", function () {
+            cadastroAceiteTermos.setCustomValidity("");
+        });
+
+        // Limpa o erro quando o formulário é reiniciado ou o modal é fechado.
+        if (formCadastro) {
+            formCadastro.addEventListener("reset", function () {
+                cadastroAceiteTermos.setCustomValidity("");
+            });
+        }
+    }
 
 // Verifica se o formulário de cadastro existe na página.
 if (formCadastro) {
