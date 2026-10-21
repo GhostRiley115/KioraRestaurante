@@ -81,17 +81,21 @@
 
                             </li>
 
-                            <li>
-                                <a class="conta-opcao"
-                                    asp-controller="Enderecos"
-                                    asp-action="Index">
-                                    <i class="bi bi-geo-alt" aria-hidden="true"></i>
-                                    Meus endereços
-                                </a>
-                            </li>
+                            <!-- MEUS ENDEREÇOS: opção exibida somente para clientes. -->
+                            @if (User.IsInRole("Cliente"))
+                                {
+                                    <li>
+                                        <a class="conta-opcao"
+                                           asp-controller="Enderecos"
+                                           asp-action="Index">
+                                            <i class="bi bi-geo-alt" aria-hidden="true"></i>
+                                            Meus endereços
+                                        </a>
+                                    </li>
+                                }
 
 
-                            <!-- DIVISOR -->
+                                <!-- DIVISOR -->
 
                             <li>
 
