@@ -10,6 +10,15 @@
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Fechar conta"></button>
     </div>
     <div class="offcanvas-body">
+        <!-- Preferência disponível para visitante, cliente e administrador. -->
+        <div class="tema-controle">
+            <label for="preferenciaTema"><i class="bi bi-circle-half" aria-hidden="true"></i> Aparência</label>
+            <select id="preferenciaTema" data-seletor-tema>
+                <option value="sistema">Seguir o sistema</option>
+                <option value="claro">Claro</option>
+                <option value="escuro">Escuro</option>
+            </select>
+        </div>
         <!-- Os links abaixo preservam as ações e permissões já existentes. -->
                         <!-- MENU DO USUÁRIO -->
 
@@ -26,7 +35,7 @@
 
                                 <span class="dropdown-item-text usuario-logado">
 
-                                    <i class="bi bi-person-circle"></i>
+                                    <i class="bi bi-person-circle" aria-hidden="true"></i>
 
                                     Olá, @User.Identity.Name!
 
@@ -65,6 +74,8 @@
                                 </li>
                             }
 
+                            <li><a class="conta-opcao" asp-controller="Reservas" asp-action="Minhas"><i class="bi bi-calendar-check" aria-hidden="true"></i>Minhas reservas</a></li>
+
                             <!-- MEU PERFIL -->
 
                             <li>
@@ -73,7 +84,7 @@
                                    asp-controller="Conta"
                                    asp-action="MeuPerfil">
 
-                                    <i class="bi bi-person"></i>
+                                    <i class="bi bi-person" aria-hidden="true"></i>
 
                                     Meu perfil
 
@@ -129,7 +140,7 @@
                                    data-conta-modal
                                    data-conta-destino="#modalLogin">
 
-                                    <i class="bi bi-box-arrow-in-right"></i>
+                                    <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
 
                                     Entrar
 
@@ -147,7 +158,7 @@
                                    data-conta-modal
                                    data-conta-destino="#modalCadastro">
 
-                                    <i class="bi bi-person-plus"></i>
+                                    <i class="bi bi-person-plus" aria-hidden="true"></i>
 
                                     Criar conta
 

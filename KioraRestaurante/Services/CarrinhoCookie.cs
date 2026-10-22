@@ -8,17 +8,25 @@ namespace KioraRestaurante.Services;
 public class CarrinhoCookie
 {
     private const string Nome = "__Host-KioraCarrinho";
+    private const string NomeLocal = "KioraCarrinhoDesenvolvimento";
     private readonly IDataProtector _protetor;
+    private readonly IWebHostEnvironment _ambiente;
 
-    public CarrinhoCookie(IDataProtectionProvider provider)
+    public CarrinhoCookie(IDataProtectionProvider provider, IWebHostEnvironment ambiente)
     {
+        _ambiente = ambiente;
         _protetor = provider.CreateProtector("KioraCarrinhoVisitante.v1");
     }
+
+    // No Rider via HTTP, use outro nome: o prefixo __Host- exige HTTPS no navegador.
+    // Em produção o cookie continua seguro, inclusive atrás do proxy do Render.
+    private bool LocalHttp(HttpContext http) => _ambiente.IsDevelopment() && !http.Request.IsHttps;
+    private string NomeCookie(HttpContext http) => LocalHttp(http) ? NomeLocal : Nome;
 
     public int? Ler(HttpContext httpContext)
     {
         // Pegue da requisição o cookie que tem esse nome.
-        var cookie = httpContext.Request.Cookies[Nome];
+        var cookie = httpContext.Request.Cookies[NomeCookie(httpContext)];
 
         if (string.IsNullOrWhiteSpace(cookie))
             return null;
@@ -51,12 +59,13 @@ public class CarrinhoCookie
         var valorProtegido = _protetor.Protect(texto);
 
         // Joga o ID do carrinho no navegador de forma protegida para ser o Cookie.
-        httpContext.Response.Cookies.Append(Nome, valorProtegido, new CookieOptions
+        httpContext.Response.Cookies.Append(NomeCookie(httpContext), valorProtegido, new CookieOptions
         {
             // Impede que o JavaScript leia diretamente esse cookie.
             HttpOnly = true,
             // Faz o cookie ser enviado por HTTPS.
-            Secure = true,
+            Secure = !LocalHttp(httpContext),
+            IsEssential = true,
             // Restringe seu envio em parte das navegações entre sites.
             SameSite = SameSiteMode.Lax,
             // Permite o uso nas rotas da aplicação.
@@ -67,10 +76,11 @@ public class CarrinhoCookie
 
     public void Remover(HttpContext httpContext)
     {
-        httpContext.Response.Cookies.Delete(Nome, new CookieOptions
+        httpContext.Response.Cookies.Delete(NomeCookie(httpContext), new CookieOptions
         {
             HttpOnly = true,
-            Secure = true,
+            Secure = !LocalHttp(httpContext),
+            IsEssential = true,
             SameSite = SameSiteMode.Lax,
             Path = "/"
         });

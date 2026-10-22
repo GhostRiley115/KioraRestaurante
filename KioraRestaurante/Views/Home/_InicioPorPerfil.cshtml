@@ -1,0 +1,39 @@
+@* Conteúdo por perfil. Os atalhos não substituem a autorização dos controllers. *@
+<section class="home-contexto container" aria-labelledby="tituloContexto">
+@if (User.IsInRole("Administrador"))
+{
+    <div class="home-secao-cabecalho"><span class="home-sobretitulo">SEU PONTO DE PARTIDA</span>
+        <h2 id="tituloContexto">Tudo pronto para organizar o atendimento.</h2>
+        <p>Consulte os dados reais no painel e mantenha as informações do restaurante atualizadas.</p></div>
+    <div class="home-grade">
+        <a class="home-acao destaque-card" asp-controller="Admin" asp-action="Pedidos"><span class="home-numero">01 · ATENDIMENTO</span><h3>Acompanhe os pedidos</h3><p>Confira situação, pagamento e os detalhes de cada pedido.</p><span class="home-acao-link">Ver pedidos →</span></a>
+        <a class="home-acao destaque-card" asp-controller="ProdutosAdmin" asp-action="Index"><span class="home-numero">02 · CATÁLOGO</span><h3>Cuide do cardápio</h3><p>Revise produtos, preços, descontos e disponibilidade.</p><span class="home-acao-link">Gerenciar produtos →</span></a>
+        <a class="home-acao destaque-card" asp-controller="Admin" asp-action="Usuarios"><span class="home-numero">03 · CLIENTES</span><h3>Consulte as contas</h3><p>Encontre usuários e confira a situação dos cadastros.</p><span class="home-acao-link">Ver usuários →</span></a>
+    </div>
+    <div class="home-nota"><i class="bi bi-clipboard-check" aria-hidden="true"></i><div><strong>Antes de começar</strong><p>Revise a disponibilidade dos produtos e consulte os pedidos. A situação do pedido e a confirmação do pagamento são informações diferentes.</p></div></div>
+}
+else if (User.Identity?.IsAuthenticated == true)
+{
+    <div class="home-secao-cabecalho"><span class="home-sobretitulo">DO SEU JEITO</span>
+        <h2 id="tituloContexto">Sua próxima escolha, sem complicação.</h2>
+        <p>Os caminhos que você mais precisa, reunidos aqui.</p></div>
+    <div class="home-grade">
+        <a class="home-acao destaque-card" asp-controller="Home" asp-action="Cardapio"><span class="home-numero">01 · ESCOLHER</span><h3>Encontre seu próximo prato</h3><p>Veja os produtos disponíveis e monte seu pedido no carrinho.</p><span class="home-acao-link">Explorar cardápio →</span></a>
+        <a class="home-acao destaque-card" asp-controller="Pedido" asp-action="MeusPedidos"><span class="home-numero">02 · ACOMPANHAR</span><h3>Seus pedidos, à mão</h3><p>Consulte o histórico, os itens e a situação dos seus pedidos.</p><span class="home-acao-link">Acompanhar pedidos →</span></a>
+        <a class="home-acao destaque-card" asp-controller="Enderecos" asp-action="Index"><span class="home-numero">03 · RECEBER</span><h3>Deixe a entrega pronta</h3><p>Confira seus endereços e mantenha os detalhes atualizados.</p><span class="home-acao-link">Meus endereços →</span></a>
+    </div>
+    <div class="home-nota"><i class="bi bi-bag-check" aria-hidden="true"></i><div><strong>Uma última conferência faz a diferença</strong><p>Antes de confirmar, revise os itens, o endereço e a forma de pagamento. Depois, acompanhe a situação em Meus pedidos.</p></div></div>
+}
+else
+{
+    <div class="home-secao-cabecalho"><span class="home-sobretitulo">DA PRIMEIRA ESCOLHA AO SEU PEDIDO</span>
+        <h2 id="tituloContexto">Conheça. Escolha. Aproveite.</h2>
+        <p>Você pode explorar o cardápio antes de criar sua conta.</p></div>
+    <div class="home-grade">
+        <a class="home-acao destaque-card" asp-controller="Home" asp-action="Cardapio"><span class="home-numero">01 · DESCUBRA</span><h3>O Japão começa no cardápio</h3><p>Explore lámens, acompanhamentos e sobremesas disponíveis.</p><span class="home-acao-link">Ver cardápio →</span></a>
+        <button type="button" class="home-acao destaque-card" data-bs-toggle="modal" data-bs-target="#modalCadastro"><span class="home-numero">02 · CONECTE-SE</span><h3>Crie seu espaço na Kiora</h3><p>Cadastre-se para concluir pedidos e salvar seus endereços.</p><span class="home-acao-link">Criar minha conta →</span></button>
+        <article class="home-acao destaque-card"><span class="home-numero">03 · ACOMPANHE</span><h3>Do pedido aos detalhes</h3><p>Depois de entrar, consulte os itens e acompanhe a situação em Meus pedidos.</p><span class="home-acao-link">Disponível na sua conta</span></article>
+    </div>
+    <div class="home-nota"><i class="bi bi-heart" aria-hidden="true"></i><div><strong>Uma cozinha, muitas descobertas</strong><p>O lámen é o ponto de partida. Explore combinações e conheça a história por trás da Kiora.</p><a asp-controller="Home" asp-action="Sobre">Conhecer o restaurante →</a></div></div>
+}
+</section>

@@ -17,6 +17,8 @@
     da língua portuguesa.
 -->
 <meta charset="utf-8" />
+<!-- Define o tema antes da renderização, sem depender de cookies ou do login. -->
+<script src="~/js/tema.js" asp-append-version="true"></script>
 
 <!--
     Configuração de responsividade.
@@ -146,9 +148,14 @@ CSS DOS PEDIDOS
 <link rel="stylesheet" href="~/css/produto-admin.css" asp-append-version="true" />
 <!-- Cada página pode carregar seu CSS específico nesta seção. -->
 @await RenderSectionAsync("Styles", required: false)
+<!-- Tokens compartilhados e ajustes de acessibilidade ficam depois dos estilos das páginas. -->
+<link rel="stylesheet" href="~/css/tema.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/acessibilidade.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/rodape.css" asp-append-version="true" />
 </head>
 
 <body class="d-flex flex-column min-vh-100 @(ViewData["HomePage"] != null ? "pagina-home" : "")">
+<a class="pular-conteudo" href="#conteudoPrincipal">Pular para o conteúdo</a>
 
 
 <!--
@@ -165,7 +172,7 @@ CSS DOS PEDIDOS
         ============================================================
     -->
 
-    <nav class="navbar navbar-expand-xl navbar-dark navbar-kiora">
+    <nav class="navbar navbar-expand-xl navbar-dark navbar-kiora" aria-label="Navegação principal">
 
         <div class="container">
 
@@ -177,11 +184,9 @@ CSS DOS PEDIDOS
 
             <a class="navbar-brand"
                asp-controller="Home"
-               asp-action="Index">
+               asp-action="Index" aria-label="Kiora — página inicial">
 
-                <img src="~/imagens/logo-kiora-v.png"
-                     alt="Kiora Japanese Cuisine"
-                     class="logo-navbar">
+                <partial name="_MarcaKiora" model='@("logo-navbar")' />
 
             </a>
 
@@ -330,7 +335,7 @@ CSS DOS PEDIDOS
                     -->
 
                 <!-- RESERVA NO CELULAR/TABLET: aparece dentro do menu expansível. -->
-                <a class="btn btn-reserva d-xl-none" href="#">
+                <a class="btn btn-reserva d-xl-none" asp-controller="Reservas" asp-action="Index">
                     Reservar Mesa
                 </a>
             </div>
@@ -367,7 +372,7 @@ CSS DOS PEDIDOS
                 </button>
 
                 <!-- RESERVA NO DESKTOP: aparece depois dos ícones. -->
-                <a class="btn btn-reserva d-none d-xl-inline-flex ms-2" href="#">
+                <a class="btn btn-reserva d-none d-xl-inline-flex ms-2" asp-controller="Reservas" asp-action="Index">
                     Reservar Mesa
                 </a>
             </div>
@@ -385,7 +390,7 @@ CSS DOS PEDIDOS
     ================================================================
 -->
 
-<main role="main" class="flex-grow-1">
+<main id="conteudoPrincipal" tabindex="-1" role="main" class="flex-grow-1">
 
     @RenderBody()
 
@@ -407,269 +412,8 @@ CSS DOS PEDIDOS
     ================================================================
 -->
 
-<footer class="footer-kiora">
-
-    <div class="container-fluid">
-
-        <div class="footer-content">
-
-            <!--
-                =====================================================
-                LOGO
-                =====================================================
-            -->
-
-            <div class="footer-logo-area">
-
-                <img src="~/imagens/logo-kiora-v.png"
-                     alt="Kiora Japanese Cuisine"
-                     class="logo-footer">
-
-            </div>
-
-
-            <!--
-                =====================================================
-                FRASE INSTITUCIONAL
-                =====================================================
-            -->
-
-            <div class="footer-frase">
-
-                <p>
-
-                    Uma experiência além do sabor.
-
-                </p>
-
-            </div>
-
-
-            <!--
-                =====================================================
-                ENDEREÇO
-                =====================================================
-            -->
-
-            <a href="#"
-               class="footer-address-link"
-               data-bs-toggle="modal"
-               data-bs-target="#modalLocalizacao">
-
-                <div class="footer-item">
-
-                    <i class="bi bi-geo-alt footer-icon"></i>
-
-                    <div>
-
-                        <span>
-
-                            Rua dos Pinheiros, 1234
-
-                        </span>
-
-                        <span>
-
-                            Pinheiros, São Paulo - SP
-
-                        </span>
-
-                        <span>
-
-                            01445-000
-
-                        </span>
-
-                    </div>
-
-                </div>
-
-            </a>
-
-
-            <!--
-                =====================================================
-                TELEFONES
-                =====================================================
-            -->
-
-            <div class="footer-item">
-
-                <div class="footer-telefones">
-
-                    <!-- TELEFONE -->
-
-                    <div>
-
-                        <i class="bi bi-telephone footer-icon"></i>
-
-                        <span>
-
-                            (11) 90000-1234
-
-                        </span>
-
-                    </div>
-
-
-                    <!-- WHATSAPP -->
-
-                    <div>
-
-                        <i class="bi bi-whatsapp footer-icon"></i>
-
-                        <span>
-
-                            (11) 90000-1234
-
-                        </span>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!--
-                =====================================================
-                E-MAIL
-                =====================================================
-            -->
-
-            <div class="footer-item footer-email">
-
-                <i class="bi bi-envelope footer-icon"></i>
-
-                <span>
-
-                    kiora.restaurante@gmail.com
-
-                </span>
-
-            </div>
-
-
-            <!--
-                =====================================================
-                REDES SOCIAIS
-                =====================================================
-            -->
-
-            <div class="footer-item footer-social">
-
-                <div>
-
-                    <span class="footer-social-title">
-
-                        SIGA-NOS
-
-                    </span>
-
-                    <div class="footer-social-links">
-
-                        <!-- INSTAGRAM -->
-
-                        <a href="https://www.instagram.com/kiora_lamen/"
-                           target="_blank"
-                           rel="noopener noreferrer"
-                           aria-label="Instagram">
-
-                            <i class="bi bi-instagram"></i>
-
-                        </a>
-
-
-                        <!-- FACEBOOK -->
-
-                        <a href="https://www.facebook.com/profile.php?id=61592931191936"
-                           target="_blank"
-                           rel="noopener noreferrer"
-                           aria-label="Facebook">
-
-                            <i class="bi bi-facebook"></i>
-
-                        </a>
-
-
-                        <!-- WHATSAPP -->
-
-                        <a href="#"
-                           aria-label="WhatsApp">
-
-                            <i class="bi bi-whatsapp"></i>
-
-                        </a>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!--
-                =====================================================
-                DIREITOS AUTORAIS
-                =====================================================
-            -->
-
-            <div class="footer-direitos">
-
-                <strong>
-
-                    KIORA
-
-                </strong>
-
-                <span>
-
-                    © 2026. Todos os direitos reservados.
-
-                </span>
-
-
-                <!-- POLÍTICAS -->
-
-                <div class="footer-politicas">
-
-                    <!-- POLÍTICA DE PRIVACIDADE -->
-
-                    <a asp-area=""
-                       asp-controller="Home"
-                       asp-action="PoliticaPrivacidade">
-
-                        Política de Privacidade
-
-                    </a>
-
-
-                    <span>
-
-                        |
-
-                    </span>
-
-
-                    <!-- TERMOS DE USO -->
-
-                    <a asp-area=""
-                       asp-controller="Home"
-                       asp-action="TermosUso">
-
-                        Termos de Uso
-
-                    </a>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</footer>
+<!-- O rodapé compartilhado mantém seus comentários e componentes em uma partial própria. -->
+<partial name="_Rodape" />
 
 
 <!--

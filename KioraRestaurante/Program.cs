@@ -85,6 +85,20 @@ builder.Services.AddHttpClient<CepService>(http =>
 });
 
 
+// RESERVAS: relógio injetável permite testar atrasos e meia-noite sem mudar a máquina.
+builder.Services.AddSingleton<TimeProvider>(TimeProvider.System);
+builder.Services.AddOptions<KioraRestaurante.Options.ReservaOptions>()
+    .Bind(builder.Configuration.GetSection("Reservas"))
+    .Validate(o => o.AberturaMinutos >= 0 && o.AberturaMinutos < o.UltimaReservaMinutos
+        && o.UltimaReservaMinutos < o.FechamentoMinutos && o.FechamentoMinutos <= 1440
+        && o.IntervaloMinutos > 0 && o.PermanenciaMinutos > 0 && o.ToleranciaMinutos > 0
+        && o.ChamadaMinutos > 0 && o.AntecedenciaDias is > 0 and <= 90, "Configuração de reservas inválida.")
+    .ValidateOnStart();
+builder.Services.AddScoped<KioraRestaurante.Services.Reservas.HorariosReserva>();
+builder.Services.AddScoped<KioraRestaurante.Services.Reservas.IdentidadeReserva>();
+builder.Services.AddScoped<KioraRestaurante.Services.Reservas.ReservaService>();
+builder.Services.AddHostedService<KioraRestaurante.Services.Reservas.ExpiracaoReservasService>();
+
 var app = builder.Build();
 
 // Verifica se a aplicação não está em ambiente de desenvolvimento.

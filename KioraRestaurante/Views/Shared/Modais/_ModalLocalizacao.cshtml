@@ -26,8 +26,7 @@
 
                 <div class="modal-localizacao-logo">
 
-                    <img src="~/imagens/logo-kiora-v.png"
-                         alt="Kiora Japanese Cuisine">
+                    <partial name="_MarcaKiora" model='@("logo-modal")' />
 
                 </div>
 
@@ -39,7 +38,7 @@
                         data-bs-dismiss="modal"
                         aria-label="Fechar">
 
-                    <i class="bi bi-x-lg"></i>
+                    <i class="bi bi-x-lg" aria-hidden="true"></i>
 
                 </button>
 
@@ -95,7 +94,7 @@
 
                     <div class="modal-localizacao-icone">
 
-                        <i class="bi bi-geo-alt-fill"></i>
+                        <i class="bi bi-geo-alt-fill" aria-hidden="true"></i>
 
                     </div>
 
@@ -165,7 +164,7 @@
                        rel="noopener noreferrer"
                        class="btn-localizacao">
 
-                        <i class="bi bi-sign-turn-right-fill"></i>
+                        <i class="bi bi-sign-turn-right-fill" aria-hidden="true"></i>
 
                         <span>
 

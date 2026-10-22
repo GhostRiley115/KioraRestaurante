@@ -43,7 +43,7 @@ button.carrinho-kiora {
 /* Texto pequeno acima do título. */
 .kc-sobretitulo {
     color: var(--kc-dourado);
-    font-size: 11px;
+    font-size: 0.875rem;
     letter-spacing: 2px;
 }
 
@@ -58,7 +58,7 @@ button.carrinho-kiora {
 /* Título principal do carrinho. */
 .kc-cabecalho h2 {
     margin: 6px 0 0;
-    font-size: 30px;
+    font-size: 1.875rem;
 }
 
 /* Botão para fechar o carrinho. */
@@ -83,7 +83,7 @@ button.carrinho-kiora {
     gap: 12px;
     margin-bottom: 20px;
     color: var(--kc-suave);
-    font-size: 13px;
+    font-size: 0.875rem;
 }
 
 /* Remove o estilo padrão da lista de itens. */
@@ -127,7 +127,7 @@ button.carrinho-kiora {
 /* Nome do produto. */
 .kc-item-nome {
     margin: 0 0 6px;
-    font-size: 16px;
+    font-size: 1rem;
     overflow-wrap: anywhere;
 }
 
@@ -135,7 +135,7 @@ button.carrinho-kiora {
 .kc-item-preco {
     margin: 0;
     color: var(--kc-suave);
-    font-size: 13px;
+    font-size: 0.875rem;
 }
 
 /* Área dos controles do item. */
@@ -163,7 +163,7 @@ button.carrinho-kiora {
     border: 0;
     background: var(--kc-superficie);
     color: var(--kc-dourado);
-    font-size: 20px;
+    font-size: 1.25rem;
 }
 
 /* Número da quantidade do produto. */
@@ -191,8 +191,8 @@ button.carrinho-kiora {
 /* Estilo dos avisos do carrinho. */
 .kc-item-aviso,
 .kc-avisos {
-    color: #ffd8a3;
-    font-size: 13px;
+    color: var(--k-amarelo);
+    font-size: 0.875rem;
 }
 
 /* Espaçamento do aviso de um item. */
@@ -217,13 +217,13 @@ button.carrinho-kiora {
 /* Ícone do carrinho vazio. */
 .kc-vazio > i {
     color: var(--kc-dourado);
-    font-size: 42px;
+    font-size: 2.625rem;
 }
 
 /* Título do estado vazio. */
 .kc-vazio h3 {
     margin-top: 18px;
-    font-size: 25px;
+    font-size: 1.5625rem;
 }
 
 /* Texto do estado vazio. */
@@ -249,7 +249,7 @@ button.carrinho-kiora {
 /* Valor total do carrinho. */
 .kc-total strong {
     color: var(--kc-dourado);
-    font-size: 22px;
+    font-size: 1.375rem;
 }
 
 /* Botão principal da interface. */
@@ -292,7 +292,7 @@ button.carrinho-kiora {
     color: var(--kc-dourado);
     text-decoration: underline;
     text-underline-offset: 3px;
-    font-size: 13px;
+    font-size: 0.875rem;
 }
 
 /* Centraliza os links do rodapé. */
@@ -328,7 +328,7 @@ button.carrinho-kiora {
 /* Texto explicativo da mesclagem. */
 .kc-mesclagem p {
     color: var(--kc-suave);
-    font-size: 14px;
+    font-size: 0.875rem;
 }
 
 /* Estrutura de cada conflito. */
@@ -386,7 +386,7 @@ button.carrinho-kiora {
 /* Nome do produto no cardápio. */
 .kc-produto h2 {
     margin: 0 0 10px;
-    font-size: 21px;
+    font-size: 1.3125rem;
     font-family: "Playfair Display", serif;
 }
 
@@ -434,7 +434,7 @@ button.carrinho-kiora {
     border: 1px solid #D9B27A;
     border-radius: 50%;
     background: #7D1F1F;
-    color: #fff;
+    color: var(--k-texto);
     font-weight: 700;
     pointer-events: none;
     box-shadow: 0 4px 18px #0006;
