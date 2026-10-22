@@ -1,0 +1,13 @@
+@model string
+@using KioraRestaurante.Services
+@{
+    var principal = Model == "fundo-kiora1";
+    var tamanhos = principal ? "100vw" : "(min-width: 992px) 25vw, (min-width: 768px) 50vw, 100vw";
+    var fontes = $"{ImagensHome.Url(Model, 480)} 480w, {ImagensHome.Url(Model, 960)} 960w, {ImagensHome.Url(Model, 1600)} 1600w";
+}
+@* As imagens são decorativas; o título do card comunica seu conteúdo aos leitores de tela. *@
+<img class="@(principal ? "home-imagem" : "destaque-imagem")"
+     src="@ImagensHome.Url(Model, principal ? 1600 : 960)"
+     srcset="@fontes" sizes="@tamanhos" alt="" aria-hidden="true"
+     loading="@(principal ? "eager" : "lazy")" fetchpriority="@(principal ? "high" : "auto")"
+     decoding="async" width="1536" height="1024" />

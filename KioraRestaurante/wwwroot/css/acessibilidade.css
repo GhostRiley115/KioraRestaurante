@@ -1,0 +1,60 @@
+/* Ajustes compartilhados de leitura, teclado e marca. Não dependem de login. */
+html { font-size: 100%; scroll-padding-top: 110px; }
+body { font-size: 1rem; }
+:where(p, label, li, dd, dt, td, th) { overflow-wrap: break-word; }
+:is(input, select, textarea) { font: inherit; }
+.modal input:not([type="checkbox"]), .modal select, .modal textarea,
+.form-control, .form-select, .modal label { font-size: 1rem; }
+.modal p, .modal .senha-ajuda, .kc-item-descricao, .kc-item-aviso, .kc-avisos { font-size: 1rem; line-height: 1.6; }
+.modal :is(input:not([type="checkbox"]), select) { min-height: 48px; }
+.modal :is(button[type="submit"], .btn-modal-login, .btn-modal-cadastro) { height: auto; min-height: 48px; }
+.modal :is([data-bs-dismiss="modal"], .toggle-senha, .btn-toggle-senha),
+.kc-quantidade button, .kc-remover, .btn-close, .produto-controles button { min-width: 44px; min-height: 44px; }
+.kc-quantidade input { min-height: 44px; }
+.kc-quantidade:focus-within { outline: 3px solid var(--k-dourado); outline-offset: 3px; }
+.navbar-kiora .contador-carrinho { min-width: 22px; height: 22px; padding: 3px; font-size: .875rem; }
+/* O foco não fica escondido pela barra fixa ao usar o link de salto ou o teclado. */
+[id], a, button, input, select, textarea, [tabindex] { scroll-margin-top: 110px; }
+#conteudoPrincipal:focus { outline: none; }
+.menu-usuario .dropdown-item:is(:hover, :focus), .menu-usuario .dropdown-item:is(:hover, :focus) i { color: #fff; }
+/* Apenas uma versão da marca fica visível e acessível de cada vez. */
+.marca-kiora { object-fit: contain; max-width: 100%; height: auto; }
+.marca-kiora.marca-clara { display: none; }
+:root[data-tema="claro"] .marca-kiora.marca-clara { display: block; }
+:root[data-tema="claro"] .marca-kiora.marca-escura { display: none; }
+.navbar-kiora .logo-navbar { width: 200px; height: 70px; max-height: none; }
+.navbar-brand { padding-block: 0; }
+.logo-footer { width: 220px; }
+/* Entradas curtas e discretas; nenhum conteúdo depende da animação para aparecer. */
+@media (prefers-reduced-motion: no-preference) {
+    @keyframes kiora-entrada { from { opacity: .35; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    .hero-conteudo .container { animation: kiora-entrada .55s ease-out; }
+    .home-grade > * { animation: kiora-entrada .55s ease-out backwards; }
+    .home-grade > :nth-child(2) { animation-delay: .08s; }
+    .home-grade > :nth-child(3) { animation-delay: .16s; }
+    .footer-desenvolvedor img { transition: transform .2s ease-out; }
+    .footer-desenvolvedor:hover img { transform: translateY(-3px) rotate(-4deg); }
+}
+/* A preferência reduzida também desliga movimentos de hover existentes e o efeito de fundo fixo. */
+@media (prefers-reduced-motion: reduce) {
+    .destaque-card:hover, .produto-card:hover, .sobre-card:hover, .perfil-card:hover,
+    .galeria-item:hover, .galeria-item:hover img, .login-icon:hover, .carrinho-kiora:hover,
+    .footer-social-links a:hover { transform: none !important; }
+    .hero-kiora, .sobre-hero { background-attachment: scroll; }
+}
+@media(max-width: 1199.98px) {
+    .navbar-kiora .logo-navbar { width: clamp(120px, 29vw, 170px); height: auto; max-height: 54px; }
+}
+
+/* O lightbox usa dialog nativo: teclado, isolamento do fundo e retorno de foco. */
+dialog.lightbox-galeria { border: 0; padding: 0; margin: 0; width: 100vw; height: 100dvh; max-width: none; max-height: none; color: #fff; background: transparent; }
+dialog.lightbox-galeria::backdrop { background: rgba(0, 0, 0, .8); }
+:root[data-tema] .galeria-item:focus-visible { outline: 3px solid var(--k-dourado); outline-offset: 4px; }
+.galeria-item:focus-visible .galeria-overlay { opacity: 1; }
+.logo-modal { margin-inline: auto; }
+.modal .modal-login-olho, .modal .modal-cadastro-olho { min-width: 44px; min-height: 44px; }
+.modal :is(.modal-login-input, .modal-cadastro-input) input { padding-right: 54px; }
+/* O dialog deve estar visível imediatamente para receber foco na abertura. */
+dialog.lightbox-galeria:not([open]) { display: none; }
+dialog.lightbox-galeria[open] { opacity: 1; visibility: visible; transition: none; background: rgba(0, 0, 0, .94); }
+.galeria-item:focus-visible .galeria-overlay :is(span, h3, i) { opacity: 1; transform: none; }

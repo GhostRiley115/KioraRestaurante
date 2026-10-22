@@ -1,0 +1,28 @@
+@model KioraRestaurante.ViewModels.ReservasAdminViewModel
+@using KioraRestaurante.Models
+@using KioraRestaurante.Services.Reservas
+@{ViewData["Title"]="Reservas e recepção";}
+@section Styles {<link rel="stylesheet" href="~/css/reservas.css" asp-append-version="true" />}
+<h1>Reservas, fila e mesas</h1>
+<form method="get" class="admin-filtros"><label>Data <input type="date" name="data" value="@Model.Data.ToString("yyyy-MM-dd")" /></label><button class="btn btn-outline-warning">Consultar / atualizar</button></form>
+<p>Atendimento: 11h–00h · Última reserva: 23h20 · Mesas ocupadas só são liberadas após encerrar o atendimento.</p>
+<p><strong>@Model.Reservas.Count(r=>r.Situacao==SituacaoReserva.EmAtendimento)</strong> mesas ocupadas agora · <strong>@Model.Reservas.Where(r=>r.Situacao==SituacaoReserva.EmAtendimento).Sum(r=>r.Pessoas)</strong> pessoas em atendimento · @Model.Mesas.Count(m=>m.Ativa) mesas ativas</p>
+<section class="admin-box"><h2>Mesas</h2><div class="reservas-mesas">
+@foreach(var m in Model.Mesas){var ocupada=Model.Reservas.Any(r=>r.MesaId==m.Id&&r.Situacao==SituacaoReserva.EmAtendimento);
+<div class="reservas-mesa"><strong>@m.Nome · @m.Capacidade lugares</strong><p>@(!m.Ativa?"Inativa":ocupada?"Ocupada":"Sem atendimento em andamento")</p>
+<form asp-action="Chamar" method="post"><input type="hidden" name="mesaId" value="@m.Id" /><button class="btn btn-outline-warning" disabled="@(!m.Ativa||ocupada)">Chamar próximo grupo compatível</button></form>
+<form asp-action="Mesa" method="post" class="mt-2"><input type="hidden" name="mesaId" value="@m.Id" /><input type="hidden" name="ativa" value="@(!m.Ativa)" /><button class="btn btn-outline-secondary">@(m.Ativa?"Desativar mesa":"Reativar mesa")</button></form></div>}
+</div><p class="admin-suave mt-3">Mesmo sem atendimento, a mesa pode estar comprometida com uma reserva. O sistema confere o período antes de chamar alguém.</p></section>
+<section class="mt-4"><h2>Solicitações do dia</h2>
+@if(Model.Reservas.Count==0){<p>Nenhuma solicitação neste dia.</p>}
+<div class="reservas-lista">
+@foreach(var r in Model.Reservas){<article class="admin-box"><h3>@r.Nome · @r.Pessoas pessoa(s)</h3><p>@HorariosReserva.Texto(r.Situacao) · @r.Tipo<br/>@r.Telefone · @r.Codigo.ToString("N")[..8].ToUpperInvariant()</p>
+<p>@(r.InicioUtc.HasValue?$"{HorariosReserva.Local(r.InicioUtc.Value):dd/MM HH:mm} até {HorariosReserva.Local(r.FimUtc!.Value):HH:mm}":"Fila por ordem de entrada")</p>
+@if(r.Situacao is SituacaoReserva.Confirmada or SituacaoReserva.Chamada){
+<form asp-action="Operar" method="post"><input type="hidden" name="Codigo" value="@r.Codigo"/><input type="hidden" name="Versao" value="@r.Versao"/><input type="hidden" name="Acao" value="chegada"/>
+<label for="mesa-@r.Id">Mesa na chegada</label><select name="MesaId" id="mesa-@r.Id" class="form-select mb-2" required>@foreach(var m in Model.Mesas.Where(m=>m.Ativa&&m.Capacidade>=r.Pessoas)){<option value="@m.Id" selected="@(r.MesaId==m.Id)">@m.Nome (@m.Capacidade lugares)</option>}</select><button class="btn btn-outline-warning">Registrar chegada</button></form>}
+@if(r.Situacao==SituacaoReserva.EmAtendimento){<form asp-action="Operar" method="post"><input type="hidden" name="Codigo" value="@r.Codigo"/><input type="hidden" name="Versao" value="@r.Versao"/><input type="hidden" name="Acao" value="encerrar"/><button class="btn btn-outline-warning">Encerrar e liberar mesa</button></form>}
+@if(r.Situacao is SituacaoReserva.Confirmada or SituacaoReserva.Aguardando or SituacaoReserva.Chamada){<details class="mt-3"><summary>Cancelar pela administração</summary><form asp-action="Operar" method="post"><input type="hidden" name="Codigo" value="@r.Codigo"/><input type="hidden" name="Versao" value="@r.Versao"/><input type="hidden" name="Acao" value="cancelar"/><label for="motivo-@r.Id">Motivo</label><input id="motivo-@r.Id" name="Motivo" maxlength="400" class="form-control mb-2" required/><button class="btn btn-outline-danger">Confirmar cancelamento</button></form></details>}
+<details class="mt-3"><summary>Histórico</summary>@foreach(var e in r.Eventos.OrderByDescending(e=>e.DataUtc)){<p>@HorariosReserva.Local(e.DataUtc).ToString("dd/MM HH:mm") — @e.Descricao</p>}</details>
+</article>}
+</div></section>

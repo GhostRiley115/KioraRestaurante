@@ -1,0 +1,11 @@
+@model List<KioraRestaurante.DTOs.Reserva.ReservaResponseDTO>
+@using KioraRestaurante.Services.Reservas
+@{ViewData["Title"]="Minhas reservas";}
+@section Styles {<link rel="stylesheet" href="~/css/reservas.css" asp-append-version="true" />}
+<section class="container reservas-pagina">
+    <header class="reservas-cabecalho"><span>KIORA · SUA AGENDA</span><h1>Minhas reservas e fila</h1><a asp-action="Index" class="pedido-link">Reservar uma mesa</a></header>
+    @if(Model.Count==0){<p class="reservas-card">Nenhuma solicitação encontrada nesta conta/navegador.</p>}
+    <div class="reservas-lista">
+    @foreach(var r in Model){<article class="reservas-card"><h2>@r.SituacaoTexto</h2><p>@r.Pessoas pessoa(s) · @(r.InicioUtc.HasValue?HorariosReserva.Local(r.InicioUtc.Value).ToString("dd/MM/yyyy HH:mm"):"Fila de espera")</p><a asp-action="Detalhes" asp-route-id="@r.Codigo" class="pedido-link">Acompanhar e gerenciar</a></article>}
+    </div><p class="reservas-suave">Últimas 50 solicitações. Reservas de visitante são vinculadas a este navegador; apagar os cookies remove seu acesso a elas. A recepção ainda pode ajudar a localizar o registro.</p>
+</section>

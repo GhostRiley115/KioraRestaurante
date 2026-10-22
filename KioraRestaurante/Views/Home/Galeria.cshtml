@@ -122,11 +122,11 @@
     <div class="container">
 
         <div id="carouselGaleria"
-             class="carousel slide"
-             data-bs-ride="carousel"
-             data-bs-interval="2500">
+             class="carousel slide" aria-label="Destaques da galeria"
+             data-bs-interval="false">
 
 
+            <!-- Atualização de acessibilidade: a troca agora é manual, pelos controles, sem interromper a leitura. -->
             <!-- Indicadores para selecionar cada slide -->
 
             <div class="carousel-indicators">
@@ -319,7 +319,7 @@
 
             <!-- Ambiente -->
 
-            <div class="galeria-item galeria-item-grande"
+            <div class="galeria-item galeria-item-grande" role="button" tabindex="0" aria-haspopup="dialog"
                  data-categoria="ambiente"
                  data-imagem="/imagens/galeria/ambiente-02.png"
                  data-titulo="A atmosfera Kiora">
@@ -337,7 +337,7 @@
                         A atmosfera Kiora
                     </h3>
 
-                    <i class="bi bi-plus-lg"></i>
+                    <i class="bi bi-plus-lg" aria-hidden="true"></i>
 
                 </div>
 
@@ -346,7 +346,7 @@
 
             <!-- Equipe -->
 
-            <div class="galeria-item"
+            <div class="galeria-item" role="button" tabindex="0" aria-haspopup="dialog"
                  data-categoria="equipe"
                  data-imagem="/imagens/galeria/equipe-02.png"
                  data-titulo="Quem faz acontecer">
@@ -364,7 +364,7 @@
                         Quem faz acontecer
                     </h3>
 
-                    <i class="bi bi-plus-lg"></i>
+                    <i class="bi bi-plus-lg" aria-hidden="true"></i>
 
                 </div>
 
@@ -373,7 +373,7 @@
 
             <!-- Instalações -->
 
-            <div class="galeria-item"
+            <div class="galeria-item" role="button" tabindex="0" aria-haspopup="dialog"
                  data-categoria="instalacoes"
                  data-imagem="/imagens/galeria/instalacoes-01.png"
                  data-titulo="Cada detalhe importa">
@@ -391,7 +391,7 @@
                         Cada detalhe importa
                     </h3>
 
-                    <i class="bi bi-plus-lg"></i>
+                    <i class="bi bi-plus-lg" aria-hidden="true"></i>
 
                 </div>
 
@@ -400,7 +400,7 @@
 
             <!-- Bastidores -->
 
-            <div class="galeria-item"
+            <div class="galeria-item" role="button" tabindex="0" aria-haspopup="dialog"
                  data-categoria="bastidores"
                  data-imagem="/imagens/galeria/bastidores-02.png"
                  data-titulo="Por trás da experiência">
@@ -418,7 +418,7 @@
                         Por trás da experiência
                     </h3>
 
-                    <i class="bi bi-plus-lg"></i>
+                    <i class="bi bi-plus-lg" aria-hidden="true"></i>
 
                 </div>
 
@@ -427,7 +427,7 @@
 
             <!-- Produtos -->
 
-            <div class="galeria-item galeria-item-grande"
+            <div class="galeria-item galeria-item-grande" role="button" tabindex="0" aria-haspopup="dialog"
                  data-categoria="produtos"
                  data-imagem="/imagens/galeria/produtos-01.png"
                  data-titulo="Muito além do cardápio">
@@ -445,7 +445,7 @@
                         Muito além do cardápio
                     </h3>
 
-                    <i class="bi bi-plus-lg"></i>
+                    <i class="bi bi-plus-lg" aria-hidden="true"></i>
 
                 </div>
 
@@ -454,7 +454,7 @@
 
             <!-- Segunda imagem da categoria Ambiente -->
 
-            <div class="galeria-item"
+            <div class="galeria-item" role="button" tabindex="0" aria-haspopup="dialog"
                  data-categoria="ambiente"
                  data-imagem="/imagens/galeria/ambiente-03.png"
                  data-titulo="A identidade Kiora">
@@ -472,7 +472,7 @@
                         A identidade Kiora
                     </h3>
 
-                    <i class="bi bi-plus-lg"></i>
+                    <i class="bi bi-plus-lg" aria-hidden="true"></i>
 
                 </div>
 
@@ -492,8 +492,8 @@
      O JavaScript controla abertura, fechamento e navegação.
      ========================================================= -->
 
-<div id="lightboxGaleria"
-     class="lightbox-galeria">
+<dialog id="lightboxGaleria"
+     class="lightbox-galeria" aria-labelledby="lightboxTitulo">
 
 
     <!-- Fundo escuro que também permite fechar o lightbox -->
@@ -508,7 +508,7 @@
             class="lightbox-fechar"
             aria-label="Fechar imagem">
 
-        <i class="bi bi-x-lg"></i>
+        <i class="bi bi-x-lg" aria-hidden="true"></i>
 
     </button>
 
@@ -520,7 +520,7 @@
             class="lightbox-controle lightbox-anterior"
             aria-label="Imagem anterior">
 
-        <i class="bi bi-chevron-left"></i>
+        <i class="bi bi-chevron-left" aria-hidden="true"></i>
 
     </button>
 
@@ -551,11 +551,11 @@
             class="lightbox-controle lightbox-proximo"
             aria-label="Próxima imagem">
 
-        <i class="bi bi-chevron-right"></i>
+        <i class="bi bi-chevron-right" aria-hidden="true"></i>
 
     </button>
 
-</div>
+</dialog>
 
 
 <!-- =========================================================

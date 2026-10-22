@@ -1,0 +1,43 @@
+/* HOME: preserva as linhas, o zoom e as transições dos cards originais. */
+.hero-kiora { background-image: none; }
+.hero-kiora > .home-imagem { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.hero-conteudo, .hero-kiora { min-height: 510px; }
+.hero-conteudo h1 { font-size: clamp(2.25rem, 4.5vw, 3.8rem); max-width: 860px; overflow-wrap: anywhere; }
+.hero-conteudo p { max-width: 620px; font-size: 1.1rem; }
+.home-administrador { background: radial-gradient(ellipse at top right, #59382a, #161211 70%); }
+.home-administrador, .home-administrador .hero-conteudo { min-height: 390px; }
+.home-contexto { padding-top: 64px; padding-bottom: 12px; }
+.home-secao-cabecalho { margin-bottom: 28px; }
+.home-secao-cabecalho h2, .home-ajuda h2 { font-size: clamp(1.65rem, 3vw, 2.4rem); margin: 12px 0; }
+.home-secao-cabecalho p, .home-ajuda p { color: var(--k-suave); max-width: 680px; }
+.home-sobretitulo, .home-numero { color: var(--k-dourado); font-size: 0.875rem; letter-spacing: .13em; font-weight: 800; }
+.home-grade { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.home-acao.destaque-card { height: auto; min-height: 260px; padding: 30px; display: flex; flex-direction: column; align-items: flex-start; text-align: left; background: var(--k-superficie); color: var(--k-texto); border-radius: 8px; }
+.home-acao h3 { font-size: 1.5rem; margin: 22px 0 12px; }
+.home-acao p { color: var(--k-suave); font-size: 1rem; font-weight: 400; }
+.home-acao-link { margin-top: auto; color: var(--k-dourado); font-size: 0.9rem; font-weight: 700; }
+.home-acao:hover h3, .home-acao:hover p { color: inherit; }
+.home-nota { display: flex; align-items: flex-start; gap: 20px; margin-top: 24px; padding: 25px; border: 1px solid var(--k-borda); border-radius: 8px; background: var(--k-superficie); }
+.home-nota > i { font-size: 1.6rem; color: var(--k-dourado); }
+.home-nota p { margin: 5px 0; color: var(--k-suave); }
+.home-nota a, .home-atalhos a { color: var(--k-dourado); text-underline-offset: 4px; }
+.kiora-destaques .destaque-card { min-height: 280px; height: 100%; border-radius: 8px; }
+.destaque-imagem { width: 100%; height: 100%; object-fit: cover; }
+.destaque-conteudo { padding: 28px 22px; }
+.destaque-conteudo h3 { font-size: 1.4rem; }
+.destaque-conteudo p { color: #eeeeee; }
+.destaque-link { color: #f0c68d; font-size: 0.875rem; }
+.destaque-em-breve { cursor: default; }
+.home-ajuda { display: grid; grid-template-columns: 1.5fr 1fr; gap: 40px; padding-top: 32px; padding-bottom: 70px; }
+.home-atalhos { display: flex; flex-direction: column; justify-content: center; gap: 10px; }
+.home-atalhos a { display: flex; justify-content: space-between; gap: 20px; border-bottom: 1px solid var(--k-borda); padding: 12px 0; }
+@media(max-width: 767.98px) {
+    .home-grade, .home-ajuda { grid-template-columns: 1fr; }
+    .home-acao.destaque-card { min-height: 220px; }
+    .home-contexto { padding-top: 40px; }
+    .hero-conteudo, .hero-kiora { min-height: 480px; }
+    .home-administrador, .home-administrador .hero-conteudo { min-height: 370px; }
+}
+/* A navbar já reserva seu espaço: evita uma faixa vazia acima da saudação no celular. */
+.hero-conteudo { padding: 24px 0; }
+.hero-conteudo > .container { padding-top: 24px; padding-bottom: 24px; }

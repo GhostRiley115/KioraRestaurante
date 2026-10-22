@@ -5,7 +5,7 @@
 /* Define configurações básicas do elemento HTML */
 html {
     /* Define o tamanho base da fonte da página */
-    font-size: 14px;
+    font-size: 100%;
     /* Garante que o elemento HTML ocupe pelo menos toda a altura da tela */
     min-height: 100%;
 }
@@ -20,7 +20,7 @@ html {
     /* Configurações do HTML em telas maiores */
     html {
         /* Aumenta o tamanho base da fonte para telas maiores */
-        font-size: 16px;
+        font-size: 100%;
     }
 }
 
@@ -37,9 +37,9 @@ body {
     /* Cria espaço superior para compensar a navbar fixa */
     padding-top: 90px;
     /* Define o fundo principal escuro do site */
-    background-color: #0E0E0E;
+    background-color: var(--k-fundo);
     /* Define a cor padrão dos textos como branca */
-    color: #FFFFFF;
+    color: var(--k-texto);
     /* Define a fonte padrão utilizada no site */
     font-family: 'Lato', sans-serif;
     /* Define o peso padrão dos textos */
@@ -137,7 +137,7 @@ button,
 /* Define a aparência principal da navbar */
 .navbar-kiora {
     /* Define o fundo preto da navbar */
-    background-color: #0E0E0E;
+    background-color: var(--k-fundo);
     /* Define a altura mínima da navbar */
     min-height: 90px;
     /* Cria uma linha dourada na parte inferior */
@@ -181,11 +181,11 @@ button,
 /* Configura os links da navbar */
 .navbar-kiora .nav-link {
     /* Define os links como brancos */
-    color: #FFFFFF !important;
+    color: var(--k-texto) !important;
     /* Define a fonte do menu */
     font-family: 'Lato', sans-serif;
     /* Define o tamanho da fonte */
-    font-size: 16px;
+    font-size: 1rem;
     /* Define o peso da fonte */
     font-weight: 500;
     /* Define o espaçamento interno dos links */
@@ -199,7 +199,7 @@ button,
     /* Efeito ao passar o mouse sobre os links */
     .navbar-kiora .nav-link:hover {
         /* Muda o texto para dourado */
-        color: #D9B27A !important;
+        color: var(--k-dourado) !important;
         /* Adiciona sublinhado */
         text-decoration: underline;
         /* Define a cor do sublinhado */
@@ -213,13 +213,13 @@ button,
     /* Define a aparência do link atualmente ativo */
     .navbar-kiora .nav-link.active {
         /* Mantém o link ativo branco */
-        color: #FFFFFF !important;
+        color: var(--k-texto) !important;
     }
 
         /* Efeito hover sobre o link ativo */
         .navbar-kiora .nav-link.active:hover {
             /* Muda o link ativo para dourado */
-            color: #D9B27A !important;
+            color: var(--k-dourado) !important;
         }
 
 
@@ -232,7 +232,7 @@ button,
     /* Define o fundo vinho */
     background-color: #7D1F1F;
     /* Define o texto branco */
-    color: #FFFFFF !important;
+    color: var(--k-texto) !important;
     /* Define a borda dourada */
     border: 1px solid #D9B27A;
     /* Define o espaçamento interno */
@@ -254,9 +254,9 @@ button,
     /* Efeito hover do botão de reserva */
     .btn-reserva:hover {
         /* Troca o fundo para dourado */
-        background-color: #D9B27A;
+        background-color: var(--k-dourado-fundo);
         /* Troca o texto para preto */
-        color: #0E0E0E !important;
+        color: var(--k-sobre-dourado) !important;
         /* Mantém a borda dourada */
         border-color: #D9B27A;
     }
@@ -269,9 +269,9 @@ button,
 /* Configura o ícone do usuário */
 .login-icon {
     /* Define a cor branca */
-    color: #FFFFFF !important;
+    color: var(--k-texto) !important;
     /* Define o tamanho do ícone */
-    font-size: 28px;
+    font-size: 1.75rem;
     /* Remove o sublinhado */
     text-decoration: none;
     /* Cria uma transição suave */
@@ -287,7 +287,7 @@ button,
     /* Efeito hover do ícone do usuário */
     .login-icon:hover {
         /* Muda a cor para dourado */
-        color: #D9B27A !important;
+        color: var(--k-dourado) !important;
         /* Aumenta levemente o ícone */
         transform: scale(1.08);
     }
@@ -306,7 +306,7 @@ button,
 /* Configura o menu suspenso */
 .menu-usuario {
     /* Define o fundo escuro */
-    background-color: #151515;
+    background-color: var(--k-superficie);
     /* Define a borda dourada */
     border: 1px solid #D9B27A;
     /* Arredonda os cantos */
@@ -362,11 +362,11 @@ button,
 /* Configura cada item do menu */
 .menu-usuario .dropdown-item {
     /* Define o texto branco */
-    color: #FFFFFF;
+    color: var(--k-texto);
     /* Define a fonte */
     font-family: 'Lato', sans-serif;
     /* Define o tamanho */
-    font-size: 14px;
+    font-size: 0.875rem;
     /* Define o peso */
     font-weight: 500;
     /* Define o espaçamento interno */
@@ -383,9 +383,9 @@ button,
     /* Configura os ícones dentro dos itens */
     .menu-usuario .dropdown-item i {
         /* Define a cor dourada */
-        color: #D9B27A;
+        color: var(--k-dourado);
         /* Define o tamanho */
-        font-size: 16px;
+        font-size: 1rem;
         /* Cria espaço entre ícone e texto */
         margin-right: 10px;
         /* Cria transição suave */
@@ -403,7 +403,7 @@ button,
         /* Define o fundo vinho */
         background-color: #7D1F1F;
         /* Mantém o texto branco */
-        color: #FFFFFF;
+        color: var(--k-texto);
         /* Move o texto levemente para a direita */
         padding-left: 22px;
     }
@@ -417,7 +417,7 @@ button,
         .menu-usuario .dropdown-item:hover i,
         .menu-usuario .dropdown-item:focus i {
             /* Muda o ícone para branco */
-            color: #FFFFFF;
+            color: var(--k-texto);
             /* Move o ícone levemente para a direita */
             transform: translateX(2px);
         }
@@ -471,7 +471,7 @@ button,
         /* Ajusta os itens do menu */
         .menu-usuario .dropdown-item {
             /* Reduz o tamanho da fonte */
-            font-size: 13px;
+            font-size: 0.875rem;
             /* Reduz o espaçamento interno */
             padding: 10px 15px;
         }
@@ -479,7 +479,7 @@ button,
             /* Ajusta os ícones */
             .menu-usuario .dropdown-item i {
                 /* Define o tamanho do ícone */
-                font-size: 15px;
+                font-size: 0.9375rem;
                 /* Reduz o espaço entre ícone e texto */
                 margin-right: 8px;
             }
@@ -494,7 +494,7 @@ button,
     /* Reduz o tamanho do ícone principal */
     .login-icon {
         /* Define tamanho menor */
-        font-size: 25px;
+        font-size: 1.5625rem;
     }
 }
 
@@ -519,7 +519,7 @@ button,
         /* Ajusta os itens */
         .menu-usuario .dropdown-item {
             /* Mantém fonte pequena */
-            font-size: 13px;
+            font-size: 0.875rem;
             /* Reduz espaçamento */
             padding: 9px 13px;
         }
@@ -533,9 +533,9 @@ button,
 /* Configura o ícone do carrinho */
 .navbar-kiora .carrinho-kiora {
     /* Define a cor dourada */
-    color: #D9B27A !important;
+    color: var(--k-dourado) !important;
     /* Define o tamanho */
-    font-size: 25px;
+    font-size: 1.5625rem;
     /* Remove o sublinhado */
     text-decoration: none;
     /* Ativa Flexbox */
@@ -549,7 +549,7 @@ button,
     /* Efeito hover do carrinho */
     .navbar-kiora .carrinho-kiora:hover {
         /* Muda para branco */
-        color: #FFFFFF !important;
+        color: var(--k-texto) !important;
         /* Aumenta levemente */
         transform: scale(1.1);
     }
@@ -559,9 +559,9 @@ button,
     /* Define o fundo vermelho */
     background-color: #7D1F1F !important;
     /* Define o texto branco */
-    color: #FFFFFF !important;
+    color: var(--k-texto) !important;
     /* Define o tamanho do número */
-    font-size: 10px;
+    font-size: 0.875rem;
     /* Define a largura mínima */
     min-width: 18px;
     /* Define a altura */
@@ -607,7 +607,7 @@ button,
     /* Define altura mínima */
     min-height: 650px;
     /* Define a imagem de fundo */
-    background-image: url('/imagens/fundo-kiora1.png');
+    background-image: none; /* A Home carrega a imagem responsiva no HTML pelo Cloudinary. */
     /* Faz a imagem cobrir toda a seção */
     background-size: cover;
     /* Centraliza a imagem */
@@ -679,9 +679,9 @@ button,
     /* Define a fonte elegante */
     font-family: 'Playfair Display', serif;
     /* Define a cor branca */
-    color: #FFFFFF;
+    color: var(--k-texto);
     /* Define o tamanho */
-    font-size: 58px;
+    font-size: 3.625rem;
     /* Define o peso */
     font-weight: 600;
     /* Define espaçamento entre linhas */
@@ -708,7 +708,7 @@ button,
     /* Centraliza verticalmente */
     align-items: center;
     /* Define texto branco */
-    color: #FFFFFF;
+    color: var(--k-texto);
 }
 
     /* Configura o container interno */
@@ -729,11 +729,11 @@ button,
     /* Permite controlar tamanho e espaçamento */
     display: inline-block;
     /* Define cor dourada */
-    color: #D9B27A;
+    color: var(--k-dourado);
     /* Define a fonte */
     font-family: 'Lato', sans-serif;
     /* Define tamanho */
-    font-size: 14px;
+    font-size: 0.875rem;
     /* Define peso */
     font-weight: 600;
     /* Aumenta espaçamento entre letras */
@@ -752,9 +752,9 @@ button,
     /* Define fonte */
     font-family: 'Lato', sans-serif;
     /* Define cor */
-    color: #E5E5E5;
+    color: var(--k-texto);
     /* Define tamanho */
-    font-size: 18px;
+    font-size: 1.125rem;
     /* Define espaçamento entre linhas */
     line-height: 1.7;
     /* Limita a largura */
@@ -789,7 +789,7 @@ button,
    A cor dourada segue a identidade visual da KIORA.
 */
 .hero-nome-usuario {
-    color: #D9B27A;
+    color: var(--k-dourado);
 }
 
 
@@ -802,7 +802,7 @@ button,
     /* Define fundo vinho */
     background-color: #7D1F1F;
     /* Define texto branco */
-    color: #FFFFFF !important;
+    color: var(--k-texto) !important;
     /* Define borda dourada */
     border: 1px solid #D9B27A;
     /* Define espaçamento interno */
@@ -810,7 +810,7 @@ button,
     /* Define fonte */
     font-family: 'Lato', sans-serif;
     /* Define tamanho */
-    font-size: 15px;
+    font-size: 0.9375rem;
     /* Define peso */
     font-weight: 600;
     /* Arredonda os cantos */
@@ -824,9 +824,9 @@ button,
     /* Hover do botão de login */
     .btn-login:hover {
         /* Troca fundo para dourado */
-        background-color: #D9B27A;
+        background-color: var(--k-dourado-fundo);
         /* Troca texto para preto */
-        color: #0E0E0E !important;
+        color: var(--k-sobre-dourado) !important;
     }
 
 
@@ -839,7 +839,7 @@ button,
     /* Mantém fundo transparente */
     background-color: transparent;
     /* Define texto branco */
-    color: #FFFFFF !important;
+    color: var(--k-texto) !important;
     /* Define borda branca */
     border: 1px solid #FFFFFF;
     /* Define espaçamento interno */
@@ -847,7 +847,7 @@ button,
     /* Define fonte */
     font-family: 'Lato', sans-serif;
     /* Define tamanho */
-    font-size: 15px;
+    font-size: 0.9375rem;
     /* Define peso */
     font-weight: 600;
     /* Arredonda os cantos */
@@ -861,9 +861,9 @@ button,
     /* Hover do botão de cadastro */
     .btn-cadastrar:hover {
         /* Troca fundo para dourado */
-        background-color: #D9B27A;
+        background-color: var(--k-dourado-fundo);
         /* Troca texto para preto */
-        color: #0E0E0E !important;
+        color: var(--k-sobre-dourado) !important;
         /* Troca borda para dourada */
         border-color: #D9B27A;
     }
@@ -880,7 +880,7 @@ button,
     /* Define espaçamento vertical */
     padding: 50px 0;
     /* Define fundo preto */
-    background: #0E0E0E;
+    background: var(--k-fundo);
 }
 
 
@@ -899,13 +899,13 @@ button,
     /* Esconde conteúdos excedentes */
     overflow: hidden;
     /* Define o fundo */
-    background: #111111;
+    background: var(--k-campo);
     /* Define borda dourada transparente */
     border: 1px solid rgba(217, 178, 122, 0.35);
     /* Remove sublinhado */
     text-decoration: none;
     /* Define cor padrão */
-    color: #FFFFFF;
+    color: var(--k-texto);
     /* Cria transições suaves */
     transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease, background 0.4s ease;
 }
@@ -930,7 +930,7 @@ button,
         /* Define a altura */
         height: 2px;
         /* Define corretamente a cor dourada */
-        background-color: #D9B27A;
+        background-color: var(--k-dourado-fundo);
         /* Centraliza horizontalmente */
         transform: translateX(-50%);
         /* Cria animação */
@@ -1043,11 +1043,11 @@ button,
     /* Cria espaço abaixo */
     margin-bottom: 8px;
     /* Define cor dourada */
-    color: #D9B27A;
+    color: var(--k-dourado);
     /* Define fonte */
     font-family: 'Lato', sans-serif;
     /* Define tamanho */
-    font-size: 0.72rem;
+    font-size: 0.875rem;
     /* Define peso */
     font-weight: 600;
     /* Define espaçamento entre letras */
@@ -1066,7 +1066,7 @@ button,
     /* Remove margem superior e cria espaço abaixo */
     margin: 0 0 8px;
     /* Define cor branca */
-    color: #FFFFFF;
+    color: var(--k-texto);
     /* Define Playfair Display */
     font-family: 'Playfair Display', serif;
     /* Define tamanho */
@@ -1089,11 +1089,11 @@ button,
     /* Remove margem superior e cria espaço inferior */
     margin: 0 0 12px;
     /* Define cor cinza */
-    color: #BDBDBD;
+    color: var(--k-suave);
     /* Define fonte */
     font-family: 'Lato', sans-serif;
     /* Define tamanho */
-    font-size: 0.75rem;
+    font-size: 0.875rem;
     /* Define espaçamento entre linhas */
     line-height: 1.5;
     /* Cria transição */
@@ -1112,7 +1112,7 @@ button,
     /* Define fonte */
     font-family: 'Lato', sans-serif;
     /* Define tamanho */
-    font-size: 0.68rem;
+    font-size: 0.875rem;
     /* Define peso */
     font-weight: 600;
     /* Define espaçamento */
@@ -1129,7 +1129,7 @@ button,
 /* Define o comportamento do card no hover */
 .destaque-card:hover {
     /* Mantém o texto branco */
-    color: #FFFFFF;
+    color: var(--k-texto);
     /* Move o card para cima */
     transform: translateY(-10px);
     /* Torna a borda dourada */
@@ -1137,7 +1137,7 @@ button,
     /* Cria sombra */
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45), 0 0 20px rgba(217, 178, 122, 0.08);
     /* Altera levemente o fundo */
-    background: linear-gradient( 145deg, #1C1C1C 0%, #111111 100% );
+    background: linear-gradient( 145deg, var(--k-elevado) 0%, var(--k-campo) 100% );
 }
 
 
@@ -1171,7 +1171,7 @@ button,
     /* Anima o subtítulo */
     .destaque-card:hover .destaque-subtitulo {
         /* Deixa o dourado mais claro */
-        color: #E0AD54;
+        color: var(--k-dourado);
         /* Move para cima */
         transform: translateY(-2px);
     }
@@ -1180,7 +1180,7 @@ button,
     /* Anima o título */
     .destaque-card:hover h3 {
         /* Muda o título para dourado */
-        color: #D9B27A;
+        color: var(--k-dourado);
         /* Move para cima */
         transform: translateY(-2px);
     }
@@ -1189,7 +1189,7 @@ button,
     /* Anima o texto */
     .destaque-card:hover p {
         /* Clareia o texto */
-        color: #D5D5D5;
+        color: var(--k-suave);
         /* Move para cima */
         transform: translateY(-2px);
     }
@@ -1198,7 +1198,7 @@ button,
     /* Anima o link */
     .destaque-card:hover .destaque-link {
         /* Muda para dourado */
-        color: #E0AD54;
+        color: var(--k-dourado);
         /* Move para a direita */
         transform: translateX(4px);
     }
@@ -1238,7 +1238,7 @@ button,
         /* Reduz o texto */
         .destaque-conteudo p {
             /* Define tamanho menor */
-            font-size: 0.72rem;
+            font-size: 0.875rem;
         }
 }
 
@@ -1252,9 +1252,9 @@ button,
 /* Configura o footer */
 .footer-kiora {
     /* Define fundo preto */
-    background-color: #0E0E0E;
+    background-color: var(--k-fundo);
     /* Define texto branco */
-    color: #FFFFFF;
+    color: var(--k-texto);
     /* Ocupa toda a largura */
     width: 100%;
     /* Cria borda superior vinho */
@@ -1311,11 +1311,11 @@ button,
     /* Texto da frase */
     .footer-frase p {
         /* Define cor dourada */
-        color: #D9B27A;
+        color: var(--k-dourado);
         /* Define fonte */
         font-family: 'Lato', sans-serif;
         /* Define tamanho */
-        font-size: 11px;
+        font-size: 0.875rem;
         /* Define peso */
         font-weight: 600;
         /* Define espaçamento entre linhas */
@@ -1360,9 +1360,9 @@ button,
 /* Ícones */
 .footer-icon {
     /* Define cor dourada */
-    color: #D9B27A !important;
+    color: var(--k-dourado) !important;
     /* Define tamanho */
-    font-size: 17px;
+    font-size: 1.0625rem;
     /* Cria espaço à direita */
     margin-right: 10px;
 }
@@ -1371,11 +1371,11 @@ button,
 /* Textos */
 .footer-item span {
     /* Define cor cinza */
-    color: #BDBDBD;
+    color: var(--k-suave);
     /* Define fonte */
     font-family: 'Lato', sans-serif;
     /* Define tamanho */
-    font-size: 10px;
+    font-size: 0.875rem;
     /* Define espaçamento */
     line-height: 1.45;
 }
@@ -1400,7 +1400,7 @@ button,
     /* Ícones dos telefones */
     .footer-telefones .footer-icon {
         /* Define tamanho menor */
-        font-size: 15px;
+        font-size: 0.9375rem;
     }
 
 
@@ -1427,11 +1427,11 @@ button,
 /* Título das redes sociais */
 .footer-social-title {
     /* Define cor dourada */
-    color: #D9B27A !important;
+    color: var(--k-dourado) !important;
     /* Define fonte */
     font-family: 'Lato', sans-serif;
     /* Define tamanho */
-    font-size: 10px !important;
+    font-size: 0.875rem !important;
     /* Faz ocupar sua linha */
     display: block;
     /* Cria espaço abaixo */
@@ -1457,11 +1457,11 @@ button,
     /* Cada link social */
     .footer-social-links a {
         /* Define dourado */
-        color: #D9B27A !important;
+        color: var(--k-dourado) !important;
         /* Define fonte */
         font-family: 'Lato', sans-serif;
         /* Define tamanho */
-        font-size: 15px;
+        font-size: 0.9375rem;
         /* Remove sublinhado */
         text-decoration: none;
         /* Cria transição */
@@ -1472,7 +1472,7 @@ button,
         /* Hover das redes */
         .footer-social-links a:hover {
             /* Muda para branco */
-            color: #FFFFFF !important;
+            color: var(--k-texto) !important;
             /* Move o ícone para cima */
             transform: translateY(-2px);
         }
@@ -1503,14 +1503,14 @@ button,
         /* Texto do endereço no hover */
         .footer-address-link:hover .footer-item span {
             /* Muda para dourado */
-            color: #D9B27A;
+            color: var(--k-dourado);
         }
 
 
     /* Ícone do endereço no hover */
     .footer-address-link:hover .footer-icon {
         /* Muda para branco */
-        color: #FFFFFF !important;
+        color: var(--k-texto) !important;
         /* Aumenta levemente */
         transform: scale(1.1);
     }
@@ -1549,11 +1549,11 @@ button,
     /* Nome da empresa */
     .footer-direitos strong {
         /* Define dourado */
-        color: #D9B27A;
+        color: var(--k-dourado);
         /* Define fonte */
         font-family: 'Lato', sans-serif;
         /* Define tamanho */
-        font-size: 13px;
+        font-size: 0.875rem;
         /* Define peso */
         font-weight: 500;
         /* Cria espaço inferior */
@@ -1564,11 +1564,11 @@ button,
     /* Texto secundário */
     .footer-direitos span {
         /* Define cinza */
-        color: #777777;
+        color: var(--k-suave);
         /* Define fonte */
         font-family: 'Lato', sans-serif;
         /* Define tamanho */
-        font-size: 9px;
+        font-size: 0.875rem;
         /* Impede quebra */
         white-space: nowrap;
     }
@@ -1595,11 +1595,11 @@ button,
     .footer-politicas a,
     .footer-politicas span {
         /* Define cor cinza */
-        color: #777777;
+        color: var(--k-suave);
         /* Define fonte */
         font-family: 'Lato', sans-serif;
         /* Define tamanho */
-        font-size: 8px;
+        font-size: 0.875rem;
         /* Remove sublinhado */
         text-decoration: none;
     }
@@ -1608,7 +1608,7 @@ button,
         /* Hover dos links */
         .footer-politicas a:hover {
             /* Muda para dourado */
-            color: #D9B27A;
+            color: var(--k-dourado);
         }
 
 
@@ -1754,7 +1754,7 @@ button,
     /* Reduz subtítulo */
     .hero-subtitulo {
         /* Define tamanho menor */
-        font-size: 11px;
+        font-size: 0.875rem;
         /* Reduz espaçamento entre letras */
         letter-spacing: 2px;
     }
@@ -1762,13 +1762,13 @@ button,
     /* Reduz título */
     .hero-conteudo h1 {
         /* Define tamanho menor */
-        font-size: 38px;
+        font-size: 2.375rem;
     }
 
     /* Reduz texto */
     .hero-conteudo p {
         /* Define tamanho menor */
-        font-size: 15px;
+        font-size: 0.9375rem;
         /* Centraliza horizontalmente */
         margin-left: auto;
         /* Centraliza horizontalmente */
@@ -1823,7 +1823,7 @@ button,
         /* Remove borda lateral */
         border-left: none;
         /* Cria separação horizontal */
-        border-bottom: 1px solid #333;
+        border-bottom: 1px solid var(--k-borda);
         /* Define espaçamento vertical */
         padding: 15px 0;
         /* Centraliza conteúdo */
@@ -1853,7 +1853,7 @@ button,
     /* Mantém separação das redes */
     .footer-social {
         /* Define linha inferior */
-        border-bottom: 1px solid #333;
+        border-bottom: 1px solid var(--k-borda);
     }
 
     /* Ajusta direitos autorais */
@@ -1902,9 +1902,9 @@ TÍTULO DO PERFIL
     /* Utiliza a fonte Playfair Display do projeto. */
     font-family: 'Playfair Display', serif;    
     /* Define a cor dourada utilizada na identidade do Kiora. */
-    color: #D9B27A;
+    color: var(--k-dourado);
     /* Define o tamanho do título. */
-    font-size: 38px;
+    font-size: 2.375rem;
     /* Centraliza o título. */
     text-align: center;
     /* Adiciona espaço abaixo do título. */
@@ -1921,7 +1921,7 @@ TÍTULO DO PERFIL
     /* Permite posicionar os elementos decorativos internos. */
     position: relative;
     /* Define o fundo escuro seguindo o padrão dos cards da Home. */
-    background: #111111;
+    background: var(--k-campo);
     /* Define uma borda dourada inicialmente discreta. */
     border: 1px solid rgba(217, 178, 122, 0.35);
     /* Limita a largura máxima do card. */
@@ -1956,7 +1956,7 @@ TÍTULO DO PERFIL
         /* Define a altura da linha. */
         height: 2px;
         /* Define a cor dourada do Kiora. */
-        background-color: #D9B27A;
+        background-color: var(--k-dourado-fundo);
         /* Centraliza a linha horizontalmente. */
         transform: translateX(-50%);
         /* Cria uma animação suave da largura. */
@@ -2008,7 +2008,7 @@ TÍTULO DO PERFIL
         /* Cria a mesma sombra utilizada nos cards da Home. */
         box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45), 0 0 20px rgba(217, 178, 122, 0.08);
         /* Aplica o mesmo gradiente utilizado nos cards da Home. */
-        background: linear-gradient(145deg, #1C1C1C 0%, #111111 100%);
+        background: linear-gradient(145deg, var(--k-elevado) 0%, var(--k-campo) 100%);
     }
 
 
@@ -2046,9 +2046,9 @@ TÍTULO DAS INFORMAÇÕES
     /* Utiliza a fonte Lato do projeto. */
     font-family: 'Lato', sans-serif;   
     /* Define a cor dourada. */
-    color: #D9B27A;
+    color: var(--k-dourado);
     /* Define o tamanho do texto. */
-    font-size: 16px;
+    font-size: 1rem;
     /* Deixa o texto em negrito. */
     font-weight: 700;
     /* Remove margem superior. */
@@ -2067,9 +2067,9 @@ INFORMAÇÕES DO USUÁRIO
     /* Utiliza a fonte Lato do projeto. */
     font-family: 'Lato', sans-serif;    
     /* Define a cor branca para as informações. */
-    color: #FFFFFF;
+    color: var(--k-texto);
     /* Define o tamanho do texto. */
-    font-size: 18px;
+    font-size: 1.125rem;
     /* Adiciona espaço abaixo de cada informação. */
     margin-bottom: 25px;
     
@@ -2086,13 +2086,13 @@ BOTÃO EDITAR PERFIL
     /* Define a borda dourada padrão do Kiora. */
     border: 1px solid #D9B27A;
     /* Define a cor branca para o texto. */
-    color: #FFFFFF;
+    color: var(--k-texto);
     /* Utiliza a fonte Lato do projeto. */
     font-family: 'Lato', sans-serif;
     /* Deixa o texto do botão em negrito. */
     font-weight: 700;
     /* Define o tamanho do texto. */
-    font-size: 16px;
+    font-size: 1rem;
     /* Define o espaçamento interno do botão. */
     padding: 10px 25px;
     /* Arredonda os cantos do botão. */
@@ -2113,11 +2113,11 @@ HOVER DO BOTÃO EDITAR PERFIL
     /* Aplica o efeito quando o mouse passa sobre o botão. */
     .btn-editar-perfil-kiora:hover {
         /* Transforma o fundo do botão em dourado. */
-        background-color: #D9B27A;       
+        background-color: var(--k-dourado-fundo);
         /* Mantém a borda dourada. */
         border-color: #D9B27A;
         /* Muda o texto para o fundo escuro do Kiora. */
-        color: #0E0E0E;
+        color: var(--k-sobre-dourado);
         /* Remove o sublinhado do link. */
         text-decoration: none;
         
@@ -2130,7 +2130,7 @@ HOVER DO BOTÃO EDITAR PERFIL
 
 .nome-usuario-menu {
     font-family: 'Lato', sans-serif;
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: 400;
     margin-left: 8px;
 }
@@ -2146,13 +2146,13 @@ BOTÃO ALTERAR SENHA
     /* Define a borda dourada padrão do Kiora. */
     border: 1px solid #D9B27A;
     /* Define a cor branca para o texto. */
-    color: #FFFFFF;
+    color: var(--k-texto);
     /* Utiliza a fonte Lato do projeto. */
     font-family: 'Lato', sans-serif;
     /* Deixa o texto do botão em negrito. */
     font-weight: 700;
     /* Define o tamanho do texto. */
-    font-size: 16px;
+    font-size: 1rem;
     /* Define o espaçamento interno do botão. */
     padding: 10px 25px;
     /* Arredonda os cantos do botão. */
@@ -2172,11 +2172,11 @@ HOVER DO BOTÃO ALTERAR SENHA
     /* Aplica o efeito quando o mouse passa sobre o botão. */
     .btn-alterar-senha-kiora:hover {
         /* Transforma o fundo do botão em dourado. */
-        background-color: #D9B27A;
+        background-color: var(--k-dourado-fundo);
         /* Mantém a borda dourada. */
         border-color: #D9B27A;
         /* Muda o texto para o fundo escuro do Kiora. */
-        color: #0E0E0E;
+        color: var(--k-sobre-dourado);
         /* Remove o sublinhado do link. */
         text-decoration: none;
     }
@@ -2232,13 +2232,13 @@ HOVER DO BOTÃO ALTERAR SENHA
     /* Define a borda dourada padrão do Kiora. */
     border: 1px solid #D9B27A;
     /* Define a cor branca para o texto. */
-    color: #FFFFFF;
+    color: var(--k-texto);
     /* Utiliza a fonte Lato do projeto. */
     font-family: 'Lato', sans-serif;
     /* Deixa o texto do botão em negrito. */
     font-weight: 700;
     /* Define o tamanho do texto. */
-    font-size: 16px;
+    font-size: 1rem;
     /* Define o espaçamento interno do botão. */
     padding: 10px 25px;
     /* Arredonda os cantos do botão. */
@@ -2261,11 +2261,11 @@ HOVER DO BOTÃO ALTERAR SENHA
     /* Aplica o efeito quando o mouse passa sobre o botão. */
     .btn-desativar-conta-kiora:hover {
         /* Transforma o fundo do botão em dourado. */
-        background-color: #D9B27A;
+        background-color: var(--k-dourado-fundo);
         /* Mantém a borda dourada. */
         border-color: #D9B27A;
         /* Muda o texto para o fundo escuro do Kiora. */
-        color: #0E0E0E;
+        color: var(--k-sobre-dourado);
         /* Remove qualquer sublinhado. */
         text-decoration: none;
     }
@@ -2297,39 +2297,39 @@ HOVER DO BOTÃO ALTERAR SENHA
     padding: 3px 10px;
     border-radius: 20px;
     border: 1px solid currentColor;
-    font-size: 0.85rem;
+    font-size: 0.875rem;
     font-weight: 600;
 }
 
 .status-recebido {
-    color: #7CC4FF;
+    color: var(--k-azul);
 }
 
 .status-empreparo {
-    color: #FFD666;
+    color: var(--k-amarelo);
 }
 
 .status-saiuparaentrega {
-    color: #C9A3FF;
+    color: var(--k-roxo);
 }
 
 .status-entregue {
-    color: #8FE3A6;
+    color: var(--k-verde);
 }
 
 .status-cancelado {
-    color: #9A9A9A;
+    color: var(--k-suave);
 }
 
 
 .status-pendente {
-    color: #FFD666;
+    color: var(--k-amarelo);
 }
 
 .status-aprovado {
-    color: #8FE3A6;
+    color: var(--k-verde);
 }
 
 .status-recusado {
-    color: #FF8A8A;
+    color: var(--k-vermelho);
 }

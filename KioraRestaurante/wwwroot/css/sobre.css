@@ -41,7 +41,7 @@
     /* Mantém acima do overlay */
     z-index: 2;
     /* Define texto branco */
-    color: #FFFFFF;
+    color: var(--k-texto);
     /* Cria espaço superior */
     padding-top: 60px;
     /* Cria espaço inferior */
@@ -55,11 +55,11 @@
     /* Permite controlar tamanho */
     display: inline-block;
     /* Define dourado */
-    color: #D9B27A;
+    color: var(--k-dourado);
     /* Define fonte */
     font-family: 'Lato', sans-serif;
     /* Define tamanho */
-    font-size: 13px;
+    font-size: 0.875rem;
     /* Define peso */
     font-weight: 600;
     /* Aumenta espaçamento */
@@ -74,9 +74,9 @@
     /* Define Playfair Display */
     font-family: 'Playfair Display', serif;
     /* Define branco */
-    color: #FFFFFF;
+    color: var(--k-texto);
     /* Define tamanho */
-    font-size: 56px;
+    font-size: 3.5rem;
     /* Define peso */
     font-weight: 600;
     /* Define espaçamento */
@@ -89,9 +89,9 @@
     /* Define fonte */
     font-family: 'Lato', sans-serif;
     /* Define cor */
-    color: #E5E5E5;
+    color: var(--k-texto);
     /* Define tamanho */
-    font-size: 18px;
+    font-size: 1.125rem;
     /* Define peso */
     font-weight: 400;
     /* Define espaçamento */
@@ -199,7 +199,7 @@
 /* Configura a seção de experiência */
 .sobre-experiencia {
     /* Define fundo escuro */
-    background-color: #0E0E0E;
+    background-color: var(--k-fundo);
     /* Define espaçamento vertical */
     padding: 100px 0;
     /* Cria linha superior */
@@ -218,11 +218,11 @@
 .sobre-experiencia h2,
 .sobre-diferenciais h2 {
     /* Define cor branca */
-    color: #FFFFFF;
+    color: var(--k-texto);
     /* Define fonte */
     font-family: 'Playfair Display', serif;
     /* Define tamanho */
-    font-size: 42px;
+    font-size: 2.625rem;
     /* Define peso */
     font-weight: 600;
     /* Cria espaço inferior */
@@ -234,11 +234,11 @@
 .sobre-experiencia .sobre-titulo-secao p,
 .sobre-diferenciais .sobre-titulo-secao p {
     /* Define cor cinza */
-    color: #BDBDBD;
+    color: var(--k-suave);
     /* Define fonte */
     font-family: 'Lato', sans-serif;
     /* Define tamanho */
-    font-size: 16px;
+    font-size: 1rem;
     /* Define peso */
     font-weight: 400;
 }
@@ -255,7 +255,7 @@
     /* Ocupa toda a altura disponível */
     height: 100%;
     /* Cria fundo em degradê */
-    background: linear-gradient( 145deg, #171717 0%, #101010 100% );
+    background: linear-gradient( 145deg, var(--k-superficie) 0%, var(--k-campo) 100% );
     /* Cria borda dourada transparente */
     border: 1px solid rgba(217, 178, 122, 0.35);
     /* Define espaçamento interno */
@@ -284,7 +284,7 @@
         /* Define altura */
         height: 2px;
         /* Define cor dourada */
-        background-color: #D9B27A;
+        background-color: var(--k-dourado-fundo);
         /* Centraliza */
         transform: translateX(-50%);
         /* Cria animação */
@@ -324,7 +324,7 @@
         /* Cria sombra */
         box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45), 0 0 20px rgba(217, 178, 122, 0.08);
         /* Altera o fundo */
-        background: linear-gradient( 145deg, #1C1C1C 0%, #111111 100% );
+        background: linear-gradient( 145deg, var(--k-elevado) 0%, var(--k-campo) 100% );
     }
 
 
@@ -353,9 +353,9 @@
     /* Configura os ícones */
     .sobre-card i {
         /* Define cor dourada */
-        color: #D9B27A;
+        color: var(--k-dourado);
         /* Define tamanho */
-        font-size: 38px;
+        font-size: 2.375rem;
         /* Faz ocupar uma linha */
         display: block;
         /* Cria espaço inferior */
@@ -377,11 +377,11 @@
     /* Título dos cards */
     .sobre-card h3 {
         /* Define branco */
-        color: #FFFFFF;
+        color: var(--k-texto);
         /* Define fonte */
         font-family: 'Playfair Display', serif;
         /* Define tamanho */
-        font-size: 22px;
+        font-size: 1.375rem;
         /* Define peso */
         font-weight: 600;
         /* Cria espaço inferior */
@@ -394,18 +394,18 @@
     /* Hover do título */
     .sobre-card:hover h3 {
         /* Muda para dourado */
-        color: #D9B27A;
+        color: var(--k-dourado);
     }
 
 
     /* Texto dos cards */
     .sobre-card p {
         /* Define cinza */
-        color: #BDBDBD;
+        color: var(--k-suave);
         /* Define fonte */
         font-family: 'Lato', sans-serif;
         /* Define tamanho */
-        font-size: 15px;
+        font-size: 0.9375rem;
         /* Define peso */
         font-weight: 400;
         /* Define espaçamento */
@@ -422,7 +422,7 @@
 /* Configura o fundo da seção */
 .sobre-essencia {
     /* Define fundo */
-    background-color: #0E0E0E;
+    background-color: var(--k-fundo);
     /* Cria linha superior */
     border-top: 1px solid #1F1F1F;
 }
@@ -435,7 +435,7 @@
 /* Configura a seção */
 .sobre-diferenciais {
     /* Define fundo */
-    background-color: #0E0E0E;
+    background-color: var(--k-fundo);
     /* Define espaçamento */
     padding: 100px 0;
     /* Cria linha superior */
@@ -446,7 +446,7 @@
     /* Define fundo específico dos cards */
     .sobre-diferenciais .sobre-card {
         /* Define fundo um pouco mais claro */
-        background-color: #151515;
+        background-color: var(--k-superficie);
     }
 
 
@@ -459,7 +459,7 @@
     /* Define fundo vinho */
     background-color: #7D1F1F;
     /* Define texto branco */
-    color: #FFFFFF;
+    color: var(--k-texto);
     /* Define espaçamento */
     padding: 90px 0;
 }
@@ -468,18 +468,18 @@
     /* Subtítulo da missão */
     .sobre-missao .sobre-secao-subtitulo {
         /* Define dourado */
-        color: #D9B27A;
+        color: var(--k-dourado);
     }
 
 
     /* Título da missão */
     .sobre-missao h2 {
         /* Define branco */
-        color: #FFFFFF;
+        color: var(--k-texto);
         /* Define fonte */
         font-family: 'Playfair Display', serif;
         /* Define tamanho */
-        font-size: 42px;
+        font-size: 2.625rem;
         /* Define peso */
         font-weight: 600;
         /* Define espaçamento */
@@ -496,11 +496,11 @@
         /* Centraliza */
         margin: 0 auto;
         /* Define cor */
-        color: #F1F1F1;
+        color: var(--k-texto);
         /* Define fonte */
         font-family: 'Lato', sans-serif;
         /* Define tamanho */
-        font-size: 17px;
+        font-size: 1.0625rem;
         /* Define peso */
         font-weight: 400;
         /* Define espaçamento */
@@ -515,9 +515,9 @@
 /* Configura a seção */
 .sobre-valores {
     /* Define fundo */
-    background-color: #0E0E0E;
+    background-color: var(--k-fundo);
     /* Define texto branco */
-    color: #FFFFFF;
+    color: var(--k-texto);
     /* Define espaçamento */
     padding: 100px 0;
     /* Cria linha superior */
@@ -528,11 +528,11 @@
     /* Título dos valores */
     .sobre-valores h2 {
         /* Define branco */
-        color: #FFFFFF;
+        color: var(--k-texto);
         /* Define fonte */
         font-family: 'Playfair Display', serif;
         /* Define tamanho */
-        font-size: 36px;
+        font-size: 2.25rem;
         /* Define peso */
         font-weight: 600;
         /* Define espaçamento */
@@ -545,11 +545,11 @@
     /* Texto dos valores */
     .sobre-valores p {
         /* Define cor cinza */
-        color: #BDBDBD;
+        color: var(--k-suave);
         /* Define fonte */
         font-family: 'Lato', sans-serif;
         /* Define tamanho */
-        font-size: 16px;
+        font-size: 1rem;
         /* Define peso */
         font-weight: 400;
         /* Define espaçamento */
@@ -579,9 +579,9 @@
     /* Configura cada valor */
     .valores-lista span {
         /* Define texto branco */
-        color: #FFFFFF;
+        color: var(--k-texto);
         /* Define fundo escuro */
-        background-color: #151515;
+        background-color: var(--k-superficie);
         /* Define borda vinho */
         border: 1px solid #7D1F1F;
         /* Define fonte */
@@ -589,7 +589,7 @@
         /* Define espaçamento */
         padding: 9px 16px;
         /* Define tamanho */
-        font-size: 14px;
+        font-size: 0.875rem;
         /* Define peso */
         font-weight: 500;
         /* Cria transição */
@@ -612,30 +612,34 @@
 
 /* Configura a seção final */
 .sobre-reserva {
+    /* Esta seção permanece vinho em ambos os temas: usa sua própria paleta clara. */
+    --k-texto: #ffffff;
+    --k-suave: #f8f5f2;
+    --k-dourado: #dfb77f;
     /* Define fundo vinho */
     background-color: #7D1F1F;
     /* Define espaçamento */
     padding: 80px 0;
     /* Define texto branco */
-    color: #FFFFFF;
+    color: var(--k-texto);
 }
 
 
     /* Subtítulo final */
     .sobre-reserva .sobre-secao-subtitulo {
         /* Define dourado */
-        color: #D9B27A;
+        color: var(--k-dourado);
     }
 
 
     /* Título final */
     .sobre-reserva h2 {
         /* Define branco */
-        color: #FFFFFF;
+        color: var(--k-texto);
         /* Define fonte */
         font-family: 'Playfair Display', serif;
         /* Define tamanho */
-        font-size: 42px;
+        font-size: 2.625rem;
         /* Define peso */
         font-weight: 600;
         /* Cria espaço abaixo */
@@ -646,11 +650,11 @@
     /* Texto final */
     .sobre-reserva p {
         /* Define cor */
-        color: #F1F1F1;
+        color: var(--k-texto);
         /* Define fonte */
         font-family: 'Lato', sans-serif;
         /* Define tamanho */
-        font-size: 17px;
+        font-size: 1.0625rem;
         /* Define peso */
         font-weight: 400;
         /* Cria espaço abaixo */
@@ -664,10 +668,13 @@
 
 /* Configura o botão */
 .btn-reserva-sobre {
+    /* Fundo claro do botão requer texto escuro, independentemente do tema da página. */
+    --k-fundo: #faf7f2;
+    --k-texto: #27221e;
     /* Define fundo escuro */
-    background-color: #0E0E0E;
+    background-color: var(--k-fundo);
     /* Define texto branco */
-    color: #FFFFFF !important;
+    color: var(--k-texto) !important;
     /* Define borda dourada */
     border: 1px solid #D9B27A;
     /* Define espaçamento */
@@ -688,9 +695,9 @@
     /* Hover do botão */
     .btn-reserva-sobre:hover {
         /* Muda fundo para dourado */
-        background-color: #D9B27A;
+        background-color: var(--k-dourado-fundo);
         /* Muda texto para preto */
-        color: #0E0E0E !important;
+        color: var(--k-sobre-dourado) !important;
     }
 
 
@@ -706,7 +713,7 @@
         /* Ajusta título */
         .sobre-hero h1 {
             /* Reduz tamanho */
-            font-size: 44px;
+            font-size: 2.75rem;
         }
 
     /* Ajusta espaçamento das seções */
@@ -727,13 +734,13 @@
         .sobre-missao h2,
         .sobre-reserva h2 {
             /* Reduz tamanho */
-            font-size: 36px;
+            font-size: 2.25rem;
         }
 
         /* Ajusta título dos valores */
         .sobre-valores h2 {
             /* Define tamanho menor */
-            font-size: 32px;
+            font-size: 2rem;
         }
 
     /* Reduz imagens */
@@ -772,13 +779,13 @@
     /* Reduz título */
     .sobre-hero h1 {
         /* Define tamanho menor */
-        font-size: 34px;
+        font-size: 2.125rem;
     }
 
     /* Reduz texto */
     .sobre-hero p {
         /* Define tamanho menor */
-        font-size: 15px;
+        font-size: 0.9375rem;
         /* Centraliza */
         margin-left: auto;
         /* Centraliza */
@@ -803,14 +810,14 @@
         .sobre-missao h2,
         .sobre-reserva h2 {
             /* Define tamanho menor */
-            font-size: 30px;
+            font-size: 1.875rem;
         }
 
         /* Ajusta textos */
         .sobre-historia p,
         .sobre-essencia p {
             /* Define tamanho */
-            font-size: 15px;
+            font-size: 0.9375rem;
         }
 
     /* Reduz imagens */
@@ -834,7 +841,7 @@
     /* Reduz título dos valores */
     .sobre-valores h2 {
         /* Define tamanho */
-        font-size: 30px;
+        font-size: 1.875rem;
     }
 
     /* Centraliza valores */
@@ -846,7 +853,7 @@
         /* Ajusta itens */
         .valores-lista span {
             /* Define tamanho menor */
-            font-size: 13px;
+            font-size: 0.875rem;
             /* Define espaçamento menor */
             padding: 8px 13px;
         }
@@ -859,3 +866,6 @@
 
 
 }
+
+/* O fundo vinho dos valores também mantém contraste ao passar o mouse. */
+.valores-lista span:hover { color: #fff; }
