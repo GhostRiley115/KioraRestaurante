@@ -21,10 +21,33 @@ namespace KioraRestaurante.Data
         public DbSet<EnderecoUsuario> EnderecosUsuario { get; set; }
         public DbSet<ComboComponente> ComboComponentes { get; set; }
 
+        public DbSet<Reserva> Reservas { get; set; }
+        public DbSet<MesaRestaurante> MesasRestaurante { get; set; }
+        public DbSet<ControleSala> ControlesSala { get; set; }
+        public DbSet<EventoReserva> EventosReserva { get; set; }
+
         //Cria a relação entre tabelas
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            // RESERVAS: trava compartilhada, histórico e identificação idempotente.
+            modelBuilder.Entity<ControleSala>().HasData(new ControleSala { Id = 1 });
+            modelBuilder.Entity<Reserva>().HasIndex(r => r.Codigo).IsUnique();
+            modelBuilder.Entity<Reserva>().HasIndex(r => r.ChaveSolicitacao).IsUnique();
+            modelBuilder.Entity<Reserva>().HasIndex(r => new { r.Situacao, r.ExpiraEmUtc });
+            modelBuilder.Entity<Reserva>().HasIndex(r => new { r.MesaId, r.InicioUtc });
+            modelBuilder.Entity<Reserva>().HasIndex(r => r.VisitanteHash);
+            modelBuilder.Entity<Reserva>().Property(r => r.Versao).IsConcurrencyToken();
+            modelBuilder.Entity<Reserva>().Property(r => r.Situacao).HasConversion<string>().HasMaxLength(20);
+            modelBuilder.Entity<Reserva>().Property(r => r.Tipo).HasConversion<string>().HasMaxLength(20);
+            modelBuilder.Entity<Reserva>().HasOne(r => r.Usuario).WithMany().HasForeignKey(r => r.UsuarioId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Reserva>().HasOne(r => r.Mesa).WithMany().HasForeignKey(r => r.MesaId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<EventoReserva>().HasOne(e => e.Reserva).WithMany(r => r.Eventos).HasForeignKey(e => e.ReservaId).OnDelete(DeleteBehavior.Restrict);
+            // Restaurante fictício: 4 mesas de 2, 6 de 4 e 2 de 6 = 44 lugares.
+            modelBuilder.Entity<MesaRestaurante>().HasData(Enumerable.Range(1, 12).Select(id => new MesaRestaurante {
+                Id = id, Nome = "Mesa " + id.ToString("00"), Capacidade = id <= 4 ? 2 : id <= 10 ? 4 : 6, Ativa = true
+            }));
 
             // Mantém explicitamente o índice utilizado na relação com o usuário.
             modelBuilder.Entity<Pedido>()

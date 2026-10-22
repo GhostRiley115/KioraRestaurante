@@ -1,4 +1,4 @@
-﻿/* =========================================================
+/* =========================================================
 DOCUMENTOS INSTITUCIONAIS - KIORA
 Termos de Uso e Política de Privacidade
 ========================================================= */
@@ -9,7 +9,7 @@ PÁGINA PRINCIPAL
 
 .documento-page {
     min-height: calc(100vh - 90px);
-    background-color: #0E0E0E;
+    background-color: var(--k-fundo);
     padding: 70px 0 90px;
 }
 
@@ -35,9 +35,9 @@ CABEÇALHO
     .documento-header .documento-label {
         display: block;
         margin-bottom: 12px;
-        color: #D9B27A;
+        color: var(--k-dourado);
         font-family: 'Lato', sans-serif;
-        font-size: 0.85rem;
+        font-size: 0.875rem;
         font-weight: 700;
         letter-spacing: 3px;
         text-transform: uppercase;
@@ -45,7 +45,7 @@ CABEÇALHO
 
     .documento-header h1 {
         margin: 0;
-        color: #FFFFFF;
+        color: var(--k-texto);
         font-family: 'Playfair Display', serif;
         font-size: clamp(2.2rem, 5vw, 3.5rem);
         font-weight: 600;
@@ -54,7 +54,7 @@ CABEÇALHO
     .documento-header .documento-data {
         display: block;
         margin-top: 15px;
-        color: #A8A8A8;
+        color: var(--k-suave);
         font-family: 'Lato', sans-serif;
         font-size: 0.9rem;
     }
@@ -78,7 +78,7 @@ TÍTULOS
     .documento-card h2 {
         margin-top: 35px;
         margin-bottom: 15px;
-        color: #0E0E0E;
+        color: var(--k-sobre-dourado);
         font-family: 'Playfair Display', serif;
         font-size: 1.55rem;
         font-weight: 600;
@@ -110,7 +110,7 @@ TEXTOS
     }
 
     .documento-card strong {
-        color: #0E0E0E;
+        color: var(--k-sobre-dourado);
     }
 
     /* =========================================================
@@ -143,7 +143,7 @@ LINKS
     }
 
         .documento-card a:hover {
-            color: #D9B27A;
+            color: var(--k-dourado);
         }
 
 /* =========================================================
@@ -154,7 +154,7 @@ DIVISÓRIAS
     width: 70px;
     height: 2px;
     margin: 25px 0;
-    background-color: #D9B27A;
+    background-color: var(--k-dourado-fundo);
 }
 
 /* =========================================================
@@ -170,7 +170,7 @@ RODAPÉ DO DOCUMENTO
 
     .documento-footer p {
         margin-bottom: 5px;
-        color: #777777;
+        color: var(--k-suave);
         font-size: 0.9rem;
     }
 
@@ -187,7 +187,7 @@ BOTÃO VOLTAR
     border: 1px solid #D9B27A;
     border-radius: 3px;
     background-color: transparent;
-    color: #D9B27A;
+    color: var(--k-dourado);
     font-family: 'Lato', sans-serif;
     font-size: 0.9rem;
     font-weight: 700;
@@ -196,8 +196,8 @@ BOTÃO VOLTAR
 }
 
     .documento-voltar:hover {
-        background-color: #D9B27A;
-        color: #0E0E0E !important;
+        background-color: var(--k-dourado-fundo);
+        color: var(--k-sobre-dourado) !important;
     }
 
 /* =========================================================
@@ -245,7 +245,7 @@ RESPONSIVIDADE
     }
 
     .documento-header .documento-label {
-        font-size: 0.75rem;
+        font-size: 0.875rem;
         letter-spacing: 2px;
     }
 }

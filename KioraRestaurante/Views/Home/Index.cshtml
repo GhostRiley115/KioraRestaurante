@@ -1,10 +1,14 @@
-﻿@{
+@{
     // Identifica esta View como a página inicial do site.
     // O _Layout.cshtml pode utilizar esta informação
     // para aplicar comportamentos ou estilos específicos da Home.
     ViewData["HomePage"] = true;
+    ViewData["Title"] = "Início";
+    var administrador = User.IsInRole("Administrador");
 }
-
+@section Styles {
+    <link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
+}
 
 <!--
     HERO - PÁGINA INICIAL
@@ -18,7 +22,8 @@
     - Botões de Login e Cadastro.
 -->
 
-<section class="hero-kiora">
+<section class="hero-kiora @(administrador ? "home-administrador" : "")" aria-labelledby="tituloHome">
+    <partial name="_ImagemHome" model='@("fundo-kiora1")' />
 
     <!--
         Overlay escuro sobre a imagem de fundo.
@@ -34,7 +39,17 @@
 
             <div class="container">
 
-                @if (User.Identity?.IsAuthenticated == true)
+                @if (administrador)
+                {
+                    <span class="hero-subtitulo">KIORA · ÁREA DE GESTÃO</span>
+                    <h1 id="tituloHome">Olá, <span class="hero-nome-usuario">@(User.Identity?.Name ?? "equipe Kiora").</span><br />Vamos cuidar da operação?</h1>
+                    <p>Pedidos, catálogo e clientes: encontre o que precisa para organizar o atendimento em um só lugar.</p>
+                    <div class="hero-botoes">
+                        <a asp-controller="Admin" asp-action="Pedidos" class="btn btn-login">Ver pedidos</a>
+                        <a asp-controller="Admin" asp-action="Index" class="btn btn-cadastrar">Abrir painel de gestão</a>
+                    </div>
+                }
+                else if (User.Identity?.IsAuthenticated == true)
                 {
                     <!--
                         =========================================================
@@ -49,7 +64,7 @@
                         EXPERIÊNCIA KIORA
                     </span>
 
-                    <h1>
+                    <h1 id="tituloHome">
                         Olá,
                         <span class="hero-nome-usuario">
                             @User.Identity.Name!
@@ -57,8 +72,8 @@
                     </h1>
 
                     <p>
-                        Sua experiência japonesa continua aqui.
-                        Descubra nossos sabores e faça seu próximo pedido.
+                        Seu próximo momento Kiora começa aqui. Explore o cardápio,
+                        acompanhe seus pedidos e mantenha seus dados de entrega em dia.
                     </p>
 
 
@@ -86,11 +101,12 @@
 
                             Direciona o usuário para seu perfil.
                         -->
-                        <a asp-controller="Conta"
-                           asp-action="MeuPerfil"
+                        <!-- Atualização: o atalho principal agora abre os pedidos; o perfil continua no menu da conta. -->
+                        <a asp-controller="Pedido"
+                           asp-action="MeusPedidos"
                            class="btn btn-cadastrar">
 
-                            Meu Perfil
+                            Meus pedidos
 
                         </a>
 
@@ -111,15 +127,15 @@
                     </span>
 
 
-                    <h1>
+                    <h1 id="tituloHome">
                         Tradição, sabor<br />
                         e sofisticação.
                     </h1>
 
 
                     <p>
-                        Uma celebração da culinária japonesa, com o ramen como protagonista. Caldos preparados com cuidado,
-                        ingredientes selecionados e receitas que unem técnicas tradicionais a uma identidade própria.
+                        Da escolha do lámen ao acompanhamento do pedido, descubra a Kiora no seu ritmo.
+                        Explore nosso cardápio e encontre o sabor do seu próximo encontro com a culinária japonesa.
                     </p>
 
 
@@ -188,7 +204,11 @@
     4. Produtos KIORA
 -->
 
-<section class="kiora-destaques">
+<partial name="_InicioPorPerfil" />
+
+@if (!administrador)
+{
+<section class="kiora-destaques" aria-labelledby="tituloDestaques">
 
 
     <!--
@@ -198,7 +218,12 @@
 
         px-lg-4: Define espaçamento lateral maior em telas grandes.
     -->
-    <div class="container-fluid px-3 px-lg-4">
+    <div class="container home-secao-cabecalho">
+        <span class="home-sobretitulo">EXPLORE A KIORA</span>
+        <h2 id="tituloDestaques">Um sabor para cada momento.</h2>
+        <p>Comece pelo cardápio. Novas formas de descobrir nossos produtos chegam em breve.</p>
+    </div>
+    <div class="container px-3 px-lg-4">
 
 
         <!--
@@ -240,9 +265,7 @@
 
                         Arquivo: wwwroot/imagens/cardapio-card.png
                     -->
-                    <div class="destaque-imagem"
-                         style="background-image: url('/imagens/cardapio-card.png');">
-                    </div>
+                    <partial name="_ImagemHome" model='@("cardapio-card")' />
 
 
                     <!--
@@ -293,6 +316,7 @@
             <!--
                 CARD 2 - MAIS VENDIDOS 
             -->
+            <!-- Aqui vai o link para o filtro de produtos mais pedidos. -->
 
             <div class="col-12 col-md-6 col-lg-3">
 
@@ -300,8 +324,7 @@
                 <!--
                     Área clicável de todo o card.
                 -->
-                <a href="#"
-                   class="destaque-card">
+                <article class="destaque-card destaque-em-breve">
 
 
                     <!--
@@ -309,9 +332,7 @@
 
                         Arquivo: wwwroot/imagens/mais-vendido.png
                     -->
-                    <div class="destaque-imagem"
-                         style="background-image: url('/imagens/mais-vendido.png');">
-                    </div>
+                    <partial name="_ImagemHome" model='@("mais-vendido")' />
 
 
                     <!--
@@ -340,20 +361,20 @@
 
                         <!-- Descrição do card -->
                         <p>
-                            Conheça os pratos que conquistaram
-                            nossos clientes.
+                            Uma seleção dos pratos mais pedidos
+                            estará disponível aqui.
                         </p>
 
 
                         <!-- Ação do card -->
                         <span class="destaque-link">
-                            → CONHECER
+                            EM BREVE · MAIS VENDIDOS
                         </span>
 
 
                     </div>
 
-                </a>
+                </article>
 
             </div>
 
@@ -362,6 +383,7 @@
             <!--
                 CARD 3 - PROMOÇÕES  
             -->
+            <!-- Aqui vai o link para o filtro de promoções. -->
 
             <div class="col-12 col-md-6 col-lg-3">
 
@@ -369,8 +391,7 @@
                 <!--
                     Área clicável de todo o card.
                 -->
-                <a href="#"
-                   class="destaque-card">
+                <article class="destaque-card destaque-em-breve">
 
 
                     <!--
@@ -378,9 +399,7 @@
 
                         Arquivo: wwwroot/imagens/promocao.png
                     -->
-                    <div class="destaque-imagem"
-                         style="background-image: url('/imagens/promocao.png');">
-                    </div>
+                    <partial name="_ImagemHome" model='@("promocao")' />
 
 
                     <!--
@@ -409,20 +428,20 @@
 
                         <!-- Descrição do card -->
                         <p>
-                            Aproveite nossas combinações e ofertas
-                            especiais.
+                            Em breve, reúna as combinações e ofertas
+                            disponíveis em uma só página.
                         </p>
 
 
                         <!-- Ação do card -->
                         <span class="destaque-link">
-                            → VER OFERTAS
+                            EM BREVE · PROMOÇÕES
                         </span>
 
 
                     </div>
 
-                </a>
+                </article>
 
             </div>
 
@@ -431,6 +450,7 @@
             <!--
                 CARD 4 - PRODUTOS KIORA 
             -->
+            <!-- Aqui vai o link para a página da linha de produtos Kiora. -->
 
             <div class="col-12 col-md-6 col-lg-3">
 
@@ -438,8 +458,7 @@
                 <!--
                     Área clicável de todo o card.
                 -->
-                <a href="#"
-                   class="destaque-card">
+                <article class="destaque-card destaque-em-breve">
 
 
                     <!--
@@ -447,9 +466,7 @@
 
                         Arquivo: wwwroot/imagens/produtos.png
                     -->
-                    <div class="destaque-imagem"
-                         style="background-image: url('/imagens/produtos.png');">
-                    </div>
+                    <partial name="_ImagemHome" model='@("produtos")' />
 
 
                     <!--
@@ -478,19 +495,19 @@
 
                         <!-- Descrição do card -->
                         <p>
-                            Conheça nossa linha de produtos.
+                            Um espaço para explorar a linha Kiora está sendo preparado.
                         </p>
 
 
                         <!-- Ação do card -->
                         <span class="destaque-link">
-                            → CONHECER PRODUTOS
+                            EM BREVE · PRODUTOS KIORA
                         </span>
 
 
                     </div>
 
-                </a>
+                </article>
 
             </div>
 
@@ -501,3 +518,15 @@
 
 </section>
 
+
+}
+<section class="home-ajuda container" aria-labelledby="tituloAjuda">
+    <div><span class="home-sobretitulo">PRECISA DE UMA MÃO?</span>
+        <h2 id="tituloAjuda">Informação também faz parte da experiência.</h2>
+        <p>Conheça a Kiora ou consulte como seus dados são utilizados.</p></div>
+    <div class="home-atalhos">
+        <a asp-controller="Home" asp-action="Sobre">Sobre a Kiora <span aria-hidden="true">→</span></a>
+        <a asp-controller="Home" asp-action="PoliticaPrivacidade">Privacidade <span aria-hidden="true">→</span></a>
+        <a asp-controller="Home" asp-action="TermosUso">Termos de Uso <span aria-hidden="true">→</span></a>
+    </div>
+</section>

@@ -1,0 +1,268 @@
+<footer class="footer-kiora">
+
+    <div class="container">
+
+        <div class="footer-content">
+
+            <!--
+                =====================================================
+                LOGO
+                =====================================================
+            -->
+
+            <div class="footer-logo-area">
+
+                <partial name="_MarcaKiora" model='@("logo-footer")' />
+
+            </div>
+
+
+            <!--
+                =====================================================
+                FRASE INSTITUCIONAL
+                =====================================================
+            -->
+
+            <div class="footer-frase">
+
+                <p>
+
+                    Uma experiência além do sabor.
+
+                </p>
+
+            </div>
+
+
+            <!--
+                =====================================================
+                ENDEREÇO
+                =====================================================
+            -->
+
+            <a href="#"
+               class="footer-address-link"
+               data-bs-toggle="modal"
+               data-bs-target="#modalLocalizacao">
+
+                <div class="footer-item">
+
+                    <i class="bi bi-geo-alt footer-icon" aria-hidden="true"></i>
+
+                    <div>
+
+                        <span>
+
+                            Rua dos Pinheiros, 1234
+
+                        </span>
+
+                        <span>
+
+                            Pinheiros, São Paulo - SP
+
+                        </span>
+
+                        <span>
+
+                            01445-000
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+
+            <!--
+                =====================================================
+                TELEFONES
+                =====================================================
+            -->
+
+            <div class="footer-item">
+
+                <div class="footer-telefones">
+
+                    <!-- TELEFONE -->
+
+                    <div>
+
+                        <i class="bi bi-telephone footer-icon" aria-hidden="true"></i>
+
+                        <span>
+
+                            (11) 90000-1234
+
+                        </span>
+
+                    </div>
+
+
+                    <!-- WHATSAPP -->
+
+                    <div>
+
+                        <i class="bi bi-whatsapp footer-icon" aria-hidden="true"></i>
+
+                        <span>
+
+                            (11) 90000-1234
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!--
+                =====================================================
+                E-MAIL
+                =====================================================
+            -->
+
+            <div class="footer-item footer-email">
+
+                <i class="bi bi-envelope footer-icon" aria-hidden="true"></i>
+
+                <span>
+
+                    kiora.restaurante@gmail.com
+
+                </span>
+
+            </div>
+
+
+            <!--
+                =====================================================
+                REDES SOCIAIS
+                =====================================================
+            -->
+
+            <div class="footer-item footer-social">
+
+                <div>
+
+                    <span class="footer-social-title">
+
+                        SIGA-NOS
+
+                    </span>
+
+                    <div class="footer-social-links">
+
+                        <!-- INSTAGRAM -->
+
+                        <a href="https://www.instagram.com/kiora_lamen/"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           aria-label="Instagram da Kiora (abre em nova aba)">
+
+                            <i class="bi bi-instagram" aria-hidden="true"></i>
+
+                        </a>
+
+
+                        <!-- FACEBOOK -->
+
+                        <a href="https://www.facebook.com/profile.php?id=61592931191936"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           aria-label="Facebook da Kiora (abre em nova aba)">
+
+                            <i class="bi bi-facebook" aria-hidden="true"></i>
+
+                        </a>
+
+
+                        <!-- WHATSAPP -->
+
+                        <!-- Aqui vai o link do WhatsApp quando o canal estiver disponível. -->
+                        <span class="footer-canal-pendente" title="WhatsApp em breve">
+
+                            <i class="bi bi-whatsapp" aria-hidden="true"></i><span>Em breve</span>
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!--
+                =====================================================
+                DIREITOS AUTORAIS
+                =====================================================
+            -->
+
+            <div class="footer-direitos">
+
+                <strong>
+
+                    KIORA
+
+                </strong>
+
+                <span>
+
+                    © @DateTime.Now.Year. Todos os direitos reservados.
+
+                </span>
+
+
+                <!-- POLÍTICAS -->
+
+                <div class="footer-politicas">
+
+                    <!-- POLÍTICA DE PRIVACIDADE -->
+
+                    <a asp-area=""
+                       asp-controller="Home"
+                       asp-action="PoliticaPrivacidade">
+
+                        Política de Privacidade
+
+                    </a>
+
+
+                    <span>
+
+                        |
+
+                    </span>
+
+
+                    <!-- TERMOS DE USO -->
+
+                    <a asp-area=""
+                       asp-controller="Home"
+                       asp-action="TermosUso">
+
+                        Termos de Uso
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="container footer-assinatura">
+        <p class="footer-projeto">Kiora · Projeto acadêmico de um restaurante fictício.</p>
+        <a class="footer-desenvolvedor" href="https://ghostriley115.github.io/Jujubas-LandindPage/" target="_blank" rel="noopener noreferrer" aria-label="Desenvolvido por Jujuba’s Dev (abre em nova aba)">
+            <img src="~/imagens/marcas/jujubas-dev.svg" asp-append-version="true" width="48" height="48" alt="" loading="lazy" />
+            <span>Desenvolvido por <strong>Jujuba’s Dev</strong></span>
+        </a>
+    </div>
+</footer>

@@ -14,13 +14,13 @@
     /* Permite posicionamento dos elementos internos */
     position: relative;
     /* Define o fundo preto */
-    background-color: #0E0E0E;
+    background-color: var(--k-fundo);
     /* Cria borda dourada */
     border: 1px solid #D9B27A;
     /* Arredonda os cantos */
     border-radius: 5px;
     /* Define texto branco */
-    color: #FFFFFF;
+    color: var(--k-texto);
     /* Esconde conteúdos excedentes */
     overflow: hidden;
     /* Cria sombra externa */
@@ -47,7 +47,7 @@
         /* Define altura */
         height: 2px;
         /* Define dourado */
-        background-color: #D9B27A;
+        background-color: var(--k-dourado-fundo);
         /* Centraliza */
         transform: translateX(-50%);
         /* Mantém acima */
@@ -104,7 +104,7 @@
     /* Mantém opacidade */
     opacity: 1;
     /* Define dourado */
-    color: #D9B27A;
+    color: var(--k-dourado);
     /* Mantém acima dos elementos */
     z-index: 10;
     /* Ativa Flexbox */
@@ -129,9 +129,9 @@
     /* Ícone do botão */
     .modal-login-fechar i {
         /* Define tamanho */
-        font-size: 18px;
+        font-size: 1.125rem;
         /* Define dourado */
-        color: #D9B27A;
+        color: var(--k-dourado);
     }
 
 
@@ -147,7 +147,7 @@
         /* Ícone no hover */
         .modal-login-fechar:hover i {
             /* Muda para branco */
-            color: #FFFFFF;
+            color: var(--k-texto);
         }
 
 
@@ -193,11 +193,11 @@
     /* Faz ocupar sua própria linha */
     display: block;
     /* Define dourado */
-    color: #D9B27A;
+    color: var(--k-dourado);
     /* Define fonte */
     font-family: 'Lato', sans-serif;
     /* Define tamanho */
-    font-size: 11px;
+    font-size: 0.875rem;
     /* Define peso */
     font-weight: 600;
     /* Define espaçamento */
@@ -210,11 +210,11 @@
 /* Título */
 .modal-login-header h2 {
     /* Define branco */
-    color: #FFFFFF;
+    color: var(--k-texto);
     /* Define fonte */
     font-family: 'Playfair Display', serif;
     /* Define tamanho */
-    font-size: 34px;
+    font-size: 2.125rem;
     /* Define peso */
     font-weight: 600;
     /* Remove margem superior */
@@ -225,18 +225,18 @@
     /* Primeira letra do título */
     .modal-login-header h2::first-letter {
         /* Mantém primeira letra branca */
-        color: #FFFFFF;
+        color: var(--k-texto);
     }
 
 
 /* Descrição */
 .modal-login-header p {
     /* Define cinza */
-    color: #999999;
+    color: var(--k-suave);
     /* Define fonte */
     font-family: 'Lato', sans-serif;
     /* Define tamanho */
-    font-size: 14px;
+    font-size: 0.875rem;
     /* Remove margem */
     margin: 0;
     /* Define espaçamento */
@@ -260,11 +260,11 @@
         /* Ocupa sua linha */
         display: block;
         /* Define branco */
-        color: #FFFFFF;
+        color: var(--k-texto);
         /* Define fonte */
         font-family: 'Lato', sans-serif;
         /* Define tamanho */
-        font-size: 14px;
+        font-size: 0.875rem;
         /* Define peso */
         font-weight: 600;
         /* Cria espaço inferior */
@@ -296,9 +296,9 @@
         /* Ajusta centralização */
         transform: translateY(-50%);
         /* Define dourado */
-        color: #D9B27A;
+        color: var(--k-dourado);
         /* Define tamanho */
-        font-size: 17px;
+        font-size: 1.0625rem;
         /* Impede interferência nos cliques */
         pointer-events: none;
         /* Mantém acima do input */
@@ -313,17 +313,17 @@
         /* Define altura */
         height: 50px;
         /* Define fundo */
-        background-color: #111111;
+        background-color: var(--k-campo);
         /* Define borda */
-        border: 1px solid #383838;
+        border: 1px solid var(--k-borda);
         /* Arredonda */
         border-radius: 3px;
         /* Define texto branco */
-        color: #FFFFFF;
+        color: var(--k-texto);
         /* Define fonte */
         font-family: 'Lato', sans-serif;
         /* Define tamanho */
-        font-size: 14px;
+        font-size: 0.875rem;
         /* Cria espaço para os ícones */
         padding: 0 45px;
         /* Remove outline padrão */
@@ -336,14 +336,14 @@
         /* Placeholder */
         .modal-login-input input::placeholder {
             /* Define cor do placeholder */
-            color: #777777;
+            color: var(--k-suave);
         }
 
 
         /* Campo em foco */
         .modal-login-input input:focus {
             /* Clareia levemente o fundo */
-            background-color: #151515;
+            background-color: var(--k-superficie);
             /* Torna a borda dourada */
             border-color: #D9B27A;
             /* Cria brilho sutil */
@@ -376,7 +376,7 @@
     /* Mantém fundo transparente */
     background: transparent;
     /* Define cinza */
-    color: #777777;
+    color: var(--k-suave);
     /* Mostra cursor */
     cursor: pointer;
     /* Ativa Flexbox */
@@ -393,14 +393,14 @@
     /* Hover do botão */
     .modal-login-olho:hover {
         /* Muda para dourado */
-        color: #D9B27A;
+        color: var(--k-dourado);
     }
 
 
     /* Ícone do botão */
     .modal-login-olho i {
         /* Define tamanho */
-        font-size: 18px;
+        font-size: 1.125rem;
     }
 
 
@@ -424,11 +424,11 @@
     /* Link de recuperação */
     .modal-login-opcoes a {
         /* Define dourado */
-        color: #D9B27A;
+        color: var(--k-dourado);
         /* Define fonte */
         font-family: 'Lato', sans-serif;
         /* Define tamanho */
-        font-size: 13px;
+        font-size: 0.875rem;
         /* Remove sublinhado */
         text-decoration: none;
         /* Cria transição */
@@ -439,7 +439,7 @@
         /* Hover do link */
         .modal-login-opcoes a:hover {
             /* Muda para branco */
-            color: #FFFFFF;
+            color: var(--k-texto);
             /* Adiciona sublinhado */
             text-decoration: underline;
             /* Afasta sublinhado */
@@ -464,11 +464,11 @@
     /* Define fundo */
     background-color: #7D1F1F;
     /* Define texto */
-    color: #FFFFFF;
+    color: var(--k-texto);
     /* Define fonte */
     font-family: 'Lato', sans-serif;
     /* Define tamanho */
-    font-size: 14px;
+    font-size: 0.875rem;
     /* Define peso */
     font-weight: 600;
     /* Aumenta espaçamento */
@@ -483,9 +483,9 @@
     /* Hover */
     .btn-modal-login:hover {
         /* Muda fundo para dourado */
-        background-color: #D9B27A;
+        background-color: var(--k-dourado-fundo);
         /* Muda texto para preto */
-        color: #0E0E0E;
+        color: var(--k-sobre-dourado);
     }
 
 
@@ -530,11 +530,11 @@
     /* Texto do divisor */
     .modal-login-divisor span {
         /* Define cor */
-        color: #777777;
+        color: var(--k-suave);
         /* Define fonte */
         font-family: 'Lato', sans-serif;
         /* Define tamanho */
-        font-size: 12px;
+        font-size: 0.875rem;
         /* Converte para maiúsculas */
         text-transform: uppercase;
     }
@@ -556,11 +556,11 @@
         /* Permite ficar na mesma linha */
         display: inline;
         /* Define cor */
-        color: #999999;
+        color: var(--k-suave);
         /* Define fonte */
         font-family: 'Lato', sans-serif;
         /* Define tamanho */
-        font-size: 13px;
+        font-size: 0.875rem;
         /* Remove margem */
         margin: 0;
     }
@@ -569,11 +569,11 @@
     /* Link */
     .modal-login-cadastro a {
         /* Define dourado */
-        color: #D9B27A;
+        color: var(--k-dourado);
         /* Define fonte */
         font-family: 'Lato', sans-serif;
         /* Define tamanho */
-        font-size: 13px;
+        font-size: 0.875rem;
         /* Define peso */
         font-weight: 600;
         /* Cria espaço à esquerda */
@@ -588,7 +588,7 @@
         /* Hover */
         .modal-login-cadastro a:hover {
             /* Muda para branco */
-            color: #FFFFFF;
+            color: var(--k-texto);
             /* Adiciona sublinhado */
             text-decoration: underline;
             /* Afasta o sublinhado */
@@ -611,7 +611,7 @@
     /* Arredonda levemente os cantos */
     border-radius: 3px;
     /* Define tamanho da fonte */
-    font-size: 13px;
+    font-size: 0.875rem;
     /* Define peso da fonte */
     font-weight: 500;
     /* Define altura das linhas */
@@ -630,7 +630,7 @@
 .mensagem-kiora-sucesso {
     background-color: rgba(40, 120, 75, 0.15);
     border: 1px solid rgba(80, 180, 110, 0.45);
-    color: #8FD19E;
+    color: var(--k-verde);
 }
 
 /* =========================================================
@@ -639,7 +639,7 @@
 .mensagem-kiora-erro {
     background-color: rgba(125, 31, 31, 0.18);
     border: 1px solid rgba(180, 70, 70, 0.45);
-    color: #E58B8B;
+    color: var(--k-vermelho);
 }
 
 /* =========================================================
@@ -648,7 +648,7 @@
 .mensagem-kiora-aviso {
     background-color: rgba(217, 178, 122, 0.12);
     border: 1px solid rgba(217, 178, 122, 0.40);
-    color: #D9B27A;
+    color: var(--k-dourado);
 }
 
 /* =========================================================
@@ -657,7 +657,7 @@
 .mensagem-kiora-info {
     background-color: rgba(80, 130, 180, 0.12);
     border: 1px solid rgba(100, 160, 210, 0.40);
-    color: #9FC5E8;
+    color: var(--k-azul);
 }
 
 /* =========================================================
@@ -731,7 +731,7 @@
     /* Reduz título */
     .modal-login-header h2 {
         /* Define tamanho menor */
-        font-size: 30px;
+        font-size: 1.875rem;
     }
 }
 
@@ -770,19 +770,19 @@
         /* Reduz título */
         .modal-login-header h2 {
             /* Define tamanho menor */
-            font-size: 27px;
+            font-size: 1.6875rem;
         }
 
         /* Reduz descrição */
         .modal-login-header p {
             /* Define tamanho */
-            font-size: 13px;
+            font-size: 0.875rem;
         }
 
     /* Reduz subtítulo */
     .modal-login-subtitulo {
         /* Define tamanho menor */
-        font-size: 10px;
+        font-size: 0.875rem;
         /* Reduz espaçamento */
         letter-spacing: 2px;
     }
@@ -802,13 +802,13 @@
     /* Permite posicionamento */
     position: relative;
     /* Define fundo */
-    background-color: #0E0E0E;
+    background-color: var(--k-fundo);
     /* Define borda */
     border: 1px solid #D9B27A;
     /* Arredonda */
     border-radius: 5px;
     /* Define texto branco */
-    color: #FFFFFF;
+    color: var(--k-texto);
     /* Esconde excedentes */
     overflow: hidden;
     /* Cria sombra */
@@ -835,7 +835,7 @@
         /* Define altura */
         height: 2px;
         /* Define dourado */
-        background-color: #D9B27A;
+        background-color: var(--k-dourado-fundo);
         /* Centraliza */
         transform: translateX(-50%);
         /* Mantém acima */
@@ -892,7 +892,7 @@
     /* Mantém opacidade */
     opacity: 1;
     /* Define cor */
-    color: #D9B27A;
+    color: var(--k-dourado);
     /* Mantém acima */
     z-index: 10;
     /* Ativa Flexbox */
@@ -917,9 +917,9 @@
     /* Ícone */
     .modal-cadastro-fechar i {
         /* Define tamanho */
-        font-size: 18px;
+        font-size: 1.125rem;
         /* Define dourado */
-        color: #D9B27A;
+        color: var(--k-dourado);
     }
 
 
@@ -935,7 +935,7 @@
         /* Ícone no hover */
         .modal-cadastro-fechar:hover i {
             /* Muda para branco */
-            color: #FFFFFF;
+            color: var(--k-texto);
         }
 
 /* =========================================================
@@ -992,7 +992,7 @@
         /* Checkbox marcado */
         .modal-cadastro-termos-check input[type="checkbox"]:checked {
             /* Define fundo dourado */
-            background-color: #D9B27A;
+            background-color: var(--k-dourado-fundo);
             /* Mantém borda dourada */
             border-color: #D9B27A;
         }
@@ -1011,9 +1011,9 @@
                 /* Ajusta posição */
                 transform: translate(-50%, -52%);
                 /* Define cor */
-                color: #0E0E0E;
+                color: var(--k-sobre-dourado);
                 /* Define tamanho */
-                font-size: 12px;
+                font-size: 0.875rem;
                 /* Define peso */
                 font-weight: 700;
             }
@@ -1024,11 +1024,11 @@
         /* Remove margem padrão */
         margin: 0;
         /* Define cor */
-        color: #B8B8B8;
+        color: var(--k-suave);
         /* Define fonte */
         font-family: 'Lato', sans-serif;
         /* Define tamanho */
-        font-size: 0.82rem;
+        font-size: 0.875rem;
         /* Define altura das linhas */
         line-height: 1.5;
         /* Mostra que pode clicar */
@@ -1039,7 +1039,7 @@
         /* Links dos documentos */
         .modal-cadastro-termos-check label a {
             /* Define dourado */
-            color: #D9B27A;
+            color: var(--k-dourado);
             /* Define peso */
             font-weight: 700;
             /* Remove sublinhado padrão */
@@ -1052,7 +1052,7 @@
             /* Hover dos links */
             .modal-cadastro-termos-check label a:hover {
                 /* Muda para branco */
-                color: #FFFFFF;
+                color: var(--k-texto);
                 /* Adiciona sublinhado */
                 text-decoration: underline;
                 /* Ajusta distância */
@@ -1102,11 +1102,11 @@
     /* Ocupa linha */
     display: block;
     /* Define dourado */
-    color: #D9B27A;
+    color: var(--k-dourado);
     /* Define fonte */
     font-family: 'Lato', sans-serif;
     /* Define tamanho */
-    font-size: 11px;
+    font-size: 0.875rem;
     /* Define peso */
     font-weight: 600;
     /* Define espaçamento */
@@ -1119,11 +1119,11 @@
 /* Título */
 .modal-cadastro-header h2 {
     /* Define branco */
-    color: #FFFFFF;
+    color: var(--k-texto);
     /* Define fonte */
     font-family: 'Playfair Display', serif;
     /* Define tamanho */
-    font-size: 32px;
+    font-size: 2rem;
     /* Define peso */
     font-weight: 600;
     /* Define margem */
@@ -1134,11 +1134,11 @@
 /* Descrição */
 .modal-cadastro-header p {
     /* Define cinza */
-    color: #999999;
+    color: var(--k-suave);
     /* Define fonte */
     font-family: 'Lato', sans-serif;
     /* Define tamanho */
-    font-size: 13px;
+    font-size: 0.875rem;
     /* Remove margem */
     margin: 0;
     /* Define espaçamento */
@@ -1162,11 +1162,11 @@
         /* Ocupa linha */
         display: block;
         /* Define branco */
-        color: #FFFFFF;
+        color: var(--k-texto);
         /* Define fonte */
         font-family: 'Lato', sans-serif;
         /* Define tamanho */
-        font-size: 13px;
+        font-size: 0.875rem;
         /* Define peso */
         font-weight: 600;
         /* Cria espaço */
@@ -1198,9 +1198,9 @@
         /* Ajusta posição */
         transform: translateY(-50%);
         /* Define dourado */
-        color: #D9B27A;
+        color: var(--k-dourado);
         /* Define tamanho */
-        font-size: 16px;
+        font-size: 1rem;
         /* Impede cliques */
         pointer-events: none;
         /* Mantém acima */
@@ -1215,17 +1215,17 @@
         /* Define altura */
         height: 46px;
         /* Define fundo */
-        background-color: #111111;
+        background-color: var(--k-campo);
         /* Define borda */
-        border: 1px solid #383838;
+        border: 1px solid var(--k-borda);
         /* Arredonda */
         border-radius: 3px;
         /* Define texto branco */
-        color: #FFFFFF;
+        color: var(--k-texto);
         /* Define fonte */
         font-family: 'Lato', sans-serif;
         /* Define tamanho */
-        font-size: 13px;
+        font-size: 0.875rem;
         /* Cria espaço para ícones */
         padding: 0 45px;
         /* Remove outline */
@@ -1238,14 +1238,14 @@
         /* Placeholder */
         .modal-cadastro-input input::placeholder {
             /* Define cor */
-            color: #777777;
+            color: var(--k-suave);
         }
 
 
         /* Foco */
         .modal-cadastro-input input:focus {
             /* Clareia fundo */
-            background-color: #151515;
+            background-color: var(--k-superficie);
             /* Torna borda dourada */
             border-color: #D9B27A;
             /* Cria brilho */
@@ -1278,7 +1278,7 @@
     /* Mantém fundo transparente */
     background: transparent;
     /* Define cinza */
-    color: #777777;
+    color: var(--k-suave);
     /* Define cursor */
     cursor: pointer;
     /* Ativa Flexbox */
@@ -1295,14 +1295,14 @@
     /* Hover */
     .modal-cadastro-olho:hover {
         /* Muda para dourado */
-        color: #D9B27A;
+        color: var(--k-dourado);
     }
 
 
     /* Ícone */
     .modal-cadastro-olho i {
         /* Define tamanho */
-        font-size: 17px;
+        font-size: 1.0625rem;
     }
 
 
@@ -1325,11 +1325,11 @@
     /* Define fundo */
     background-color: #7D1F1F;
     /* Define texto */
-    color: #FFFFFF;
+    color: var(--k-texto);
     /* Define fonte */
     font-family: 'Lato', sans-serif;
     /* Define tamanho */
-    font-size: 13px;
+    font-size: 0.875rem;
     /* Define peso */
     font-weight: 600;
     /* Define espaçamento */
@@ -1344,9 +1344,9 @@
     /* Hover */
     .btn-modal-cadastro:hover {
         /* Muda fundo */
-        background-color: #D9B27A;
+        background-color: var(--k-dourado-fundo);
         /* Muda texto */
-        color: #0E0E0E;
+        color: var(--k-sobre-dourado);
     }
 
 
@@ -1375,11 +1375,11 @@
         /* Permite ficar na mesma linha */
         display: inline;
         /* Define cor */
-        color: #999999;
+        color: var(--k-suave);
         /* Define fonte */
         font-family: 'Lato', sans-serif;
         /* Define tamanho */
-        font-size: 13px;
+        font-size: 0.875rem;
         /* Remove margem */
         margin: 0;
     }
@@ -1388,11 +1388,11 @@
     /* Link */
     .modal-cadastro-login a {
         /* Define dourado */
-        color: #D9B27A;
+        color: var(--k-dourado);
         /* Define fonte */
         font-family: 'Lato', sans-serif;
         /* Define tamanho */
-        font-size: 13px;
+        font-size: 0.875rem;
         /* Define peso */
         font-weight: 600;
         /* Cria espaço */
@@ -1407,7 +1407,7 @@
         /* Hover */
         .modal-cadastro-login a:hover {
             /* Muda para branco */
-            color: #FFFFFF;
+            color: var(--k-texto);
             /* Adiciona sublinhado */
             text-decoration: underline;
             /* Afasta sublinhado */
@@ -1445,7 +1445,7 @@
     /* Reduz título */
     .modal-cadastro-header h2 {
         /* Define tamanho */
-        font-size: 29px;
+        font-size: 1.8125rem;
     }
 }
 
@@ -1478,13 +1478,13 @@
     /* Reduz título */
     .modal-cadastro-header h2 {
         /* Define tamanho */
-        font-size: 26px;
+        font-size: 1.625rem;
     }
 
     /* Reduz descrição */
     .modal-cadastro-header p {
         /* Define tamanho */
-        font-size: 12px;
+        font-size: 0.875rem;
     }
 }
 
@@ -1515,13 +1515,13 @@
     /* Permite posicionar elementos internos */
     position: relative;
     /* Define o fundo escuro do modal */
-    background-color: #0E0E0E;
+    background-color: var(--k-fundo);
     /* Define a borda dourada */
     border: 1px solid #D9B27A;
     /* Arredonda os cantos */
     border-radius: 6px;
     /* Define a cor padrão dos textos */
-    color: #F8F5F2;
+    color: var(--k-texto);
     /* Impede que elementos ultrapassem os limites */
     overflow: hidden;
     /* Cria sombra ao redor do modal */
@@ -1551,7 +1551,7 @@
         /* Define a altura do detalhe */
         height: 3px;
         /* Define a cor dourada */
-        background-color: #D9B27A;
+        background-color: var(--k-dourado-fundo);
         /* Mantém o detalhe acima dos outros elementos */
         z-index: 10;
     }
@@ -1637,7 +1637,7 @@
     /* Remove a borda */
     border: none;
     /* Define a cor dourada */
-    color: #D9B27A;
+    color: var(--k-dourado);
     /* Define o cursor como ponteiro */
     cursor: pointer;
     /* Mantém o botão acima dos demais elementos */
@@ -1650,7 +1650,7 @@
     /* Configura o ícone do botão fechar */
     .modal-localizacao-fechar i {
         /* Define o tamanho do ícone */
-        font-size: 24px;
+        font-size: 1.5rem;
         /* Define a espessura do ícone */
         font-weight: 300;
     }
@@ -1659,7 +1659,7 @@
     /* Efeito ao passar o mouse sobre o botão fechar */
     .modal-localizacao-fechar:hover {
         /* Muda a cor para branco */
-        color: #F8F5F2;
+        color: var(--k-texto);
         /* Gira o botão */
         transform: rotate(90deg);
     }
@@ -1700,11 +1700,11 @@
     /* Cria espaço abaixo */
     margin-bottom: 18px;
     /* Define a cor dourada */
-    color: #D9B27A;
+    color: var(--k-dourado);
     /* Define a fonte */
     font-family: "Lato", sans-serif;
     /* Define o tamanho da fonte */
-    font-size: 14px;
+    font-size: 0.875rem;
     /* Define o peso da fonte */
     font-weight: 700;
     /* Aumenta o espaçamento entre as letras */
@@ -1723,11 +1723,11 @@
     /* Remove a margem superior e define a inferior */
     margin: 0 0 10px;
     /* Define a cor clara */
-    color: #F8F5F2;
+    color: var(--k-texto);
     /* Define a fonte do título */
     font-family: "Playfair Display", serif;
     /* Define o tamanho do título */
-    font-size: 38px;
+    font-size: 2.375rem;
     /* Define o peso da fonte */
     font-weight: 600;
     /* Define a altura das linhas */
@@ -1744,11 +1744,11 @@
     /* Remove as margens */
     margin: 0;
     /* Define a cor cinza */
-    color: #999999;
+    color: var(--k-suave);
     /* Define a fonte */
     font-family: "Lato", sans-serif;
     /* Define o tamanho da fonte */
-    font-size: 16px;
+    font-size: 1rem;
     /* Define o peso normal */
     font-weight: 400;
 }
@@ -1771,7 +1771,7 @@
     /* Cria espaçamento interno */
     padding: 18px;
     /* Define o fundo escuro */
-    background-color: #111111;
+    background-color: var(--k-campo);
     /* Define a borda */
     border: 1px solid #292929;
     /* Arredonda os cantos */
@@ -1802,14 +1802,14 @@
     /* Arredonda os cantos */
     border-radius: 4px;
     /* Define a cor dourada */
-    color: #D9B27A;
+    color: var(--k-dourado);
 }
 
 
     /* Configura o ícone dentro do container */
     .modal-localizacao-icone i {
         /* Define o tamanho do ícone */
-        font-size: 20px;
+        font-size: 1.25rem;
     }
 
 
@@ -1837,11 +1837,11 @@
 /* Configura o texto de identificação do endereço */
 .modal-localizacao-label {
     /* Define a cor dourada */
-    color: #D9B27A;
+    color: var(--k-dourado);
     /* Define a fonte */
     font-family: "Lato", sans-serif;
     /* Define o tamanho */
-    font-size: 11px;
+    font-size: 0.875rem;
     /* Define o peso */
     font-weight: 700;
     /* Define o espaçamento entre letras */
@@ -1858,11 +1858,11 @@
     /* Remove a margem */
     margin: 0;
     /* Define a cor clara */
-    color: #F8F5F2;
+    color: var(--k-texto);
     /* Define a fonte */
     font-family: "Lato", sans-serif;
     /* Define o tamanho */
-    font-size: 16px;
+    font-size: 1rem;
     /* Define o peso */
     font-weight: 600;
 }
@@ -1877,11 +1877,11 @@
     /* Remove a margem */
     margin: 0;
     /* Define a cor cinza */
-    color: #999999;
+    color: var(--k-suave);
     /* Define a fonte */
     font-family: "Lato", sans-serif;
     /* Define o tamanho */
-    font-size: 14px;
+    font-size: 0.875rem;
 }
 
 
@@ -1892,11 +1892,11 @@
 /* Configura o CEP */
 .modal-localizacao-cep {
     /* Define a cor cinza mais escura */
-    color: #777777;
+    color: var(--k-suave);
     /* Define a fonte */
     font-family: "Lato", sans-serif;
     /* Define o tamanho */
-    font-size: 12px;
+    font-size: 0.875rem;
 }
 
 
@@ -1911,13 +1911,13 @@
     /* Cria espaço abaixo */
     margin-bottom: 22px;
     /* Define a borda */
-    border: 1px solid #333333;
+    border: 1px solid var(--k-borda);
     /* Arredonda os cantos */
     border-radius: 4px;
     /* Impede que o conteúdo ultrapasse os limites */
     overflow: hidden;
     /* Define o fundo */
-    background-color: #111111;
+    background-color: var(--k-campo);
 }
 
 
@@ -1976,11 +1976,11 @@
     /* Arredonda os cantos */
     border-radius: 4px;
     /* Define a cor do texto */
-    color: #F8F5F2;
+    color: var(--k-texto);
     /* Define a fonte */
     font-family: "Lato", sans-serif;
     /* Define o tamanho da fonte */
-    font-size: 17px;
+    font-size: 1.0625rem;
     /* Define o peso da fonte */
     font-weight: 700;
     /* Remove o sublinhado */
@@ -1997,9 +1997,9 @@
     /* Configura o ícone do botão */
     .btn-localizacao i {
         /* Define o tamanho do ícone */
-        font-size: 17px;
+        font-size: 1.0625rem;
         /* Define a cor dourada */
-        color: #D9B27A;
+        color: var(--k-dourado);
     }
 
 
@@ -2010,9 +2010,9 @@
     /* Define o efeito ao passar o mouse sobre o botão */
     .btn-localizacao:hover {
         /* Muda o fundo para dourado */
-        background-color: #D9B27A;
+        background-color: var(--k-dourado-fundo);
         /* Muda o texto para preto */
-        color: #0E0E0E;
+        color: var(--k-sobre-dourado);
         /* Move levemente o botão para cima */
         transform: translateY(-1px);
     }
@@ -2072,14 +2072,14 @@
         /* Ajusta o título */
         .modal-localizacao-header h2 {
             /* Reduz o tamanho do título */
-            font-size: 32px;
+            font-size: 2rem;
         }
 
 
     /* Ajusta o subtítulo */
     .modal-localizacao-subtitulo {
         /* Reduz o tamanho da fonte */
-        font-size: 12px;
+        font-size: 0.875rem;
         /* Reduz o espaçamento entre letras */
         letter-spacing: 2px;
     }
@@ -2106,7 +2106,7 @@
         /* Reduz a altura */
         height: 58px;
         /* Reduz o tamanho da fonte */
-        font-size: 15px;
+        font-size: 0.9375rem;
     }
 }
 
@@ -2129,11 +2129,11 @@
 
 .modal-contato-kiora {
     position: relative;
-    background-color: #0E0E0E;
+    background-color: var(--k-fundo);
     border: 1px solid #D9B27A;
     border-radius: 12px;
     overflow: hidden;
-    color: #FFFFFF;
+    color: var(--k-texto);
 }
 
 
@@ -2176,7 +2176,7 @@
     background: transparent;
     border: none;
     border-radius: 0;
-    color: #D9B27A;
+    color: var(--k-dourado);
     cursor: pointer;
     transition: all 0.4s ease;
 }
@@ -2193,7 +2193,7 @@
 
     .modal-contato-fechar:hover {
         background-color: transparent;
-        color: #FFFFFF;
+        color: var(--k-texto);
     }
 
 
@@ -2225,27 +2225,27 @@
 .modal-contato-subtitulo {
     display: block;
     font-family: 'Lato', sans-serif;
-    font-size: 12px;
+    font-size: 0.875rem;
     font-weight: 600;
     letter-spacing: 3px;
-    color: #D9B27A;
+    color: var(--k-dourado);
     margin-bottom: 8px;
 }
 
 .modal-contato-header h2 {
     margin: 0 0 8px;
     font-family: 'Playfair Display', serif;
-    font-size: 30px;
+    font-size: 1.875rem;
     font-weight: 600;
-    color: #FFFFFF;
+    color: var(--k-texto);
 }
 
 .modal-contato-header p {
     margin: 0;
     font-family: 'Lato', sans-serif;
-    font-size: 15px;
+    font-size: 0.9375rem;
     font-weight: 400;
-    color: #FFFFFF;
+    color: var(--k-texto);
 }
 
 
@@ -2269,17 +2269,17 @@
     align-items: center;
     gap: 15px;
     padding: 13px 15px;
-    background-color: #151515;
+    background-color: var(--k-superficie);
     border: 1px solid rgba(217, 178, 122, 0.35);
     border-radius: 8px;
-    color: #FFFFFF;
+    color: var(--k-texto);
     text-decoration: none;
     transition: all 0.3s ease;
 }
 
     .modal-contato-item:hover {
         border-color: #D9B27A;
-        background-color: #1B1B1B;
+        background-color: var(--k-elevado);
         transform: translateY(-2px);
     }
 
@@ -2297,8 +2297,8 @@
     justify-content: center;
     background-color: #7D1F1F;
     border-radius: 50%;
-    color: #D9B27A;
-    font-size: 18px;
+    color: #dfb77f;
+    font-size: 1.125rem;
 }
 
 
@@ -2315,24 +2315,24 @@
 
     .modal-contato-info span {
         font-family: 'Lato', sans-serif;
-        font-size: 10px;
+        font-size: 0.875rem;
         font-weight: 600;
         letter-spacing: 1.5px;
-        color: #D9B27A;
+        color: var(--k-dourado);
     }
 
     .modal-contato-info strong {
         font-family: 'Lato', sans-serif;
-        font-size: 14px;
+        font-size: 0.875rem;
         font-weight: 500;
-        color: #FFFFFF;
+        color: var(--k-texto);
         overflow-wrap: anywhere;
     }
 
     .modal-contato-info small {
         font-family: 'Lato', sans-serif;
-        font-size: 12px;
-        color: #FFFFFF;
+        font-size: 0.875rem;
+        color: var(--k-texto);
     }
 
 
@@ -2349,9 +2349,9 @@
 
     .modal-contato-final span {
         font-family: 'Playfair Display', serif;
-        font-size: 14px;
+        font-size: 0.875rem;
         font-style: italic;
-        color: #D9B27A;
+        color: var(--k-dourado);
     }
 
 
@@ -2378,11 +2378,11 @@
     }
 
     .modal-contato-header h2 {
-        font-size: 25px;
+        font-size: 1.5625rem;
     }
 
     .modal-contato-header p {
-        font-size: 14px;
+        font-size: 0.875rem;
     }
 
     .modal-contato-item {
@@ -2393,7 +2393,7 @@
     .modal-contato-icone {
         width: 38px;
         height: 38px;
-        font-size: 16px;
+        font-size: 1rem;
     }
 }
 
@@ -2426,10 +2426,10 @@
    na identidade visual do Kiora.
 */
 .modal-editar-perfil {
-    background-color: #0E0E0E;
+    background-color: var(--k-fundo);
     border: 1px solid #D9B27A;
     border-radius: 12px;
-    color: #FFFFFF;
+    color: var(--k-texto);
 }
 
 
@@ -2455,9 +2455,9 @@
 */
     .modal-editar-perfil-header .modal-title {
         font-family: 'Playfair Display', serif;
-        font-size: 25px;
+        font-size: 1.5625rem;
         font-weight: 600;
-        color: #D9B27A;
+        color: var(--k-dourado);
     }
 
 
@@ -2506,9 +2506,9 @@
 */
     .modal-editar-perfil-body .form-label {
         font-family: 'Lato', sans-serif;
-        font-size: 15px;
+        font-size: 0.9375rem;
         font-weight: 600;
-        color: #D9B27A;
+        color: var(--k-dourado);
     }
 
 
@@ -2519,7 +2519,7 @@
         background-color: #FFFFFF;
         border: 1px solid #D9B27A;
         border-radius: 6px;
-        color: #0E0E0E;
+        color: var(--k-sobre-dourado);
         font-family: 'Lato', sans-serif;
         padding: 11px 13px;
     }
@@ -2552,7 +2552,7 @@
     padding: 10px 14px;
     border-radius: 6px;
     font-family: 'Lato', sans-serif;
-    font-size: 14px;
+    font-size: 0.875rem;
 }
 
 
@@ -2571,9 +2571,9 @@
     background-color: #7D1F1F;
     border: 1px solid #D9B27A;
     border-radius: 6px;
-    color: #FFFFFF;
+    color: var(--k-texto);
     font-family: 'Lato', sans-serif;
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -2585,8 +2585,8 @@
    sobre o botão salvar.
 */
     .btn-salvar-perfil-kiora:hover {
-        background-color: #D9B27A;
-        color: #0E0E0E;
+        background-color: var(--k-dourado-fundo);
+        color: var(--k-sobre-dourado);
     }
 
 /* ================================================================
@@ -2598,10 +2598,10 @@
 }
 
 .modal-alterar-senha {
-    background-color: #0E0E0E;
+    background-color: var(--k-fundo);
     border: 1px solid #D9B27A;
     border-radius: 12px;
-    color: #FFFFFF;
+    color: var(--k-texto);
 }
 
 .modal-alterar-senha-header {
@@ -2611,9 +2611,9 @@
 
     .modal-alterar-senha-header .modal-title {
         font-family: 'Playfair Display', serif;
-        font-size: 25px;
+        font-size: 1.5625rem;
         font-weight: 600;
-        color: #D9B27A;
+        color: var(--k-dourado);
     }
 
     .modal-alterar-senha-header .btn-close {
@@ -2631,16 +2631,16 @@
 
     .modal-alterar-senha-body .form-label {
         font-family: 'Lato', sans-serif;
-        font-size: 15px;
+        font-size: 0.9375rem;
         font-weight: 600;
-        color: #D9B27A;
+        color: var(--k-dourado);
     }
 
     .modal-alterar-senha-body .form-control {
         background-color: #FFFFFF;
         border: 1px solid #D9B27A;
         border-radius: 6px;
-        color: #0E0E0E;
+        color: var(--k-sobre-dourado);
         font-family: 'Lato', sans-serif;
         padding: 11px 13px;
     }
@@ -2656,7 +2656,7 @@
     padding: 10px 14px;
     border-radius: 6px;
     font-family: 'Lato', sans-serif;
-    font-size: 14px;
+    font-size: 0.875rem;
 }
 
 .btn-salvar-senha-kiora {
@@ -2666,17 +2666,17 @@
     background-color: #7D1F1F;
     border: 1px solid #D9B27A;
     border-radius: 6px;
-    color: #FFFFFF;
+    color: var(--k-texto);
     font-family: 'Lato', sans-serif;
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
     .btn-salvar-senha-kiora:hover {
-        background-color: #D9B27A;
-        color: #0E0E0E;
+        background-color: var(--k-dourado-fundo);
+        color: var(--k-sobre-dourado);
     }
 
 /* ================================================================
@@ -2701,8 +2701,8 @@
     transform: translateY(-50%);
     background: transparent;
     border: none;
-    color: #0E0E0E;
-    font-size: 20px;
+    color: var(--k-sobre-dourado);
+    font-size: 1.25rem;
     cursor: pointer;
     padding: 4px;
 }
@@ -2716,27 +2716,27 @@
 
 
 /* SENHA: explica a regra antes do preenchimento, além da validação no servidor. */
-.senha-ajuda { display: block; color: #D9B27A; font-size: 0.85rem; margin: 6px 0 10px; }
+.senha-ajuda { display: block; color: var(--k-dourado); font-size: 0.875rem; margin: 6px 0 10px; }
 
 /* PAINEL DA CONTA: mesma identidade do restaurante, com rolagem própria. */
 .painel-conta {
     --bs-offcanvas-width: min(380px, 100vw);
     width: min(380px, 100vw);
-    background: #151515;
-    color: #fff;
+    background: var(--k-superficie);
+    color: var(--k-texto);
     border-left: 1px solid #D9B27A !important;
 }
 .painel-conta .offcanvas-header { border-bottom: 1px solid #D9B27A40; padding: 24px; }
-.painel-conta .offcanvas-title { color: #D9B27A; font-size: 1.6rem; }
+.painel-conta .offcanvas-title { color: var(--k-dourado); font-size: 1.6rem; }
 .painel-conta .offcanvas-body { padding: 24px; }
 .conta-opcoes { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
 .conta-opcao {
     display: flex; align-items: center; gap: 12px;
     width: 100%; min-height: 52px; padding: 14px 16px;
-    color: #fff; background: #202020; border: 1px solid #D9B27A50;
+    color: var(--k-texto); background: var(--k-elevado); border: 1px solid #D9B27A50;
     border-radius: 8px; text-decoration: none; text-align: left;
     white-space: normal; overflow-wrap: anywhere;
 }
-.conta-opcao i { color: #D9B27A; }
-.conta-opcao:hover, .conta-opcao:focus-visible { background: #7D1F1F; color: #fff; border-color: #D9B27A; }
-.painel-conta .usuario-logado { color: #D9B27A; white-space: normal; overflow-wrap: anywhere; }
+.conta-opcao i { color: var(--k-dourado); }
+.conta-opcao:hover, .conta-opcao:focus-visible { background: #7D1F1F; color: var(--k-texto); border-color: #D9B27A; }
+.painel-conta .usuario-logado { color: var(--k-dourado); white-space: normal; overflow-wrap: anywhere; }

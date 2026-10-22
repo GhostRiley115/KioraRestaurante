@@ -17,7 +17,7 @@
                 data-bs-dismiss="modal"
                 aria-label="Fechar">
 
-            <i class="bi bi-x-lg"></i>
+            <i class="bi bi-x-lg" aria-hidden="true"></i>
 
         </button>
 
@@ -38,8 +38,7 @@
 
             <div class="modal-login-logo">
 
-                <img src="~/imagens/logo-kiora-v.png"
-                     alt="Kiora Japanese Cuisine">
+                <partial name="_MarcaKiora" model='@("logo-modal")' />
 
             </div>
 
@@ -136,7 +135,7 @@
 
                         <div class="modal-login-input">
 
-                            <i class="bi bi-envelope"></i>
+                            <i class="bi bi-envelope" aria-hidden="true"></i>
 
                             <input type="email"
                                    id="esqueciSenhaEmail"
@@ -279,7 +278,7 @@
 
                         <div class="modal-login-input">
 
-                            <i class="bi bi-shield-lock"></i>
+                            <i class="bi bi-shield-lock" aria-hidden="true"></i>
 
                             <input type="text"
                                    id="codigoRecuperacao"
@@ -419,7 +418,7 @@
 
                         <div class="modal-login-input">
 
-                            <i class="bi bi-lock"></i>
+                            <i class="bi bi-lock" aria-hidden="true"></i>
 
                             <input type="password"
                                    id="novaSenhaRecuperacao"
@@ -451,7 +450,7 @@
 
                         <div class="modal-login-input">
 
-                            <i class="bi bi-lock-fill"></i>
+                            <i class="bi bi-lock-fill" aria-hidden="true"></i>
 
                             <input type="password"
                                    id="confirmarNovaSenhaRecuperacao"

@@ -59,6 +59,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Índice da imagem atualmente aberta.
     let indiceAtual = 0;
+    let overflowAnterior = "";
 
 
     /* =====================================================
@@ -66,6 +67,7 @@ document.addEventListener("DOMContentLoaded", function () {
        ===================================================== */
 
     botoesCategorias.forEach(function (botao) {
+        botao.setAttribute("aria-pressed", String(botao.classList.contains("ativo")));
 
         botao.addEventListener("click", function () {
 
@@ -84,10 +86,12 @@ document.addEventListener("DOMContentLoaded", function () {
             botoesCategorias.forEach(function (item) {
 
                 item.classList.remove("ativo");
+                item.setAttribute("aria-pressed", "false");
 
             });
 
             this.classList.add("ativo");
+            this.setAttribute("aria-pressed", "true");
 
 
             /* -------------------------------------------------
@@ -159,7 +163,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (secaoFotos) {
 
                 secaoFotos.scrollIntoView({
-                    behavior: "smooth",
+                    behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
                     block: "start"
                 });
 
@@ -224,6 +228,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Exibe o Lightbox.
         lightbox.classList.add("ativo");
+        // O dialog nativo mantém o foco dentro da imagem e torna o restante da página inativo.
+        if (!lightbox.open) {
+            overflowAnterior = document.body.style.overflow;
+            lightbox.showModal();
+            botaoFechar.focus();
+        }
 
 
         // Impede o scroll da página enquanto estiver aberto.
@@ -240,12 +250,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Remove a classe que exibe o Lightbox.
         lightbox.classList.remove("ativo");
+        lightbox.close();
 
         // Restaura o scroll normal da página.
-        document.body.style.overflow = "";
+        document.body.style.overflow = overflowAnterior;
 
         // Limpa a imagem carregada.
-        lightboxImagem.src = "";
+        lightboxImagem.removeAttribute("src");
 
     }
 
@@ -302,6 +313,13 @@ document.addEventListener("DOMContentLoaded", function () {
        ===================================================== */
 
     itensGaleria.forEach(function (item) {
+        item.setAttribute("aria-label", "Ampliar imagem: " + (item.dataset.titulo || "Galeria"));
+        item.addEventListener("keydown", function (evento) {
+            if (evento.key === "Enter" || evento.key === " ") {
+                evento.preventDefault();
+                item.click();
+            }
+        });
 
         item.addEventListener("click", function () {
 
@@ -331,6 +349,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
 
+            item.focus(); // Permite voltar à mesma foto ao fechar, inclusive depois do clique.
             abrirLightbox(indice);
 
         });
@@ -341,6 +360,12 @@ document.addEventListener("DOMContentLoaded", function () {
     /* =====================================================
        CONTROLES DO LIGHTBOX
        ===================================================== */
+
+    // Mantém a limpeza e o retorno do foco quando o navegador solicita fechar com Escape.
+    lightbox.addEventListener("cancel", function (evento) {
+        evento.preventDefault();
+        fecharLightbox();
+    });
 
     // Fechar pelo botão "X".
     botaoFechar.addEventListener("click", function () {
@@ -387,6 +412,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
         }
 
+
+        // Ciclo explícito de foco entre os controles, sem sair para a página ao pressionar Tab.
+        if (evento.key === "Tab") {
+            const primeiro = botaoFechar;
+            const ultimo = botaoProximo;
+            if (evento.shiftKey && document.activeElement === primeiro) {
+                evento.preventDefault(); ultimo.focus();
+            } else if (!evento.shiftKey && document.activeElement === ultimo) {
+                evento.preventDefault(); primeiro.focus();
+            }
+            return;
+        }
 
         // ESC fecha o Lightbox.
         if (evento.key === "Escape") {

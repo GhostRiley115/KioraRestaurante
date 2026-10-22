@@ -1,0 +1,25 @@
+/* RESERVAS: reaproveita a identidade vinho, dourado e fundos escuros do Kiora. */
+.reservas-pagina { padding-block: 52px; max-width: 1180px; }
+.reservas-cabecalho { margin-bottom: 32px; }
+.reservas-cabecalho > span { color: var(--k-dourado); letter-spacing: .16em; font-size: .875rem; }
+.reservas-cabecalho h1 { font-family: "Playfair Display",serif; color: var(--k-texto); font-size: clamp(2rem,4vw,3.4rem); margin-top: 14px; }
+.reservas-grade { display: grid; grid-template-columns: minmax(0,1.25fr) minmax(0,1fr); gap: 24px; align-items: start; }
+.reservas-card { position: relative; min-width: 0; padding: 28px; background: var(--k-superficie); color: var(--k-texto); border: 1px solid var(--k-borda); border-top: 3px solid var(--k-dourado); border-radius: 12px; overflow-wrap: anywhere; }
+.reservas-card h2 { font-family: "Playfair Display",serif; margin-bottom: 20px; color: var(--k-dourado); }
+.reservas-card label { display: block; margin: 16px 0 6px; }
+.reservas-card .form-control,.reservas-card .form-select { background-color: var(--k-campo); color: var(--k-texto); border-color: var(--k-borda); min-height: 44px; color-scheme: var(--k-esquema); }
+.reservas-card :focus-visible { outline: 2px solid var(--k-dourado); outline-offset: 3px; }
+.reservas-aceite { display: flex; align-items: flex-start; gap: 12px; margin: 20px 0; }
+.reservas-aceite input { margin-top: 5px; flex-shrink: 0; width: 18px; height: 18px; accent-color: #7D1F1F; }
+.reservas-aceite label { margin: 0; }
+.reservas-suave { color: var(--k-suave); font-size: .9rem; margin-top: 14px; }
+.reservas-regras li { margin-bottom: 14px; line-height: 1.6; }
+.reservas-fila { margin-top: 24px; border-top: 1px solid var(--k-borda); padding-top: 20px; }
+.reservas-fila summary { color: var(--k-dourado); cursor: pointer; }
+.reservas-chamada { padding: 18px; border: 1px solid var(--k-dourado); background: #7D1F1F; color: #fff; border-radius: 8px; }
+.reservas-lista,.reservas-mesas { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,300px),1fr)); gap: 20px; }
+.reservas-mesa { padding: 16px; border: 1px solid var(--k-borda); border-radius: 8px; }
+.reservas-mesa button { width: 100%; white-space: normal; }
+@media(max-width:767.98px) { .reservas-grade {grid-template-columns: minmax(0,1fr);} .reservas-card {padding: 20px;} .reservas-pagina {padding-block:32px;} }
+@media(hover:hover) and (pointer:fine) { .reservas-card {transition: border-color .2s;} .reservas-card:hover {border-color:var(--k-dourado);} }
+@media(prefers-reduced-motion:reduce) { .reservas-card {transition:none;} }

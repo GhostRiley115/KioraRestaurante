@@ -1,0 +1,68 @@
+/* Paleta semântica compartilhada. Os comentários dos estilos originais descrevem o tema escuro original. */
+:root {
+    color-scheme: dark;
+    --k-esquema: dark;
+    --k-fundo: #0e0e0e; --k-superficie: #191919; --k-elevado: #242424; --k-campo: #111111;
+    --k-texto: #f8f5f2; --k-suave: #bdb8b1; --k-dourado: #dfb77f; --k-dourado-fundo: #d9b27a;
+    --k-sobre-dourado: #17120c; --k-borda: #81776a;
+    --k-azul: #7cc4ff; --k-amarelo: #ffd666; --k-roxo: #c9a3ff; --k-verde: #8fe3a6; --k-vermelho: #ffaaaa;
+    --k-sucesso-fundo: #18382a; --k-erro-fundo: #421d1d;
+}
+:root[data-tema="claro"] {
+    color-scheme: light;
+    --k-esquema: light;
+    --k-fundo: #faf7f2; --k-superficie: #ffffff; --k-elevado: #f0e9df; --k-campo: #fffdf9;
+    --k-texto: #27221e; --k-suave: #62574d; --k-dourado: #79521d; --k-borda: #988776;
+    --k-azul: #125f9d; --k-amarelo: #785300; --k-roxo: #7341a6; --k-verde: #216837; --k-vermelho: #a02a2a;
+    --k-sucesso-fundo: #e5f3e9; --k-erro-fundo: #fce8e6;
+}
+/* O carrinho já possuía tokens próprios: compartilha agora a mesma paleta. */
+:root {
+    --kc-fundo: var(--k-fundo); --kc-superficie: var(--k-superficie); --kc-texto: var(--k-texto);
+    --kc-suave: var(--k-suave); --kc-dourado: var(--k-dourado); --kc-borda: var(--k-borda);
+    --bs-body-bg: var(--k-fundo); --bs-body-color: var(--k-texto); --bs-border-color: var(--k-borda);
+    --bs-secondary-color: var(--k-suave); --bs-link-color: var(--k-dourado);
+}
+/* Fotografias mantêm contraste independente do tema escolhido. */
+.hero-kiora, .sobre-hero, .kiora-destaques .destaque-card, .galeria-overlay, .lightbox-galeria, #carouselGaleria .carousel-caption {
+    --k-texto: #ffffff; --k-suave: #e5e5e5; --k-dourado: #dfb77f;
+}
+.painel-conta { --bs-offcanvas-bg: var(--k-fundo); --bs-offcanvas-color: var(--k-texto); }
+.form-control, .form-select { background-color: var(--k-campo); color: var(--k-texto); border-color: var(--k-borda); color-scheme: var(--k-esquema); }
+.form-control:focus, .form-select:focus { background-color: var(--k-campo); color: var(--k-texto); }
+.form-control::placeholder { color: var(--k-suave); opacity: 1; }
+input[type="checkbox"] { accent-color: #7d1f1f; }
+/* Botões vinho sempre usam texto claro, incluindo carrinho, cadastro e administração. */
+.btn-reserva, .btn-login, .btn-editar-perfil-kiora, .btn-alterar-senha-kiora, .btn-desativar-conta-kiora,
+.btn-modal-login, .btn-modal-cadastro, .btn-localizacao, .btn-salvar-perfil-kiora, .btn-salvar-senha-kiora,
+.btn-adicionar-produto, .produto-admin-botao, .pedido-botao, .admin-pagina button,
+.kc-botao:not(.kc-botao-secundario), .contador-carrinho { color: #fff !important; }
+.btn-reserva:hover, .btn-login:hover, .btn-editar-perfil-kiora:hover, .btn-alterar-senha-kiora:hover,
+.btn-desativar-conta-kiora:hover, .btn-modal-login:hover, .btn-modal-cadastro:hover, .btn-localizacao:hover,
+.btn-salvar-perfil-kiora:hover, .btn-salvar-senha-kiora:hover, .btn-adicionar-produto:hover,
+.pedido-botao:hover:not(:disabled), .btn-reserva-sobre:hover { color: #17120c !important; }
+.kc-botao:hover:not(:disabled) { background: #d9b27a; color: #17120c !important; }
+.kc-botao-secundario { color: var(--k-texto); }
+:root[data-tema="claro"] .btn-outline-light { --bs-btn-color: #27221e; --bs-btn-border-color: #81776a; --bs-btn-hover-bg: #27221e; --bs-btn-hover-color: #fff; }
+:root[data-tema="claro"] .btn-close-white { filter: none; }
+:root[data-tema="claro"] .navbar-toggler-icon { filter: invert(1); }
+:root[data-tema="claro"] .navbar-toggler { border-color: var(--k-borda); }
+/* O logotipo original possui letras brancas; uma base escura preserva a marca sem alterar a imagem. */
+/* Atualização: as novas versões vetoriais dispensam essa base; consulte acessibilidade.css. */
+/* Foco visível para teclado, incluindo cards e links que não são botões Bootstrap. */
+:root[data-tema] :is(a, button, input, select, textarea, summary):focus-visible { outline: 3px solid var(--k-dourado); outline-offset: 4px; }
+.tema-controle { display: flex; align-items: center; gap: 12px; padding: 16px 0; margin-bottom: 16px; border-bottom: 1px solid var(--k-borda); }
+.tema-controle label { font-weight: 700; }
+.tema-controle select { flex: 1; min-height: 44px; border: 1px solid var(--k-borda); border-radius: 6px; padding: 8px; color: var(--k-texto); background: var(--k-campo); }
+.pular-conteudo { position: fixed; z-index: 1100; top: 8px; left: 8px; padding: 12px 20px; background: var(--k-superficie); color: var(--k-texto); transform: translateY(-160%); }
+.pular-conteudo:focus { transform: translateY(0); }
+:root[data-tema="claro"] .kc-avisos { background: #fff2d6; color: #674a14; }
+/* A preferência por menos movimento vale para todos os componentes, inclusive os cards existentes. */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+    .destaque-card:hover, .destaque-card:hover .destaque-imagem { transform: none !important; }
+}
+
+/* A altura da marca é estável ao alternar o tema, sem cobrir o início da página. */
+.logo-navbar { max-height: 64px; }
+@media(max-width: 1199.98px) { .logo-navbar { max-height: 50px; } }

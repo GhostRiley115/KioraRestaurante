@@ -1,0 +1,28 @@
+@model KioraRestaurante.DTOs.Reserva.ReservaResponseDTO
+@using KioraRestaurante.Services.Reservas
+@{ViewData["Title"]="Acompanhar reserva";}
+@section Styles {<link rel="stylesheet" href="~/css/reservas.css" asp-append-version="true" />}
+<section class="container reservas-pagina" id="acompanharReserva" data-consulta-url="@Url.Action("Consultar",new{id=Model.Codigo})" data-situacao="@((int)Model.Situacao)">
+    <header class="reservas-cabecalho"><span>KIORA · SEU ENCONTRO</span><h1>Olá, @Model.Nome</h1></header>
+    <div class="reservas-card">
+        @if(TempData["ReservaErro"] is string erro){<p class="pedido-erros" role="alert">@erro</p>}
+        @if(TempData["ReservaAviso"] is string aviso){<p role="status">@aviso</p>}
+        <p>Protocolo: <strong>@Model.Codigo.ToString("N")[..8].ToUpperInvariant()</strong> · @Model.Pessoas pessoa(s)</p>
+        <h2 id="situacaoReserva" role="status">@Model.SituacaoTexto</h2>
+        <p id="horarioReserva">@(Model.InicioUtc.HasValue ? $"Chegada: {HorariosReserva.Local(Model.InicioUtc.Value):dd/MM/yyyy HH:mm} · Encerramento: {HorariosReserva.Local(Model.FimUtc!.Value):HH:mm}" : "Fila presencial de hoje")</p>
+        <p id="posicaoFila">@(Model.PosicaoFila.HasValue?$"Posição geral na fila: {Model.PosicaoFila}. A chamada depende de uma mesa que comporte seu grupo.":"")</p>
+        <p id="mesaReserva">@(Model.Mesa!=null?$"Sua mesa: {Model.Mesa}":"")</p>
+        <p id="prazoReserva">Prazo para chegada/chamada: @HorariosReserva.Local(Model.ExpiraEmUtc).ToString("dd/MM/yyyy HH:mm").</p>
+        <p id="avisoChamada" class="reservas-chamada" role="alert" hidden="@(Model.Situacao!=KioraRestaurante.Models.SituacaoReserva.Chamada)">É a sua vez! Apresente-se à recepção antes do prazo informado.</p>
+        <p id="estadoConsulta" class="reservas-suave" role="status">Esta página confere a situação a cada 15 segundos enquanto está aberta.</p>
+        <button type="button" id="notificarReserva" class="pedido-link">Permitir aviso neste dispositivo</button>
+        <p class="reservas-suave">Mantenha a página aberta. Este aviso não substitui push com o navegador fechado.</p>
+        <form asp-action="Cancelar" method="post" id="cancelarReserva" hidden="@(!Model.PodeCancelar)">
+            <input name="Codigo" type="hidden" value="@Model.Codigo" /><input name="Versao" type="hidden" value="@Model.Versao" />
+            <button class="pedido-botao" type="submit">Cancelar solicitação</button>
+        </form>
+        <a asp-action="Minhas" class="pedido-link">Minhas reservas e fila</a>
+        <a asp-action="Index" class="pedido-link">Nova reserva</a>
+    </div>
+</section>
+@section Scripts {<script src="~/js/reservas.js" asp-append-version="true"></script>}
