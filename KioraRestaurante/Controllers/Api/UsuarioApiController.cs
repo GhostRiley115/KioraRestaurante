@@ -128,5 +128,71 @@ namespace KioraRestaurante.Controllers.Api
         }
 
 
+        // PUT: api/usuarios/perfil
+        // Atualiza o nome e o e-mail do usuário autenticado.
+        [Microsoft.AspNetCore.Authorization.Authorize(
+            AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPut("perfil")]
+        public IActionResult AtualizarPerfil(
+            [FromBody] UsuarioAtualizarPerfilDTO dto)
+        {
+            // Recupera o ID do usuário a partir do token JWT.
+            var idUsuarioTexto = User.FindFirst(
+                System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            // Verifica se o token contém um ID válido.
+            if (!int.TryParse(idUsuarioTexto, out var idUsuario))
+            {
+                return Unauthorized(new
+                {
+                    sucesso = false,
+                    mensagem = "Não foi possível identificar o usuário autenticado."
+                });
+            }
+
+            // Impede que o e-mail seja utilizado por outra conta.
+            if (_usuarioService.EmailExisteParaOutroUsuario(
+                dto.Email, idUsuario))
+            {
+                return Conflict(new
+                {
+                    sucesso = false,
+                    mensagem = "Este e-mail já está sendo utilizado por outra conta."
+                });
+            }
+
+            // Atualiza os dados utilizando o serviço existente.
+            var atualizado = _usuarioService.AtualizarPerfil(
+                idUsuario, dto);
+
+            if (!atualizado)
+            {
+                return NotFound(new
+                {
+                    sucesso = false,
+                    mensagem = "Usuário não encontrado."
+                });
+            }
+
+            // Busca os dados atualizados no banco.
+            var usuario = _usuarioService.BuscarPorId(idUsuario);
+
+            if (usuario == null)
+            {
+                return NotFound(new
+                {
+                    sucesso = false,
+                    mensagem = "Usuário não encontrado."
+                });
+            }
+
+            return Ok(new
+            {
+                sucesso = true,
+                mensagem = "Perfil atualizado com sucesso!",
+                usuario
+            });
+        }
+
     }
 }
