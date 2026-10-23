@@ -150,16 +150,44 @@
    CONTROLES DO CARROSSEL
    ========================================================= */
 
-    #carouselGaleria .carousel-control-prev,
-    #carouselGaleria .carousel-control-next {
-        width: 8%;
-    }
+/* Área clicável dos botões anterior e próximo. */
+#carouselGaleria .carousel-control-prev,
+#carouselGaleria .carousel-control-next {
+    width: 8%;
+    min-width: 48px;
+    opacity: 1;
+}
 
-    #carouselGaleria .carousel-control-prev-icon,
-    #carouselGaleria .carousel-control-next-icon {
-        width: 2.5rem;
-        height: 2.5rem;
-    }
+/* Setas brancas com uma base escura nos dois temas. */
+#carouselGaleria .carousel-control-prev-icon,
+#carouselGaleria .carousel-control-next-icon {
+    width: 44px;
+    height: 44px;
+
+    /* Remove o filtro do Bootstrap que escurece as setas. */
+    filter: none;
+
+    /* Mantém a imagem branca original da seta. */
+    background-size: 26px 26px;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    /* Cria um círculo para destacar a seta sobre a fotografia. */
+    background-color: rgba(0, 0, 0, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    border-radius: 50%;
+
+    transition: background-color 0.2s ease;
+}
+
+/* Destaca o controle ao passar o mouse ou navegar pelo teclado. */
+#carouselGaleria .carousel-control-prev:hover .carousel-control-prev-icon,
+#carouselGaleria .carousel-control-next:hover .carousel-control-next-icon,
+#carouselGaleria .carousel-control-prev:focus-visible .carousel-control-prev-icon,
+#carouselGaleria .carousel-control-next:focus-visible .carousel-control-next-icon {
+    background-color: rgba(0, 0, 0, 0.85);
+    border-color: #fff;
+}
 
 
 /* =========================================================
