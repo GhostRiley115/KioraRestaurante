@@ -98,6 +98,7 @@ builder.Services.AddScoped<KioraRestaurante.Services.Reservas.HorariosReserva>()
 builder.Services.AddScoped<KioraRestaurante.Services.Reservas.IdentidadeReserva>();
 builder.Services.AddScoped<KioraRestaurante.Services.Reservas.ReservaService>();
 builder.Services.AddHostedService<KioraRestaurante.Services.Reservas.ExpiracaoReservasService>();
+builder.Services.AddHostedService<KioraRestaurante.Services.Imagens.LimpezaImagensService>();
 
 var app = builder.Build();
 

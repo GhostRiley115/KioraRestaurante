@@ -8,6 +8,7 @@ using KioraRestaurante.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using KioraRestaurante.DTOs.Admin;
+using KioraRestaurante.Services.Imagens;
 
 namespace KioraRestaurante.Services
 {
@@ -363,8 +364,23 @@ namespace KioraRestaurante.Services
 
             if (novaImagem != null)
             {
+                var publicIdAntigo = produto.ImagemPublicId;
+                var urlAntiga = produto.Imagem;
+
                 produto.Imagem = novaImagem.Url;
                 produto.ImagemPublicId = novaImagem.PublicId;
+
+                if (IdentificadorImagemProduto.Gerenciado(publicIdAntigo)
+                    && publicIdAntigo != novaImagem.PublicId)
+                {
+                    // A referência nova e esta tarefa são confirmadas juntas no banco.
+                    _context.LimpezasImagensPendentes.Add(new LimpezaImagemPendente
+                    {
+                        PublicId = publicIdAntigo!,
+                        Url = urlAntiga,
+                        ProximaTentativaUtc = DateTime.UtcNow.AddMinutes(5)
+                    });
+                }
             }
 
             try

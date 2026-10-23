@@ -3,6 +3,9 @@ using CloudinaryDotNet.Actions;
 using KioraRestaurante.Services.Exceptions;
 using KioraRestaurante.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
+using KioraRestaurante.Data;
+using KioraRestaurante.Models;
+using KioraRestaurante.Services.Imagens;
 
 namespace KioraRestaurante.Services;
 
@@ -10,13 +13,16 @@ public class ImagemProdutoService : IImagemProdutoService
 {
     private const long TamanhoMaximo = 5 * 1024 * 1024;
 
+    private readonly IServiceScopeFactory _scopes;
     private readonly IConfiguration _configuration;
     private readonly ILogger<ImagemProdutoService> _logger;
 
-    public ImagemProdutoService(IConfiguration configuration, ILogger<ImagemProdutoService> logger)
+    public ImagemProdutoService(IConfiguration configuration, ILogger<ImagemProdutoService> logger,
+        IServiceScopeFactory scopes)
     {
         _configuration = configuration;
         _logger = logger;
+        _scopes = scopes;
     }
 
     private static void ValidarArquivo(IFormFile foto)
@@ -63,8 +69,55 @@ public class ImagemProdutoService : IImagemProdutoService
 
         var cliente = new Cloudinary(conta);
         cliente.Api.Secure = true;
+        cliente.Api.Timeout = 30_000;
 
         return cliente;
+    }
+
+    private async Task RegistrarUploadParaConferencia(string publicId)
+    {
+        // Salva somente a tarefa, sem antecipar alterações do produto.
+        await using var scope = _scopes.CreateAsyncScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        db.LimpezasImagensPendentes.Add(new LimpezaImagemPendente
+        {
+            PublicId = publicId,
+            // Não confunde um upload/cadastro em andamento com imagem órfã.
+            ProximaTentativaUtc = DateTime.UtcNow.AddHours(24)
+        });
+        await db.SaveChangesAsync();
+    }
+
+    public async Task<bool> Excluir(string publicId)
+    {
+        // Impede usar este método para apagar logos, home ou outras pastas.
+        if (!IdentificadorImagemProduto.Gerenciado(publicId))
+            return false;
+
+        try
+        {
+            var cliente = CriarCliente();
+            var resultado = await cliente.DestroyAsync(new DeletionParams(publicId)
+            {
+                ResourceType = ResourceType.Image,
+                Type = "upload",
+                Invalidate = true
+            });
+
+            // Repetir uma tarefa já concluída é seguro.
+            if (resultado.Error == null
+                && (resultado.Result == "ok" || resultado.Result == "not found"))
+                return true;
+
+            _logger.LogWarning("Cloudinary não confirmou exclusão de {PublicId}.", publicId);
+        }
+        catch (Exception ex)
+        {
+            // Uma falha de limpeza não pode desfazer um cadastro confirmado.
+            _logger.LogWarning("Falha ao excluir {PublicId}: {Tipo}.",
+                publicId, ex.GetType().Name);
+        }
+        return false;
     }
 
     public async Task<ImagemProdutoResultado> Enviar(IFormFile foto)
@@ -75,6 +128,9 @@ public class ImagemProdutoService : IImagemProdutoService
 
         // Geramos o identificador para não depender do nome original.
         var publicId = $"kiora/produtos/{Guid.NewGuid():N}";
+
+        // Registra antes de enviar para não perder o identificador se houver timeout.
+        await RegistrarUploadParaConferencia(publicId);
 
         var extensao = Path.GetExtension(foto.FileName).ToLowerInvariant();
 
