@@ -124,6 +124,25 @@ namespace KioraRestaurante.Migrations
                     b.ToTable("ComboComponentes");
                 });
 
+            modelBuilder.Entity("KioraRestaurante.Models.ControleSala", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ControlesSala");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1
+                        });
+                });
+
             modelBuilder.Entity("KioraRestaurante.Models.EnderecoEntrega", b =>
                 {
                     b.Property<int>("Id")
@@ -251,6 +270,35 @@ namespace KioraRestaurante.Migrations
                     b.ToTable("EnderecosUsuario");
                 });
 
+            modelBuilder.Entity("KioraRestaurante.Models.EventoReserva", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AdministradorId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DataUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<int>("ReservaId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReservaId");
+
+                    b.ToTable("EventosReserva");
+                });
+
             modelBuilder.Entity("KioraRestaurante.Models.ItemCarrinho", b =>
                 {
                     b.Property<int>("Id")
@@ -325,349 +373,32 @@ namespace KioraRestaurante.Migrations
                     b.ToTable("ItensPedido");
                 });
 
-            modelBuilder.Entity("KioraRestaurante.Models.Pedido", b =>
+            modelBuilder.Entity("KioraRestaurante.Models.LimpezaImagemPendente", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<Guid?>("ChaveConfirmacao")
                         .HasColumnType("char(36)");
 
-                    b.Property<DateTime>("DataPedido")
+                    b.Property<DateTime>("ProximaTentativaUtc")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("FormaPagamento")
+                    b.Property<string>("PublicId")
                         .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("varchar(30)");
-
-                    b.Property<string>("StatusPagamento")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("varchar(30)");
-
-                    b.Property<string>("StatusPedido")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("varchar(30)");
-
-                    b.Property<int>("UsuarioId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("ValorTotal")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UsuarioId");
-
-                    b.HasIndex("UsuarioId", "ChaveConfirmacao")
-                        .IsUnique();
-
-                    b.ToTable("Pedidos");
-                });
-
-            modelBuilder.Entity("KioraRestaurante.Models.Produto", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("Ativo")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
-                        .HasDefaultValue(true);
-
-                    b.Property<int>("CategoriaId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("DescontoPercentual")
-                        .HasColumnType("decimal(5,2)");
-
-                    b.Property<string>("Descricao")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
-
-                    b.Property<bool>("Disponivel")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
-                        .HasDefaultValue(true);
-
-                    b.Property<bool>("EhCombo")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("Imagem")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
-
-                    b.Property<string>("ImagemPublicId")
                         .HasMaxLength(200)
                         .HasColumnType("varchar(200)");
 
-                    b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<decimal>("Preco")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CategoriaId");
-
-                    b.ToTable("Produtos");
-                });
-
-            modelBuilder.Entity("KioraRestaurante.Models.Usuario", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("Tentativas")
                         .HasColumnType("int");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("AceitouTermos")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("Ativo")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
-                        .HasDefaultValue(true);
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("varchar(150)");
-
-                    b.Property<DateTime?>("ExpiracaoTokenRecuperacaoSenha")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<string>("SenhaHash")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Tipo")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
-
-                    b.Property<string>("TokenRecuperacaoSenha")
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<Guid>("VersaoSessao")
-                        .HasColumnType("char(36)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
-
-                    b.ToTable("Usuarios");
-                });
-
-            modelBuilder.Entity("KioraRestaurante.Models.Carrinho", b =>
-                {
-                    b.HasOne("KioraRestaurante.Models.Usuario", "Usuario")
-                        .WithOne("Carrinho")
-                        .HasForeignKey("KioraRestaurante.Models.Carrinho", "UsuarioId");
-
-                    b.Navigation("Usuario");
-                });
-
-            modelBuilder.Entity("KioraRestaurante.Models.ComboComponente", b =>
-                {
-                    b.HasOne("KioraRestaurante.Models.Produto", "Combo")
-                        .WithMany("Componentes")
-                        .HasForeignKey("ComboId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("KioraRestaurante.Models.Produto", "Produto")
-                        .WithMany()
-                        .HasForeignKey("ProdutoId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Combo");
-
-                    b.Navigation("Produto");
-                });
-
-            modelBuilder.Entity("KioraRestaurante.Models.EnderecoEntrega", b =>
-                {
-                    b.HasOne("KioraRestaurante.Models.Pedido", "Pedido")
-                        .WithOne("EnderecoEntrega")
-                        .HasForeignKey("KioraRestaurante.Models.EnderecoEntrega", "PedidoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Pedido");
-                });
-
-            modelBuilder.Entity("KioraRestaurante.Models.EnderecoUsuario", b =>
-                {
-                    b.HasOne("KioraRestaurante.Models.Usuario", "Usuario")
-                        .WithMany()
-                        .HasForeignKey("UsuarioId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Usuario");
-                });
-
-            modelBuilder.Entity("KioraRestaurante.Models.ItemCarrinho", b =>
-                {
-                    b.HasOne("KioraRestaurante.Models.Carrinho", "Carrinho")
-                        .WithMany("ItensCarrinho")
-                        .HasForeignKey("CarrinhoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("KioraRestaurante.Models.Produto", "Produto")
-                        .WithMany("ItensCarrinho")
-                        .HasForeignKey("ProdutoId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Carrinho");
-
-                    b.Navigation("Produto");
-                });
-
-            modelBuilder.Entity("KioraRestaurante.Models.ItemPedido", b =>
-                {
-                    b.HasOne("KioraRestaurante.Models.Pedido", "Pedido")
-                        .WithMany("ItensPedido")
-                        .HasForeignKey("PedidoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("KioraRestaurante.Models.Produto", "Produto")
-                        .WithMany("ItensPedido")
-                        .HasForeignKey("ProdutoId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Pedido");
-
-                    b.Navigation("Produto");
-                });
-
-            modelBuilder.Entity("KioraRestaurante.Models.Pedido", b =>
-                {
-                    b.HasOne("KioraRestaurante.Models.Usuario", "Usuario")
-                        .WithMany("Pedidos")
-                        .HasForeignKey("UsuarioId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Usuario");
-                });
-
-            modelBuilder.Entity("KioraRestaurante.Models.Produto", b =>
-                {
-                    b.HasOne("KioraRestaurante.Models.Categoria", "Categoria")
-                        .WithMany("Produtos")
-                        .HasForeignKey("CategoriaId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Categoria");
-                });
-
-            modelBuilder.Entity("KioraRestaurante.Models.Carrinho", b =>
-                {
-                    b.Navigation("ItensCarrinho");
-                });
-
-            modelBuilder.Entity("KioraRestaurante.Models.Categoria", b =>
-                {
-                    b.Navigation("Produtos");
-                });
-
-            modelBuilder.Entity("KioraRestaurante.Models.Pedido", b =>
-                {
-                    b.Navigation("EnderecoEntrega")
-                        .IsRequired();
-
-                    b.Navigation("ItensPedido");
-                });
-
-            modelBuilder.Entity("KioraRestaurante.Models.Produto", b =>
-                {
-                    b.Navigation("Componentes");
-
-                    b.Navigation("ItensCarrinho");
-
-                    b.Navigation("ItensPedido");
-                });
-
-            modelBuilder.Entity("KioraRestaurante.Models.Usuario", b =>
-                {
-                    b.Navigation("Carrinho");
-
-                    b.Navigation("Pedidos");
-                });
-            modelBuilder.Entity("KioraRestaurante.Models.ControleSala", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ControlesSala");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1
-                        });
-                });
-
-            modelBuilder.Entity("KioraRestaurante.Models.EventoReserva", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("AdministradorId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("DataUtc")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Descricao")
-                        .IsRequired()
+                    b.Property<string>("Url")
                         .HasMaxLength(500)
                         .HasColumnType("varchar(500)");
 
-                    b.Property<int>("ReservaId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("ReservaId");
+                    b.HasIndex("ProximaTentativaUtc");
 
-                    b.ToTable("EventosReserva");
+                    b.ToTable("LimpezasImagensPendentes");
                 });
 
             modelBuilder.Entity("KioraRestaurante.Models.MesaRestaurante", b =>
@@ -780,6 +511,107 @@ namespace KioraRestaurante.Migrations
                         });
                 });
 
+            modelBuilder.Entity("KioraRestaurante.Models.Pedido", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid?>("ChaveConfirmacao")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("DataPedido")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("FormaPagamento")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)");
+
+                    b.Property<string>("StatusPagamento")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)");
+
+                    b.Property<string>("StatusPedido")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("ValorTotal")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.HasIndex("UsuarioId", "ChaveConfirmacao")
+                        .IsUnique();
+
+                    b.ToTable("Pedidos");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.Produto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Ativo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(true);
+
+                    b.Property<int>("CategoriaId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("DescontoPercentual")
+                        .HasColumnType("decimal(5,2)");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<bool>("Disponivel")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(true);
+
+                    b.Property<bool>("EhCombo")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Imagem")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<string>("ImagemPublicId")
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<decimal>("Preco")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoriaId");
+
+                    b.ToTable("Produtos");
+                });
+
             modelBuilder.Entity("KioraRestaurante.Models.Reserva", b =>
                 {
                     b.Property<int>("Id")
@@ -868,6 +700,109 @@ namespace KioraRestaurante.Migrations
                     b.ToTable("Reservas");
                 });
 
+            modelBuilder.Entity("KioraRestaurante.Models.Usuario", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("AceitouTermos")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("Ativo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)");
+
+                    b.Property<DateTime?>("ExpiracaoTokenRecuperacaoSenha")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("SenhaHash")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Tipo")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<string>("TokenRecuperacaoSenha")
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<Guid>("VersaoSessao")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.ToTable("Usuarios");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.Carrinho", b =>
+                {
+                    b.HasOne("KioraRestaurante.Models.Usuario", "Usuario")
+                        .WithOne("Carrinho")
+                        .HasForeignKey("KioraRestaurante.Models.Carrinho", "UsuarioId");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.ComboComponente", b =>
+                {
+                    b.HasOne("KioraRestaurante.Models.Produto", "Combo")
+                        .WithMany("Componentes")
+                        .HasForeignKey("ComboId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("KioraRestaurante.Models.Produto", "Produto")
+                        .WithMany()
+                        .HasForeignKey("ProdutoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Combo");
+
+                    b.Navigation("Produto");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.EnderecoEntrega", b =>
+                {
+                    b.HasOne("KioraRestaurante.Models.Pedido", "Pedido")
+                        .WithOne("EnderecoEntrega")
+                        .HasForeignKey("KioraRestaurante.Models.EnderecoEntrega", "PedidoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pedido");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.EnderecoUsuario", b =>
+                {
+                    b.HasOne("KioraRestaurante.Models.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
+                });
+
             modelBuilder.Entity("KioraRestaurante.Models.EventoReserva", b =>
                 {
                     b.HasOne("KioraRestaurante.Models.Reserva", "Reserva")
@@ -877,6 +812,66 @@ namespace KioraRestaurante.Migrations
                         .IsRequired();
 
                     b.Navigation("Reserva");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.ItemCarrinho", b =>
+                {
+                    b.HasOne("KioraRestaurante.Models.Carrinho", "Carrinho")
+                        .WithMany("ItensCarrinho")
+                        .HasForeignKey("CarrinhoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("KioraRestaurante.Models.Produto", "Produto")
+                        .WithMany("ItensCarrinho")
+                        .HasForeignKey("ProdutoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Carrinho");
+
+                    b.Navigation("Produto");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.ItemPedido", b =>
+                {
+                    b.HasOne("KioraRestaurante.Models.Pedido", "Pedido")
+                        .WithMany("ItensPedido")
+                        .HasForeignKey("PedidoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("KioraRestaurante.Models.Produto", "Produto")
+                        .WithMany("ItensPedido")
+                        .HasForeignKey("ProdutoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Pedido");
+
+                    b.Navigation("Produto");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.Pedido", b =>
+                {
+                    b.HasOne("KioraRestaurante.Models.Usuario", "Usuario")
+                        .WithMany("Pedidos")
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.Produto", b =>
+                {
+                    b.HasOne("KioraRestaurante.Models.Categoria", "Categoria")
+                        .WithMany("Produtos")
+                        .HasForeignKey("CategoriaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Categoria");
                 });
 
             modelBuilder.Entity("KioraRestaurante.Models.Reserva", b =>
@@ -896,9 +891,43 @@ namespace KioraRestaurante.Migrations
                     b.Navigation("Usuario");
                 });
 
+            modelBuilder.Entity("KioraRestaurante.Models.Carrinho", b =>
+                {
+                    b.Navigation("ItensCarrinho");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.Categoria", b =>
+                {
+                    b.Navigation("Produtos");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.Pedido", b =>
+                {
+                    b.Navigation("EnderecoEntrega")
+                        .IsRequired();
+
+                    b.Navigation("ItensPedido");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.Produto", b =>
+                {
+                    b.Navigation("Componentes");
+
+                    b.Navigation("ItensCarrinho");
+
+                    b.Navigation("ItensPedido");
+                });
+
             modelBuilder.Entity("KioraRestaurante.Models.Reserva", b =>
                 {
                     b.Navigation("Eventos");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.Usuario", b =>
+                {
+                    b.Navigation("Carrinho");
+
+                    b.Navigation("Pedidos");
                 });
 #pragma warning restore 612, 618
         }
