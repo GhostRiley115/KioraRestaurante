@@ -456,6 +456,9 @@
 
 /* Configura a seção de missão */
 .sobre-missao {
+    --k-texto: #ffffff;
+    --k-suave: #f8f5f2;
+    --k-dourado: #dfb77f;
     /* Define fundo vinho */
     background-color: #7D1F1F;
     /* Define texto branco */

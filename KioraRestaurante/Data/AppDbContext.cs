@@ -25,6 +25,7 @@ namespace KioraRestaurante.Data
         public DbSet<MesaRestaurante> MesasRestaurante { get; set; }
         public DbSet<ControleSala> ControlesSala { get; set; }
         public DbSet<EventoReserva> EventosReserva { get; set; }
+        public DbSet<LimpezaImagemPendente> LimpezasImagensPendentes { get; set; }
 
         //Cria a relação entre tabelas
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -48,6 +49,9 @@ namespace KioraRestaurante.Data
             modelBuilder.Entity<MesaRestaurante>().HasData(Enumerable.Range(1, 12).Select(id => new MesaRestaurante {
                 Id = id, Nome = "Mesa " + id.ToString("00"), Capacidade = id <= 4 ? 2 : id <= 10 ? 4 : 6, Ativa = true
             }));
+
+            modelBuilder.Entity<LimpezaImagemPendente>()
+                .HasIndex(x => x.ProximaTentativaUtc);
 
             // Mantém explicitamente o índice utilizado na relação com o usuário.
             modelBuilder.Entity<Pedido>()
