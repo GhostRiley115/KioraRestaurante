@@ -37,13 +37,15 @@ namespace KioraRestaurante.Services
                 chave,
                 SecurityAlgorithms.HmacSha256);
 
-            // Identifica o usuário dentro do token.
             var claims = new[]
-            {
+{
                 new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
                 new Claim(ClaimTypes.Name, usuario.Nome),
                 new Claim(ClaimTypes.Email, usuario.Email),
-                new Claim(ClaimTypes.Role, usuario.Tipo.ToString())
+                new Claim(ClaimTypes.Role, usuario.Tipo.ToString()),
+
+                // Identifica a versão da sessão para validar operações sensíveis.
+                new Claim("VersaoSessao", usuario.VersaoSessao.ToString())
             };
 
             // Monta o token com emissor, público e validade.
