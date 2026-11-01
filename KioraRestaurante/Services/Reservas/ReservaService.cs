@@ -61,6 +61,53 @@ public class ReservaService(AppDbContext db,HorariosReserva horarios)
             r.Situacao==SituacaoReserva.EmAtendimento&&r.FimUtc<=horarios.Agora
             ||(r.ChegadaEmUtc??r.InicioUtc)<fim&&r.FimUtc>inicio));
 
+    /// <summary>
+    /// Vincula ao usuário todas as reservas que foram realizadas
+    /// anteriormente utilizando a mesma chave de visitante.
+    /// </summary>
+    public async Task<int> VincularReservasVisitante(
+        int usuarioId,
+        string visitanteHash,
+        CancellationToken ct)
+    {
+        // Valida os dados recebidos antes de iniciar a operação.
+        if (usuarioId <= 0)
+            throw new ArgumentException("Usuário inválido.", nameof(usuarioId));
+
+        if (string.IsNullOrWhiteSpace(visitanteHash)
+            || visitanteHash.Length != 64
+            || !visitanteHash.All(char.IsAsciiHexDigit))
+        {
+            throw new ArgumentException("Chave de visitante inválida.", nameof(visitanteHash));
+        }
+
+        return await ComSala(async () =>
+        {
+            // Confirma que a conta existe e está ativa.
+            var usuarioAtivo = await db.Usuarios.AnyAsync(
+                u => u.Id == usuarioId && u.Ativo,
+                ct);
+
+            if (!usuarioAtivo)
+                throw new UnauthorizedAccessException();
+
+            // Localiza todas as reservas que ainda pertencem ao visitante.
+            // Inclui reservas abertas, concluídas, canceladas e expiradas.
+            var reservas = await db.Reservas
+                .Where(r => r.UsuarioId == null
+                    && r.VisitanteHash == visitanteHash)
+                .ToListAsync(ct);
+
+            // Transfere a propriedade das reservas para a conta.
+            foreach (var reserva in reservas)
+            {
+                reserva.UsuarioId = usuarioId;
+                reserva.VisitanteHash = null;
+            }
+
+            return reservas.Count;
+        }, ct);
+    }
     public async Task<List<HorarioReservaDTO>> Horarios(DateOnly data,int pessoas,CancellationToken ct)
     {
         horarios.ValidarData(data);

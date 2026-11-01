@@ -1,8 +1,11 @@
 ﻿
 using KioraRestaurante.DTOs.Usuario;
 using KioraRestaurante.Services.Interfaces;
+using KioraRestaurante.Services.Reservas;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace KioraRestaurante.Controllers.Api
 {
@@ -11,24 +14,29 @@ namespace KioraRestaurante.Controllers.Api
     [Route("api/usuarios")]
     public class UsuarioApiController : ControllerBase
     {
-
         private readonly IUsuarioService _usuarioService;
         private readonly IJwtService _jwtService;
+        private readonly ReservaService _reservaService;
+        private readonly IdentidadeReserva _identidadeReserva;
 
         public UsuarioApiController(
             IUsuarioService usuarioService,
-            IJwtService jwtService)
+            IJwtService jwtService,
+            ReservaService reservaService,
+            IdentidadeReserva identidadeReserva)
         {
             _usuarioService = usuarioService;
             _jwtService = jwtService;
+            _reservaService = reservaService;
+            _identidadeReserva = identidadeReserva;
         }
 
-
         // POST: api/usuarios/cadastro
+        // Cadastra o usuário e associa as reservas anteriores do visitante.
         [HttpPost("cadastro")]
-        public IActionResult Cadastrar([FromBody] UsuarioCadastroDTO dto)
+        public async Task<IActionResult> Cadastrar(
+            [FromBody] UsuarioCadastroDTO dto)
         {
-            // Verifica se o e-mail já está cadastrado.
             if (_usuarioService.EmailExiste(dto.Email))
             {
                 return Conflict(new
@@ -38,10 +46,21 @@ namespace KioraRestaurante.Controllers.Api
                 });
             }
 
-            // Reutiliza a regra de cadastro já existente.
             var usuario = _usuarioService.Cadastrar(dto);
 
-            // Retorna os dados públicos do usuário criado.
+            // Recupera a identidade do visitante enviada pelo aplicativo
+            // ou armazenada no cookie do site.
+            var acesso = _identidadeReserva.Obter(HttpContext);
+
+            // Se existir uma chave válida, vincula as reservas à nova conta.
+            if (acesso.VisitanteHash != null)
+            {
+                await _reservaService.VincularReservasVisitante(
+                    usuario.Id,
+                    acesso.VisitanteHash,
+                    HttpContext.RequestAborted);
+            }
+
             return StatusCode(201, new
             {
                 sucesso = true,
@@ -50,16 +69,14 @@ namespace KioraRestaurante.Controllers.Api
             });
         }
 
-
-
         // POST: api/usuarios/login
+        // Autentica o usuário e associa suas reservas anteriores de visitante.
         [HttpPost("login")]
-        public IActionResult Login([FromBody] UsuarioLoginDTO dto)
+        public async Task<IActionResult> Login(
+            [FromBody] UsuarioLoginDTO dto)
         {
-            // Reutiliza a autenticação já implementada no serviço.
             var usuario = _usuarioService.Autenticar(dto);
 
-            // Retorna erro quando as credenciais forem inválidas.
             if (usuario == null)
             {
                 return Unauthorized(new
@@ -69,10 +86,20 @@ namespace KioraRestaurante.Controllers.Api
                 });
             }
 
-            // Gera o token JWT para o aplicativo mobile.
+            // Recupera a chave de visitante antes de concluir o login.
+            var acesso = _identidadeReserva.Obter(HttpContext);
+
+            // Associa as reservas realizadas anteriormente à conta autenticada.
+            if (acesso.VisitanteHash != null)
+            {
+                await _reservaService.VincularReservasVisitante(
+                    usuario.Id,
+                    acesso.VisitanteHash,
+                    HttpContext.RequestAborted);
+            }
+
             var token = _jwtService.GerarToken(usuario);
 
-            // Retorna o token e os dados públicos do usuário.
             return Ok(new
             {
                 sucesso = true,
@@ -83,19 +110,15 @@ namespace KioraRestaurante.Controllers.Api
             });
         }
 
-
         // GET: api/usuarios/perfil
         // Retorna o perfil do usuário autenticado pelo JWT.
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("perfil")]
-        [Microsoft.AspNetCore.Authorization.Authorize(
-            AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult Perfil()
         {
-            // Recupera o ID do usuário a partir do token JWT.
             var idUsuarioTexto = User.FindFirst(
-                System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                ClaimTypes.NameIdentifier)?.Value;
 
-            // Verifica se o token contém um ID válido.
             if (!int.TryParse(idUsuarioTexto, out var idUsuario))
             {
                 return Unauthorized(new
@@ -105,10 +128,8 @@ namespace KioraRestaurante.Controllers.Api
                 });
             }
 
-            // Busca os dados atuais do usuário no banco de dados.
             var usuario = _usuarioService.BuscarPorId(idUsuario);
 
-            // Impede o acesso ao perfil se o usuário não existir ou estiver inativo.
             if (usuario == null)
             {
                 return NotFound(new
@@ -118,7 +139,6 @@ namespace KioraRestaurante.Controllers.Api
                 });
             }
 
-            // Retorna os dados públicos do usuário.
             return Ok(new
             {
                 sucesso = true,
@@ -127,20 +147,16 @@ namespace KioraRestaurante.Controllers.Api
             });
         }
 
-
         // PUT: api/usuarios/perfil
         // Atualiza o nome e o e-mail do usuário autenticado.
-        [Microsoft.AspNetCore.Authorization.Authorize(
-            AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPut("perfil")]
         public IActionResult AtualizarPerfil(
             [FromBody] UsuarioAtualizarPerfilDTO dto)
         {
-            // Recupera o ID do usuário a partir do token JWT.
             var idUsuarioTexto = User.FindFirst(
-                System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                ClaimTypes.NameIdentifier)?.Value;
 
-            // Verifica se o token contém um ID válido.
             if (!int.TryParse(idUsuarioTexto, out var idUsuario))
             {
                 return Unauthorized(new
@@ -150,7 +166,6 @@ namespace KioraRestaurante.Controllers.Api
                 });
             }
 
-            // Impede que o e-mail seja utilizado por outra conta.
             if (_usuarioService.EmailExisteParaOutroUsuario(
                 dto.Email, idUsuario))
             {
@@ -161,7 +176,6 @@ namespace KioraRestaurante.Controllers.Api
                 });
             }
 
-            // Atualiza os dados utilizando o serviço existente.
             var atualizado = _usuarioService.AtualizarPerfil(
                 idUsuario, dto);
 
@@ -174,7 +188,6 @@ namespace KioraRestaurante.Controllers.Api
                 });
             }
 
-            // Busca os dados atualizados no banco.
             var usuario = _usuarioService.BuscarPorId(idUsuario);
 
             if (usuario == null)
@@ -194,5 +207,100 @@ namespace KioraRestaurante.Controllers.Api
             });
         }
 
+        // POST: api/usuarios/alterar-senha
+        // Altera a senha do usuário autenticado pelo JWT.
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost("alterar-senha")]
+        public IActionResult AlterarSenha(
+            [FromBody] UsuarioAlterarSenhaDTO dto)
+        {
+            var idUsuarioTexto = User.FindFirst(
+                ClaimTypes.NameIdentifier)?.Value;
+
+            var versaoTexto = User.FindFirst("VersaoSessao")?.Value;
+
+            if (!int.TryParse(idUsuarioTexto, out var idUsuario) ||
+                !Guid.TryParse(versaoTexto, out var versaoSessao) ||
+                versaoSessao == Guid.Empty)
+            {
+                return Unauthorized(new
+                {
+                    sucesso = false,
+                    mensagem = "Não foi possível identificar a sessão do usuário."
+                });
+            }
+
+            var novaVersao = _usuarioService.AlterarSenha(
+                idUsuario,
+                dto,
+                versaoSessao);
+
+            if (novaVersao == null)
+            {
+                return BadRequest(new
+                {
+                    sucesso = false,
+                    mensagem = "A senha atual está incorreta ou sua sessão expirou."
+                });
+            }
+
+            var usuario = _usuarioService.BuscarPorId(idUsuario);
+
+            if (usuario == null)
+            {
+                return NotFound(new
+                {
+                    sucesso = false,
+                    mensagem = "Usuário não encontrado."
+                });
+            }
+
+            var token = _jwtService.GerarToken(usuario);
+
+            return Ok(new
+            {
+                sucesso = true,
+                mensagem = "Senha alterada com sucesso!",
+                token,
+                tipoToken = "Bearer",
+                usuario
+            });
+        }
+
+        // DELETE: api/usuarios/conta
+        // Desativa a conta do usuário autenticado.
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpDelete("conta")]
+        public IActionResult DesativarConta()
+        {
+            var idUsuarioTexto = User.FindFirst(
+                ClaimTypes.NameIdentifier)?.Value;
+
+            if (!int.TryParse(idUsuarioTexto, out var idUsuario))
+            {
+                return Unauthorized(new
+                {
+                    sucesso = false,
+                    mensagem = "Não foi possível identificar o usuário autenticado."
+                });
+            }
+
+            var desativado = _usuarioService.DesativarConta(idUsuario);
+
+            if (!desativado)
+            {
+                return NotFound(new
+                {
+                    sucesso = false,
+                    mensagem = "Usuário não encontrado ou conta já desativada."
+                });
+            }
+
+            return Ok(new
+            {
+                sucesso = true,
+                mensagem = "Sua conta foi desativada com sucesso."
+            });
+        }
     }
 }
