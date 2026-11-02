@@ -340,28 +340,46 @@ namespace KioraRestaurante.Services
 
         /* ---- DESATIVAR CONTA ---- */
         //Desativa a conta sem excluir o usuário do banco de dados.
+
         public bool DesativarConta(int usuarioId)
         {
-            //Localiza o usuário pelo Id e verifica se a conta ainda está ativa.
+            // Localiza o usuário pelo Id e verifica se a conta está ativa.
             var usuario = _context.Usuarios
                 .FirstOrDefault(u => u.Id == usuarioId && u.Ativo);
 
-            //Caso o usuário não seja encontrado ou já esteja desativado,
-            //a operação não será realizada.
+            // Caso o usuário não seja encontrado ou já esteja desativado,
+            // a operação não será realizada.
             if (usuario == null)
                 return false;
 
-            //Desativa a conta logicamente.
-            //O registro do usuário continuará existindo no banco.
+            // Impede que o último administrador ativo desative a própria conta.
+            if (usuario.Tipo == TipoUsuario.Administrador)
+            {
+                var existeOutroAdministradorAtivo = _context.Usuarios
+                    .Any(u =>
+                        u.Ativo &&
+                        u.Tipo == TipoUsuario.Administrador &&
+                        u.Id != usuarioId);
+
+                if (!existeOutroAdministradorAtivo)
+                {
+                    throw new ValidationException(
+                        "Não é possível desativar a conta do último administrador ativo.");
+                }
+            }
+
+            // Desativa a conta logicamente.
+            // O registro do usuário continuará existindo no banco.
             usuario.Ativo = false;
             usuario.VersaoSessao = Guid.NewGuid();
             usuario.TokenRecuperacaoSenha = null;
             usuario.ExpiracaoTokenRecuperacaoSenha = null;
 
-            //Salva a alteração no banco de dados.
+            // Salva a alteração no banco de dados.
             _context.SaveChanges();
 
             return true;
         }
+
     }
 }

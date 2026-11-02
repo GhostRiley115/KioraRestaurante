@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using System.ComponentModel.DataAnnotations;
 
 namespace KioraRestaurante.Controllers.Api
 {
@@ -267,6 +268,7 @@ namespace KioraRestaurante.Controllers.Api
             });
         }
 
+
         // DELETE: api/usuarios/conta
         // Desativa a conta do usuário autenticado.
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -285,22 +287,34 @@ namespace KioraRestaurante.Controllers.Api
                 });
             }
 
-            var desativado = _usuarioService.DesativarConta(idUsuario);
-
-            if (!desativado)
+            try
             {
-                return NotFound(new
+                var desativado = _usuarioService.DesativarConta(idUsuario);
+
+                if (!desativado)
                 {
-                    sucesso = false,
-                    mensagem = "Usuário não encontrado ou conta já desativada."
+                    return NotFound(new
+                    {
+                        sucesso = false,
+                        mensagem = "Usuário não encontrado ou conta já desativada."
+                    });
+                }
+
+                return Ok(new
+                {
+                    sucesso = true,
+                    mensagem = "Sua conta foi desativada com sucesso."
                 });
             }
-
-            return Ok(new
+            catch (ValidationException ex)
             {
-                sucesso = true,
-                mensagem = "Sua conta foi desativada com sucesso."
-            });
+                return BadRequest(new
+                {
+                    sucesso = false,
+                    mensagem = ex.Message
+                });
+            }
         }
+
     }
 }
