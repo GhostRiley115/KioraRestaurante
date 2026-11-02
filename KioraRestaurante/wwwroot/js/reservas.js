@@ -40,7 +40,26 @@
     const painel = document.getElementById("acompanharReserva");
     if (!painel) return;
     const cancelar = document.getElementById("cancelarReserva");
-    cancelar.addEventListener("submit", e => { if (!confirm("Cancelar esta solicitação e liberar o espaço?")) e.preventDefault(); });
+    // Controla a confirmação do cancelamento pelo modal do Kiora.
+    const modalElemento = document.getElementById("modalCancelarReserva");
+    const botaoConfirmar = document.getElementById("confirmarCancelamentoReserva");
+    const modalCancelar = bootstrap.Modal.getOrCreateInstance(modalElemento);
+
+    let confirmarCancelamento = false;
+
+    // Abre o modal antes de permitir o envio do formulário.
+    cancelar.addEventListener("submit", e => {
+        if (!confirmarCancelamento) {
+            e.preventDefault();
+            modalCancelar.show();
+        }
+    });
+
+    // Envia o formulário somente após a confirmação.
+    botaoConfirmar.addEventListener("click", () => {
+        confirmarCancelamento = true;
+        cancelar.requestSubmit();
+    });
     const notificar = document.getElementById("notificarReserva");
     notificar.hidden = !("Notification" in window);
     notificar.addEventListener("click", async () => {
