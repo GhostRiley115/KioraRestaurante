@@ -87,4 +87,16 @@ public class ReservasApiController(ReservaService service,IdentidadeReserva iden
     public Task<IActionResult> Operar(OperarReservaDTO dto,CancellationToken ct)=>Executar(async()=>{await service.Operar(Admin,dto,ct);return new{sucesso=true};});
     [Authorize(Roles=nameof(TipoUsuario.Administrador)),HttpPost("admin/chamar/{mesaId:int}")]
     public Task<IActionResult> Chamar(int mesaId,CancellationToken ct)=>Executar(async()=>{await service.Chamar(Admin,mesaId,ct);return new{sucesso=true};});
+
+    [Authorize(Roles = nameof(TipoUsuario.Administrador))]
+    [HttpPatch("admin/mesas/{mesaId:int}/ativa")]
+    public Task<IActionResult> AlterarMesa(
+    int mesaId,
+    [FromBody] AlterarMesaReservaDTO dto,
+    CancellationToken ct)
+    => Executar(async () =>
+    {
+        await service.AlterarMesa(Admin, mesaId, dto.Ativa, ct);
+        return new { sucesso = true };
+    });
 }
