@@ -1,5 +1,6 @@
 @model KioraRestaurante.ViewModels.CardapioViewModel
 @using System.Globalization
+@using KioraRestaurante.Services.Cardapio
 
 @{
     ViewData["Title"] = "Cardápio";
@@ -15,8 +16,16 @@
     // Cada link recebe seu próprio conjunto de parâmetros.
     Dictionary<string, string> RotasDaCategoria(int? id) => new(rotasFiltros)
     {
-        ["categoriaId"] = id?.ToString(CultureInfo.InvariantCulture) ?? ""
+        ["categoriaId"] = id?.ToString(CultureInfo.InvariantCulture) ?? "",
+        ["colecao"] = ""
     };
+    Dictionary<string, string> RotasDaColecao(string colecao) => new(rotasFiltros)
+    {
+        ["categoriaId"] = "",
+        ["colecao"] = colecao
+    };
+    var todosSelecionado = Model.CategoriaSelecionadaId == null
+        && string.IsNullOrEmpty(Model.Filtros.Colecao);
 }
 
 <!-- ============================================================
@@ -55,10 +64,22 @@
                 <nav class="categorias-menu" aria-label="Categorias do cardápio">
                     <!-- Todos é um filtro sem categoriaId, não uma categoria do banco. -->
                     <a asp-controller="Home" asp-action="Cardapio" asp-all-route-data="RotasDaCategoria(null)"
-                       class="categoria-item @(Model.CategoriaSelecionadaId == null ? "ativo" : "")"
-                       aria-current="@(Model.CategoriaSelecionadaId == null ? "page" : null)">
+                       class="categoria-item @(todosSelecionado ? "ativo" : "")"
+                       aria-current="@(todosSelecionado ? "page" : null)">
                         <partial name="_IconeCategoria" model='@("Todos")' /><span>Todos</span>
                     </a>
+                    <!-- Coleções automáticas: não são registros da tabela Categorias. -->
+                    @foreach (var colecao in ColecoesCardapio.Nomes)
+                    {
+                        var selecionada = Model.Filtros.Colecao == colecao.Key;
+                        <a asp-controller="Home" asp-action="Cardapio"
+                           asp-all-route-data="RotasDaColecao(colecao.Key)"
+                           class="categoria-item @(selecionada ? "ativo" : "")"
+                           aria-current="@(selecionada ? "page" : null)">
+                            <partial name="_IconeCategoria" model="colecao.Value" />
+                            <span>@colecao.Value</span>
+                        </a>
+                    }
                     @foreach (var categoria in Model.Categorias)
                     {
                         var selecionada = Model.CategoriaSelecionadaId == categoria.Id;
@@ -83,6 +104,11 @@
                 </div>
             </div>
 
+            @if (Model.PeriodoMaisPedidos != null)
+            {
+                <p class="cardapio-contagem">@Model.PeriodoMaisPedidos</p>
+            }
+
             <partial name="_FiltrosCardapio" model="Model" />
 
             @if (Model.ErrosFiltros.Count > 0)
@@ -106,7 +132,14 @@
                 <!-- Estado vazio: evita uma área sem explicação quando não há produtos. -->
                 @if (Model.Produtos.Count == 0)
                 {
-                    <p>Nenhum produto corresponde aos filtros. Altere a busca ou limpe os filtros.</p>
+                    @if (Model.Filtros.Colecao == ColecoesCardapio.MaisPedidos)
+                    {
+                        <p>Nenhum produto com vendas válidas neste período corresponde aos filtros.</p>
+                    }
+                    else
+                    {
+                        <p>Nenhum produto corresponde aos filtros. Altere a busca ou limpe os filtros.</p>
+                    }
                 }
 
                 @foreach (var secao in Model.Secoes)
