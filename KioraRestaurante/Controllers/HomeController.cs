@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using KioraRestaurante.Services.Interfaces;
 using KioraRestaurante.ViewModels;
+using KioraRestaurante.Services.Cardapio;
 
 namespace KioraRestaurante.Controllers
 {
@@ -36,26 +37,22 @@ namespace KioraRestaurante.Controllers
 
         // Retorna os produtos da categoria selecionada pelo usuário.
         [HttpGet]
-        public async Task<IActionResult> Cardapio(int? categoriaId)
+        public async Task<IActionResult> Cardapio(int? categoriaId,
+            [FromQuery, Bind(Prefix = "")] FiltroCardapioViewModel filtros)
         {
             var categorias = await _categoriaService.ListarTodas();
-
-            var selecionada = categorias.SingleOrDefault(
-                c => c.Id == categoriaId);
-
-            if (categoriaId.HasValue && selecionada == null)
-            {
+            if (categoriaId.HasValue && categorias.All(c => c.Id != categoriaId.Value))
                 return NotFound();
-            }
 
-            var model = new CardapioViewModel
+            var produtos = await _produtoService.ListarCardapio(categoriaId);
+            var model = ConsultaCardapio.Montar(produtos, categorias, categoriaId, filtros);
+
+            if (!ModelState.IsValid)
             {
-                Categorias = categorias,
-                Produtos = await _produtoService.ListarCardapio(categoriaId),
-                CategoriaSelecionadaId = categoriaId,
-                Titulo = selecionada?.Nome ?? "Todos os produtos"
-            };
-
+                model.ErrosFiltros.Add("Há um parâmetro inválido no endereço. Limpe os filtros e tente novamente.");
+                model.Produtos.Clear();
+                model.Secoes.Clear();
+            }
             return View(model);
         }
                 

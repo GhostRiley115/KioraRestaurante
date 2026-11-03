@@ -26,34 +26,34 @@ html {
     text-align: center;
 }
 
-    .cardapio-cabecalho .sobre-label {
-        display: inline-block;
-        margin-bottom: 12px;
-        color: var(--k-dourado);
-        font-family: "Lato", sans-serif;
-        font-size: 0.875rem;
-        font-weight: 700;
-        letter-spacing: 3px;
-        text-transform: uppercase;
-    }
+.cardapio-cabecalho .sobre-label {
+    display: inline-block;
+    margin-bottom: 12px;
+    color: var(--k-dourado);
+    font-family: "Lato", sans-serif;
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
 
-    .cardapio-cabecalho h1 {
-        margin: 0 0 18px;
-        color: var(--k-texto);
-        font-family: "Playfair Display", serif;
-        font-size: clamp(2.5rem, 5vw, 4rem);
-        font-weight: 600;
-        line-height: 1.1;
-    }
+.cardapio-cabecalho h1 {
+    margin: 0 0 18px;
+    color: var(--k-texto);
+    font-family: "Playfair Display", serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 600;
+    line-height: 1.1;
+}
 
-    .cardapio-cabecalho p {
-        max-width: 720px;
-        margin: 0 auto;
-        color: var(--k-suave);
-        font-family: "Lato", sans-serif;
-        font-size: 1rem;
-        line-height: 1.8;
-    }
+.cardapio-cabecalho p {
+    max-width: 720px;
+    margin: 0 auto;
+    color: var(--k-suave);
+    font-family: "Lato", sans-serif;
+    font-size: 1rem;
+    line-height: 1.8;
+}
 
 
 /* ================================================================
@@ -120,22 +120,20 @@ html {
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
-    .categoria-item i {
-        font-size: 1rem;
-    }
 
-    .categoria-item:hover {
-        background-color: var(--k-dourado-fundo);
-        color: var(--k-sobre-dourado) !important;
-        border-color: #D9B27A;
-        transform: none;
-    }
 
-    .categoria-item.ativo {
-        background-color: var(--k-dourado-fundo);
-        color: var(--k-sobre-dourado) !important;
-        border-color: #D9B27A;
-    }
+.categoria-item:hover {
+    background-color: var(--k-dourado-fundo);
+    color: var(--k-sobre-dourado) !important;
+    border-color: #D9B27A;
+    transform: none;
+}
+
+.categoria-item.ativo {
+    background-color: var(--k-dourado-fundo);
+    color: var(--k-sobre-dourado) !important;
+    border-color: #D9B27A;
+}
 
 
 /* ================================================================
@@ -146,10 +144,7 @@ html {
     min-width: 0;
 }
 
-.categoria-produtos {
-    margin-bottom: 70px;
-    scroll-margin-top: 120px;
-}
+
 
 
 /* ================================================================
@@ -228,41 +223,41 @@ html {
 }
 
 
-    /* ================================================================
-   DETALHE DOURADO SUPERIOR
-   ================================================================ */
+/* ================================================================
+DETALHE DOURADO SUPERIOR
+================================================================ */
 
-    .produto-card::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 50%;
-        width: 0;
-        height: 2px;
-        background: var(--k-dourado-fundo);
-        transform: translateX(-50%);
-        transition: width 0.45s ease;
-        z-index: 10;
-    }
+.produto-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--k-dourado-fundo);
+    transform: translateX(-50%);
+    transition: width 0.45s ease;
+    z-index: 10;
+}
 
 
-    /* ================================================================
-   DETALHE DECORATIVO DO CANTO
-   ================================================================ */
+/* ================================================================
+DETALHE DECORATIVO DO CANTO
+================================================================ */
 
-    .produto-card::after {
-        content: "";
-        position: absolute;
-        top: 14px;
-        right: 14px;
-        width: 25px;
-        height: 25px;
-        border-top: 1px solid rgba(217, 178, 122, 0.60);
-        border-right: 1px solid rgba(217, 178, 122, 0.60);
-        transition: width 0.45s ease, height 0.45s ease, border-color 0.45s ease;
-        z-index: 10;
-        pointer-events: none;
-    }
+.produto-card::after {
+    content: "";
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 25px;
+    height: 25px;
+    border-top: 1px solid rgba(217, 178, 122, 0.60);
+    border-right: 1px solid rgba(217, 178, 122, 0.60);
+    transition: width 0.45s ease, height 0.45s ease, border-color 0.45s ease;
+    z-index: 10;
+    pointer-events: none;
+}
 
 
 /* ================================================================
@@ -277,29 +272,29 @@ html {
     background: var(--k-superficie);
 }
 
-    .produto-imagem img {
-        display: block;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: center;
-        filter: brightness(0.88) saturate(0.92);
-        transform: scale(1);
-        transition: transform 0.8s cubic-bezier(0.2, 0.65, 0.3, 1), filter 0.8s ease;
-    }
+.produto-imagem img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    filter: brightness(0.88) saturate(0.92);
+    transform: scale(1);
+    transition: transform 0.8s cubic-bezier(0.2, 0.65, 0.3, 1), filter 0.8s ease;
+}
 
 
-    /* ================================================================
-   GRADIENTE SOBRE A IMAGEM
-   ================================================================ */
+/* ================================================================
+GRADIENTE SOBRE A IMAGEM
+================================================================ */
 
-    .produto-imagem::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient( to bottom, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.04) 35%, rgba(14, 14, 14, 0.30) 65%, rgba(14, 14, 14, 0.94) 100% );
-        pointer-events: none;
-    }
+.produto-imagem::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient( to bottom, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.04) 35%, rgba(14, 14, 14, 0.30) 65%, rgba(14, 14, 14, 0.94) 100% );
+    pointer-events: none;
+}
 
 
 /* ================================================================
@@ -333,33 +328,33 @@ html {
 }
 
 
-    /* ================================================================
-   NOME DO PRODUTO
-   ================================================================ */
+/* ================================================================
+NOME DO PRODUTO
+================================================================ */
 
-    .produto-informacoes h3 {
-        margin: 0 0 10px;
-        color: var(--k-texto);
-        font-family: "Playfair Display", serif;
-        font-size: 1.42rem;
-        font-weight: 600;
-        line-height: 1.25;
-        transition: color 0.35s ease, transform 0.35s ease;
-    }
+.produto-informacoes h3 {
+    margin: 0 0 10px;
+    color: var(--k-texto);
+    font-family: "Playfair Display", serif;
+    font-size: 1.42rem;
+    font-weight: 600;
+    line-height: 1.25;
+    transition: color 0.35s ease, transform 0.35s ease;
+}
 
 
-    /* ================================================================
-   DESCRIÇÃO DO PRODUTO
-   ================================================================ */
+/* ================================================================
+DESCRIÇÃO DO PRODUTO
+================================================================ */
 
-    .produto-informacoes p {
-        margin: 0;
-        color: var(--k-suave);
-        font-family: "Lato", sans-serif;
-        font-size: 0.875rem;
-        line-height: 1.7;
-        transition: color 0.35s ease, transform 0.35s ease;
-    }
+.produto-informacoes p {
+    margin: 0;
+    color: var(--k-suave);
+    font-family: "Lato", sans-serif;
+    font-size: 0.875rem;
+    line-height: 1.7;
+    transition: color 0.35s ease, transform 0.35s ease;
+}
 
 
 /* ================================================================
@@ -420,95 +415,65 @@ html {
 }
 
 
-    /* ================================================================
-   ÍCONE DO BOTÃO
-   ================================================================ */
+/* ================================================================
+ÍCONE DO BOTÃO
+================================================================ */
 
-    .btn-adicionar-produto i {
-        font-size: 0.9rem;
-        transition: transform 0.3s ease;
-    }
-
-
-    /* ================================================================
-   TEXTO DO BOTÃO
-   ================================================================ */
-
-    .btn-adicionar-produto span {
-        transition: transform 0.3s ease;
-    }
-
-
-    /* ================================================================
-   HOVER DO BOTÃO
-   ================================================================ */
-
-    .btn-adicionar-produto:hover {
-        background: var(--k-dourado-fundo);
-        color: var(--k-sobre-dourado);
-        border-color: #D9B27A;
-        transform: translateY(-2px);
-        box-shadow: 0 7px 18px rgba(217, 178, 122, 0.20);
-    }
-
-        .btn-adicionar-produto:hover i {
-            transform: rotate(90deg);
-        }
-
-        .btn-adicionar-produto:hover span {
-            transform: translateX(1px);
-        }
-
-
-    /* ================================================================
-   EFEITO AO CLICAR
-   ================================================================ */
-
-    .btn-adicionar-produto:active {
-        transform: translateY(0);
-        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
-    }
-
-
-    /* ================================================================
-   ESTADO "ADICIONADO"
-   ================================================================ */
-
-    .btn-adicionar-produto.adicionado {
-        background: var(--k-dourado-fundo);
-        color: var(--k-sobre-dourado);
-        border-color: #D9B27A;
-        box-shadow: 0 6px 16px rgba(217, 178, 122, 0.16);
-    }
-
-        .btn-adicionar-produto.adicionado i {
-            transform: rotate(0deg);
-        }
-
-
-    /* ================================================================
-   ANIMAÇÃO AO ADICIONAR
-   ================================================================ */
-
-    .btn-adicionar-produto.animando {
-        animation: botaoAdicionado 0.4s ease;
-    }
-
-@keyframes botaoAdicionado {
-
-    0% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(0.94);
-    }
-
-    100% {
-        transform: scale(1);
-    }
+.btn-adicionar-produto i {
+    font-size: 0.9rem;
+    transition: transform 0.3s ease;
 }
 
+
+/* ================================================================
+TEXTO DO BOTÃO
+================================================================ */
+
+.btn-adicionar-produto span {
+    transition: transform 0.3s ease;
+}
+
+
+/* ================================================================
+HOVER DO BOTÃO
+================================================================ */
+
+.btn-adicionar-produto:hover {
+    background: var(--k-dourado-fundo);
+    color: var(--k-sobre-dourado);
+    border-color: #D9B27A;
+    transform: translateY(-2px);
+    box-shadow: 0 7px 18px rgba(217, 178, 122, 0.20);
+}
+
+.btn-adicionar-produto:hover i {
+    transform: rotate(90deg);
+}
+
+.btn-adicionar-produto:hover span {
+    transform: translateX(1px);
+}
+
+
+/* ================================================================
+EFEITO AO CLICAR
+================================================================ */
+
+.btn-adicionar-produto:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+}
+
+
+/* ================================================================
+ESTADO "ADICIONADO"
+================================================================ */
+/* Regras antigas removidas: o feedback atual é controlado por carrinho.js. */
+
+/* ================================================================
+ANIMAÇÃO AO ADICIONAR
+================================================================ */
+/* Regras antigas removidas: o feedback atual é controlado por carrinho.js. */
 
 /* ================================================================
    ACESSIBILIDADE — FOCO PELO TECLADO
@@ -532,64 +497,64 @@ html {
 }
 
 
-    /* ================================================================
-   LINHA SUPERIOR
-   ================================================================ */
+/* ================================================================
+LINHA SUPERIOR
+================================================================ */
 
-    .produto-card:hover::before {
-        width: 72%;
-    }
-
-
-    /* ================================================================
-   DETALHE DO CANTO
-   ================================================================ */
-
-    .produto-card:hover::after {
-        width: 35px;
-        height: 35px;
-        border-color: rgba(217, 178, 122, 0.95);
-    }
+.produto-card:hover::before {
+    width: 72%;
+}
 
 
-    /* ================================================================
-   ZOOM DA IMAGEM
-   ================================================================ */
+/* ================================================================
+DETALHE DO CANTO
+================================================================ */
 
-    .produto-card:hover .produto-imagem img {
-        transform: scale(1.07);
-        filter: brightness(0.82) saturate(1.08);
-    }
-
-
-    /* ================================================================
-   TÍTULO
-   ================================================================ */
-
-    .produto-card:hover .produto-informacoes h3 {
-        color: var(--k-dourado);
-        transform: translateX(2px);
-    }
+.produto-card:hover::after {
+    width: 35px;
+    height: 35px;
+    border-color: rgba(217, 178, 122, 0.95);
+}
 
 
-    /* ================================================================
-   DESCRIÇÃO
-   ================================================================ */
+/* ================================================================
+ZOOM DA IMAGEM
+================================================================ */
 
-    .produto-card:hover .produto-informacoes p {
-        color: var(--k-suave);
-        transform: translateX(2px);
-    }
+.produto-card:hover .produto-imagem img {
+    transform: scale(1.07);
+    filter: brightness(0.82) saturate(1.08);
+}
 
 
-    /* ================================================================
-   PREÇO
-   ================================================================ */
+/* ================================================================
+TÍTULO
+================================================================ */
 
-    .produto-card:hover .produto-preco {
-        color: var(--k-dourado);
-        transform: translateX(2px);
-    }
+.produto-card:hover .produto-informacoes h3 {
+    color: var(--k-dourado);
+    transform: translateX(2px);
+}
+
+
+/* ================================================================
+DESCRIÇÃO
+================================================================ */
+
+.produto-card:hover .produto-informacoes p {
+    color: var(--k-suave);
+    transform: translateX(2px);
+}
+
+
+/* ================================================================
+PREÇO
+================================================================ */
+
+.produto-card:hover .produto-preco {
+    color: var(--k-dourado);
+    transform: translateX(2px);
+}
 
 
 .cardapio-kiora .kc-compra {
@@ -757,4 +722,179 @@ html {
     .cardapio-kiora .produto-card:hover,
     .cardapio-kiora .produto-card:hover *,
     .cardapio-kiora .btn-adicionar-produto:active { transform: none; }
+}
+/* FILTROS E DIVISÕES DO CARDÁPIO: compartilham a paleta dos temas. */
+/* FILTROS COMPACTOS: reduz espaços e organiza os controles em uma faixa. */
+.cardapio-filtros {
+    margin-bottom: 1.25rem;
+    padding: 0.875rem 1rem;
+    background: var(--k-superficie);
+    color: var(--k-texto);
+    border: 1px solid var(--k-borda);
+    border-inline-start: 3px solid var(--k-dourado);
+    border-radius: 10px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.cardapio-filtros-titulo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 0.65rem;
+    color: var(--k-texto);
+    font: inherit;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+.cardapio-filtros-titulo i { color: var(--k-dourado); }
+
+/* Em telas largas, os quatro campos ficam na mesma linha. */
+.cardapio-filtros-campos {
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1.5fr)
+        minmax(0, 0.85fr)
+        minmax(0, 0.85fr)
+        minmax(0, 1.25fr);
+    gap: 0.65rem;
+}
+
+.cardapio-filtros-campos > div { min-width: 0; }
+
+.cardapio-filtros label {
+    display: block;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+.cardapio-filtros-campos label {
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+.cardapio-filtros-campos input,
+.cardapio-filtros-campos select {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    margin-top: 0.25rem;
+    padding: 0.5rem 0.65rem;
+    font: inherit;
+    font-size: 1rem;
+    color: var(--k-texto);
+    background: var(--k-campo);
+    border: 1px solid var(--k-borda);
+    border-radius: 6px;
+}
+
+.cardapio-filtros input::placeholder {
+    color: var(--k-suave);
+    opacity: 1;
+}
+
+/* Opções à esquerda e ações à direita, quando houver espaço. */
+.cardapio-filtros-rodape {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.25rem 1rem;
+    margin-top: 0.5rem;
+}
+
+.cardapio-filtros-opcoes,
+.cardapio-filtros-acoes {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.cardapio-filtros-opcoes { gap: 0.25rem 1rem; }
+
+.cardapio-filtros-opcoes label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    font-size: 0.875rem;
+    font-weight: 400;
+}
+
+.cardapio-filtros-opcoes input { width: 1.1rem; height: 1.1rem; }
+
+.cardapio-filtros-acoes {
+    gap: 0.25rem 0.5rem;
+    margin-top: 0;
+}
+
+.cardapio-filtros-acoes button,
+.cardapio-filtros-acoes a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0.4rem 0.7rem;
+    border-radius: 6px;
+    font: inherit;
+    font-size: 0.9375rem;
+    font-weight: 700;
+}
+
+.cardapio-filtros-acoes button {
+    border: 1px solid var(--k-borda);
+    background: #7d1f1f;
+    color: #fff;
+    cursor: pointer;
+}
+
+.cardapio-filtros-acoes a { color: var(--k-dourado); text-decoration: underline; }
+
+.cardapio-filtros :is(a, button, input, select):focus-visible {
+    outline: 3px solid var(--k-dourado);
+    outline-offset: 3px;
+}
+
+.cardapio-erros {
+    padding: 1rem;
+    border: 1px solid var(--k-vermelho);
+    background: var(--k-erro-fundo);
+    color: var(--k-texto);
+    border-radius: 8px;
+}
+
+.cardapio-contagem { color: var(--k-suave); }
+.cardapio-secao { margin-bottom: 2.5rem; scroll-margin-top: 120px; }
+
+.cardapio-separador {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 2rem 0 1.5rem;
+    color: var(--k-dourado);
+    font-size: clamp(1.4rem, 2.5vw, 2rem);
+    overflow-wrap: anywhere;
+}
+
+.cardapio-separador::after {
+    content: "";
+    flex: 1;
+    min-width: 24px;
+    height: 1px;
+    background: var(--k-borda);
+}
+
+/* Em telas intermediárias, distribui os campos em duas colunas. */
+@media (max-width: 1100px) {
+    .cardapio-filtros-campos {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* No celular, busca e ordenação ocupam uma linha cada. */
+@media (max-width: 640px) {
+    .cardapio-filtros-campos > div:first-child,
+    .cardapio-filtros-campos > div:last-child { grid-column: 1 / -1; }
+    .cardapio-filtros-rodape { justify-content: flex-start; }
 }
