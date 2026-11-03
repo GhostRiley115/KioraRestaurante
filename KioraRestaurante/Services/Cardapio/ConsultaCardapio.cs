@@ -26,8 +26,11 @@ public static class ConsultaCardapio
         List<ProdutoResponseDTO> produtos,
         List<CategoriaResponseDTO> categorias,
         int? categoriaId,
-        FiltroCardapioViewModel filtros)
+        FiltroCardapioViewModel filtros,
+        IReadOnlyDictionary<int, long>? quantidadesVendidas = null)
     {
+        filtros.Colecao = ColecoesCardapio.Normalizar(filtros.Colecao);
+        var vendas = quantidadesVendidas ?? new Dictionary<int, long>();
         filtros.Busca = filtros.Busca?.Trim();
         filtros.PrecoMinimo = filtros.PrecoMinimo?.Trim();
         filtros.PrecoMaximo = filtros.PrecoMaximo?.Trim();
@@ -39,11 +42,17 @@ public static class ConsultaCardapio
             Categorias = categorias.OrderBy(c => OrdemCategoria(c.Nome))
                 .ThenBy(c => c.Nome, Comparador).ToList(),
             CategoriaSelecionadaId = categoriaId,
-            Titulo = categorias.FirstOrDefault(c => c.Id == categoriaId)?.Nome
-                ?? "Todos os produtos",
+            Titulo = ColecoesCardapio.Nomes.TryGetValue(filtros.Colecao, out var tituloColecao)
+                ? tituloColecao
+                : categorias.FirstOrDefault(c => c.Id == categoriaId)?.Nome ?? "Todos os produtos",
             Filtros = filtros,
-            ExibirSeparadores = categoriaId == null && filtros.Ordenacao == "padrao"
+            ExibirSeparadores = categoriaId == null && filtros.Colecao == "" && filtros.Ordenacao == "padrao"
         };
+
+        if (filtros.Colecao != "" && !ColecoesCardapio.Nomes.ContainsKey(filtros.Colecao))
+            model.ErrosFiltros.Add("Selecione uma coleção válida.");
+        if (categoriaId.HasValue && filtros.Colecao != "")
+            model.ErrosFiltros.Add("Escolha uma categoria ou uma coleção por vez.");
 
         if (filtros.Busca?.Length > 100)
             model.ErrosFiltros.Add("A busca deve ter no máximo 100 caracteres.");
@@ -60,6 +69,14 @@ public static class ConsultaCardapio
         if (model.ErrosFiltros.Count > 0) return model;
 
         IEnumerable<ProdutoResponseDTO> consulta = produtos;
+        consulta = filtros.Colecao switch
+        {
+            ColecoesCardapio.Combos => consulta.Where(p => p.EhCombo),
+            // Promoções reúne todos os combos OU produtos com desconto.
+            ColecoesCardapio.Promocoes => consulta.Where(p => p.EhCombo || p.DescontoPercentual > 0),
+            ColecoesCardapio.MaisPedidos => consulta.Where(p => vendas.GetValueOrDefault(p.Id) > 0),
+            _ => consulta
+        };
         if (categoriaId.HasValue)
             consulta = consulta.Where(p => p.CategoriaId == categoriaId.Value);
         if (!string.IsNullOrEmpty(filtros.Busca))
@@ -77,6 +94,9 @@ public static class ConsultaCardapio
             "menor-preco" => consulta.OrderBy(p => p.Preco).ThenBy(p => p.Nome, Comparador),
             "maior-preco" => consulta.OrderByDescending(p => p.Preco).ThenBy(p => p.Nome, Comparador),
             "nome-za" => consulta.OrderByDescending(p => p.Nome, Comparador),
+            "padrao" when filtros.Colecao == ColecoesCardapio.MaisPedidos =>
+                consulta.OrderByDescending(p => vendas.GetValueOrDefault(p.Id))
+                    .ThenBy(p => p.Nome, Comparador),
             _ => consulta.OrderBy(p => p.Nome, Comparador)
         };
         model.Produtos = ordenados.ThenBy(p => p.Id).ToList();

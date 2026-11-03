@@ -1,8 +1,10 @@
 @model KioraRestaurante.ViewModels.CardapioViewModel
+@using KioraRestaurante.Services.Cardapio
 @{
     var opcoes = new Dictionary<string, string>
     {
-        ["padrao"] = "Padrão",
+        ["padrao"] = Model.Filtros.Colecao == ColecoesCardapio.MaisPedidos
+        ? "Mais pedidos" : "Padrão",
         ["menor-preco"] = "Menor preço",
         ["maior-preco"] = "Maior preço",
         ["nome-az"] = "Nome: A a Z",
@@ -22,6 +24,11 @@
         <input type="hidden"
                name="categoriaId"
                value="@Model.CategoriaSelecionadaId" />
+    }
+
+    @if (!string.IsNullOrEmpty(Model.Filtros.Colecao))
+    {
+        <input type="hidden" name="colecao" value="@Model.Filtros.Colecao" />
     }
 
     <h3 id="titulo-filtros-cardapio" class="cardapio-filtros-titulo">
@@ -100,13 +107,15 @@
 
             <a asp-controller="Home"
                asp-action="Cardapio"
-               asp-route-categoriaId="@Model.CategoriaSelecionadaId">
+               asp-route-categoriaId="@Model.CategoriaSelecionadaId"
+               asp-route-colecao="@Model.Filtros.Colecao">
                 Limpar
             </a>
 
             <a asp-controller="Home"
                asp-action="Cardapio"
-               asp-route-categoriaId="">
+               asp-route-categoriaId=""
+               asp-route-colecao="">
                 Ver todos
             </a>
         </div>

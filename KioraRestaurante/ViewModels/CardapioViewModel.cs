@@ -13,4 +13,5 @@ public class CardapioViewModel
     public List<SecaoCardapioViewModel> Secoes { get; set; } = new();
     public List<string> ErrosFiltros { get; set; } = new();
     public bool ExibirSeparadores { get; set; }
+    public string? PeriodoMaisPedidos { get; set; }
 }

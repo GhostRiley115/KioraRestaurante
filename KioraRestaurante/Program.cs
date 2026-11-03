@@ -87,6 +87,7 @@ builder.Services.AddHttpClient<CepService>(http =>
 
 // RESERVAS: relógio injetável permite testar atrasos e meia-noite sem mudar a máquina.
 builder.Services.AddSingleton<TimeProvider>(TimeProvider.System);
+builder.Services.AddScoped<KioraRestaurante.Services.Cardapio.MaisPedidosService>();
 builder.Services.AddOptions<KioraRestaurante.Options.ReservaOptions>()
     .Bind(builder.Configuration.GetSection("Reservas"))
     .Validate(o => o.AberturaMinutos >= 0 && o.AberturaMinutos < o.UltimaReservaMinutos
