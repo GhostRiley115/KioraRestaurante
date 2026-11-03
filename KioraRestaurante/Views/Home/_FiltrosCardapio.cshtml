@@ -1,0 +1,114 @@
+@model KioraRestaurante.ViewModels.CardapioViewModel
+@{
+    var opcoes = new Dictionary<string, string>
+    {
+        ["padrao"] = "Padrão",
+        ["menor-preco"] = "Menor preço",
+        ["maior-preco"] = "Maior preço",
+        ["nome-az"] = "Nome: A a Z",
+        ["nome-za"] = "Nome: Z a A"
+    };
+}
+
+<!-- GET permite atualizar, compartilhar a busca e usar Voltar no navegador. -->
+<form method="get"
+      asp-controller="Home"
+      asp-action="Cardapio"
+      class="cardapio-filtros"
+      aria-labelledby="titulo-filtros-cardapio">
+
+    @if (Model.CategoriaSelecionadaId.HasValue)
+    {
+        <input type="hidden"
+               name="categoriaId"
+               value="@Model.CategoriaSelecionadaId" />
+    }
+
+    <h3 id="titulo-filtros-cardapio" class="cardapio-filtros-titulo">
+        <i class="bi bi-sliders" aria-hidden="true"></i>
+        Filtrar cardápio
+    </h3>
+
+    <div class="cardapio-filtros-campos">
+        <div>
+            <label for="busca-cardapio">Buscar</label>
+            <input id="busca-cardapio"
+                   type="search"
+                   name="busca"
+                   maxlength="100"
+                   value="@Model.Filtros.Busca"
+                   placeholder="Nome do produto" />
+        </div>
+
+        <div>
+            <label for="preco-minimo">Preço mín. (R$)</label>
+            <input id="preco-minimo"
+                   type="text"
+                   inputmode="decimal"
+                   name="precoMinimo"
+                   maxlength="11"
+                   value="@Model.Filtros.PrecoMinimo"
+                   placeholder="0,00" />
+        </div>
+
+        <div>
+            <label for="preco-maximo">Preço máx. (R$)</label>
+            <input id="preco-maximo"
+                   type="text"
+                   inputmode="decimal"
+                   name="precoMaximo"
+                   maxlength="11"
+                   value="@Model.Filtros.PrecoMaximo"
+                   placeholder="Sem limite" />
+        </div>
+
+        <div>
+            <label for="ordem-cardapio">Ordenar</label>
+            <select id="ordem-cardapio" name="ordenacao">
+                @foreach (var opcao in opcoes)
+                {
+                    <option value="@opcao.Key"
+                            selected="@(Model.Filtros.Ordenacao == opcao.Key)">
+                        @opcao.Value
+                    </option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="cardapio-filtros-rodape">
+        <div class="cardapio-filtros-opcoes">
+            <label>
+                <input type="checkbox"
+                       name="somenteDisponiveis"
+                       value="true"
+                       checked="@Model.Filtros.SomenteDisponiveis" />
+                Disponíveis
+            </label>
+
+            <label>
+                <input type="checkbox"
+                       name="somentePromocoes"
+                       value="true"
+                       checked="@Model.Filtros.SomentePromocoes" />
+                Com desconto
+            </label>
+        </div>
+
+        <div class="cardapio-filtros-acoes">
+            <button type="submit">Aplicar</button>
+
+            <a asp-controller="Home"
+               asp-action="Cardapio"
+               asp-route-categoriaId="@Model.CategoriaSelecionadaId">
+                Limpar
+            </a>
+
+            <a asp-controller="Home"
+               asp-action="Cardapio"
+               asp-route-categoriaId="">
+                Ver todos
+            </a>
+        </div>
+    </div>
+</form>

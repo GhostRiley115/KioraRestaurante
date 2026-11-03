@@ -3,7 +3,20 @@
 
 @{
     ViewData["Title"] = "Cardápio";
-    var cultura = CultureInfo.GetCultureInfo("pt-BR");
+    var rotasFiltros = new Dictionary<string, string>
+    {
+        ["busca"] = Model.Filtros.Busca ?? "",
+        ["precoMinimo"] = Model.Filtros.PrecoMinimo ?? "",
+        ["precoMaximo"] = Model.Filtros.PrecoMaximo ?? "",
+        ["ordenacao"] = Model.Filtros.Ordenacao ?? "padrao",
+        ["somenteDisponiveis"] = Model.Filtros.SomenteDisponiveis ? "true" : "false",
+        ["somentePromocoes"] = Model.Filtros.SomentePromocoes ? "true" : "false"
+    };
+    // Cada link recebe seu próprio conjunto de parâmetros.
+    Dictionary<string, string> RotasDaCategoria(int? id) => new(rotasFiltros)
+    {
+        ["categoriaId"] = id?.ToString(CultureInfo.InvariantCulture) ?? ""
+    };
 }
 
 <!-- ============================================================
@@ -41,7 +54,7 @@
                 </div>
                 <nav class="categorias-menu" aria-label="Categorias do cardápio">
                     <!-- Todos é um filtro sem categoriaId, não uma categoria do banco. -->
-                    <a asp-controller="Home" asp-action="Cardapio" asp-route-categoriaId=""
+                    <a asp-controller="Home" asp-action="Cardapio" asp-all-route-data="RotasDaCategoria(null)"
                        class="categoria-item @(Model.CategoriaSelecionadaId == null ? "ativo" : "")"
                        aria-current="@(Model.CategoriaSelecionadaId == null ? "page" : null)">
                         <partial name="_IconeCategoria" model='@("Todos")' /><span>Todos</span>
@@ -49,7 +62,7 @@
                     @foreach (var categoria in Model.Categorias)
                     {
                         var selecionada = Model.CategoriaSelecionadaId == categoria.Id;
-                        <a asp-controller="Home" asp-action="Cardapio" asp-route-categoriaId="@categoria.Id"
+                        <a asp-controller="Home" asp-action="Cardapio" asp-all-route-data="RotasDaCategoria(categoria.Id)"
                            class="categoria-item @(selecionada ? "ativo" : "")"
                            aria-current="@(selecionada ? "page" : null)">
                             <partial name="_IconeCategoria" model="categoria.Nome" /><span>@categoria.Nome</span>
@@ -70,91 +83,50 @@
                 </div>
             </div>
 
-            <!-- Estado vazio: evita uma área sem explicação quando não há produtos. -->
-            @if (Model.Produtos.Count == 0)
+            <partial name="_FiltrosCardapio" model="Model" />
+
+            @if (Model.ErrosFiltros.Count > 0)
             {
-                <p role="status">Nenhum produto cadastrado nesta categoria por enquanto.</p>
+                <div class="cardapio-erros" role="alert">
+                    <p>Confira os filtros:</p>
+                    <ul>
+                        @foreach (var erro in Model.ErrosFiltros)
+                        {
+                            <li>@erro</li>
+                        }
+                    </ul>
+                </div>
             }
+            else
+            {
+                <p class="cardapio-contagem" role="status">
+                    @Model.Produtos.Count produto(s) encontrado(s).
+                </p>
 
-            <!-- Um card para cada produto devolvido pelo serviço. -->
-            <div class="produtos-grid">
-                @foreach (var produto in Model.Produtos)
+                <!-- Estado vazio: evita uma área sem explicação quando não há produtos. -->
+                @if (Model.Produtos.Count == 0)
                 {
-                    <article class="produto-card">
-                        <!-- FOTO: produtos sem imagem recebem um ícone de substituição. -->
-                        <div class="produto-imagem">
-                            @if (!string.IsNullOrWhiteSpace(produto.ImagemUrl))
-                            {
-                                <img src="@Url.Content(produto.ImagemUrl)" alt="@produto.Nome" loading="lazy" />
-                            }
-                            else
-                            {
-                                <div class="produto-imagem-placeholder" aria-hidden="true"><i class="bi bi-image"></i></div>
-                            }
-                        </div>
-                        <div class="produto-informacoes">
-                            <span class="categoria-label">@produto.NomeCategoria</span>
-                            <h3>@produto.Nome</h3>
-                            @if (produto.EhCombo)
-                            {
-                                <span class="produto-etiqueta">Combo</span>
-                            }
-                            <p>@produto.Descricao</p>
-
-                            <!-- PREÇO: apresenta o original e o valor atual quando há desconto. -->
-                            <div class="produto-rodape">
-                                <div>
-                                    @if (produto.DescontoPercentual > 0)
-                                    {
-                                        <div class="produto-desconto">
-                                            <span class="visually-hidden">Preço anterior:</span>
-
-                                            <del>
-                                                @produto.PrecoOriginal.ToString("C", cultura)
-                                            </del>
-
-                                            <span class="produto-etiqueta">
-                                                @produto.DescontoPercentual.ToString("0.##", cultura)%
-                                                de desconto
-                                            </span>
-                                        </div>
-                                    }
-
-                                    <span class="visually-hidden">Preço atual:</span>
-
-                                    <strong class="produto-preco">
-                                        @produto.Preco.ToString("C", cultura)
-                                    </strong>
-                                </div>
-                            </div>
-
-                            <!-- COMPRA: os identificadores abaixo conectam o card ao carrinho.js. -->
-                            @if (produto.Disponivel)
-                            {
-                                <form class="kc-compra" data-produto-id="@produto.Id">
-                                    <label for="quantidade-@produto.Id">Quantidade</label>
-                                    <div class="produto-controles">
-                                        <button type="button" data-seletor="-1" data-carrinho-mutacao disabled
-                                                aria-label="Diminuir quantidade de @produto.Nome">−</button>
-                                        <input id="quantidade-@produto.Id" name="quantidade" type="number"
-                                               min="1" max="30" step="1" value="1" required data-carrinho-mutacao disabled />
-                                        <button type="button" data-seletor="1" data-carrinho-mutacao disabled
-                                                aria-label="Aumentar quantidade de @produto.Nome">+</button>
-                                    </div>
-                                    <button type="submit" class="btn-adicionar-produto" data-carrinho-mutacao disabled>
-                                        <i class="bi bi-plus-lg" aria-hidden="true"></i><span>Adicionar</span>
-                                    </button>
-                                </form>
-                            }
-                            else
-                            {
-                                <!-- INDISPONÍVEL: continua visível, sem permitir uma nova compra. -->
-                                <p class="produto-indisponivel">Indisponível no momento</p>
-                            }
-                        </div>
-                    </article>
+                    <p>Nenhum produto corresponde aos filtros. Altere a busca ou limpe os filtros.</p>
                 }
-            </div>
+
+                @foreach (var secao in Model.Secoes)
+                {
+                    <div class="cardapio-secao" id="secao-@secao.Id">
+                        @if (Model.ExibirSeparadores)
+                        {
+                            <h2 class="cardapio-separador">@secao.Titulo</h2>
+                        }
+
+                        <!-- Um card para cada produto devolvido pelo serviço. -->
+                        <div class="produtos-grid">
+                            @foreach (var produto in secao.Produtos)
+                            {
+                                <partial name="_CardProduto" model="produto" />
+                            }
+                        </div>
+                    </div>
+                }
+            }
         </div>
     </div>
     <noscript><p>Ative o JavaScript para adicionar produtos ao carrinho.</p></noscript>
