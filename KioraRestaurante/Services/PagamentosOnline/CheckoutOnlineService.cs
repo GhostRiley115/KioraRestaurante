@@ -101,13 +101,76 @@ public class CheckoutOnlineService(AppDbContext db, MpOrdersClient api, IOptions
     private void Conferir(JsonElement json, PagamentoOnline registro)
     {
         var o = config.Value;
-        if (Texto(json, "type") != "online" || Texto(json, "processing_mode") != "manual"
-            || Texto(json, "external_reference") != registro.Referencia.ToString("N")
-            || Texto(json, "user_id") != o.VendedorId || Texto(json, "currency") != "BRL"
-            || Texto(json, "country_code") != "BRA" || Valor(json, "total_amount") != registro.Valor
-            || Texto(json.GetProperty("integration_data"), "application_id") != o.ApplicationId
-            || Texto(json, "id").StartsWith("ORDTST", StringComparison.Ordinal) != o.ModoTeste)
-            throw new FalhaPagamento("Os dados do provedor não correspondem ao pedido, vendedor ou ambiente configurado.");
+        var divergencias = new List<string>();
+
+        void Verificar(bool correto, string campo)
+        {
+            if (!correto)
+                divergencias.Add(campo);
+        }
+
+        Verificar(
+            Texto(json, "type") == "online",
+            "tipo da order");
+
+        Verificar(
+            Texto(json, "processing_mode") == "manual",
+            "modo de processamento");
+
+        Verificar(
+            Texto(json, "external_reference")
+            == registro.Referencia.ToString("N"),
+            "referência do pedido");
+
+        Verificar(
+            Texto(json, "user_id") == o.VendedorId.Trim(),
+            "VendedorId");
+
+        Verificar(
+            Texto(json, "currency") == "BRL",
+            "moeda");
+
+        Verificar(
+            Texto(json, "country_code") == "BRA",
+            "país do vendedor");
+
+        var valorValido = decimal.TryParse(
+            Texto(json, "total_amount"),
+            NumberStyles.AllowDecimalPoint,
+            CultureInfo.InvariantCulture,
+            out var total);
+
+        Verificar(
+            valorValido && total == registro.Valor,
+            "valor total");
+
+        var applicationIdRecebido = "";
+
+        if (json.TryGetProperty("integration_data", out var integracao)
+            && integracao.ValueKind == JsonValueKind.Object)
+        {
+            applicationIdRecebido = Texto(integracao, "application_id");
+        }
+
+        Verificar(
+            applicationIdRecebido == o.ApplicationId.Trim(),
+            "ApplicationId");
+
+        var identificadorDeTeste = Texto(json, "id")
+            .StartsWith("ORDTST", StringComparison.Ordinal);
+
+        Verificar(
+            identificadorDeTeste == o.ModoTeste,
+            "ambiente / ModoTeste");
+
+        if (divergencias.Count > 0)
+        {
+            // Exibe somente os nomes dos campos; não revela credenciais nem valores.
+            throw new FalhaPagamento(
+                "Dados divergentes na configuração do pagamento: "
+                + string.Join(", ", divergencias)
+                + ". Confira as configurações ou avise o restaurante.");
+        }
     }
 
     public async Task Sincronizar(string orderId, CancellationToken ct)
