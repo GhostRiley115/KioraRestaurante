@@ -16,4 +16,7 @@ public class CheckoutViewModel
     [Microsoft.AspNetCore.Mvc.ModelBinding.BindNever]
     [ValidateNever]
     public List<KioraRestaurante.Models.EnderecoUsuario> Enderecos { get; set; } = new();
+
+    [Microsoft.AspNetCore.Mvc.ModelBinding.BindNever, ValidateNever]
+    public KioraRestaurante.Services.Entrega.CotacaoEntrega? Entrega { get; set; }
 }

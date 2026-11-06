@@ -84,8 +84,17 @@ public class CheckoutOnlineService(AppDbContext db, MpOrdersClient api, IOptions
 
             var referencia = Guid.NewGuid();
             var retorno = o.UrlPublica.TrimEnd('/') + "/Pagamento/Retorno/" + id;
-            if (pedido.ValorTotal <= 0 || pedido.ItensPedido.Sum(i => i.PrecoUnitario * i.Quantidade) != pedido.ValorTotal)
+            if (pedido.ValorTotal <= 0 || pedido.TaxaEntrega < 0
+                || pedido.ItensPedido.Sum(i => i.PrecoUnitario * i.Quantidade) + pedido.TaxaEntrega != pedido.ValorTotal)
                 throw new FalhaPagamento("O total do pedido precisa ser conferido.");
+            var itensPagamento = pedido.ItensPedido.Select(i => new {
+                title = i.NomeProduto, quantity = i.Quantidade,
+                unit_price = i.PrecoUnitario.ToString("0.00", CultureInfo.InvariantCulture)
+            }).ToList();
+            // A entrega compõe o mesmo total conferido e cobrado do pedido.
+            if (pedido.TaxaEntrega > 0)
+                itensPagamento.Add(new { title = "Taxa de entrega", quantity = 1,
+                    unit_price = pedido.TaxaEntrega.ToString("0.00", CultureInfo.InvariantCulture) });
             registro = new PagamentoOnline { PedidoId = id, Referencia = referencia, Valor = pedido.ValorTotal };
             registro.CorpoCriacao = JsonSerializer.Serialize(new
             {
@@ -93,10 +102,7 @@ public class CheckoutOnlineService(AppDbContext db, MpOrdersClient api, IOptions
                 total_amount = pedido.ValorTotal.ToString("0.00", CultureInfo.InvariantCulture),
                 external_reference = referencia.ToString("N"), expiration_time = "PT30M",
                 payer = new { email = emailComprador },
-                items = pedido.ItensPedido.Select(i => new {
-                    title = i.NomeProduto, quantity = i.Quantidade,
-                    unit_price = i.PrecoUnitario.ToString("0.00", CultureInfo.InvariantCulture)
-                }),
+                items = itensPagamento,
                 config = new { online = new {
                     success_url = retorno, failure_url = retorno, pending_url = retorno, auto_return = "all"
                 }}

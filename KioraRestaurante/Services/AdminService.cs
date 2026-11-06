@@ -90,6 +90,7 @@ public class AdminService : IAdminService
         return await _context.Pedidos.AsNoTracking().Where(p => p.Id == pedidoId).Select(p => new PedidoDetalhesAdminDTO {
             Id = p.Id, UsuarioId = p.UsuarioId, NomeCliente = p.Usuario.Nome, EmailCliente = p.Usuario.Email,
             ClienteAtivo = p.Usuario.Ativo, DataPedido = p.DataPedido, ValorTotal = p.ValorTotal,
+            TaxaEntrega = p.TaxaEntrega, DistanciaEntregaMetros = p.DistanciaEntregaMetros,
             StatusPedido = p.StatusPedido, StatusPagamento = p.StatusPagamento, FormaPagamento = p.FormaPagamento,
             Itens = p.ItensPedido.OrderBy(i => i.Id).Select(i => new ItemPedidoAdminDTO {
                 Nome = i.NomeProduto, Quantidade = i.Quantidade, PrecoUnitario = i.PrecoUnitario,

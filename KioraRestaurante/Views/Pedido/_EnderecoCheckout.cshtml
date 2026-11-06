@@ -1,0 +1,108 @@
+@model KioraRestaurante.ViewModels.CheckoutViewModel
+@inject Microsoft.Extensions.Options.IOptions<KioraRestaurante.Options.EntregaOptions> EntregaConfig
+@{ var culturaEntrega = System.Globalization.CultureInfo.GetCultureInfo("pt-BR"); var limiteAnterior = 0; }
+
+<section class="pedido-box checkout-enderecos">
+    <span class="pedido-etapa">1 · ENTREGA</span>
+    <h2>Onde vamos entregar?</h2>
+    <p class="pedido-texto-suave">Use um endereço salvo ou preencha outro para este pedido.</p>
+    <input asp-for="Dados.EnderecoVersao" type="hidden" />
+
+    <fieldset class="checkout-escolhas">
+        <legend class="visually-hidden">Escolha o endereço de entrega</legend>
+        @foreach (var endereco in Model.Enderecos)
+        {
+            var identificador = $"endereco-{endereco.Id}";
+            <article class="checkout-endereco" data-endereco-cartao>
+                <div class="checkout-endereco-escolha">
+                    <input asp-for="Dados.EnderecoId" type="radio" id="@identificador" value="@endereco.Id"
+                           data-endereco-versao="@endereco.Versao" data-val="false" />
+                    <label for="@identificador">
+                        <strong>@endereco.Apelido</strong>
+                        <span>@endereco.Logradouro, @endereco.Numero</span>
+                        <span>@endereco.Bairro — @endereco.Cidade/@endereco.Uf</span>
+                        <span>CEP @endereco.Cep</span>
+                        @if (!string.IsNullOrWhiteSpace(endereco.Complemento)) { <span>@endereco.Complemento</span> }
+                    </label>
+                </div>
+                <button type="button" class="pedido-link pedido-link-excluir" data-excluir-endereco
+                        data-endereco-id="@endereco.Id" data-endereco-versao-exclusao="@endereco.Versao"
+                        data-endereco-nome="@endereco.Apelido" data-exclusao-url="@Url.Action("Excluir", "Enderecos")"
+                        aria-label="Excluir endereço @endereco.Apelido">Excluir</button>
+            </article>
+        }
+        <div class="checkout-endereco checkout-endereco-novo">
+            <input asp-for="Dados.EnderecoId" type="radio" id="endereco-novo" value="" checked="@(!Model.Dados.EnderecoId.HasValue)" data-val="false" />
+            <label for="endereco-novo"><strong>Usar outro endereço</strong><span>Você escolhe se deseja salvar na conta.</span></label>
+        </div>
+    </fieldset>
+
+    <fieldset id="camposNovoEndereco" class="checkout-form-endereco">
+        <legend class="visually-hidden">Novo endereço para esta entrega</legend>
+        <div class="row g-3">
+            <div class="col-12 col-sm-7">
+                <label asp-for="Dados.NovoEndereco!.Cep">CEP</label>
+                <input asp-for="Dados.NovoEndereco!.Cep" class="form-control" inputmode="numeric" autocomplete="postal-code" maxlength="9" data-campo-entrega />
+                <span asp-validation-for="Dados.NovoEndereco!.Cep" class="pedido-erros"></span>
+            </div>
+            <div class="col-12 col-sm-5 d-flex align-items-end">
+                <button type="button" id="buscarCep" class="pedido-botao pedido-botao-secundario">Buscar CEP</button>
+            </div>
+            <div class="col-12"><p id="mensagemCep" role="status" aria-live="polite" class="pedido-texto-suave mb-0"></p></div>
+            <div class="col-12">
+                <label asp-for="Dados.NovoEndereco!.Logradouro">Rua ou avenida</label>
+                <input asp-for="Dados.NovoEndereco!.Logradouro" class="form-control" autocomplete="address-line1" maxlength="150" data-campo-entrega />
+                <span asp-validation-for="Dados.NovoEndereco!.Logradouro" class="pedido-erros"></span>
+            </div>
+            <div class="col-12 col-sm-4">
+                <label asp-for="Dados.NovoEndereco!.Numero">Número</label>
+                <input asp-for="Dados.NovoEndereco!.Numero" class="form-control" maxlength="20" data-campo-entrega />
+                <span asp-validation-for="Dados.NovoEndereco!.Numero" class="pedido-erros"></span>
+            </div>
+            <div class="col-12 col-sm-8">
+                <label asp-for="Dados.NovoEndereco!.Bairro">Bairro</label>
+                <input asp-for="Dados.NovoEndereco!.Bairro" class="form-control" maxlength="100" data-campo-entrega />
+                <span asp-validation-for="Dados.NovoEndereco!.Bairro" class="pedido-erros"></span>
+            </div>
+            <div class="col-12">
+                <label asp-for="Dados.NovoEndereco!.Complemento">Complemento <span class="pedido-texto-suave">— opcional</span></label>
+                <input asp-for="Dados.NovoEndereco!.Complemento" class="form-control" autocomplete="address-line2" maxlength="200" data-campo-entrega />
+            </div>
+            <div class="col-12">
+                <label asp-for="Dados.NovoEndereco!.Referencia">Ponto de referência <span class="pedido-texto-suave">— opcional</span></label>
+                <input asp-for="Dados.NovoEndereco!.Referencia" class="form-control" maxlength="200" data-campo-entrega />
+            </div>
+            <div class="col-12">
+                <label class="checkout-salvar-endereco" for="Dados_NovoEndereco_SalvarNaConta">
+                    <input asp-for="Dados.NovoEndereco!.SalvarNaConta" />
+                    <span>Salvar este endereço na minha conta</span>
+                </label>
+                <p class="pedido-texto-suave mb-0">Se não marcar, ele será usado somente neste pedido.</p>
+            </div>
+            <div class="col-12" id="grupoApelidoEndereco">
+                <label asp-for="Dados.NovoEndereco!.Apelido">Nome do endereço</label>
+                <input asp-for="Dados.NovoEndereco!.Apelido" class="form-control" placeholder="Ex.: Casa ou Trabalho" maxlength="40" />
+                <span asp-validation-for="Dados.NovoEndereco!.Apelido" class="pedido-erros"></span>
+            </div>
+        </div>
+    </fieldset>
+
+    <div class="checkout-cotacao">
+        <p>Entregamos até <strong>20 km pelas ruas</strong> a partir de @EntregaConfig.Value.Restaurante.Logradouro, @EntregaConfig.Value.Restaurante.Numero.</p>
+        <button type="submit" name="acao" value="calcular" formnovalidate id="calcularEntrega"
+                class="pedido-botao pedido-botao-secundario">Calcular entrega</button>
+        <p id="mensagemEntrega" role="status" aria-live="polite" class="pedido-texto-suave mt-3 mb-0">
+            @(Model.Entrega == null ? "Calcule a entrega para conferir a distância e a taxa antes de confirmar." : "Entrega calculada. Confira o total antes de confirmar.")
+        </p>
+        <details class="checkout-tabela-taxas">
+            <summary>Ver taxas de entrega</summary>
+            <ul>
+                @foreach (var faixa in EntregaConfig.Value.Faixas.OrderBy(f => f.AteMetros)) {
+                    <li>@(limiteAnterior == 0 ? "Até" : "Acima de " + (limiteAnterior / 1000m).ToString("0.##", culturaEntrega) + " até") @((faixa.AteMetros / 1000m).ToString("0.##", culturaEntrega)) km: @faixa.Valor.ToString("C", culturaEntrega)</li>
+                    limiteAnterior = faixa.AteMetros;
+                }
+            </ul>
+        </details>
+        <small class="pedido-texto-suave">Localização por <a href="https://www.geoapify.com/" target="_blank" rel="noopener noreferrer">Geoapify</a> · percurso por <a href="https://openrouteservice.org/" target="_blank" rel="noopener noreferrer">openrouteservice / HeiGIT</a> · dados <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a>.</small>
+    </div>
+</section>

@@ -121,3 +121,48 @@
     outline: 2px solid #d9b27a;
     outline-offset: 3px;
 }
+
+/* Checkout: o endereço e a cotação permanecem na mesma página. */
+.pedido-etapa { display: block; margin-bottom: 10px; color: var(--k-dourado); font-size: .8rem; font-weight: 700; letter-spacing: .12em; }
+.checkout-escolhas { border: 0; padding: 0; margin: 20px 0; }
+.checkout-endereco { padding: 16px; border: 1px solid var(--k-borda); border-radius: 10px; margin-bottom: 12px; transition: border-color .2s ease; }
+.checkout-endereco:has(input:checked) { border-color: var(--k-dourado); box-shadow: inset 3px 0 var(--k-dourado); }
+.checkout-endereco-escolha, .checkout-endereco-novo { display: flex; align-items: flex-start; gap: 12px; }
+.checkout-endereco label { flex: 1; margin: 0; cursor: pointer; min-height: 44px; }
+.checkout-endereco label span { display: block; color: var(--k-suave); margin-top: 3px; font-size: .95rem; }
+.checkout-endereco input[type=radio], .checkout-salvar-endereco input { width: 22px; height: 22px; margin-top: 2px; flex-shrink: 0; accent-color: #8e3632; }
+.checkout-form-endereco { border: 0; margin: 24px 0; padding: 0; }
+.checkout-salvar-endereco { display: flex !important; align-items: flex-start; gap: 12px; cursor: pointer; min-height: 44px; }
+.checkout-cotacao { margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--k-borda); }
+.checkout-tabela-taxas { margin: 16px 0; }
+.checkout-tabela-taxas summary { cursor: pointer; min-height: 44px; padding: 10px 0; color: var(--k-dourado); }
+.checkout-tabela-taxas li { margin-bottom: 6px; }
+.checkout-cotacao small { display: block; font-size: .8rem; }
+.checkout-cotacao small a { color: inherit; }
+.checkout-resumo-valores { margin-bottom: 0; }
+.checkout-resumo-valores > div { display: flex; justify-content: space-between; gap: 16px; margin-bottom: 12px; }
+.checkout-resumo-valores dt { font-weight: 400; }
+.checkout-resumo-valores dd { margin: 0; text-align: right; white-space: nowrap; font-weight: 700; }
+.checkout-resumo-valores .pedido-total { border-top: 1px solid var(--k-borda); border-bottom: 0; padding-top: 20px; }
+.pedido-botao { color: #fff; min-height: 48px; }
+.pedido-botao-secundario { background: transparent; color: var(--k-texto); border-color: var(--k-borda); }
+.pedido-link-excluir { color: var(--k-vermelho, #b95151); min-height: 44px; }
+.pedido-dialogo { background: var(--k-superficie); color: var(--k-texto); border: 1px solid var(--k-borda); border-radius: 14px; padding: 28px; width: min(92vw, 520px); max-height: 85vh; overflow: auto; }
+.pedido-dialogo::backdrop { background: rgb(0 0 0 / .65); }
+.pedido-dialogo .pedido-botao { flex: 1 1 180px; width: auto; }
+.pedido-cabecalho { display: flex; justify-content: space-between; gap: 20px; align-items: center; flex-wrap: wrap; margin: 8px 0 28px; }
+.pedido-acompanhamento { margin-bottom: 8px; }
+.pedido-progresso { display: flex; gap: 14px; padding: 8px 0; margin: 24px 0 12px; list-style: none; }
+.pedido-progresso li { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; color: var(--k-suave); border-top: 3px solid var(--k-borda); padding-top: 12px; }
+.pedido-progresso .etapa-alcancada { border-color: var(--k-dourado); color: var(--k-texto); }
+.pedido-progresso [aria-current=step] > span:nth-child(2) { font-weight: 700; }
+.pedido-progresso small { color: var(--k-dourado); font-size: .8rem; }
+.pedido-progresso-numero { display: grid; place-items: center; border: 1px solid var(--k-borda); width: 30px; height: 30px; border-radius: 50%; }
+.etapa-alcancada .pedido-progresso-numero { border-color: var(--k-dourado); }
+.pedido-endereco-historico { font-style: normal; line-height: 1.8; overflow-wrap: anywhere; }
+@media (min-width: 992px) { .checkout-resumo { position: sticky; top: 110px; } }
+@media (max-width: 575px) {
+    .pedido-box { padding: 20px; }
+    .pedido-progresso { gap: 8px; font-size: .85rem; }
+    .pedido-total { font-size: 1.1rem; }
+}

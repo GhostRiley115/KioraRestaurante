@@ -101,11 +101,9 @@ public class CepService
 
     public void ExigirAreaAtendida(string uf, string ibge)
     {
-        var municipios = _configuration
-            .GetSection("Entrega:MunicipiosIbge")
-            .Get<string[]>() ?? Array.Empty<string>();
-
-        if (uf != "SP" || !municipios.Contains(ibge))
+        // Municípios vizinhos também podem estar próximos; o limite final é conferido pela rota de 20 km.
+        var ufRestaurante = _configuration["Entrega:Restaurante:Uf"] ?? "SP";
+        if (uf != ufRestaurante || !Regex.IsMatch(ibge, @"^[0-9]{7}$"))
         {
             throw new ValidationException(
                 "Esse endereço está fora da área de entrega do restaurante.");

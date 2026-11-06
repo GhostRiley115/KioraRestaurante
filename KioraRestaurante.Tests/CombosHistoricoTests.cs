@@ -139,7 +139,10 @@ public class CombosHistoricoTests
             Contexto.SaveChanges();
             var cep = new CepService(_http, _cache, new ConfigurationBuilder().Build());
             Pedidos = new PedidoService(Contexto, new CarrinhoService(Contexto),
-                new EphemeralDataProtectionProvider(), new EnderecoUsuarioService(Contexto, cep));
+                new EphemeralDataProtectionProvider(), new EnderecoUsuarioService(Contexto, cep),
+                new KioraRestaurante.Services.Entrega.CotacaoEntregaService(new RotasEntregaSimuladas(),
+                    Microsoft.Extensions.Options.Options.Create(new KioraRestaurante.Options.EntregaOptions()),
+                    new EphemeralDataProtectionProvider(), TimeProvider.System));
         }
 
         public Pedido CriarPedido(string? composicao)

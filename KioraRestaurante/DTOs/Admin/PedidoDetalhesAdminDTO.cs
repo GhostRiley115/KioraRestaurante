@@ -4,6 +4,8 @@ namespace KioraRestaurante.DTOs.Admin;
 public class PedidoDetalhesAdminDTO : PedidoAdminDTO
 {
     public bool ClienteAtivo { get; set; }
+    public decimal TaxaEntrega { get; set; }
+    public int? DistanciaEntregaMetros { get; set; }
     public List<ItemPedidoAdminDTO> Itens { get; set; } = new();
     public EnderecoPedidoAdminDTO? Endereco { get; set; }
 }

@@ -10,6 +10,7 @@ using KioraRestaurante.Models;
 using KioraRestaurante.Models.Enums;
 using KioraRestaurante.Services.Interfaces;
 using KioraRestaurante.Services.Exceptions;
+using KioraRestaurante.Services.Entrega;
 
 namespace KioraRestaurante.Services;
 
@@ -20,14 +21,16 @@ public class PedidoService : IPedidoService
     // Proteger a informação da revisão
     private readonly IDataProtector _protetor;
     private readonly EnderecoUsuarioService _enderecoService;
+    private readonly CotacaoEntregaService _entregaService;
 
     public PedidoService(AppDbContext context, ICarrinhoService carrinhoService,
-        IDataProtectionProvider provider , EnderecoUsuarioService enderecoService)
+        IDataProtectionProvider provider , EnderecoUsuarioService enderecoService, CotacaoEntregaService entregaService)
     {
         _context = context;
         _carrinhoService = carrinhoService;
         _protetor = provider.CreateProtector("Kiora.Checkout.v2");
         _enderecoService = enderecoService;
+        _entregaService = entregaService;
     }
 
     // Pede outra confirmação caso o valor dos itens mude
@@ -213,10 +216,9 @@ public class PedidoService : IPedidoService
         Validator.ValidateObject(dto, new ValidationContext(dto), true);
         // Confere propriedade, versão e área de entrega.
         // O resultado é uma nova entidade, independente do endereço salvo.
-        var enderecoEntrega = await _enderecoService.CriarCopiaParaPedido(
-            usuarioId,
-            dto.EnderecoId!.Value,
-            dto.EnderecoVersao!.Value);
+        var enderecoPreparado = await _enderecoService.PrepararParaCheckout(usuarioId, dto);
+        var enderecoEntrega = enderecoPreparado.Entrega;
+        var entrega = _entregaService.Conferir(usuarioId, enderecoEntrega, dto.TokenEntrega);
 
         var resumoAtual = await _carrinhoService.RevisarCarrinho(acesso);
         if (!resumoAtual.PodeProsseguir)
@@ -242,12 +244,14 @@ public class PedidoService : IPedidoService
             StatusPedido = StatusPedido.Recebido,
             StatusPagamento = StatusPagamento.Pendente,
 
-            EnderecoEntrega = enderecoEntrega
+            EnderecoEntrega = enderecoEntrega,
+            TaxaEntrega = entrega.Taxa,
+            DistanciaEntregaMetros = entrega.DistanciaMetros
         };
 
         CopiarItensParaPedido(carrinho, pedido);
 
-        return await SalvarPedidoELimparCarrinho(pedido, carrinho);
+        return await SalvarPedidoELimparCarrinho(pedido, carrinho, enderecoPreparado.Salvar);
     }
 
 
@@ -326,7 +330,7 @@ public class PedidoService : IPedidoService
             });
         }
 
-        pedido.ValorTotal = pedido.ItensPedido.Sum(i => i.Subtotal);
+        pedido.ValorTotal = pedido.ItensPedido.Sum(i => i.Subtotal) + pedido.TaxaEntrega;
 
         if (pedido.ValorTotal > 99999999.99m)
         {
@@ -336,8 +340,10 @@ public class PedidoService : IPedidoService
     }
 
     // Salva a compra e a limpeza do carrinho na mesma operação.
-    private async Task<int> SalvarPedidoELimparCarrinho(Pedido pedido, Carrinho carrinho)
+    private async Task<int> SalvarPedidoELimparCarrinho(Pedido pedido, Carrinho carrinho, EnderecoUsuario? enderecoParaSalvar)
     {
+        if (enderecoParaSalvar != null)
+            _context.EnderecosUsuario.Add(enderecoParaSalvar);
         _context.Pedidos.Add(pedido);
 
         _context.ItensCarrinho.RemoveRange(carrinho.ItensCarrinho);

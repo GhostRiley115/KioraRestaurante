@@ -36,101 +36,104 @@
     };
 }
 
-<section class="container pedido-pagina">
-    <span class="pedido-sobretitulo">KIORA · MEUS PEDIDOS</span>
+@{
+    var etapas = new[] { StatusPedido.Recebido, StatusPedido.EmPreparo, StatusPedido.SaiuParaEntrega, StatusPedido.Entregue };
+    var titulos = new[] { "Recebido", "Em preparo", "A caminho", "Entregue" };
+    var mensagem = Model.StatusPedido switch {
+        StatusPedido.Recebido => "Seu pedido foi registrado. Acompanhe por aqui as próximas etapas.",
+        StatusPedido.EmPreparo => "Nossa cozinha está preparando seu pedido.",
+        StatusPedido.SaiuParaEntrega => "Seu pedido saiu para entrega. Fique atento à chegada.",
+        StatusPedido.Entregue => "Pedido concluído. Obrigado por escolher a Kiora!",
+        StatusPedido.Cancelado => "Este pedido foi cancelado. Confira também a situação do pagamento.",
+        _ => "Consulte as informações do seu pedido abaixo."
+    };
+    var pagamentoTexto = Model.StatusPagamento switch {
+        StatusPagamento.Conferencia => "Em conferência", StatusPagamento.Reembolsado => "Reembolsado",
+        _ => Model.StatusPagamento.ToString()
+    };
+}
 
-    <h1>Pedido #@Model.Id</h1>
+<section class="container pedido-pagina pedido-detalhes">
+    <a asp-action="MeusPedidos" class="pedido-link">← Meus pedidos</a>
+    <header class="pedido-cabecalho">
+        <div><span class="pedido-sobretitulo">KIORA · SEU PEDIDO</span><h1>Pedido #@Model.Id</h1>
+            <p class="pedido-texto-suave mb-0">@dataLocal.ToString("dd/MM/yyyy 'às' HH:mm") · horário de Brasília</p></div>
+        <span class="status-etiqueta @StatusVisual.Pedido(Model.StatusPedido)">@status</span>
+    </header>
 
-    @if (Model.FormaPagamento == FormaPagamento.MercadoPago)
-    {
-        <a asp-controller="Pagamento" asp-action="Index" asp-route-id="@Model.Id">
-            Ver pagamento online
-        </a>
-    }
+    <section class="pedido-box pedido-acompanhamento" aria-labelledby="tituloAndamento">
+        <h2 id="tituloAndamento">Acompanhe seu pedido</h2>
+        <p>@mensagem</p>
+        @if (Model.StatusPedido != StatusPedido.Cancelado) {
+            <ol class="pedido-progresso" aria-label="Etapas do pedido">
+                @for (var i = 0; i < etapas.Length; i++) {
+                    var atual = Model.StatusPedido == etapas[i];
+                    <li class="@((int)Model.StatusPedido >= (int)etapas[i] ? "etapa-alcancada" : "")" aria-current="@(atual ? "step" : null)">
+                        <span class="pedido-progresso-numero" aria-hidden="true">@(i + 1)</span><span>@titulos[i]</span>
+                        @if (atual) { <small>Etapa atual</small> }
+                    </li>
+                }
+            </ol>
+        }
+        <a asp-action="Detalhes" asp-route-id="@Model.Id" class="pedido-link">Atualizar situação</a>
+    </section>
 
-    <p class="pedido-texto-suave">
-        Registrado em @dataLocal.ToString("dd/MM/yyyy HH:mm")
-        — horário de Brasília.
-    </p>
-
-    <div class="row g-4">
+    <div class="row g-4 mt-1">
         <div class="col-12 col-lg-7">
             <section class="pedido-box">
-                <h2>Produtos</h2>
-
-                @foreach (var item in Model.ItensPedido)
-                {
+                <h2>O que você pediu</h2>
+                <p class="pedido-texto-suave">@Model.ItensPedido.Count produto(s) · @Model.ItensPedido.Sum(i => i.Quantidade) unidade(s)</p>
+                @foreach (var item in Model.ItensPedido) {
                     <div class="pedido-linha">
-                        <div>
-                            <strong>@item.NomeProduto</strong>
-
-                            @if (!string.IsNullOrWhiteSpace(item.Composicao))
-                            {
-                                <p class="pedido-texto-suave mb-0">
-                                    Composição por combo: @item.Composicao
-                                </p>
+                        <div><strong>@item.NomeProduto</strong>
+                            @if (!string.IsNullOrWhiteSpace(item.Composicao)) {
+                                <p class="pedido-texto-suave mb-1">Composição por combo: @item.Composicao</p>
                             }
-
-                            <p class="pedido-texto-suave mb-0">
-                                @item.Quantidade ×
-                                @item.PrecoUnitario.ToString("C", cultura)
+                            <p class="pedido-texto-suave mb-0">@item.Quantidade × @item.PrecoUnitario.ToString("C", cultura)
+                                @if (item.PrecoOriginalUnitario > item.PrecoUnitario) {
+                                    <span>· antes <del>@item.PrecoOriginalUnitario.Value.ToString("C", cultura)</del></span>
+                                }
                             </p>
+                            @if (!string.IsNullOrWhiteSpace(item.Observacao)) { <p class="pedido-texto-suave mb-0">Observação: @item.Observacao</p> }
                         </div>
-
-                        <strong>
-                            @item.Subtotal.ToString("C", cultura)
-                        </strong>
+                        <strong>@item.Subtotal.ToString("C", cultura)</strong>
                     </div>
                 }
-
-                <div class="pedido-total">
-                    <span>Total</span>
-                    <strong>
-                        @Model.ValorTotal.ToString("C", cultura)
-                    </strong>
-                </div>
+                <dl class="checkout-resumo-valores mt-3">
+                    <div><dt>Subtotal dos produtos</dt><dd>@Model.ItensPedido.Sum(i => i.Subtotal).ToString("C", cultura)</dd></div>
+                    <div><dt>Taxa de entrega</dt><dd>@(Model.TaxaEntrega == 0 ? "Sem cobrança" : Model.TaxaEntrega.ToString("C", cultura))</dd></div>
+                    <div class="pedido-total"><dt>Total do pedido</dt><dd>@Model.ValorTotal.ToString("C", cultura)</dd></div>
+                </dl>
             </section>
         </div>
-
         <div class="col-12 col-lg-5">
             <section class="pedido-box">
-                <h2>Informações do pedido</h2>
-
-                <p><strong>Situação:</strong> <span class="status-etiqueta @StatusVisual.Pedido(Model.StatusPedido)">@status</span></p>
-                <p><strong>Forma de pagamento:</strong> @pagamento</p>
-                <p>
-                    <strong>Pagamento:</strong>
-                    <span class="status-etiqueta @StatusVisual.Pagamento(Model.StatusPagamento)">@Model.StatusPagamento</span>
-                </p>
-
-                <h2 class="mt-4">Entrega</h2>
-
-                @if (Model.EnderecoEntrega != null)
-                {
-                    var endereco = Model.EnderecoEntrega;
-
-                    <p>
-                        @endereco.Logradouro, @endereco.Numero<br />
-                        @endereco.Bairro<br />
-                        @endereco.Cidade — @endereco.Uf<br />
-                        CEP @endereco.Cep
-                    </p>
-
-                    @if (!string.IsNullOrWhiteSpace(endereco.Complemento))
-                    {
-                        <p>Complemento: @endereco.Complemento</p>
-                    }
-
-                    @if (!string.IsNullOrWhiteSpace(endereco.Referencia))
-                    {
-                        <p>Referência: @endereco.Referencia</p>
-                    }
+                <h2>Pagamento</h2>
+                <p><strong>Forma escolhida:</strong> @pagamento</p>
+                <p><strong>Situação:</strong> <span class="status-etiqueta @StatusVisual.Pagamento(Model.StatusPagamento)">@pagamentoTexto</span></p>
+                @if (Model.FormaPagamento == FormaPagamento.MercadoPago) {
+                    <p class="pedido-texto-suave">Consulte a confirmação ou continue o pagamento online.</p>
+                    <a asp-controller="Pagamento" asp-action="Index" asp-route-id="@Model.Id" class="pedido-link">Ver pagamento online</a>
+                } else if (Model.FormaPagamento == FormaPagamento.Dinheiro && Model.StatusPagamento == StatusPagamento.Pendente) {
+                    <p class="pedido-texto-suave">Você escolheu pagar em dinheiro na entrega.</p>
                 }
-
-                <a asp-action="MeusPedidos" class="pedido-link">
-                    Ver meus pedidos
-                </a>
             </section>
+            <section class="pedido-box mt-4">
+                <h2>Endereço de entrega</h2>
+                @if (Model.EnderecoEntrega is { } endereco) {
+                    <address class="pedido-endereco-historico">
+                        <strong>@endereco.Logradouro, @endereco.Numero</strong><br />
+                        @endereco.Bairro<br />@endereco.Cidade — @endereco.Uf<br />CEP @endereco.Cep
+                    </address>
+                    @if (!string.IsNullOrWhiteSpace(endereco.Complemento)) { <p><strong>Complemento:</strong> @endereco.Complemento</p> }
+                    @if (!string.IsNullOrWhiteSpace(endereco.Referencia)) { <p><strong>Referência:</strong> @endereco.Referencia</p> }
+                    @if (Model.DistanciaEntregaMetros.HasValue) {
+                        <p class="pedido-texto-suave">Percurso estimado na compra: @((Model.DistanciaEntregaMetros.Value / 1000m).ToString("0.00", cultura)) km.</p>
+                    }
+                    <p class="pedido-texto-suave mb-0">Endereço informado ao fazer este pedido.</p>
+                } else { <p>Endereço não registrado.</p> }
+            </section>
+            <a asp-controller="Home" asp-action="Cardapio" class="pedido-link mt-3">Continuar no cardápio</a>
         </div>
     </div>
 </section>

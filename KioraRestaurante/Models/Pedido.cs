@@ -19,6 +19,11 @@ namespace KioraRestaurante.Models
         [Column(TypeName = "decimal(10,2)")]
         public decimal ValorTotal { get; set; }
 
+        // Valores da entrega no momento da compra; mudanças na tabela não alteram pedidos antigos.
+        [Column(TypeName = "decimal(10,2)")]
+        public decimal TaxaEntrega { get; set; }
+        public int? DistanciaEntregaMetros { get; set; }
+
         public List<ItemPedido> ItensPedido { get; set; } = new();
 
         //Se a mesma confirmação for enviada novamente, podemos recuperar o pedido já criado.

@@ -12,6 +12,9 @@
             @if(!string.IsNullOrWhiteSpace(item.Observacao)) { <p>Observação: @item.Observacao</p> }</div>
             <strong>@item.Subtotal.ToString("C", cultura)</strong></div>
         }
+        <p>Produtos: @Model.Itens.Sum(i => i.Subtotal).ToString("C", cultura)</p>
+        <p>Taxa de entrega: @Model.TaxaEntrega.ToString("C", cultura)</p>
+        @if (Model.DistanciaEntregaMetros.HasValue) { <p>Percurso estimado: @((Model.DistanciaEntregaMetros.Value / 1000m).ToString("0.00", cultura)) km</p> }
         <p class="admin-total">Total <strong>@Model.ValorTotal.ToString("C", cultura)</strong></p>
     </section>
     <section class="admin-box"><h2>Cliente e pagamento</h2>

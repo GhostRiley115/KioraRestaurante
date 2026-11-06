@@ -6,18 +6,10 @@
 
     var cultura = CultureInfo.GetCultureInfo("pt-BR");
 
-    var estados = new[]
-    {
-        "AC", "AL", "AP", "AM", "BA", "CE", "DF",
-        "ES", "GO", "MA", "MT", "MS", "MG", "PA",
-        "PB", "PR", "PE", "PI", "RJ", "RN", "RS",
-        "RO", "RR", "SC", "SP", "SE", "TO"
-    };
-
     var podeConfirmar =
         Model.Resumo.PodeProsseguir
         && !string.IsNullOrWhiteSpace(Model.Dados.TokenRevisao)
-        && Model.Enderecos.Count > 0;
+        && Model.Entrega != null;
 }
 
 <section class="container pedido-pagina">
@@ -46,59 +38,23 @@
     <form asp-controller="Pedido"
           asp-action="Checkout"
           method="post"
-          id="formCheckout">
+          id="formCheckout"
+          data-endereco-form data-endereco-prefixo="Dados_NovoEndereco_"
+          data-cep-base="@Url.Content("~/api/cep/")"
+          data-cotacao-url="@Url.Action("CotarEntrega", "Pedido")"
+          data-total-produtos="@Model.Resumo.Total.ToString(CultureInfo.InvariantCulture)"
+          data-pode-prosseguir="@(Model.Resumo.PodeProsseguir && !string.IsNullOrWhiteSpace(Model.Dados.TokenRevisao) ? "true" : "false")"
+          data-validade-entrega="@Model.Entrega?.ExpiraEmUtc.ToString("O")">
 
         <input asp-for="Dados.TokenRevisao" type="hidden" />
+        <input asp-for="Dados.TokenEntrega" type="hidden" />
 
         <div class="row g-4">
             <div class="col-12 col-lg-7">
-                <section class="pedido-box">
-                    <h2>Endereço de entrega</h2>
-
-                    <input asp-for="Dados.EnderecoVersao" type="hidden" />
-
-                    @if (Model.Enderecos.Count == 0)
-                    {
-                        <p>Cadastre um endereço para continuar.</p>
-                    }
-
-                    @foreach (var endereco in Model.Enderecos)
-                    {
-                        var identificador = $"endereco-{endereco.Id}";
-
-                        <div class="mb-3">
-                            <input asp-for="Dados.EnderecoId"
-                                   type="radio"
-                                   id="@identificador"
-                                   value="@endereco.Id"
-                                   data-endereco-versao="@endereco.Versao" />
-
-                            <label for="@identificador">
-                                <strong>@endereco.Apelido</strong><br />
-
-                                @endereco.Logradouro, @endereco.Numero<br />
-
-                                @endereco.Bairro — @endereco.Cidade/@endereco.Uf<br />
-
-                                CEP @endereco.Cep
-
-                                @if (!string.IsNullOrWhiteSpace(endereco.Complemento))
-                                {
-                                    <br />
-                                    @endereco.Complemento
-                                }
-                            </label>
-                        </div>
-                    }
-
-                    <a asp-controller="Enderecos"
-                       asp-action="Index"
-                       class="pedido-link">
-                        Cadastrar ou editar meus endereços
-                    </a>
-                </section>
+                <partial name="~/Views/Pedido/_EnderecoCheckout.cshtml" model="Model" />
 
                 <section class="pedido-box mt-4">
+                    <span class="pedido-etapa">2 · PAGAMENTO</span>
                     <h2>Forma de pagamento</h2>
 
                     <label asp-for="Dados.FormaPagamento">
@@ -119,8 +75,9 @@
             </div>
 
             <div class="col-12 col-lg-5">
-                <section class="pedido-box">
-                    <h2>Seus produtos</h2>
+                <section class="pedido-box checkout-resumo">
+                    <span class="pedido-etapa">3 · RESUMO</span>
+                    <h2>Seu pedido</h2>
 
                     @if (Model.Resumo.Itens.Count == 0)
                     {
@@ -159,12 +116,12 @@
                         </div>
                     }
 
-                    <div class="pedido-total">
-                        <span>Total dos produtos</span>
-                        <strong>
-                            @Model.Resumo.Total.ToString("C", cultura)
-                        </strong>
-                    </div>
+                    <dl class="checkout-resumo-valores">
+                        <div><dt>Subtotal dos produtos</dt><dd>@Model.Resumo.Total.ToString("C", cultura)</dd></div>
+                        <div><dt>Distância pelas ruas</dt><dd id="distanciaEntrega">@(Model.Entrega == null ? "A calcular" : (Model.Entrega.DistanciaMetros / 1000m).ToString("0.00", cultura) + " km")</dd></div>
+                        <div><dt>Taxa de entrega</dt><dd id="taxaEntrega">@(Model.Entrega == null ? "A calcular" : Model.Entrega.Taxa.ToString("C", cultura))</dd></div>
+                        <div class="pedido-total"><dt>Total do pedido</dt><dd id="totalComEntrega">@(Model.Entrega == null ? "A calcular" : (Model.Resumo.Total + Model.Entrega.Taxa).ToString("C", cultura))</dd></div>
+                    </dl>
 
                     <button type="submit"
                             id="confirmarPedido"
@@ -195,39 +152,11 @@
     </form>
 </section>
 
+<partial name="_ConfirmarExclusaoEndereco" />
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-
-    <script>
-        const formularioCheckout =
-            document.getElementById("formCheckout");
-
-        const confirmarPedido =
-            document.getElementById("confirmarPedido");
-
-        const inicialmenteDesabilitado =
-            confirmarPedido.disabled;
-
-        // Guarda a versão do endereço que o cliente escolheu nesta revisão.
-        document.querySelectorAll("[data-endereco-versao]").forEach(opcao => {
-            opcao.addEventListener("change", () => {
-                document.getElementById("Dados_EnderecoVersao").value =
-                    opcao.dataset.enderecoVersao;
-            });
-        });
-
-        formularioCheckout.addEventListener("submit", function () {
-            // A validação jQuery pode impedir o envio.
-            if (!$(formularioCheckout).valid()) return;
-
-            confirmarPedido.disabled = true;
-            confirmarPedido.textContent = "Confirmando…";
-        });
-
-        // Recupera o botão ao voltar pelo histórico do navegador.
-        window.addEventListener("pageshow", function () {
-            confirmarPedido.disabled = inicialmenteDesabilitado;
-            confirmarPedido.textContent = "Confirmar pedido";
-        });
-    </script>
+    <script src="~/js/Endereco.js" asp-append-version="true"></script>
+    <script src="~/js/endereco-exclusao.js" asp-append-version="true"></script>
+    <script src="~/js/checkout.js" asp-append-version="true"></script>
 }

@@ -89,6 +89,48 @@ public class CheckoutOnlineCompradorTests
         Assert.Equal(StatusPagamento.Aprovado, (await banco.Db.Pedidos.SingleAsync()).StatusPagamento);
     }
 
+    [Theory]
+    [InlineData(0)]
+    [InlineData(5)]
+    [InlineData(16)]
+    public async Task CobrancaIncluiEntregaUmaUnicaVezENaoAprovaValorParcial(decimal taxa)
+    {
+        using var banco = new Banco(true);
+        banco.Pedido.TaxaEntrega = taxa;
+        banco.Pedido.ValorTotal = 10m + taxa;
+        await banco.Db.SaveChangesAsync();
+        await banco.Servico.Iniciar(banco.Cliente.Id, banco.Pedido.Id, default);
+        using var json = JsonDocument.Parse(Assert.Single(banco.Http.Criacoes).Corpo);
+        var itens = json.RootElement.GetProperty("items").EnumerateArray().ToArray();
+        Assert.Equal(taxa > 0 ? 2 : 1, itens.Length);
+        if (taxa > 0)
+        {
+            Assert.Equal("Taxa de entrega", itens[1].GetProperty("title").GetString());
+            Assert.Equal(taxa.ToString("F2", System.Globalization.CultureInfo.InvariantCulture), itens[1].GetProperty("unit_price").GetString());
+        }
+        Assert.Equal((10m + taxa).ToString("F2", System.Globalization.CultureInfo.InvariantCulture), json.RootElement.GetProperty("total_amount").GetString());
+        var id = (await banco.Db.PagamentosOnline.SingleAsync()).OrderId!;
+        banco.Http.Pago = true;
+        banco.Http.ValorPago = "1.00";
+        await banco.Servico.Sincronizar(id, default);
+        banco.Db.ChangeTracker.Clear();
+        Assert.NotEqual(StatusPagamento.Aprovado, (await banco.Db.Pedidos.SingleAsync()).StatusPagamento);
+        banco.Http.ValorPago = null;
+        await banco.Servico.Sincronizar(id, default);
+        banco.Db.ChangeTracker.Clear();
+        Assert.Equal(StatusPagamento.Aprovado, (await banco.Db.Pedidos.SingleAsync()).StatusPagamento);
+    }
+
+    [Fact]
+    public async Task TotalDivergenteDaSomaDeProdutosEEntregaNaoCriaCobranca()
+    {
+        using var banco = new Banco(true);
+        banco.Pedido.TaxaEntrega = 5m;
+        await banco.Db.SaveChangesAsync();
+        await Assert.ThrowsAsync<FalhaPagamento>(() => banco.Servico.Iniciar(banco.Cliente.Id, banco.Pedido.Id, default));
+        Assert.Empty(banco.Http.Criacoes);
+    }
+
     private sealed class Banco : IDisposable
     {
         private readonly SqliteConnection _conexao = new("Data Source=:memory:");
@@ -139,6 +181,7 @@ public class CheckoutOnlineCompradorTests
         public List<(string Corpo, string Chave)> Criacoes { get; } = [];
         public bool FalharUmaVez { get; set; }
         public bool Pago { get; set; }
+        public string? ValorPago { get; set; }
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken ct)
         {
@@ -157,11 +200,11 @@ public class CheckoutOnlineCompradorTests
             {
                 id = teste ? "ORDTST123" : "ORD123", type = "online", processing_mode = "manual",
                 external_reference = corpo.RootElement.GetProperty("external_reference").GetString(),
-                user_id = "123", currency = "BRL", country_code = "BRA", total_amount = "10.00",
+                user_id = "123", currency = "BRL", country_code = "BRA", total_amount = corpo.RootElement.GetProperty("total_amount").GetString(),
                 integration_data = new { application_id = "456" },
                 checkout_url = "https://www.mercadopago.com.br/checkout/v1/redirect?order_id=" + (teste ? "ORDTST123" : "ORD123"),
                 status = Pago ? "processed" : "created", status_detail = Pago ? "accredited" : "created",
-                total_paid_amount = Pago ? "10.00" : null,
+                total_paid_amount = Pago ? ValorPago ?? corpo.RootElement.GetProperty("total_amount").GetString() : null,
                 last_updated_date = DateTimeOffset.UtcNow.ToString("O")
             });
             return new(HttpStatusCode.OK) { Content = new StringContent(resposta, Encoding.UTF8, "application/json") };

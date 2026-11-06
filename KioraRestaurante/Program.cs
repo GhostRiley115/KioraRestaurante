@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using KioraRestaurante.Services;
 using KioraRestaurante.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -73,6 +75,45 @@ builder.Services.AddSingleton(_ => new LimitadorRecuperacaoSenha(
     builder.Configuration.GetValue<bool>("Seguranca:LimitarLoginPorIp")));
 builder.Services.AddScoped<LimitarRecuperacaoSenha>();
 builder.Services.AddScoped<EnderecoUsuarioService>();
+builder.Services.AddRateLimiter(limites =>
+{
+    limites.AddPolicy("cotacao-entrega", contexto => RateLimitPartition.GetFixedWindowLimiter(
+        contexto.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "sem-sessao",
+        _ => new FixedWindowRateLimiterOptions { PermitLimit = 12, Window = TimeSpan.FromMinutes(1), QueueLimit = 0 }));
+    limites.OnRejected = async (contexto, ct) =>
+    {
+        contexto.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+        await contexto.HttpContext.Response.WriteAsJsonAsync(new { mensagem = "Aguarde um minuto antes de calcular novamente a entrega." }, ct);
+    };
+});
+builder.Services.AddOptions<KioraRestaurante.Options.EntregaOptions>()
+    .Configure(o => o.Faixas = [])
+    .Bind(builder.Configuration.GetSection("Entrega"))
+    .PostConfigure(o => { if (o.Faixas.Length == 0) o.Faixas = new KioraRestaurante.Options.EntregaOptions().Faixas; })
+    .Validate(o => o.LimiteMetros == 20000 && o.Faixas.Length > 0
+        && o.Faixas.All(f => f.AteMetros > 0 && f.Valor is >= 0 and <= 99999999.99m && decimal.Round(f.Valor, 2) == f.Valor)
+        && o.Faixas.Select(f => f.AteMetros).Distinct().Count() == o.Faixas.Length
+        && o.Faixas.Max(f => f.AteMetros) == o.LimiteMetros,
+        "Confira a área e a tabela de entrega.")
+    .ValidateOnStart();
+builder.Services.AddScoped<KioraRestaurante.Services.Entrega.CotacaoEntregaService>();
+builder.Services.AddHttpClient<KioraRestaurante.Services.Entrega.IRotasEntrega, KioraRestaurante.Services.Entrega.HeiGitRotasEntrega>(http =>
+{
+    http.BaseAddress = new Uri("https://api.heigit.org/");
+    http.Timeout = TimeSpan.FromSeconds(15);
+    http.MaxResponseContentBufferSize = 1_000_000;
+})
+.ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { AllowAutoRedirect = false })
+// O endereço enviado ao geocodificador não deve aparecer nos logs de requisições HTTP.
+.RemoveAllLoggers();
+builder.Services.AddHttpClient<KioraRestaurante.Services.Entrega.IGeocodificadorEntrega, KioraRestaurante.Services.Entrega.GeoapifyGeocodificadorEntrega>(http =>
+{
+    http.BaseAddress = new Uri("https://api.geoapify.com/");
+    http.Timeout = TimeSpan.FromSeconds(15);
+    http.MaxResponseContentBufferSize = 1_000_000;
+})
+.ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { AllowAutoRedirect = false })
+.RemoveAllLoggers();
 builder.Services.AddAntiforgery(options => { options.HeaderName = "X-CSRF-TOKEN"; });
 // Cache em memória para consultas públicas de CEP.
 builder.Services.AddMemoryCache();
@@ -142,6 +183,7 @@ app.UseAuthentication();
 // verificar se o usuário possui autorização
 // para acessar determinadas áreas da aplicação.
 app.UseAuthorization();
+app.UseRateLimiter();
 
 // Mapeia os arquivos estáticos da aplicação.
 app.MapStaticAssets();

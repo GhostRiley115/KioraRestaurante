@@ -582,6 +582,9 @@ namespace KioraRestaurante.Migrations
                     b.Property<DateTime>("DataPedido")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<int?>("DistanciaEntregaMetros")
+                        .HasColumnType("int");
+
                     b.Property<string>("FormaPagamento")
                         .IsRequired()
                         .HasMaxLength(30)
@@ -596,6 +599,9 @@ namespace KioraRestaurante.Migrations
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("varchar(30)");
+
+                    b.Property<decimal>("TaxaEntrega")
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<int>("UsuarioId")
                         .HasColumnType("int");
