@@ -511,6 +511,63 @@ namespace KioraRestaurante.Migrations
                         });
                 });
 
+            modelBuilder.Entity("KioraRestaurante.Models.PagamentoOnline", b =>
+                {
+                    b.Property<int>("PedidoId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("AtualizacaoExternaUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("CheckoutUrl")
+                        .HasMaxLength(2048)
+                        .HasColumnType("varchar(2048)");
+
+                    b.Property<DateTime>("ConferidoEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("CorpoCriacao")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CriadoEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("OrderId")
+                        .HasMaxLength(80)
+                        .HasColumnType("varchar(80)");
+
+                    b.Property<Guid>("Referencia")
+                        .HasColumnType("char(36)");
+
+                    b.Property<bool>("RevisaoNecessaria")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("SituacaoExterna")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)");
+
+                    b.Property<decimal>("Valor")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<Guid>("Versao")
+                        .IsConcurrencyToken()
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("PedidoId");
+
+                    b.HasIndex("ConferidoEmUtc");
+
+                    b.HasIndex("OrderId")
+                        .IsUnique();
+
+                    b.HasIndex("Referencia")
+                        .IsUnique();
+
+                    b.ToTable("PagamentosOnline");
+                });
+
             modelBuilder.Entity("KioraRestaurante.Models.Pedido", b =>
                 {
                     b.Property<int>("Id")
@@ -850,6 +907,17 @@ namespace KioraRestaurante.Migrations
                     b.Navigation("Pedido");
 
                     b.Navigation("Produto");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.PagamentoOnline", b =>
+                {
+                    b.HasOne("KioraRestaurante.Models.Pedido", "Pedido")
+                        .WithOne()
+                        .HasForeignKey("KioraRestaurante.Models.PagamentoOnline", "PedidoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Pedido");
                 });
 
             modelBuilder.Entity("KioraRestaurante.Models.Pedido", b =>

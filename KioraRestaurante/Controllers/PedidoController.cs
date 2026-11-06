@@ -111,6 +111,9 @@ public class PedidoController : Controller
                 var pedidoId =
                     await _pedidoService.ConfirmarPedido(acesso, model.Dados);
 
+                if (model.Dados.FormaPagamento == KioraRestaurante.Models.Enums.FormaPagamento.MercadoPago)
+                    return RedirectToAction("Index", "Pagamento", new { id = pedidoId });
+
                 return RedirectToAction(nameof(Detalhes), new { id = pedidoId });
             }
             catch (RegraPedidoException ex)
