@@ -11,8 +11,43 @@ public class CheckoutOnlineService(AppDbContext db, MpOrdersClient api, IOptions
 {
     private static string Texto(JsonElement e, string nome) =>
         e.TryGetProperty(nome, out var v) ? v.ToString() : "";
-    private static decimal Valor(JsonElement e, string nome) =>
-        decimal.Parse(Texto(e, nome), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture);
+    private static decimal? Valor(JsonElement e, string nome)
+    {
+        // Ausente ou nulo significa valor não informado; não significa pagamento aprovado.
+        if (!e.TryGetProperty(nome, out var campo)
+            || campo.ValueKind is JsonValueKind.Null or JsonValueKind.Undefined)
+        {
+            return null;
+        }
+
+        if (campo.ValueKind == JsonValueKind.Number
+            && campo.TryGetDecimal(out var numero)
+            && numero >= 0)
+        {
+            return numero;
+        }
+
+        if (campo.ValueKind == JsonValueKind.String)
+        {
+            var texto = campo.GetString();
+
+            if (string.IsNullOrWhiteSpace(texto))
+                return null;
+
+            if (decimal.TryParse(
+                    texto,
+                    NumberStyles.AllowDecimalPoint,
+                    CultureInfo.InvariantCulture,
+                    out var valor)
+                && valor >= 0)
+            {
+                return valor;
+            }
+        }
+
+        throw new FalhaPagamento(
+            $"O Mercado Pago retornou um valor inválido em {nome}. Consulte novamente o pagamento.");
+    }
 
     public async Task<Pedido> ExigirPedido(int usuarioId, int id, CancellationToken ct) =>
         await db.Pedidos.AsNoTracking().Include(p => p.ItensPedido)
@@ -209,13 +244,30 @@ public class CheckoutOnlineService(AppDbContext db, MpOrdersClient api, IOptions
         }
     }
 
-    public static StatusPagamento Mapear(string status, string detalhe, decimal pago, decimal valor) => (status, detalhe) switch
+    public static StatusPagamento Mapear(
+        string status,
+        string detalhe,
+        decimal? pago,
+        decimal valor) => (status, detalhe) switch
     {
-        ("processed", "accredited") when pago == valor => StatusPagamento.Aprovado,
+        ("processed", "accredited")
+            when pago.HasValue
+                 && pago.Value == valor
+                 && valor > 0
+            => StatusPagamento.Aprovado,
+
         ("refunded", _) => StatusPagamento.Reembolsado,
+
         ("failed", _) => StatusPagamento.Recusado,
+
         ("canceled", _) => StatusPagamento.Cancelado,
-        ("created" or "processing" or "action_required", _) when pago == 0 => StatusPagamento.Pendente,
-        _ => StatusPagamento.Conferencia // Inclui estorno parcial ou divergência de valor.
+
+        ("created" or "processing" or "action_required", _)
+            when !pago.HasValue || pago.Value == 0
+            => StatusPagamento.Pendente,
+
+        // Inclui estorno parcial ou divergência de valor.
+        // Uma aprovação externa sem valor informado também exige conferência.
+        _ => StatusPagamento.Conferencia
     };
 }
