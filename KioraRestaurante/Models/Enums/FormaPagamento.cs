@@ -5,6 +5,7 @@
         Dinheiro = 0,
         Pix = 1,
         CartaoCredito = 2,
-        CartaoDebito = 3
+        CartaoDebito = 3,
+        MercadoPago = 4
     }
 }

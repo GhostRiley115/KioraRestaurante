@@ -8,6 +8,6 @@ public static class TextosAdmin
         StatusPedido.EmPreparo => "Em preparo", StatusPedido.SaiuParaEntrega => "Saiu para entrega", _ => status.ToString()
     };
     public static string Pagamento(FormaPagamento forma) => forma switch {
-        FormaPagamento.CartaoCredito => "Cartão de crédito", FormaPagamento.CartaoDebito => "Cartão de débito", _ => forma.ToString()
+        FormaPagamento.CartaoCredito => "Cartão de crédito", FormaPagamento.CartaoDebito => "Cartão de débito", FormaPagamento.MercadoPago => "Mercado Pago", _ => forma.ToString()
     };
 }

@@ -26,11 +26,19 @@ namespace KioraRestaurante.Data
         public DbSet<ControleSala> ControlesSala { get; set; }
         public DbSet<EventoReserva> EventosReserva { get; set; }
         public DbSet<LimpezaImagemPendente> LimpezasImagensPendentes { get; set; }
+        public DbSet<PagamentoOnline> PagamentosOnline { get; set; }
 
         //Cria a relação entre tabelas
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<PagamentoOnline>().HasIndex(p => p.Referencia).IsUnique();
+            modelBuilder.Entity<PagamentoOnline>().HasIndex(p => p.OrderId).IsUnique();
+            modelBuilder.Entity<PagamentoOnline>().HasIndex(p => p.ConferidoEmUtc);
+            modelBuilder.Entity<PagamentoOnline>().HasOne(p => p.Pedido).WithOne()
+                .HasForeignKey<PagamentoOnline>(p => p.PedidoId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             // RESERVAS: trava compartilhada, histórico e identificação idempotente.
             modelBuilder.Entity<ControleSala>().HasData(new ControleSala { Id = 1 });

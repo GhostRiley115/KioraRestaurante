@@ -21,6 +21,7 @@
         FormaPagamento.Pix => "Pix",
         FormaPagamento.CartaoCredito => "Cartão de crédito",
         FormaPagamento.CartaoDebito => "Cartão de débito",
+        FormaPagamento.MercadoPago => "Mercado Pago",
         _ => "Não informado"
     };
 
@@ -39,6 +40,13 @@
     <span class="pedido-sobretitulo">KIORA · MEUS PEDIDOS</span>
 
     <h1>Pedido #@Model.Id</h1>
+
+    @if (Model.FormaPagamento == FormaPagamento.MercadoPago)
+    {
+        <a asp-controller="Pagamento" asp-action="Index" asp-route-id="@Model.Id">
+            Ver pagamento online
+        </a>
+    }
 
     <p class="pedido-texto-suave">
         Registrado em @dataLocal.ToString("dd/MM/yyyy HH:mm")

@@ -100,6 +100,17 @@ builder.Services.AddScoped<KioraRestaurante.Services.Reservas.IdentidadeReserva>
 builder.Services.AddScoped<KioraRestaurante.Services.Reservas.ReservaService>();
 builder.Services.AddHostedService<KioraRestaurante.Services.Reservas.ExpiracaoReservasService>();
 builder.Services.AddHostedService<KioraRestaurante.Services.Imagens.LimpezaImagensService>();
+builder.Services.Configure<KioraRestaurante.Options.MercadoPagoConfig>(
+    builder.Configuration.GetSection("MercadoPago"));
+
+builder.Services.AddHttpClient<KioraRestaurante.Services.PagamentosOnline.MpOrdersClient>(c =>
+{
+    c.BaseAddress = new Uri("https://api.mercadopago.com/");
+    c.Timeout = TimeSpan.FromSeconds(10);
+});
+
+builder.Services.AddScoped<KioraRestaurante.Services.PagamentosOnline.CheckoutOnlineService>();
+builder.Services.AddHostedService<KioraRestaurante.Services.PagamentosOnline.ConferenciaOnlineService>();
 
 var app = builder.Build();
 
