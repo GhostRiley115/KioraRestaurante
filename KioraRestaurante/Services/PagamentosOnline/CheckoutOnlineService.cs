@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Text.Json;
 using KioraRestaurante.Data;
@@ -69,6 +70,18 @@ public class CheckoutOnlineService(AppDbContext db, MpOrdersClient api, IOptions
         var registro = await db.PagamentosOnline.SingleOrDefaultAsync(p => p.PedidoId == id, ct);
         if (registro == null)
         {
+            // O comprador já é identificado na criação, antes de abrir o checkout.
+            // Em teste, não envia o e-mail real do cliente ao ambiente de simulação.
+            var emailComprador = o.ModoTeste
+                ? (o.EmailCompradorTeste ?? "").Trim()
+                : (await db.Usuarios.AsNoTracking()
+                    .Where(u => u.Id == usuarioId && u.Ativo)
+                    .Select(u => u.Email)
+                    .SingleAsync(ct)).Trim();
+
+            if (!new EmailAddressAttribute().IsValid(emailComprador))
+                throw new FalhaPagamento("Confira o e-mail do comprador antes de iniciar o pagamento.");
+
             var referencia = Guid.NewGuid();
             var retorno = o.UrlPublica.TrimEnd('/') + "/Pagamento/Retorno/" + id;
             if (pedido.ValorTotal <= 0 || pedido.ItensPedido.Sum(i => i.PrecoUnitario * i.Quantidade) != pedido.ValorTotal)
@@ -79,6 +92,7 @@ public class CheckoutOnlineService(AppDbContext db, MpOrdersClient api, IOptions
                 type = "online", processing_mode = "manual", capture_mode = "automatic_async",
                 total_amount = pedido.ValorTotal.ToString("0.00", CultureInfo.InvariantCulture),
                 external_reference = referencia.ToString("N"), expiration_time = "PT30M",
+                payer = new { email = emailComprador },
                 items = pedido.ItensPedido.Select(i => new {
                     title = i.NomeProduto, quantity = i.Quantidade,
                     unit_price = i.PrecoUnitario.ToString("0.00", CultureInfo.InvariantCulture)
