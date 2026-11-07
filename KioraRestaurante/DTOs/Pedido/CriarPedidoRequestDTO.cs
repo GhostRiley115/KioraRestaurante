@@ -15,6 +15,9 @@ public class CriarPedidoRequestDTO : CotarEntregaRequestDTO
     [Required(ErrorMessage = "Calcule a entrega antes de confirmar o pedido.")]
     public string TokenEntrega { get; set; } = "";
 
+    [StringLength(40)] public string? CodigoCupom { get; set; }
+    [StringLength(4096)] public string? TokenCupom { get; set; }
+
     public Dictionary<int, string?> Observacoes { get; set; } = [];
 
     public override IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

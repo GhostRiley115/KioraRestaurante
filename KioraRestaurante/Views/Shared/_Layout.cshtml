@@ -347,6 +347,12 @@ CSS DOS PEDIDOS
 
             <!-- AÇÕES SEMPRE VISÍVEIS: independentes do menu de páginas. -->
             <div class="navbar-acoes-fixas">
+                @if (User.Identity?.IsAuthenticated == true) {
+                    <a asp-controller="Notificacoes" asp-action="Index" id="sinoNotificacoes" class="sino-notificacoes"
+                       data-resumo-url="@Url.Action("Resumo", "Notificacoes")" aria-label="Notificações" title="Notificações">
+                        <i class="bi bi-bell" aria-hidden="true"></i><span data-contador-notificacoes class="sino-contador" aria-hidden="true" hidden>0</span>
+                    </a>
+                }
                     <!--
                         =================================================
                         CARRINHO
@@ -446,6 +452,8 @@ CSS DOS PEDIDOS
 <!-- JavaScript personalizado -->
 <script src="~/js/site.js"
         asp-append-version="true"></script>
+<script src="~/js/notificacoes.js" asp-append-version="true"></script>
+<script src="~/js/fotos-produtos.js" asp-append-version="true"></script>
 
 <!-- JavaScript carrinho -->
 <!-- A conta depende do HTML dos modais e do Bootstrap carregados acima. -->

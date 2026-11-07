@@ -16,6 +16,7 @@ namespace KioraRestaurante.Services;
 
 public class PedidoService : IPedidoService
 {
+    private readonly KioraRestaurante.Services.Cupons.CupomService _cupons;
     private readonly AppDbContext _context;
     private readonly ICarrinhoService _carrinhoService;
     // Proteger a informação da revisão
@@ -24,8 +25,9 @@ public class PedidoService : IPedidoService
     private readonly CotacaoEntregaService _entregaService;
 
     public PedidoService(AppDbContext context, ICarrinhoService carrinhoService,
-        IDataProtectionProvider provider , EnderecoUsuarioService enderecoService, CotacaoEntregaService entregaService)
+        IDataProtectionProvider provider , EnderecoUsuarioService enderecoService, CotacaoEntregaService entregaService, KioraRestaurante.Services.Cupons.CupomService cupons)
     {
+        _cupons = cupons;
         _context = context;
         _carrinhoService = carrinhoService;
         _protetor = provider.CreateProtector("Kiora.Checkout.v2");
@@ -235,10 +237,13 @@ public class PedidoService : IPedidoService
         ValidarRevisaoAtual(carrinho, revisao);
         ValidarItensParaPedido(carrinho);
 
+        var cupom = string.IsNullOrWhiteSpace(dto.CodigoCupom) && string.IsNullOrWhiteSpace(dto.TokenCupom)
+            ? null : await _cupons.Conferir(usuarioId, dto.CodigoCupom, dto.TokenCupom, resumoAtual);
         var pedido = new Pedido
         {
             UsuarioId = usuarioId,
             ChaveConfirmacao = revisao.ChaveConfirmacao,
+            CodigoCupom = cupom?.Codigo, DescontoCupom = cupom?.Desconto ?? 0,
             DataPedido = DateTime.UtcNow,
             FormaPagamento = dto.FormaPagamento!.Value,
             StatusPedido = StatusPedido.Recebido,
@@ -255,7 +260,7 @@ public class PedidoService : IPedidoService
             throw new ValidationException("As observações não correspondem aos produtos do carrinho. Confira a revisão.");
         CopiarItensParaPedido(carrinho, pedido, dto.Observacoes);
 
-        return await SalvarPedidoELimparCarrinho(pedido, carrinho, enderecoPreparado.Salvar);
+        return await SalvarPedidoELimparCarrinho(pedido, carrinho, enderecoPreparado.Salvar, cupom);
     }
 
 
@@ -324,6 +329,8 @@ public class PedidoService : IPedidoService
             {
                 ProdutoId = produto.Id,
                 NomeProduto = produto.Nome,
+                ImagemUrl = produto.Imagem,
+                ImagemPublicId = produto.ImagemPublicId,
                 Observacao = observacoes.TryGetValue(produto.Id, out var observacao) && !string.IsNullOrWhiteSpace(observacao)
                     ? observacao.Trim() : null,
                 Quantidade = item.Quantidade,
@@ -336,7 +343,7 @@ public class PedidoService : IPedidoService
             });
         }
 
-        pedido.ValorTotal = pedido.ItensPedido.Sum(i => i.Subtotal) + pedido.TaxaEntrega;
+        pedido.ValorTotal = pedido.ItensPedido.Sum(i => i.Subtotal) - pedido.DescontoCupom + pedido.TaxaEntrega;
 
         if (pedido.ValorTotal > 99999999.99m)
         {
@@ -346,22 +353,26 @@ public class PedidoService : IPedidoService
     }
 
     // Salva a compra e a limpeza do carrinho na mesma operação.
-    private async Task<int> SalvarPedidoELimparCarrinho(Pedido pedido, Carrinho carrinho, EnderecoUsuario? enderecoParaSalvar)
+    private async Task<int> SalvarPedidoELimparCarrinho(Pedido pedido, Carrinho carrinho, EnderecoUsuario? enderecoParaSalvar,
+        KioraRestaurante.DTOs.Cupons.CupomAplicado? cupom)
     {
-        if (enderecoParaSalvar != null)
-            _context.EnderecosUsuario.Add(enderecoParaSalvar);
-        _context.Pedidos.Add(pedido);
-
-        _context.ItensCarrinho.RemoveRange(carrinho.ItensCarrinho);
-        carrinho.ItensCarrinho.Clear();
-
-        // Participa da proteção contra alterações simultâneas.
-        carrinho.Versao = Guid.NewGuid();
-
+        var isolamento = _context.Database.ProviderName?.Contains("Sqlite", StringComparison.Ordinal) == true
+            ? System.Data.IsolationLevel.Serializable : System.Data.IsolationLevel.ReadCommitted;
+        await using var transacao = await _context.Database.BeginTransactionAsync(isolamento);
         try
         {
-             // Pedido, itens, endereço e limpeza do carrinho são gravados juntos.
+            if (cupom != null) await _cupons.Reservar(pedido, cupom);
+            if (enderecoParaSalvar != null) _context.EnderecosUsuario.Add(enderecoParaSalvar);
+            _context.Pedidos.Add(pedido);
+            _context.ItensCarrinho.RemoveRange(carrinho.ItensCarrinho);
+            carrinho.ItensCarrinho.Clear();
+
+            // Participa da proteção contra alterações simultâneas.
+            carrinho.Versao = Guid.NewGuid();
+            // Pedido, itens, endereço e limpeza do carrinho são gravados juntos.
             await _context.SaveChangesAsync();
+            await transacao.CommitAsync();
+            return pedido.Id;
         }
         catch (DbUpdateException)
         {
@@ -369,17 +380,19 @@ public class PedidoService : IPedidoService
              * Outra requisição pode ter confirmado a mesma compra.
              * Descarta o estado local que falhou e consulta o banco.
              */
+            await transacao.RollbackAsync();
             _context.ChangeTracker.Clear();
-
             var repetido = await BuscarConfirmacao(pedido.UsuarioId, pedido.ChaveConfirmacao!.Value);
-
-            if(repetido.HasValue)
-                return repetido.Value;
-
+            if (repetido.HasValue) return repetido.Value;
             // Não era uma repetição concluída: mantém o erro original.
             throw;
         }
-        return pedido.Id;
+        catch
+        {
+            await transacao.RollbackAsync();
+            _context.ChangeTracker.Clear();
+            throw;
+        }
     }
 
     public Task<Pedido?> BuscarPedido(int usuarioId, int pedidoId)
@@ -388,6 +401,7 @@ public class PedidoService : IPedidoService
             .AsNoTracking()
             .Include(p => p.EnderecoEntrega)
             .Include(p => p.ItensPedido)
+            .ThenInclude(i => i.Produto)
             .Include(p => p.Operacoes)
             .SingleOrDefaultAsync(p =>
                 p.Id == pedidoId

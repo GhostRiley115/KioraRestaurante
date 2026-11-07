@@ -18,14 +18,16 @@ namespace KioraRestaurante.Controllers;
 [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
 public class PedidoController : Controller
 {
+    private readonly KioraRestaurante.Services.Cupons.CupomService _cupons;
     private readonly IPedidoService _pedidoService;
     private readonly CarrinhoCookie _cookie;
     private readonly EnderecoUsuarioService _enderecoService;
     private readonly CotacaoEntregaService _entregaService;
 
     public PedidoController(IPedidoService pedidoService, CarrinhoCookie cookie, EnderecoUsuarioService enderecoService,
-        CotacaoEntregaService entregaService)
+        CotacaoEntregaService entregaService, KioraRestaurante.Services.Cupons.CupomService cupons)
     {
+        _cupons = cupons;
         _pedidoService = pedidoService;
         _cookie = cookie;
         _enderecoService = enderecoService;
@@ -65,6 +67,17 @@ public class PedidoController : Controller
         * Removemos apenas o token antigo para que o novo token seja usado no campo oculto.
         */
         ModelState.Remove("Dados.TokenRevisao");
+
+        if (!string.IsNullOrWhiteSpace(model.Dados.TokenCupom))
+        {
+            try { model.Cupom = await _cupons.Conferir(acesso.UsuarioId.Value, model.Dados.CodigoCupom, model.Dados.TokenCupom, model.Resumo); }
+            catch (ValidationException ex)
+            {
+                model.Cupom = null; model.Dados.TokenCupom = null; model.Dados.CodigoCupom = null;
+                ModelState.Remove("Dados.TokenCupom"); ModelState.Remove("Dados.CodigoCupom");
+                ModelState.AddModelError("", ex.Message);
+            }
+        }
 
         if (model.Entrega == null && !string.IsNullOrWhiteSpace(model.Dados.TokenEntrega))
         {
@@ -125,6 +138,26 @@ public class PedidoController : Controller
             return Unauthorized();
 
         var acesso = ObterAcesso(usuarioId.Value);
+
+        if (acao is "aplicar-cupom" or "remover-cupom")
+        {
+            ModelState.Clear();
+            model.Dados.TokenCupom = null;
+            if (acao == "remover-cupom") model.Dados.CodigoCupom = null;
+            try
+            {
+                await PrepararPagina(model, acesso);
+                if (acao == "aplicar-cupom")
+                {
+                    model.Cupom = await _cupons.Cotar(usuarioId.Value, model.Dados.CodigoCupom, model.Resumo);
+                    model.Dados.CodigoCupom = model.Cupom.Codigo; model.Dados.TokenCupom = model.Cupom.Token;
+                }
+            }
+            catch (ValidationException ex) { ModelState.AddModelError("", ex.Message); }
+            catch (RegraPedidoException ex) { ModelState.AddModelError("", ex.Message); }
+            catch (UnauthorizedAccessException) { return Forbid(); }
+            return View(model);
+        }
 
         if (acao == "calcular")
         {

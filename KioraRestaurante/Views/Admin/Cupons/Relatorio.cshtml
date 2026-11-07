@@ -1,0 +1,12 @@
+@model KioraRestaurante.DTOs.Cupons.RelatorioCupomDTO
+@using KioraRestaurante.Services
+@{ ViewData["Title"] = "Desempenho do cupom"; var cultura = System.Globalization.CultureInfo.GetCultureInfo("pt-BR"); }
+<a asp-action="Index">← Cupons</a><h1>Desempenho · @Model.Cupom.Codigo</h1><p>@Model.Cupom.Descricao · Parceiro: @(Model.Cupom.Parceiro ?? "Sem parceiro")</p>
+<p><a asp-action="Editar" asp-route-id="@Model.Cupom.Id">Editar regras</a> · <a asp-controller="NotificacoesAdmin" asp-action="Criar" asp-route-cupomId="@Model.Cupom.Id">Preparar divulgação</a></p>
+<div class="admin-box"><p><strong>@Model.Reservados</strong> reservas · <strong>@Model.Confirmados</strong> utilizações confirmadas · <strong>@Model.Cancelados</strong> cancelamentos</p>
+<p>Desconto das utilizações confirmadas: <strong>@Model.DescontosConfirmados.ToString("C", cultura)</strong></p>
+<p>Limite total: @(Model.Cupom.LimiteTotal?.ToString() ?? "Sem limite") · Por cliente: @Model.Cupom.LimitePorCliente. Reservas e confirmações ocupam a cota; cancelamentos a liberam.</p></div>
+<div class="admin-tabela-scroll"><table class="admin-tabela"><caption>Histórico de utilizações · página @Model.Pagina de @Model.TotalPaginas</caption><thead><tr><th>Pedido</th><th>Parceiro na compra</th><th>Situação</th><th>Desconto</th><th>Reservado em</th><th>Confirmado em</th><th>Cancelado em</th></tr></thead><tbody>
+@foreach (var u in Model.Usos) { <tr><td><a asp-controller="Admin" asp-action="DetalhesPedido" asp-route-id="@u.PedidoId">#@u.PedidoId</a></td><td>@(u.Parceiro ?? "Sem parceiro")</td><td>@u.Situacao</td><td>@u.Desconto.ToString("C", cultura)</td><td>@HorarioRestaurante.ParaLocal(u.ReservadoEmUtc).ToString("dd/MM/yyyy HH:mm")</td><td>@(u.ConfirmadoEmUtc.HasValue ? HorarioRestaurante.ParaLocal(u.ConfirmadoEmUtc.Value).ToString("dd/MM/yyyy HH:mm") : "—")</td><td>@(u.CanceladoEmUtc.HasValue ? HorarioRestaurante.ParaLocal(u.CanceladoEmUtc.Value).ToString("dd/MM/yyyy HH:mm") : "—")</td></tr> }
+</tbody></table></div>
+<nav aria-label="Páginas das utilizações">@if (Model.Pagina > 1) { <a asp-route-id="@Model.Cupom.Id" asp-route-pagina="@(Model.Pagina-1)">Anterior</a> } <span>@Model.Pagina / @Model.TotalPaginas</span> @if (Model.Pagina < Model.TotalPaginas) { <a asp-route-id="@Model.Cupom.Id" asp-route-pagina="@(Model.Pagina+1)">Próxima</a> }</nav>

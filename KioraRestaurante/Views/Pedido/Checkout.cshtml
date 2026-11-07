@@ -42,11 +42,12 @@
           data-endereco-form data-endereco-prefixo="Dados_NovoEndereco_"
           data-cep-base="@Url.Content("~/api/cep/")"
           data-cotacao-url="@Url.Action("CotarEntrega", "Pedido")"
-          data-total-produtos="@Model.Resumo.Total.ToString(CultureInfo.InvariantCulture)"
+          data-total-produtos="@((Model.Resumo.Total - (Model.Cupom?.Desconto ?? 0)).ToString(CultureInfo.InvariantCulture))"
           data-pode-prosseguir="@(Model.Resumo.PodeProsseguir && !string.IsNullOrWhiteSpace(Model.Dados.TokenRevisao) ? "true" : "false")"
           data-validade-entrega="@Model.Entrega?.ExpiraEmUtc.ToString("O")">
 
         <input asp-for="Dados.TokenRevisao" type="hidden" />
+        <input asp-for="Dados.TokenCupom" type="hidden" />
         <input asp-for="Dados.TokenEntrega" type="hidden" />
 
         <div class="row g-4">
@@ -64,12 +65,12 @@
                         <article class="checkout-produto">
                             <div class="checkout-produto-cabecalho">
                                 <img src="@foto" alt="" width="88" height="88" loading="lazy" decoding="async" data-foto-produto data-foto-alternativa="@Url.Content("~/imagens/produto-sem-foto.svg")" />
-                                <div><h3>@item.NomeProduto</h3><p class="pedido-texto-suave mb-0">@item.Quantidade unidade(s) · @item.Subtotal.ToString("C", cultura)</p></div>
+                                <div><h3 id="nome-produto-@item.ProdutoId">@item.NomeProduto</h3><p class="pedido-texto-suave mb-0">@(item.Quantidade == 1 ? "1 unidade" : $"{item.Quantidade} unidades") · @item.Subtotal.ToString("C", cultura)</p></div>
                             </div>
-                            <label for="observacao-@item.ProdutoId">Observações para @item.NomeProduto <span class="pedido-texto-suave">— opcional</span></label>
+                            <label for="observacao-@item.ProdutoId" id="rotulo-observacao-@item.ProdutoId">Observações <span class="pedido-texto-suave">(opcional)</span></label>
                             <textarea id="observacao-@item.ProdutoId" name="Dados.Observacoes[@item.ProdutoId]" class="form-control" maxlength="500" rows="2"
-                                      placeholder="Ex.: sem cebola, pouco molho" aria-describedby="ajuda-observacao-@item.ProdutoId">@observacao</textarea>
-                            <small id="ajuda-observacao-@item.ProdutoId" class="pedido-texto-suave">Até 500 caracteres. A observação vale para as @item.Quantidade unidade(s) deste produto.</small>
+                                      placeholder="Ex.: sem cebola, pouco molho" aria-labelledby="nome-produto-@item.ProdutoId rotulo-observacao-@item.ProdutoId" aria-describedby="ajuda-observacao-@item.ProdutoId">@observacao</textarea>
+                            <small id="ajuda-observacao-@item.ProdutoId" class="pedido-texto-suave">@(item.Quantidade == 1 ? "Até 500 caracteres." : $"Até 500 caracteres. As observações se aplicam às {item.Quantidade} unidades.")</small>
                         </article>
                     }
                 </section>
@@ -136,11 +137,24 @@
                         </div>
                     }
 
+                    <div class="checkout-cupom">
+                        @if (Model.Cupom != null) {
+                            <p role="status">Cupom <strong>@Model.Cupom.Codigo</strong> aplicado.</p>
+                            <input asp-for="Dados.CodigoCupom" type="hidden" />
+                            <button class="pedido-link" type="submit" name="acao" value="remover-cupom" formnovalidate>Remover cupom</button>
+                        } else {
+                            <label asp-for="Dados.CodigoCupom">Cupom de desconto</label>
+                            <div class="checkout-cupom-campos"><input asp-for="Dados.CodigoCupom" class="form-control" maxlength="40" autocomplete="off" placeholder="Código do cupom" />
+                            <button class="pedido-botao" type="submit" name="acao" value="aplicar-cupom" formnovalidate>Aplicar</button></div>
+                        }
+                    </div>
                     <dl class="checkout-resumo-valores">
+                        @if (Model.Cupom != null) { <div><dt>Desconto · @Model.Cupom.Codigo</dt><dd>− @Model.Cupom.Desconto.ToString("C", cultura)</dd></div> }
+
                         <div><dt>Subtotal dos produtos</dt><dd>@Model.Resumo.Total.ToString("C", cultura)</dd></div>
                         <div><dt>Distância pelas ruas</dt><dd id="distanciaEntrega">@(Model.Entrega == null ? "A calcular" : (Model.Entrega.DistanciaMetros / 1000m).ToString("0.00", cultura) + " km")</dd></div>
                         <div><dt>Taxa de entrega</dt><dd id="taxaEntrega">@(Model.Entrega == null ? "A calcular" : Model.Entrega.Taxa.ToString("C", cultura))</dd></div>
-                        <div class="pedido-total"><dt>Total do pedido</dt><dd id="totalComEntrega">@(Model.Entrega == null ? "A calcular" : (Model.Resumo.Total + Model.Entrega.Taxa).ToString("C", cultura))</dd></div>
+                        <div class="pedido-total"><dt>Total do pedido</dt><dd id="totalComEntrega">@(Model.Entrega == null ? "A calcular" : (Model.Resumo.Total - (Model.Cupom?.Desconto ?? 0) + Model.Entrega.Taxa).ToString("C", cultura))</dd></div>
                     </dl>
 
                     <div class="checkout-previsao" role="status" aria-live="polite">

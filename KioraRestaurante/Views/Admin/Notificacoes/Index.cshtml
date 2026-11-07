@@ -1,0 +1,11 @@
+@model List<KioraRestaurante.DTOs.Notificacoes.ComunicadoAdminDTO>
+@using KioraRestaurante.Services
+@{ ViewData["Title"] = "Comunicados"; }
+<h1>Notificações e comunicados</h1><p>Publique avisos dentro do site. Cada conta pode consultar e marcar suas notificações como lidas.</p>
+<a asp-action="Criar" class="pedido-botao">Preparar notificação</a>
+<h2 class="mt-4">Publicações recentes</h2>
+@if (Model.Count == 0) { <p>Nenhum comunicado publicado.</p> }
+<div class="admin-tabela-scroll"><table class="admin-tabela"><caption>Até 100 publicações mais recentes</caption><thead><tr><th>Título</th><th>Publicado em</th><th>Cupom</th><th>Destinatários</th><th>Leituras</th></tr></thead><tbody>
+@foreach (var n in Model) { <tr><td>@n.Titulo</td><td>@HorarioRestaurante.ParaLocal(n.CriadaEmUtc).ToString("dd/MM/yyyy HH:mm")</td><td>@(n.CodigoCupom ?? "—")</td><td>@n.Destinatarios</td><td>@n.Leituras</td></tr> }
+</tbody></table></div>
+<p>Os avisos de pedidos e reservas são automáticos e aparecem no sino. Esta lista mostra os comunicados criados pela administração.</p>

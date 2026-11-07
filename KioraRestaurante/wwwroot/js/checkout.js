@@ -22,7 +22,8 @@
         document.getElementById("taxaEntrega").textContent = "A calcular";
         document.getElementById("distanciaEntrega").textContent = "A calcular";
         document.getElementById("totalComEntrega").textContent = "A calcular";
-        document.getElementById("prazoEntrega").textContent = "30 min de preparo + percurso a calcular";
+        const prazo = document.getElementById("prazoEntrega");
+        if (prazo) prazo.textContent = "30 min de preparo + percurso a calcular";
         const diferenca = document.getElementById("diferencaEntrega");
         if (diferenca) diferenca.textContent = "A calcular";
         mensagem.textContent = "Calcule a entrega para conferir a distância e a taxa.";
@@ -89,7 +90,8 @@
             document.getElementById("taxaEntrega").textContent = moeda.format(taxa);
             document.getElementById("distanciaEntrega").textContent = (distancia / 1000).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " km";
             document.getElementById("totalComEntrega").textContent = moeda.format(Number(formularioCheckout.dataset.totalProdutos) + taxa);
-            document.getElementById("prazoEntrega").textContent = `Cerca de ${dados.prazoTotalMinutos} min: 30 min de preparo + ${dados.percursoMinutos} min de percurso`;
+            const prazo = document.getElementById("prazoEntrega");
+            if (prazo) prazo.textContent = `Cerca de ${dados.prazoTotalMinutos} min: 30 min de preparo + ${dados.percursoMinutos} min de percurso`;
             const diferenca = document.getElementById("diferencaEntrega");
             if (diferenca) diferenca.textContent = moeda.format(taxa - Number(formularioCheckout.dataset.taxaAtual));
             confirmarPedido.disabled = formularioCheckout.dataset.podeProsseguir !== "true";
@@ -106,7 +108,7 @@
     });
 
     formularioCheckout.addEventListener("submit", function (event) {
-        if (event.submitter?.value === "calcular") return;
+        if (["calcular", "aplicar-cupom", "remover-cupom"].includes(event.submitter?.value)) return;
         // A validação jQuery pode impedir o envio.
         if (window.jQuery && !window.jQuery(formularioCheckout).valid()) return;
         if (!token.value) {
@@ -128,15 +130,6 @@
             confirmarPedido.disabled = formularioCheckout.dataset.podeProsseguir !== "true";
         }
         confirmarPedido.textContent = formularioCheckout.dataset.textoConfirmar ?? "Confirmar pedido";
-    });
-    document.querySelectorAll('[data-foto-produto]').forEach(foto => {
-        const alternativa = () => {
-            if (foto.dataset.fotoFalhou) return;
-            foto.dataset.fotoFalhou = "true";
-            foto.src = foto.dataset.fotoAlternativa;
-        };
-        foto.addEventListener("error", alternativa);
-        if (foto.complete && foto.naturalWidth === 0) alternativa();
     });
     mostrarCampos();
 })();

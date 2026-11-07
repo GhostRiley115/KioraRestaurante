@@ -3,6 +3,9 @@ namespace KioraRestaurante.DTOs.Admin;
 // Os detalhes usam o nome e o preço registrados na compra, e não o preço atual do cardápio.
 public class PedidoDetalhesAdminDTO : PedidoAdminDTO
 {
+    public Guid Versao { get; set; }
+    public string? CodigoCupom { get; set; }
+    public decimal DescontoCupom { get; set; }
     public bool ClienteAtivo { get; set; }
     public decimal TaxaEntrega { get; set; }
     public int? DistanciaEntregaMetros { get; set; }
@@ -18,6 +21,7 @@ public class PedidoDetalhesAdminDTO : PedidoAdminDTO
 }
 public class ItemPedidoAdminDTO
 {
+    public string? ImagemUrl { get; set; }
     public string Nome { get; set; } = "";
     public int Quantidade { get; set; }
     public decimal PrecoUnitario { get; set; }

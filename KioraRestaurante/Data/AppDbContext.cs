@@ -29,11 +29,61 @@ namespace KioraRestaurante.Data
         public DbSet<PagamentoOnline> PagamentosOnline { get; set; }
         public DbSet<OperacaoPedido> OperacoesPedido { get; set; }
         public DbSet<MovimentoPedido> MovimentosPedido { get; set; }
+        public DbSet<KioraRestaurante.Models.Cupons.Cupom> Cupons { get; set; }
+        public DbSet<KioraRestaurante.Models.Cupons.UsoCupom> UsosCupom { get; set; }
+        public DbSet<KioraRestaurante.Models.Notificacoes.EventoNotificacao> EventosNotificacao { get; set; }
+        public DbSet<KioraRestaurante.Models.Notificacoes.Notificacao> Notificacoes { get; set; }
+        public DbSet<KioraRestaurante.Models.Notificacoes.NotificacaoUsuario> NotificacoesUsuarios { get; set; }
+
+        public override int SaveChanges(bool acceptAllChangesOnSuccess)
+        {
+            RegistrarEventosNotificacao.Preparar(this);
+            return base.SaveChanges(acceptAllChangesOnSuccess);
+        }
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+        {
+            RegistrarEventosNotificacao.Preparar(this);
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
 
         //Cria a relação entre tabelas
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<KioraRestaurante.Models.Cupons.Cupom>().HasIndex(c => c.Codigo).IsUnique();
+            modelBuilder.Entity<KioraRestaurante.Models.Cupons.Cupom>().HasOne(c => c.CriadoPor).WithMany()
+                .HasForeignKey(c => c.CriadoPorId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<KioraRestaurante.Models.Cupons.UsoCupom>().Property(u => u.Id).ValueGeneratedNever();
+            modelBuilder.Entity<KioraRestaurante.Models.Cupons.UsoCupom>().HasIndex(u => u.PedidoId).IsUnique();
+            modelBuilder.Entity<KioraRestaurante.Models.Cupons.UsoCupom>().HasIndex(u => new { u.CupomId, u.UsuarioId, u.Situacao });
+            modelBuilder.Entity<KioraRestaurante.Models.Cupons.UsoCupom>().HasOne(u => u.Pedido).WithOne(p => p.UsoCupom)
+                .HasForeignKey<KioraRestaurante.Models.Cupons.UsoCupom>(u => u.PedidoId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<KioraRestaurante.Models.Cupons.UsoCupom>().HasOne(u => u.Cupom).WithMany(c => c.Usos)
+                .HasForeignKey(u => u.CupomId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<KioraRestaurante.Models.Cupons.UsoCupom>().HasOne(u => u.Usuario).WithMany()
+                .HasForeignKey(u => u.UsuarioId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<KioraRestaurante.Models.Notificacoes.EventoNotificacao>().Property(e => e.Id).ValueGeneratedNever();
+            modelBuilder.Entity<KioraRestaurante.Models.Notificacoes.EventoNotificacao>().HasIndex(e => new { e.ProcessadoEmUtc, e.CriadoEmUtc });
+            modelBuilder.Entity<KioraRestaurante.Models.Notificacoes.EventoNotificacao>().HasOne(e => e.Pedido).WithMany()
+                .HasForeignKey(e => e.PedidoId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<KioraRestaurante.Models.Notificacoes.EventoNotificacao>().HasOne(e => e.Reserva).WithMany()
+                .HasForeignKey(e => e.ReservaId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<KioraRestaurante.Models.Notificacoes.Notificacao>().Property(n => n.Id).ValueGeneratedNever();
+            modelBuilder.Entity<KioraRestaurante.Models.Notificacoes.Notificacao>().HasOne(n => n.Autor).WithMany()
+                .HasForeignKey(n => n.AutorId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<KioraRestaurante.Models.Notificacoes.Notificacao>().HasOne(n => n.Pedido).WithMany()
+                .HasForeignKey(n => n.PedidoId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<KioraRestaurante.Models.Notificacoes.Notificacao>().HasOne(n => n.Reserva).WithMany()
+                .HasForeignKey(n => n.ReservaId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<KioraRestaurante.Models.Notificacoes.Notificacao>().HasOne(n => n.Cupom).WithMany()
+                .HasForeignKey(n => n.CupomId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<KioraRestaurante.Models.Notificacoes.NotificacaoUsuario>().HasKey(n => new { n.NotificacaoId, n.UsuarioId });
+            modelBuilder.Entity<KioraRestaurante.Models.Notificacoes.NotificacaoUsuario>().HasIndex(n => new { n.UsuarioId, n.LidaEmUtc });
+            modelBuilder.Entity<KioraRestaurante.Models.Notificacoes.NotificacaoUsuario>().HasOne(n => n.Notificacao).WithMany(n => n.Destinatarios)
+                .HasForeignKey(n => n.NotificacaoId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<KioraRestaurante.Models.Notificacoes.NotificacaoUsuario>().HasOne(n => n.Usuario).WithMany()
+                .HasForeignKey(n => n.UsuarioId).OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<OperacaoPedido>().HasOne(o => o.Pedido).WithMany(p => p.Operacoes)
                 .HasForeignKey(o => o.PedidoId).OnDelete(DeleteBehavior.Restrict);

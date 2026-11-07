@@ -80,7 +80,10 @@ public class LimpezaImagensService(
         var emUso = await db.Produtos.IgnoreQueryFilters().AsNoTracking()
             .AnyAsync(p => p.ImagemPublicId == item.PublicId
                 || (item.Url != null && p.Imagem == item.Url)
-                || p.Imagem.Contains(trechoUrl), ct);
+                || p.Imagem.Contains(trechoUrl), ct)
+            || await db.ItensPedido.AsNoTracking().AnyAsync(i => i.ImagemPublicId == item.PublicId
+                || (item.Url != null && i.ImagemUrl == item.Url)
+                || (i.ImagemUrl != null && i.ImagemUrl.Contains(trechoUrl)), ct);
 
         if (emUso)
         {

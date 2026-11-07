@@ -1,6 +1,6 @@
 @model KioraRestaurante.ViewModels.AlterarEnderecoPedidoViewModel
 @using System.Globalization
-@{ ViewData["Title"] = "Corrigir endereço"; var cultura = CultureInfo.GetCultureInfo("pt-BR"); var produtos = Model.Pedido.ItensPedido.Sum(i => i.Subtotal); }
+@{ ViewData["Title"] = "Corrigir endereço"; var cultura = CultureInfo.GetCultureInfo("pt-BR"); var produtos = (Model.Pedido.ItensPedido.Sum(i => i.Subtotal) - Model.Pedido.DescontoCupom); }
 <section class="container pedido-pagina">
     <a asp-controller="Pedido" asp-action="Detalhes" asp-route-id="@Model.Pedido.Id" class="pedido-link">← Voltar ao pedido</a>
     <h1>Corrigir endereço do pedido #@Model.Pedido.Id</h1>
@@ -23,8 +23,6 @@
                     <div><dt>Diferença de entrega</dt><dd id="diferencaEntrega">@(Model.Entrega == null ? "A calcular" : (Model.Entrega.Taxa - Model.Pedido.TaxaEntrega).ToString("C", cultura))</dd></div>
                     <div class="pedido-total"><dt>Novo total</dt><dd id="totalComEntrega">@(Model.Entrega == null ? "A calcular" : (produtos + Model.Entrega.Taxa).ToString("C", cultura))</dd></div>
                 </dl>
-                <p id="prazoEntrega" class="pedido-texto-suave">@(Model.Entrega == null ? "30 min de preparo + percurso a calcular" : $"30 min de preparo + {Model.Entrega.PercursoMinutos} min de percurso")</p>
-                <p class="pedido-texto-suave">O preparo é contado desde a compra; corrigir o endereço não reinicia os 30 minutos. O tempo é estimado.</p>
                 <p>Se o pedido já estiver pago, você pagará somente o aumento ou acompanhará a devolução da diferença. O endereço atual permanece válido até a conclusão.</p>
                 <button type="submit" id="confirmarPedido" class="pedido-botao" disabled="@(Model.Entrega == null)">Confirmar alteração de endereço</button>
                 <partial name="_AjudaPedido" model="@((int?)Model.Pedido.Id)" />

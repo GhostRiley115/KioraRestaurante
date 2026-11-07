@@ -131,6 +131,26 @@ public class CheckoutOnlineCompradorTests
         Assert.Empty(banco.Http.Criacoes);
     }
 
+    [Theory]
+    [InlineData(0.01)] [InlineData(3.33)] [InlineData(10)]
+    public async Task CupomDescontaProdutosSemModificarFreteNemDivergirItensETotal(decimal desconto)
+    {
+        using var b = new Banco(true);
+        b.Pedido.CodigoCupom = "CUPOM"; b.Pedido.DescontoCupom = desconto;
+        b.Pedido.TaxaEntrega = 5; b.Pedido.ValorTotal = 10m - desconto + 5;
+        await b.Db.SaveChangesAsync();
+        await b.Servico.Iniciar(b.Cliente.Id, b.Pedido.Id, default);
+        using var json = JsonDocument.Parse(Assert.Single(b.Http.Criacoes).Corpo);
+        decimal Valor(string texto) => decimal.Parse(texto, System.Globalization.CultureInfo.InvariantCulture);
+        var itens = json.RootElement.GetProperty("items").EnumerateArray().ToArray();
+        Assert.All(itens, item => Assert.True(Valor(item.GetProperty("unit_price").GetString()!) > 0));
+        Assert.Equal(b.Pedido.ValorTotal, itens.Sum(item => Valor(item.GetProperty("unit_price").GetString()!) * item.GetProperty("quantity").GetInt32()));
+        Assert.Equal(5, Valor(itens.Single(item => item.GetProperty("title").GetString() == "Taxa de entrega").GetProperty("unit_price").GetString()!));
+        b.Http.Pago = true;
+        await b.Servico.Sincronizar((await b.Db.PagamentosOnline.SingleAsync()).OrderId!, default);
+        b.Db.ChangeTracker.Clear(); Assert.Equal(StatusPagamento.Aprovado, (await b.Db.Pedidos.SingleAsync()).StatusPagamento);
+    }
+
     private sealed class Banco : IDisposable
     {
         private readonly SqliteConnection _conexao = new("Data Source=:memory:");

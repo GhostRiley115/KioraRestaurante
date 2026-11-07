@@ -94,7 +94,10 @@
                 <p class="pedido-texto-suave">@Model.ItensPedido.Count produto(s) · @Model.ItensPedido.Sum(i => i.Quantidade) unidade(s)</p>
                 @foreach (var item in Model.ItensPedido) {
                     <div class="pedido-linha">
-                        <div><strong>@item.NomeProduto</strong>
+                        <div class="pedido-item-detalhes">
+                            <img class="pedido-item-foto" src="@(!string.IsNullOrWhiteSpace(item.ImagemUrl) ? item.ImagemUrl : !string.IsNullOrWhiteSpace(item.Produto?.Imagem) ? item.Produto.Imagem : Url.Content("~/imagens/produto-sem-foto.svg"))"
+                                 alt="" width="80" height="80" loading="lazy" decoding="async" data-foto-produto data-foto-alternativa="@Url.Content("~/imagens/produto-sem-foto.svg")" />
+                            <div><strong>@item.NomeProduto</strong>
                             @if (!string.IsNullOrWhiteSpace(item.Composicao)) {
                                 <p class="pedido-texto-suave mb-1">Composição por combo: @item.Composicao</p>
                             }
@@ -104,12 +107,14 @@
                                 }
                             </p>
                             @if (!string.IsNullOrWhiteSpace(item.Observacao)) { <p class="pedido-texto-suave mb-0">Observação: @item.Observacao</p> }
+                            </div>
                         </div>
                         <strong>@item.Subtotal.ToString("C", cultura)</strong>
                     </div>
                 }
                 <dl class="checkout-resumo-valores mt-3">
                     <div><dt>Subtotal dos produtos</dt><dd>@Model.ItensPedido.Sum(i => i.Subtotal).ToString("C", cultura)</dd></div>
+                    @if (Model.DescontoCupom > 0) { <div><dt>Cupom @Model.CodigoCupom</dt><dd>− @Model.DescontoCupom.ToString("C", cultura)</dd></div> }
                     <div><dt>Taxa de entrega</dt><dd>@(Model.TaxaEntrega == 0 ? "Sem cobrança" : Model.TaxaEntrega.ToString("C", cultura))</dd></div>
                     <div class="pedido-total"><dt>Total do pedido</dt><dd>@Model.ValorTotal.ToString("C", cultura)</dd></div>
                 </dl>
@@ -152,7 +157,6 @@
                     <p class="pedido-texto-suave mt-3">O pedido já saiu para entrega. Não é mais possível alterar o endereço pelo site. Se precisar, use Preciso de ajuda.</p>
                 }
             </section>
-            <a asp-controller="Home" asp-action="Cardapio" class="pedido-link mt-3">Continuar no cardápio</a>
         </div>
     </div>
     @if (Model.ReembolsoCancelamentoPendente) { <p class="pedido-erros mt-4" role="status">Pedido cancelado com pagamento confirmado. O restaurante precisa conferir a devolução. Use Preciso de ajuda para acompanhar; o cancelamento não confirma um estorno automático.</p> }

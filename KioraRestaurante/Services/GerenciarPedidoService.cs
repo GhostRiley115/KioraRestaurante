@@ -48,7 +48,7 @@ public class GerenciarPedidoService(AppDbContext db, EnderecoUsuarioService ende
         ExigirEdicao(p, dto.VersaoPedido);
         var endereco = await enderecos.PrepararParaCheckout(usuarioId, dto);
         var cotacao = entrega.Conferir(usuarioId, endereco.Entrega, dto.TokenEntrega);
-        var novoTotal = p.ItensPedido.Sum(i => i.Subtotal) + cotacao.Taxa;
+        var novoTotal = p.ItensPedido.Sum(i => i.Subtotal) - p.DescontoCupom + cotacao.Taxa;
         if (novoTotal is <= 0 or > 99999999.99m)
             throw new ValidationException("O novo total ultrapassa o limite permitido. Peça ajuda ao restaurante.");
         var op = new OperacaoPedido
@@ -287,7 +287,7 @@ public class GerenciarPedidoService(AppDbContext db, EnderecoUsuarioService ende
             Preencher(p.EnderecoEntrega, novo);
             p.TaxaEntrega = op.NovaTaxa; p.DistanciaEntregaMetros = op.DistanciaMetros;
             p.DuracaoPercursoSegundos = op.DuracaoSegundos; p.PreparoMinutos ??= 30;
-            p.ValorTotal = p.ItensPedido.Sum(i => i.Subtotal) + p.TaxaEntrega;
+            p.ValorTotal = p.ItensPedido.Sum(i => i.Subtotal) - p.DescontoCupom + p.TaxaEntrega;
             p.RevisaoFinanceira++; op.RevisaoFinanceiraAplicada = p.RevisaoFinanceira;
             if (pago) p.StatusPagamento = StatusPagamento.Aprovado;
             if (op.EnderecoSalvarJson != null)
@@ -360,7 +360,7 @@ public class GerenciarPedidoService(AppDbContext db, EnderecoUsuarioService ende
                 && m.Tipo == TipoMovimentoPedido.Devolucao && m.Estado == EstadoMovimentoPedido.Confirmado).Select(m => m.Valor).ToListAsync(ct);
             saldo += valor - devolucoes.Sum();
         }
-        var esperado = op.Pedido.ItensPedido.Sum(i => i.Subtotal) + op.NovaTaxa;
+        var esperado = op.Pedido.ItensPedido.Sum(i => i.Subtotal) - op.Pedido.DescontoCupom + op.NovaTaxa;
         if (saldo != esperado) throw new FalhaPagamento("O saldo confirmado não corresponde ao novo total.");
     }
 

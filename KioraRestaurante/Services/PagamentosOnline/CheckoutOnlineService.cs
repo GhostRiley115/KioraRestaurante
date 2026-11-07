@@ -93,12 +93,22 @@ public class CheckoutOnlineService(AppDbContext db, MpOrdersClient api, IOptions
             var referencia = Guid.NewGuid();
             var retorno = o.UrlPublica.TrimEnd('/') + "/Pagamento/Retorno/" + id;
             if (pedido.ValorTotal <= 0 || pedido.TaxaEntrega < 0
-                || pedido.ItensPedido.Sum(i => i.PrecoUnitario * i.Quantidade) + pedido.TaxaEntrega != pedido.ValorTotal)
+                || pedido.DescontoCupom < 0 || pedido.DescontoCupom > pedido.ItensPedido.Sum(i => i.PrecoUnitario * i.Quantidade)
+                || pedido.ItensPedido.Sum(i => i.PrecoUnitario * i.Quantidade) - pedido.DescontoCupom + pedido.TaxaEntrega != pedido.ValorTotal)
                 throw new FalhaPagamento("O total do pedido precisa ser conferido.");
             var itensPagamento = pedido.ItensPedido.Select(i => new {
                 title = i.NomeProduto, quantity = i.Quantidade,
                 unit_price = i.PrecoUnitario.ToString("0.00", CultureInfo.InvariantCulture)
             }).ToList();
+            // O provedor recebe os produtos com desconto em uma linha, evitando diferenças de centavos por quantidade.
+            if (pedido.DescontoCupom > 0)
+            {
+                itensPagamento.Clear();
+                var produtosComDesconto = pedido.ItensPedido.Sum(i => i.Subtotal) - pedido.DescontoCupom;
+                if (produtosComDesconto > 0)
+                    itensPagamento.Add(new { title = $"Produtos do pedido #{pedido.Id} · cupom {pedido.CodigoCupom}", quantity = 1,
+                        unit_price = produtosComDesconto.ToString("0.00", CultureInfo.InvariantCulture) });
+            }
             // A entrega compõe o mesmo total conferido e cobrado do pedido.
             if (pedido.TaxaEntrega > 0)
                 itensPagamento.Add(new { title = "Taxa de entrega", quantity = 1,

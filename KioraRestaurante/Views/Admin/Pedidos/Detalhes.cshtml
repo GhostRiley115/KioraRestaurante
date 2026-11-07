@@ -7,12 +7,13 @@
     <section class="admin-box"><h2>Itens do pedido</h2>
         <!-- Valores históricos da compra: mudanças no cardápio não alteram este resumo. -->
         @foreach(var item in Model.Itens) {
-            <div class="admin-item"><div><strong>@item.Nome</strong><p>@item.Quantidade × @item.PrecoUnitario.ToString("C", cultura)</p>
+            <div class="admin-item"><div class="pedido-item-detalhes"><img class="pedido-item-foto" src="@(string.IsNullOrWhiteSpace(item.ImagemUrl) ? Url.Content("~/imagens/produto-sem-foto.svg") : item.ImagemUrl)" alt="" width="80" height="80" loading="lazy" data-foto-produto data-foto-alternativa="@Url.Content("~/imagens/produto-sem-foto.svg")" /><div><strong>@item.Nome</strong><p>@item.Quantidade × @item.PrecoUnitario.ToString("C", cultura)</p>
             @if(!string.IsNullOrWhiteSpace(item.Composicao)) { <p>Composição por combo: @item.Composicao</p> }
-            @if(!string.IsNullOrWhiteSpace(item.Observacao)) { <p>Observação: @item.Observacao</p> }</div>
+            @if(!string.IsNullOrWhiteSpace(item.Observacao)) { <p>Observação: @item.Observacao</p> }</div></div>
             <strong>@item.Subtotal.ToString("C", cultura)</strong></div>
         }
         <p>Produtos: @Model.Itens.Sum(i => i.Subtotal).ToString("C", cultura)</p>
+        @if (Model.DescontoCupom > 0) { <p>Cupom @Model.CodigoCupom: − @Model.DescontoCupom.ToString("C", cultura)</p> }
         <p>Taxa de entrega: @Model.TaxaEntrega.ToString("C", cultura)</p>
         @if (Model.DistanciaEntregaMetros.HasValue) { <p>Percurso estimado: @((Model.DistanciaEntregaMetros.Value / 1000m).ToString("0.00", cultura)) km</p> }
         <p class="admin-total">Total <strong>@Model.ValorTotal.ToString("C", cultura)</strong></p>
@@ -26,6 +27,14 @@
         @if (Model.ReembolsoCancelamentoPendente) { <p class="pedido-erros" role="status">Pedido cancelado com pagamento aprovado. Conferir a devolução no Mercado Pago, incluindo eventuais cobranças adicionais de entrega. O sistema não confirmou estorno automático deste cancelamento.</p> }
         @if (Model.OperacaoPendenteId.HasValue) { <p class="pedido-erros" role="status">Há uma solicitação pendente. O endereço atual continua válido até a conclusão. Confira os pagamentos antes de resolver manualmente.</p> }
         <p>Pagamento: <span class="status-etiqueta @StatusVisual.Pagamento(Model.StatusPagamento)">@Model.StatusPagamento</span> · @TextosAdmin.Pagamento(Model.FormaPagamento)</p>
+        @if (!Model.OperacaoPendenteId.HasValue && Model.StatusPedido is StatusPedido.Recebido or StatusPedido.EmPreparo or StatusPedido.SaiuParaEntrega) {
+            var proximo = (StatusPedido)((int)Model.StatusPedido + 1);
+            <form asp-controller="PedidoAndamentoAdmin" asp-action="Avancar" method="post" class="my-3">
+                <input type="hidden" name="id" value="@Model.Id" /><input type="hidden" name="versao" value="@Model.Versao" /><input type="hidden" name="proximo" value="@((int)proximo)" />
+                <button type="submit">@($"Confirmar: {TextosAdmin.Pedido(proximo)}")</button>
+                @if (proximo == StatusPedido.Entregue && Model.FormaPagamento == FormaPagamento.Dinheiro) { <p>Ao confirmar a entrega, confirme também que o valor em dinheiro foi recebido.</p> }
+            </form>
+        }
         <h2>Entrega</h2>
         @if (Model.DuracaoPercursoSegundos.HasValue) { <p>Estimativa registrada: @Model.PreparoMinutos min de preparo + @((int)Math.Ceiling(Model.DuracaoPercursoSegundos.Value / 60m)) min de percurso.</p> }
         @if(Model.Endereco is { } endereco) {

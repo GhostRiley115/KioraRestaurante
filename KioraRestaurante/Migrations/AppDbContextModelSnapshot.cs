@@ -143,6 +143,132 @@ namespace KioraRestaurante.Migrations
                         });
                 });
 
+            modelBuilder.Entity("KioraRestaurante.Models.Cupons.Cupom", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Codigo")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("varchar(40)");
+
+                    b.Property<DateTime>("CriadoEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("CriadoPorId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("DescontoMaximo")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
+
+                    b.Property<DateTime>("FimEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("InicioEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("LimitePorCliente")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("LimiteTotal")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Parceiro")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<int>("Tipo")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UtilizacoesAtivas")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Valor")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<decimal>("ValorMinimoProdutos")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<Guid>("Versao")
+                        .IsConcurrencyToken()
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Codigo")
+                        .IsUnique();
+
+                    b.HasIndex("CriadoPorId");
+
+                    b.ToTable("Cupons");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.Cupons.UsoCupom", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime?>("CanceladoEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Codigo")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("varchar(40)");
+
+                    b.Property<DateTime?>("ConfirmadoEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("CupomId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Desconto")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<string>("Parceiro")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<int>("PedidoId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ReservadoEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("Situacao")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("Versao")
+                        .IsConcurrencyToken()
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PedidoId")
+                        .IsUnique();
+
+                    b.HasIndex("UsuarioId");
+
+                    b.HasIndex("CupomId", "UsuarioId", "Situacao");
+
+                    b.ToTable("UsosCupom");
+                });
+
             modelBuilder.Entity("KioraRestaurante.Models.EnderecoEntrega", b =>
                 {
                     b.Property<int>("Id")
@@ -339,6 +465,14 @@ namespace KioraRestaurante.Migrations
 
                     b.Property<decimal?>("DescontoPercentual")
                         .HasColumnType("decimal(5,2)");
+
+                    b.Property<string>("ImagemPublicId")
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
+
+                    b.Property<string>("ImagemUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
 
                     b.Property<string>("NomeProduto")
                         .IsRequired()
@@ -572,6 +706,110 @@ namespace KioraRestaurante.Migrations
                     b.ToTable("MovimentosPedido");
                 });
 
+            modelBuilder.Entity("KioraRestaurante.Models.Notificacoes.EventoNotificacao", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("Concessao")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("CriadoEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int?>("PedidoId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ProcessadoEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("ProcessandoAteUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int?>("ReservaId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Tipo")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PedidoId");
+
+                    b.HasIndex("ReservaId");
+
+                    b.HasIndex("ProcessadoEmUtc", "CriadoEmUtc");
+
+                    b.ToTable("EventosNotificacao");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.Notificacoes.Notificacao", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int?>("AutorId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CriadaEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int?>("CupomId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Mensagem")
+                        .IsRequired()
+                        .HasMaxLength(1500)
+                        .HasColumnType("varchar(1500)");
+
+                    b.Property<int?>("PedidoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Publico")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ReservaId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Tipo")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Titulo")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("varchar(120)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AutorId");
+
+                    b.HasIndex("CupomId");
+
+                    b.HasIndex("PedidoId");
+
+                    b.HasIndex("ReservaId");
+
+                    b.ToTable("Notificacoes");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.Notificacoes.NotificacaoUsuario", b =>
+                {
+                    b.Property<Guid>("NotificacaoId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("LidaEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("NotificacaoId", "UsuarioId");
+
+                    b.HasIndex("UsuarioId", "LidaEmUtc");
+
+                    b.ToTable("NotificacoesUsuarios");
+                });
+
             modelBuilder.Entity("KioraRestaurante.Models.OperacaoPedido", b =>
                 {
                     b.Property<Guid>("Id")
@@ -730,8 +968,15 @@ namespace KioraRestaurante.Migrations
                     b.Property<Guid?>("ChaveConfirmacao")
                         .HasColumnType("char(36)");
 
+                    b.Property<string>("CodigoCupom")
+                        .HasMaxLength(40)
+                        .HasColumnType("varchar(40)");
+
                     b.Property<DateTime>("DataPedido")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<decimal>("DescontoCupom")
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<int?>("DistanciaEntregaMetros")
                         .HasColumnType("int");
@@ -1019,6 +1264,44 @@ namespace KioraRestaurante.Migrations
                     b.Navigation("Produto");
                 });
 
+            modelBuilder.Entity("KioraRestaurante.Models.Cupons.Cupom", b =>
+                {
+                    b.HasOne("KioraRestaurante.Models.Usuario", "CriadoPor")
+                        .WithMany()
+                        .HasForeignKey("CriadoPorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("CriadoPor");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.Cupons.UsoCupom", b =>
+                {
+                    b.HasOne("KioraRestaurante.Models.Cupons.Cupom", "Cupom")
+                        .WithMany("Usos")
+                        .HasForeignKey("CupomId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("KioraRestaurante.Models.Pedido", "Pedido")
+                        .WithOne("UsoCupom")
+                        .HasForeignKey("KioraRestaurante.Models.Cupons.UsoCupom", "PedidoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("KioraRestaurante.Models.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Cupom");
+
+                    b.Navigation("Pedido");
+
+                    b.Navigation("Usuario");
+                });
+
             modelBuilder.Entity("KioraRestaurante.Models.EnderecoEntrega", b =>
                 {
                     b.HasOne("KioraRestaurante.Models.Pedido", "Pedido")
@@ -1101,6 +1384,73 @@ namespace KioraRestaurante.Migrations
                     b.Navigation("Operacao");
                 });
 
+            modelBuilder.Entity("KioraRestaurante.Models.Notificacoes.EventoNotificacao", b =>
+                {
+                    b.HasOne("KioraRestaurante.Models.Pedido", "Pedido")
+                        .WithMany()
+                        .HasForeignKey("PedidoId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("KioraRestaurante.Models.Reserva", "Reserva")
+                        .WithMany()
+                        .HasForeignKey("ReservaId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Pedido");
+
+                    b.Navigation("Reserva");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.Notificacoes.Notificacao", b =>
+                {
+                    b.HasOne("KioraRestaurante.Models.Usuario", "Autor")
+                        .WithMany()
+                        .HasForeignKey("AutorId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("KioraRestaurante.Models.Cupons.Cupom", "Cupom")
+                        .WithMany()
+                        .HasForeignKey("CupomId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("KioraRestaurante.Models.Pedido", "Pedido")
+                        .WithMany()
+                        .HasForeignKey("PedidoId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("KioraRestaurante.Models.Reserva", "Reserva")
+                        .WithMany()
+                        .HasForeignKey("ReservaId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Autor");
+
+                    b.Navigation("Cupom");
+
+                    b.Navigation("Pedido");
+
+                    b.Navigation("Reserva");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.Notificacoes.NotificacaoUsuario", b =>
+                {
+                    b.HasOne("KioraRestaurante.Models.Notificacoes.Notificacao", "Notificacao")
+                        .WithMany("Destinatarios")
+                        .HasForeignKey("NotificacaoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("KioraRestaurante.Models.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Notificacao");
+
+                    b.Navigation("Usuario");
+                });
+
             modelBuilder.Entity("KioraRestaurante.Models.OperacaoPedido", b =>
                 {
                     b.HasOne("KioraRestaurante.Models.Pedido", "Pedido")
@@ -1172,6 +1522,16 @@ namespace KioraRestaurante.Migrations
                     b.Navigation("Produtos");
                 });
 
+            modelBuilder.Entity("KioraRestaurante.Models.Cupons.Cupom", b =>
+                {
+                    b.Navigation("Usos");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.Notificacoes.Notificacao", b =>
+                {
+                    b.Navigation("Destinatarios");
+                });
+
             modelBuilder.Entity("KioraRestaurante.Models.OperacaoPedido", b =>
                 {
                     b.Navigation("Movimentos");
@@ -1185,6 +1545,8 @@ namespace KioraRestaurante.Migrations
                     b.Navigation("ItensPedido");
 
                     b.Navigation("Operacoes");
+
+                    b.Navigation("UsoCupom");
                 });
 
             modelBuilder.Entity("KioraRestaurante.Models.Produto", b =>

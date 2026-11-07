@@ -196,7 +196,7 @@ public class CheckoutEntregaTests
         Assert.Throws<ValidationException>(() => Validator.ValidateObject(novo, new(novo), true));
     }
 
-    private sealed class Banco : IDisposable
+    internal sealed class Banco : IDisposable
     {
         private readonly SqliteConnection _conexao = new("Data Source=:memory:");
         private readonly HttpClient _http = new(new CepFalso()) { BaseAddress = new("https://viacep.com.br/ws/") };
@@ -204,6 +204,7 @@ public class CheckoutEntregaTests
         public AppDbContext Db { get; }
         public Usuario Cliente { get; }
         public AcessoCarrinho Acesso => new() { UsuarioId = Cliente.Id };
+        public KioraRestaurante.Services.Cupons.CupomService Cupons { get; }
         public PedidoService Pedidos { get; }
         public EnderecoUsuarioService Enderecos { get; }
         public EntregaOptions Opcoes { get; } = new();
@@ -223,7 +224,8 @@ public class CheckoutEntregaTests
             Enderecos = new(Db, new CepService(_http, _cache, new ConfigurationBuilder().Build()));
             var protecao = new EphemeralDataProtectionProvider();
             Entrega = new(Rotas, OpcoesCreate(), protecao, Relogio);
-            Pedidos = new(Db, new CarrinhoService(Db), protecao, Enderecos, Entrega);
+            Cupons = new(Db, protecao, Relogio);
+            Pedidos = new(Db, new CarrinhoService(Db), protecao, Enderecos, Entrega, Cupons);
         }
 
         private Microsoft.Extensions.Options.IOptions<EntregaOptions> OpcoesCreate() => Microsoft.Extensions.Options.Options.Create(Opcoes);

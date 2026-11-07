@@ -1,0 +1,23 @@
+@model KioraRestaurante.DTOs.Notificacoes.ListaNotificacoesDTO
+@using KioraRestaurante.Services
+@{ ViewData["Title"] = "Notificações"; }
+<section class="container pedido-pagina avisos-pagina">
+    <header class="pedido-cabecalho"><div><span class="pedido-sobretitulo">KIORA · AVISOS</span><h1>Suas notificações</h1><p>@Model.NaoLidas não lida(s)</p></div>
+        @if (Model.NaoLidas > 0) { <form asp-action="MarcarTodas" method="post"><button class="pedido-link" type="submit">Marcar todas como lidas</button></form> }
+    </header>
+    @if (Model.Itens.Count == 0) { <p class="pedido-box">Você ainda não tem notificações. Os avisos aparecerão aqui.</p> }
+    @foreach (var aviso in Model.Itens) {
+        <article class="pedido-box aviso-item @(aviso.NaoLida ? "aviso-nao-lido" : "")">
+            <div class="aviso-meta"><time datetime="@aviso.CriadaEmUtc.ToString("O")">@HorarioRestaurante.ParaLocal(aviso.CriadaEmUtc).ToString("dd/MM/yyyy HH:mm")</time>@if (aviso.NaoLida) { <strong>Nova</strong> }</div>
+            <h2>@aviso.Titulo</h2><p class="aviso-mensagem">@aviso.Mensagem</p>
+            <form asp-action="@(aviso.TemDestino ? "Abrir" : "MarcarLida")" method="post"><input type="hidden" name="id" value="@aviso.Id" />
+                @if (aviso.TemDestino || aviso.NaoLida) { <button type="submit" class="pedido-link">@(aviso.TemDestino ? "Ver detalhes" : "Marcar como lida")</button> }
+            </form>
+        </article>
+    }
+    @if (Model.TotalPaginas > 1) { <nav class="avisos-paginacao" aria-label="Páginas das notificações">
+        @if (Model.Pagina > 1) { <a asp-route-pagina="@(Model.Pagina - 1)" class="pedido-link">Anterior</a> }
+        <span>Página @Model.Pagina de @Model.TotalPaginas</span>
+        @if (Model.Pagina < Model.TotalPaginas) { <a asp-route-pagina="@(Model.Pagina + 1)" class="pedido-link">Próxima</a> }
+    </nav> }
+</section>

@@ -59,6 +59,8 @@
                             </li>
 
 
+                            <li><a class="conta-opcao" asp-controller="Notificacoes" asp-action="Index"><i class="bi bi-bell" aria-hidden="true"></i>Notificações</a></li>
+
                             <!-- ADMINISTRAÇÃO: somente administradores veem esta opção. -->
                             @if (User.IsInRole("Administrador"))
                             {

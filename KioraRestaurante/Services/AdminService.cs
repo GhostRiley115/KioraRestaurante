@@ -95,9 +95,11 @@ public class AdminService : IAdminService
             CanceladoEmUtc = p.CanceladoEmUtc, MotivoCancelamento = p.MotivoCancelamento,
             ReembolsoCancelamentoPendente = p.ReembolsoCancelamentoPendente, OperacaoPendenteId = p.OperacaoPendenteId,
             HistoricoAlteracoes = p.Operacoes.OrderBy(o => o.CriadaEmUtc).Select(o => o.Mensagem).ToList(),
+            Versao = p.Versao, CodigoCupom = p.CodigoCupom, DescontoCupom = p.DescontoCupom,
             StatusPedido = p.StatusPedido, StatusPagamento = p.StatusPagamento, FormaPagamento = p.FormaPagamento,
             Itens = p.ItensPedido.OrderBy(i => i.Id).Select(i => new ItemPedidoAdminDTO {
                 Nome = i.NomeProduto, Quantidade = i.Quantidade, PrecoUnitario = i.PrecoUnitario,
+                ImagemUrl = i.ImagemUrl ?? i.Produto.Imagem,
                 Composicao = i.Composicao, Observacao = i.Observacao
             }).ToList(),
             Endereco = p.EnderecoEntrega == null ? null : new EnderecoPedidoAdminDTO {

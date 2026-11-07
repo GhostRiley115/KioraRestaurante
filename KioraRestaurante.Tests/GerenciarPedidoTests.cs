@@ -265,6 +265,18 @@ public class GerenciarPedidoTests
         Assert.Equal(0, b.Provedor.Consultas);
     }
 
+    [Theory] [InlineData(false, 11000, 12)] [InlineData(true, 7000, 8)] [InlineData(true, 1000, 5)]
+    public async Task CorrecaoDeEnderecoMantemDescontoECobraOuDevolveApenasDiferencaDoFrete(bool online, decimal metros, decimal novaTaxa)
+    {
+        using var b = new Banco(online, online, 8m, 4m);
+        var id = await b.Alterar(metros);
+        var op = await b.Service.BuscarOperacao(b.UsuarioId, id, default);
+        if (op.Estado == EstadoOperacaoPedido.AguardandoPagamento) { b.Provedor.PagarUltima(); await b.Service.Processar(id, default); }
+        var p = await b.Pedido(); Assert.Equal(4m, p.DescontoCupom); Assert.Equal("CUPOM", p.CodigoCupom);
+        Assert.Equal(40m - 4m + novaTaxa, p.ValorTotal); Assert.Equal("99", p.EnderecoEntrega.Numero);
+        if (online) { await b.Pagamentos.Sincronizar(b.Provedor.Principal.Id, default); Assert.Equal(StatusPagamento.Aprovado, (await b.Pedido()).StatusPagamento); }
+    }
+
     private sealed class Banco : IDisposable
     {
         private readonly SqliteConnection _conn = new("Data Source=:memory:");
@@ -279,12 +291,12 @@ public class GerenciarPedidoTests
         public int Id { get; }
         public int UsuarioId { get; }
 
-        public Banco(bool online, bool pago = false, decimal taxa = 5m)
+        public Banco(bool online, bool pago = false, decimal taxa = 5m, decimal cupom = 0)
         {
             _conn.Open(); Db = new(new DbContextOptionsBuilder<AppDbContext>().UseSqlite(_conn).Options); Db.Database.EnsureCreated();
             var usuario = new Usuario { Nome = "Cliente", Email = "cliente@example.com", SenhaHash = "sem-uso" };
             var p = new Pedido { Usuario = usuario, FormaPagamento = online ? FormaPagamento.MercadoPago : FormaPagamento.Dinheiro,
-                StatusPagamento = pago ? StatusPagamento.Aprovado : StatusPagamento.Pendente, TaxaEntrega = taxa, ValorTotal = 40m + taxa,
+                StatusPagamento = pago ? StatusPagamento.Aprovado : StatusPagamento.Pendente, TaxaEntrega = taxa, ValorTotal = 40m - cupom + taxa, DescontoCupom = cupom, CodigoCupom = cupom > 0 ? "CUPOM" : null,
                 EnderecoEntrega = new() { Cep = "05422000", Logradouro = "Rua de Teste", Numero = "77", Bairro = "Pinheiros", Cidade = "São Paulo", Uf = "SP" },
                 ItensPedido = [new() { Produto = new Produto { Nome = "Prato", Descricao = "Teste", CategoriaId = 2, Preco = 40m }, NomeProduto = "Prato", Quantidade = 1, PrecoUnitario = 40m }], PreparoMinutos = 30, DuracaoPercursoSegundos = 600 };
             Db.Add(p); Db.SaveChanges(); Id = p.Id; UsuarioId = usuario.Id;

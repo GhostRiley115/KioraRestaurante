@@ -118,3 +118,5 @@
         grid-template-columns: minmax(0, 1fr);
     }
 }
+/* Ações novas de pedido e campanhas mantêm contraste também no tema claro. */
+.admin-pagina button, .admin-pagina a.pedido-botao { color: #fff; }

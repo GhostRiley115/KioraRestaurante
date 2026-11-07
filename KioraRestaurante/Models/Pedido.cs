@@ -42,6 +42,9 @@ namespace KioraRestaurante.Models
         [MaxLength(300)] public string? MotivoCancelamento { get; set; }
         public bool ReembolsoCancelamentoPendente { get; set; }
         public List<OperacaoPedido> Operacoes { get; set; } = [];
+        [MaxLength(40)] public string? CodigoCupom { get; set; }
+        [Column(TypeName = "decimal(10,2)")] public decimal DescontoCupom { get; set; }
+        public Cupons.UsoCupom? UsoCupom { get; set; }
 
         public List<ItemPedido> ItensPedido { get; set; } = new();
 

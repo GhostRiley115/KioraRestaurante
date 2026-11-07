@@ -61,6 +61,10 @@ builder.Services.AddDataProtection();
 builder.Services.AddScoped<CarrinhoCookie>();
 builder.Services.AddHostedService<LimpezaCarrinhosService>();
 builder.Services.AddScoped<IPedidoService, PedidoService>();
+builder.Services.AddScoped<KioraRestaurante.Services.Cupons.CupomService>();
+builder.Services.AddScoped<KioraRestaurante.Services.Notificacoes.NotificacaoService>();
+builder.Services.AddScoped<KioraRestaurante.Services.Notificacoes.NotificacaoDispatcher>();
+builder.Services.AddHostedService<KioraRestaurante.Services.Notificacoes.DistribuirNotificacoesService>();
 builder.Services.AddScoped<IProdutoService, ProdutoService>();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 builder.Services.AddScoped<IImagemProdutoService, ImagemProdutoService>();
@@ -76,6 +80,7 @@ builder.Services.AddSingleton(_ => new LimitadorRecuperacaoSenha(
 builder.Services.AddScoped<LimitarRecuperacaoSenha>();
 builder.Services.AddScoped<EnderecoUsuarioService>();
 builder.Services.AddScoped<GerenciarPedidoService>();
+builder.Services.AddScoped<KioraRestaurante.Services.Pedidos.AndamentoPedidoService>();
 builder.Services.AddHostedService<OperacoesPedidoService>();
 builder.Services.AddRateLimiter(limites =>
 {

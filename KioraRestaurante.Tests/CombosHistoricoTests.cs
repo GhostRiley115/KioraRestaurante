@@ -132,6 +132,20 @@ public class CombosHistoricoTests
         }
     }
 
+    [Fact]
+    public async Task MensagensDeNotificacaoSaoTextoEAsFotosAparecemNosDetalhes()
+    {
+        await using var telas = new TelasRazor();
+        var malicioso = "<script>alert('teste')</script>";
+        var html = await telas.Renderizar("/Views/Notificacoes/Index.cshtml", new KioraRestaurante.DTOs.Notificacoes.ListaNotificacoesDTO(
+            [new(Guid.NewGuid(), malicioso, malicioso, DateTime.UtcNow, true, true)], 1, 1, 1));
+        Assert.DoesNotContain("<script>alert", html); Assert.Contains("&lt;script&gt;", html);
+        using var banco = new BancoCombos(); var pedido = banco.CriarPedido("Combo histórico");
+        pedido.ItensPedido[0].ImagemUrl = "https://example.com/historica.webp";
+        var detalhes = await telas.Renderizar("/Views/Pedido/Detalhes.cshtml", pedido);
+        Assert.Contains("https://example.com/historica.webp", detalhes); Assert.DoesNotContain("Continuar no cardápio", detalhes);
+    }
+
     private sealed class BancoCombos : IDisposable
     {
         private readonly SqliteConnection _conexao = new("Data Source=:memory:");
@@ -164,7 +178,8 @@ public class CombosHistoricoTests
                 new EphemeralDataProtectionProvider(), new EnderecoUsuarioService(Contexto, cep),
                 new KioraRestaurante.Services.Entrega.CotacaoEntregaService(new RotasEntregaSimuladas(),
                     Microsoft.Extensions.Options.Options.Create(new KioraRestaurante.Options.EntregaOptions()),
-                    new EphemeralDataProtectionProvider(), TimeProvider.System));
+                    new EphemeralDataProtectionProvider(), TimeProvider.System),
+                new KioraRestaurante.Services.Cupons.CupomService(Contexto, new EphemeralDataProtectionProvider(), TimeProvider.System));
         }
 
         public Pedido CriarPedido(string? composicao)
