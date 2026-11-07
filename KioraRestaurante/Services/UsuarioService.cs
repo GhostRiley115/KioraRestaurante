@@ -109,7 +109,7 @@ namespace KioraRestaurante.Services
             /*Procura um usuário pelo e-mail. FirstOrDefault retorna:
             O usuário encontrado -> null caso não encontre*/
             var usuario = _context.Usuarios.AsNoTracking()
-                .FirstOrDefault(u => u.Email == email && u.Ativo);
+                .FirstOrDefault(u => u.Email == email && u.Ativo && !u.ConvitePendente);
 
             //Se não encontrou nenhum usuário, o login não pode continuar.
             if (usuario == null)
@@ -146,7 +146,7 @@ namespace KioraRestaurante.Services
             var email = NormalizarEmail(dto.Email);
 
             var usuario = _context.Usuarios.AsNoTracking()
-                .FirstOrDefault(u => u.Email == email && u.Ativo);
+                .FirstOrDefault(u => u.Email == email && u.Ativo && !u.ConvitePendente);
 
             if (usuario == null)
                 return null;

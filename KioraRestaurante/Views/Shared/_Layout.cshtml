@@ -348,10 +348,23 @@ CSS DOS PEDIDOS
             <!-- AÇÕES SEMPRE VISÍVEIS: independentes do menu de páginas. -->
             <div class="navbar-acoes-fixas">
                 @if (User.Identity?.IsAuthenticated == true) {
-                    <a asp-controller="Notificacoes" asp-action="Index" id="sinoNotificacoes" class="sino-notificacoes"
-                       data-resumo-url="@Url.Action("Resumo", "Notificacoes")" aria-label="Notificações" title="Notificações">
-                        <i class="bi bi-bell" aria-hidden="true"></i><span data-contador-notificacoes class="sino-contador" aria-hidden="true" hidden>0</span>
-                    </a>
+                    <div class="dropdown notificacoes-menu">
+                        <button type="button" id="sinoNotificacoes" class="sino-notificacoes" data-bs-toggle="dropdown" data-bs-auto-close="outside"
+                                data-resumo-url="@Url.Action("Resumo", "Notificacoes")" data-painel-url="@Url.Action("Painel", "Notificacoes")"
+                                aria-label="Notificações" title="Notificações" aria-expanded="false" aria-controls="painelNotificacoes">
+                            <i class="bi bi-bell" aria-hidden="true"></i><span data-contador-notificacoes class="sino-contador" aria-hidden="true" hidden>0</span>
+                        </button>
+                        <section class="dropdown-menu dropdown-menu-end notificacoes-painel" id="painelNotificacoes" aria-label="Notificações recentes">
+                            <h2>Notificações</h2><p data-estado-notificacoes role="status">Abra para consultar seus avisos.</p>
+                            <ul data-lista-notificacoes class="notificacoes-titulos"></ul>
+                            <a asp-controller="Notificacoes" asp-action="Index" class="notificacoes-historico">Ver todas as notificações</a>
+                        </section>
+                        <template id="modeloTituloNotificacao">
+                            <li><form asp-controller="Notificacoes" asp-action="Ler" method="post">
+                                <button type="submit" name="id" class="dropdown-item notificacao-titulo"><span data-titulo-notificacao></span><span data-aviso-nao-lido class="visually-hidden"> · Não lida</span></button>
+                            </form></li>
+                        </template>
+                    </div>
                 }
                     <!--
                         =================================================

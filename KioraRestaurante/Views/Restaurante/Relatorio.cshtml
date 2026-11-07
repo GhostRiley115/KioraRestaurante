@@ -1,0 +1,9 @@
+@model ComparacaoSalaoDTO
+@{ViewData["Title"]="Vendas presenciais";var cultura=CultureInfo.GetCultureInfo("pt-BR");}
+<h1>Vendas do restaurante físico</h1><p>Contas fechadas no dia, pelo horário de Brasília. Delivery não entra nestes valores.</p>
+<form method="get" class="equipe-form-inline"><label>Dia <input name="dia" type="date" value="@Model.Atual.Dia.ToString("yyyy-MM-dd")" required/></label><label>Comparar com <input name="comparar" type="date" value="@Model.Comparado.Dia.ToString("yyyy-MM-dd")" required/></label><button type="submit">Comparar</button></form>
+<div class="equipe-mesas">@foreach(var dia in new[]{Model.Atual,Model.Comparado}){<section class="equipe-box"><h2>@dia.Dia.ToString("dd/MM/yyyy")</h2><p>@dia.AtendimentosNoDia atendimento(s) no dia · @dia.MesasDistintas mesa(s) distintas usadas · @dia.AtendimentosIniciados iniciado(s) nesta data</p><p>@dia.ContasFechadas conta(s) fechada(s)</p><p>Produtos: @dia.Produtos.ToString("C",cultura)</p><p>Descontos: @dia.Descontos.ToString("C",cultura)</p><p class="equipe-total">Vendas: @dia.Vendas.ToString("C",cultura)</p></section>}</div>
+<p>Diferença de vendas: <strong>@((Model.Atual.Vendas-Model.Comparado.Vendas).ToString("C",cultura))</strong>. Mesas em atendimento agora: @Model.Atual.OcupadasAgora.</p>
+<h2>Contas do dia @Model.Atual.Dia.ToString("dd/MM/yyyy")</h2><div class="equipe-tabela-scroll"><table class="equipe-tabela"><thead><tr><th>Mesa</th><th>Responsável</th><th>Fechamento</th><th>Produtos</th><th>Desconto</th><th>Total</th><th>Detalhes</th></tr></thead><tbody>
+@foreach(var c in Model.Atual.Contas){<tr><td>@c.Mesa</td><td>@c.Garcom</td><td>@HorarioRestaurante.ParaLocal(c.FechadoEmUtc).ToString("HH:mm")</td><td>@c.Subtotal.ToString("C",cultura)</td><td>@c.Desconto.ToString("C",cultura)</td><td>@c.Total.ToString("C",cultura)</td><td><a asp-action="Comanda" asp-route-id="@c.Id">Consultar</a></td></tr>}
+</tbody></table></div>

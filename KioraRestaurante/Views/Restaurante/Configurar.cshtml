@@ -1,0 +1,5 @@
+@model ConfigurarMesaDTO
+@{ViewData["Title"]="Configurar mesa";}
+<h1>Configurar mesa</h1><form method="post" class="equipe-box equipe-form"><input asp-for="MesaId" type="hidden"/><input asp-for="Versao" type="hidden"/><input asp-for="ChaveSolicitacao" type="hidden"/>
+<label asp-for="Nome">Nome da mesa</label><input asp-for="Nome" maxlength="30" required/><label asp-for="Capacidade">Lugares</label><input asp-for="Capacidade" min="1" max="30"/>
+<label><input asp-for="Ativa"/> Mesa habilitada para atendimento</label><p>Mesas ocupadas, aguardando limpeza ou com grupo chamado precisam ser liberadas antes de alterar a configuração.</p><button type="submit">Salvar mesa</button></form>

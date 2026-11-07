@@ -1,0 +1,7 @@
+@model KioraRestaurante.DTOs.Salao.AceitarConviteDTO
+@{Layout="~/Views/Shared/_Layout.cshtml";ViewData["Title"]="Definir senha da equipe";}
+<section class="container pedido-pagina"><h1>Bem-vindo à equipe Kiora</h1><p>Defina sua senha pessoal. O convite só pode ser usado uma vez.</p>
+<form method="post" class="pedido-box"><div asp-validation-summary="All" class="pedido-erros" role="alert"></div><input asp-for="Token" type="hidden"/>
+<label asp-for="Senha">Nova senha</label><input asp-for="Senha" type="password" class="form-control" autocomplete="new-password" minlength="8" maxlength="128" required/>
+<label asp-for="ConfirmarSenha">Confirme a senha</label><input asp-for="ConfirmarSenha" type="password" class="form-control" autocomplete="new-password" minlength="8" maxlength="128" required/>
+<button class="pedido-botao mt-3" type="submit">Definir minha senha</button></form></section>

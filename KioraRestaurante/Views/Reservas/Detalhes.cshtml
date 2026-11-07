@@ -9,10 +9,10 @@
         @if(TempData["ReservaAviso"] is string aviso){<p role="status">@aviso</p>}
         <p>Protocolo: <strong>@Model.Codigo.ToString("N")[..8].ToUpperInvariant()</strong> · @Model.Pessoas pessoa(s)</p>
         <h2 id="situacaoReserva" role="status">@Model.SituacaoTexto</h2>
-        <p id="horarioReserva">@(Model.InicioUtc.HasValue ? $"Chegada: {HorariosReserva.Local(Model.InicioUtc.Value):dd/MM/yyyy HH:mm} · Encerramento: {HorariosReserva.Local(Model.FimUtc!.Value):HH:mm}" : "Fila presencial de hoje")</p>
+        <p id="horarioReserva">@(Model.InicioUtc.HasValue ? $"Chegada: {HorariosReserva.Local(Model.InicioUtc.Value):dd/MM/yyyy HH:mm}" : "Fila presencial de hoje")</p>
         <p id="posicaoFila">@(Model.PosicaoFila.HasValue?$"Posição geral na fila: {Model.PosicaoFila}. A chamada depende de uma mesa que comporte seu grupo.":"")</p>
         <p id="mesaReserva">@(Model.Mesa!=null?$"Sua mesa: {Model.Mesa}":"")</p>
-        <p id="prazoReserva">Prazo para chegada/chamada: @HorariosReserva.Local(Model.ExpiraEmUtc).ToString("dd/MM/yyyy HH:mm").</p>
+        <p id="prazoReserva" hidden="@(Model.Situacao is KioraRestaurante.Models.SituacaoReserva.EmAtendimento or KioraRestaurante.Models.SituacaoReserva.Concluida)">Prazo para chegada/chamada: @HorariosReserva.Local(Model.ExpiraEmUtc).ToString("dd/MM/yyyy HH:mm").</p>
         <p id="avisoChamada" class="reservas-chamada" role="alert" hidden="@(Model.Situacao!=KioraRestaurante.Models.SituacaoReserva.Chamada)">É a sua vez! Apresente-se à recepção antes do prazo informado.</p>
         <p id="estadoConsulta" class="reservas-suave" role="status">Esta página confere a situação a cada 15 segundos enquanto está aberta.</p>
         <button type="button" id="notificarReserva" class="pedido-link">Permitir aviso neste dispositivo</button>

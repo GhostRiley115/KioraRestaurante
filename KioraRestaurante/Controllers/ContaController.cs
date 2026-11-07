@@ -147,6 +147,10 @@ namespace KioraRestaurante.Controllers
             });
         }
 
+        [HttpPost("/api/equipe/login")]
+        [ServiceFilter(typeof(LimitarTentativasLogin))]
+        public Task<IActionResult> LoginAplicativo([FromForm] LoginViewModel model) => Login(model);
+
         [HttpGet]
         public IActionResult Login(string? returnUrl = null)
         {
@@ -212,7 +216,7 @@ namespace KioraRestaurante.Controllers
                 sucesso = true,
                 mensagem = $"Bem-vindo(a), {usuario.Nome}!",
                 nome = usuario.Nome,
-                redirecionarPara = ObterDestinoLocal(model.ReturnUrl)
+                redirecionarPara = ObterDestinoLocal(model.ReturnUrl) ?? (usuario.Tipo != KioraRestaurante.Models.Enums.TipoUsuario.Cliente ? Url.Action("Index", "Restaurante") : null)
             });
         }
 

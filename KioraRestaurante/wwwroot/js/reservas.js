@@ -19,11 +19,11 @@
                 if (!resposta.ok) throw new Error(corpo.mensagem || "Não foi possível consultar os horários.");
                 horario.replaceChildren(new Option("Selecione um horário", ""));
                 for (const h of corpo) {
-                    const opcao = new Option(`${h.horario} — até ${h.encerramento} (${h.minutos} min)${h.disponivel ? "" : " · lotado"}`, h.horario);
+                    const opcao = new Option(`${h.horario}${h.disponivel ? "" : " · lotado"}`, h.horario);
                     opcao.disabled = !h.disponivel; horario.add(opcao);
                 }
                 horario.disabled = false;
-                aviso.textContent = corpo.some(h => h.disponivel) ? "Disponibilidade sujeita à confirmação." : "Sem horários disponíveis. Escolha outro dia ou entre na fila de hoje.";
+                aviso.textContent = corpo.some(h => h.disponivel) ? "A solicitação não garante mesa no horário. Registre a chegada na portaria." : "Sem horários disponíveis. Escolha outro dia ou entre na fila de hoje.";
             } catch (erro) {
                 if (erro.name === "AbortError") return;
                 horario.replaceChildren(new Option("Não foi possível consultar", ""));
@@ -58,8 +58,9 @@
             const r = await resposta.json();
             document.getElementById("situacaoReserva").textContent = r.situacaoTexto;
             document.getElementById("posicaoFila").textContent = r.posicaoFila ? `Posição geral na fila: ${r.posicaoFila}. A chamada depende do tamanho do grupo e da mesa.` : "";
-            document.getElementById("horarioReserva").textContent = r.inicioUtc ? `Chegada: ${formatar(r.inicioUtc)} · Encerramento: ${formatar(r.fimUtc)}` : "Fila presencial de hoje";
+            document.getElementById("horarioReserva").textContent = r.inicioUtc ? `Chegada: ${formatar(r.inicioUtc)}` : "Fila presencial de hoje";
             document.getElementById("mesaReserva").textContent = r.mesa ? `Sua mesa: ${r.mesa}` : "";
+            document.getElementById("prazoReserva").hidden = [3,4].includes(r.situacao);
             document.getElementById("prazoReserva").textContent = `Prazo para chegada/chamada: ${formatar(r.expiraEmUtc)}.`;
             document.getElementById("avisoChamada").hidden = r.situacao !== 2;
             cancelar.hidden = !r.podeCancelar; cancelar.querySelector('[name="Versao"]').value = r.versao;

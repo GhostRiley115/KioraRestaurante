@@ -20,6 +20,8 @@ public class AndamentoPedidoService(AppDbContext db)
             throw new ValidationException("Confirme o pagamento antes de avançar este pedido.");
         if (pedido.FormaPagamento == FormaPagamento.Dinheiro && pedido.StatusPagamento is not StatusPagamento.Pendente and not StatusPagamento.Aprovado)
             throw new ValidationException("A situação do pagamento precisa ser conferida antes de avançar.");
+        if (proximo == StatusPedido.SaiuParaEntrega && await db.ItensPedido.AnyAsync(i=>i.PedidoId==id && i.SituacaoPreparo!=KioraRestaurante.Models.Salao.SituacaoPreparo.Pronto,ct))
+            throw new ValidationException("A cozinha precisa marcar todos os itens como prontos antes da saída para entrega.");
         pedido.StatusPedido = proximo; pedido.Versao = Guid.NewGuid();
         if (proximo == StatusPedido.Entregue && pedido.FormaPagamento == FormaPagamento.Dinheiro)
             pedido.StatusPagamento = StatusPagamento.Aprovado;

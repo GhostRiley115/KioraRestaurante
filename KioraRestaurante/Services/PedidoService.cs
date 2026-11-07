@@ -117,7 +117,7 @@ public class PedidoService : IPedidoService
 
         var usuarioId = acesso.UsuarioId.Value;
         var ativo = await _context.Usuarios
-            .AnyAsync(u => u.Id == usuarioId && u.Ativo);
+            .AnyAsync(u => u.Id == usuarioId && u.Ativo && (u.Tipo == TipoUsuario.Cliente || u.Tipo == TipoUsuario.Administrador));
 
         if (!ativo)
         {

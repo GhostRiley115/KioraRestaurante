@@ -1,0 +1,6 @@
+@model List<KioraRestaurante.DTOs.Salao.FuncionarioDTO>
+@{ViewData["Title"]="Funcionários";var admin=User.IsInRole("Administrador");}
+<h1>Funcionários</h1><p>Contas individuais permitem registrar quem realizou cada ação. O convite para definir a senha vale por 24 horas.</p><a asp-action="Editar" class="pedido-botao">Cadastrar funcionário</a>
+<div class="equipe-tabela-scroll"><table class="equipe-tabela"><thead><tr><th>Nome</th><th>E-mail</th><th>Cargo</th><th>Acesso</th><th>Ações</th></tr></thead><tbody>
+@foreach(var f in Model){<tr><td>@f.Nome</td><td>@f.Email</td><td>@f.Cargo</td><td>@(!f.Ativo?"Desativado":f.AguardandoConvite?"Aguardando definição da senha":"Ativo")</td><td>@if(admin||f.Cargo!=KioraRestaurante.Models.Enums.TipoUsuario.Gerente){<a asp-action="Editar" asp-route-id="@f.Id">Editar cargo / desativar</a>@if(f.Ativo&&f.AguardandoConvite){<form asp-action="Reenviar" method="post"><input type="hidden" name="funcionarioId" value="@f.Id"/><input type="hidden" name="versao" value="@f.Versao"/><button type="submit">Reenviar convite</button></form>}}</td></tr>}
+</tbody></table></div>

@@ -44,6 +44,7 @@ public class NotificacoesTests
         var andamento = new AndamentoPedidoService(b.Db);
         foreach (var status in new[] { StatusPedido.EmPreparo, StatusPedido.SaiuParaEntrega, StatusPedido.Entregue })
         {
+            if(status==StatusPedido.SaiuParaEntrega){foreach(var item in await b.Db.ItensPedido.ToListAsync())item.SituacaoPreparo=KioraRestaurante.Models.Salao.SituacaoPreparo.Pronto;await b.Db.SaveChangesAsync();}
             var p = await b.Db.Pedidos.SingleAsync(); await andamento.Avancar(admin.Id, id, p.Versao, status);
         }
         var antes = await b.Db.EventosNotificacao.CountAsync(); await b.Db.SaveChangesAsync(); Assert.Equal(antes, await b.Db.EventosNotificacao.CountAsync());

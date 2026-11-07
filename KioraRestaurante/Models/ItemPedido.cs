@@ -6,6 +6,10 @@ namespace KioraRestaurante.Models
     public class ItemPedido
     {
         public int Id { get; set; }
+        public Salao.SituacaoPreparo SituacaoPreparo { get; set; }
+        public DateTime? IniciadoEmUtc { get; set; }
+        public DateTime? ProntoEmUtc { get; set; }
+        [ConcurrencyCheck] public Guid VersaoPreparo { get; set; } = Guid.NewGuid();
 
         public int PedidoId { get; set; }
         public Pedido Pedido { get; set; } = null!;

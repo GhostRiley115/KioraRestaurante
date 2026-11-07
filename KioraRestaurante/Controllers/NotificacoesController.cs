@@ -18,6 +18,14 @@ public class NotificacoesController(NotificacaoService service) : Controller
     }
     [HttpGet] public Task<IActionResult> Index(int pagina = 1) => Consultar(async () => View(await service.Listar(UsuarioId, pagina)));
     [HttpGet] public Task<IActionResult> Resumo() => Consultar(async () => Ok(new { naoLidas = await service.NaoLidas(UsuarioId) }));
+    [HttpGet] public Task<IActionResult> Painel() => Consultar(async () => {
+        var lista = await service.Listar(UsuarioId, 1);
+        return Ok(new { lista.NaoLidas, itens = lista.Itens.Take(10).Select(n => new { n.Id, n.Titulo, n.NaoLida }) });
+    });
+    [HttpGet] public Task<IActionResult> Detalhes(Guid id) => Consultar(async () => View(await service.Detalhe(UsuarioId, id)));
+    [HttpPost] public Task<IActionResult> Ler(Guid id) => Consultar(async () => {
+        await service.MarcarLida(UsuarioId, id); return RedirectToAction(nameof(Detalhes), new { id });
+    });
     [HttpPost] public Task<IActionResult> MarcarLida(Guid id) => Consultar(async () => { await service.MarcarLida(UsuarioId, id); return RedirectToAction(nameof(Index)); });
     [HttpPost] public Task<IActionResult> MarcarTodas() => Consultar(async () => { await service.MarcarTodas(UsuarioId); return RedirectToAction(nameof(Index)); });
     [HttpPost] public Task<IActionResult> Abrir(Guid id) => Consultar(async () => {

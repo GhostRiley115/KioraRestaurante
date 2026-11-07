@@ -22,6 +22,8 @@ namespace KioraRestaurante.Controllers
 
         public IActionResult Index()
         {
+            if (User.IsInRole("Gerente") || User.IsInRole("Garcom") || User.IsInRole("Portaria") || User.IsInRole("Cozinha"))
+                return RedirectToAction("Index", "Restaurante");
             return View();
         }
 

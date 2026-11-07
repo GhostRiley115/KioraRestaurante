@@ -1,0 +1,27 @@
+/* Operação do salão e cozinha: contraste dos temas e controles utilizáveis por toque. */
+.equipe-pagina { padding-block: 2rem 4rem; color:var(--k-texto); }
+.equipe-nav,.equipe-cabecalho,.equipe-form-inline { display:flex; flex-wrap:wrap; gap:1rem; align-items:center; margin-bottom:1.5rem; }
+.equipe-nav { border-bottom:1px solid var(--k-borda); padding-block:1rem; }
+.equipe-pagina a { color:var(--k-dourado); text-underline-offset:4px; }
+.equipe-pagina h1 {font-size:clamp(1.8rem,5vw,2.5rem);margin-block:1rem;}
+.equipe-pagina h2 {font-size:1.5rem;}.equipe-pagina h3 {font-size:1.2rem;}
+.equipe-cabecalho {justify-content:space-between;align-items:flex-start;}
+.equipe-box {padding:1.25rem;border:1px solid var(--k-borda);border-radius:10px;background:var(--k-superficie);overflow-wrap:anywhere;margin-block:.8rem;min-width:0;}
+.equipe-mesas {display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:1rem;}
+.equipe-indicadores {display:flex;flex-wrap:wrap;gap:1rem;margin-block:1rem;}
+.equipe-indicadores p {padding:1rem;background:var(--k-superficie);border:1px solid var(--k-borda);border-radius:8px;margin:0;flex:1;min-width:150px;}
+.equipe-indicadores strong {display:block;font-size:1.35rem;}
+.equipe-form {display:grid;gap:.65rem;max-width:55rem;}.equipe-form button {margin-top:.5rem;}
+.equipe-form input:not([type=checkbox]):not([type=hidden]),.equipe-form textarea,.equipe-form select,.equipe-form-inline input,.equipe-busca {min-width:0;width:100%;border:1px solid var(--k-borda);border-radius:6px;background:var(--k-campo);color:var(--k-texto);padding:.65rem;min-height:44px;color-scheme:var(--k-esquema);}
+.equipe-pagina button,.equipe-pagina a.pedido-botao {min-height:44px;padding:.65rem 1rem;border:1px solid var(--k-dourado);border-radius:6px;background:#7d1f1f;color:#fff;}
+.equipe-pagina button:disabled {opacity:.6;}.equipe-pagina details summary {cursor:pointer;min-height:44px;padding-block:.6rem;}
+.equipe-pagina :focus-visible {outline:3px solid var(--k-dourado);outline-offset:3px;}
+.equipe-sucesso {background:var(--k-sucesso-fundo);color:var(--k-verde);padding:1rem;border-radius:6px;}
+.comanda-colunas,.cozinha-origens {display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.5rem;align-items:start;}
+.comanda-cardapio {max-height:75vh;overflow-y:auto;padding-right:.5rem;}
+.equipe-origem {display:inline-block;border:1px solid var(--k-dourado);border-radius:2rem;padding:.2rem .7rem;color:var(--k-dourado);font-size:.8rem;}
+.cozinha-observacao {padding:.7rem;border-inline-start:4px solid var(--k-dourado);background:var(--k-elevado);}
+.cozinha-produto {font-size:1.3rem;}.cozinha-item h3 {margin-top:.7rem;}
+.equipe-tabela-scroll {overflow-x:auto;}.equipe-tabela {width:100%;min-width:680px;}.equipe-tabela th,.equipe-tabela td {padding:1rem;border-bottom:1px solid var(--k-borda);text-align:left;}
+.equipe-total {font-size:1.4rem;font-weight:700;}
+@media(max-width:767px){.comanda-colunas,.cozinha-origens{grid-template-columns:minmax(0,1fr);}.comanda-cardapio{max-height:none;}.equipe-box{padding:1rem;}}

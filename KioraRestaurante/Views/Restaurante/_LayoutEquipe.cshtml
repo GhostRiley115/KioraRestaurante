@@ -1,0 +1,14 @@
+@{Layout="~/Views/Shared/_Layout.cshtml";var gestor=User.IsInRole("Administrador")||User.IsInRole("Gerente");}
+@section Styles {<link rel="stylesheet" href="~/css/equipe.css" asp-append-version="true" />@await RenderSectionAsync("Styles",false)}
+<div class="container equipe-pagina"><span class="pedido-sobretitulo">KIORA · EQUIPE</span>
+<nav class="equipe-nav" aria-label="Operação do restaurante">
+    @if(gestor||User.IsInRole("Garcom")){<a asp-controller="Restaurante" asp-action="Index">Salão e mesas</a>}
+    @if(gestor||User.IsInRole("Portaria")||User.IsInRole("Garcom")){<a asp-controller="Restaurante" asp-action="Portaria">Portaria e reservas</a>}
+    @if(gestor||User.IsInRole("Cozinha")){<a asp-controller="Restaurante" asp-action="Cozinha">Cozinha</a>}
+    @if(gestor){<a asp-controller="Restaurante" asp-action="Relatorio">Vendas presenciais</a><a asp-controller="Funcionarios" asp-action="Index">Funcionários</a>}
+    @if(User.IsInRole("Administrador")){<a asp-controller="Admin" asp-action="Index">Administração geral</a>}
+</nav>
+@if(TempData["EquipeErro"] is string erro){<p class="pedido-erros" role="alert">@erro</p>}
+@if(TempData["EquipeSucesso"] is string sucesso){<p class="equipe-sucesso" role="status">@sucesso</p>}
+@RenderBody()</div>
+@section Scripts {<script src="~/js/equipe.js" asp-append-version="true"></script>@await RenderSectionAsync("Scripts",false)}

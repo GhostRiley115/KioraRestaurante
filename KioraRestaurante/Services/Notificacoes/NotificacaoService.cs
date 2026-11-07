@@ -25,8 +25,11 @@ public class NotificacaoService(AppDbContext db, IDataProtectionProvider proteca
     private async Task ExigirAdministrador(int adminId, CancellationToken ct)
     { if (await Tipo(adminId, ct) != TipoUsuario.Administrador) throw new UnauthorizedAccessException(); }
     private IQueryable<NotificacaoUsuario> Minhas(int usuarioId, TipoUsuario tipo) => db.NotificacoesUsuarios.Where(n => n.UsuarioId == usuarioId
-        && (n.Notificacao.Publico == PublicoNotificacao.Todos || n.Notificacao.Publico == PublicoNotificacao.Cliente && tipo == TipoUsuario.Cliente
-            || n.Notificacao.Publico == PublicoNotificacao.Administrador && tipo == TipoUsuario.Administrador));
+        && (n.Notificacao.Publico == PublicoNotificacao.Todos || n.Notificacao.Publico == PublicoNotificacao.Funcionario
+            && tipo != TipoUsuario.Cliente && (tipo == TipoUsuario.Administrador || tipo == TipoUsuario.Gerente
+                || n.Notificacao.Tipo == TipoNotificacao.CorrecaoCozinha && tipo == TipoUsuario.Cozinha
+                || tipo == TipoUsuario.Garcom && n.Notificacao.Atendimento != null && n.Notificacao.Atendimento.GarcomId == usuarioId) || n.Notificacao.Publico == PublicoNotificacao.Cliente && tipo == TipoUsuario.Cliente
+            || n.Notificacao.Publico == PublicoNotificacao.Administrador && (tipo == TipoUsuario.Administrador || tipo == TipoUsuario.Gerente)));
 
     public async Task<int> NaoLidas(int usuarioId, CancellationToken ct = default)
     { var tipo = await Tipo(usuarioId, ct); return await Minhas(usuarioId, tipo).CountAsync(n => n.LidaEmUtc == null, ct); }
@@ -37,9 +40,18 @@ public class NotificacaoService(AppDbContext db, IDataProtectionProvider proteca
         var total = await query.CountAsync(ct); var paginas = Math.Max(1, (total + 19) / 20); pagina = Math.Clamp(pagina, 1, paginas);
         var itens = await query.OrderByDescending(n => n.Notificacao.CriadaEmUtc).ThenBy(n => n.NotificacaoId)
             .Skip((pagina - 1) * 20).Take(20).Select(n => new ItemNotificacaoDTO(n.NotificacaoId, n.Notificacao.Titulo,
-                n.Notificacao.Mensagem, n.Notificacao.CriadaEmUtc, n.LidaEmUtc == null,
-                n.Notificacao.PedidoId != null || n.Notificacao.ReservaId != null || n.Notificacao.CupomId != null)).ToListAsync(ct);
+                n.Notificacao.Mensagem, DateTime.SpecifyKind(n.Notificacao.CriadaEmUtc,DateTimeKind.Utc), n.LidaEmUtc == null,
+                n.Notificacao.PedidoId != null || n.Notificacao.ReservaId != null || n.Notificacao.CupomId != null || n.Notificacao.AtendimentoId != null, n.Notificacao.AtendimentoId, n.Notificacao.PedidoId, n.Notificacao.Reserva == null ? null : n.Notificacao.Reserva.Codigo)).ToListAsync(ct);
         return new(itens, pagina, paginas, await query.CountAsync(n => n.LidaEmUtc == null, ct));
+    }
+
+    public async Task<ItemNotificacaoDTO> Detalhe(int usuarioId, Guid id, CancellationToken ct = default)
+    {
+        var tipo = await Tipo(usuarioId, ct);
+        return await Minhas(usuarioId, tipo).AsNoTracking().Where(n => n.NotificacaoId == id)
+            .Select(n => new ItemNotificacaoDTO(n.NotificacaoId, n.Notificacao.Titulo, n.Notificacao.Mensagem, DateTime.SpecifyKind(n.Notificacao.CriadaEmUtc,DateTimeKind.Utc),
+                n.LidaEmUtc == null, n.Notificacao.PedidoId != null || n.Notificacao.ReservaId != null || n.Notificacao.CupomId != null || n.Notificacao.AtendimentoId != null, n.Notificacao.AtendimentoId, n.Notificacao.PedidoId, n.Notificacao.Reserva == null ? null : n.Notificacao.Reserva.Codigo))
+            .SingleOrDefaultAsync(ct) ?? throw new KeyNotFoundException();
     }
 
     public async Task MarcarLida(int usuarioId, Guid id, CancellationToken ct = default)
@@ -63,11 +75,16 @@ public class NotificacaoService(AppDbContext db, IDataProtectionProvider proteca
             .SingleOrDefaultAsync(n => n.NotificacaoId == id, ct) ?? throw new KeyNotFoundException();
         var n = vinculo.Notificacao;
         await MarcarLida(usuarioId, id, ct);
+        if (n.AtendimentoId.HasValue) return n.Tipo == TipoNotificacao.CorrecaoCozinha
+            ? new("Restaurante", "Cozinha") : new("Restaurante", "Comanda", Codigo: n.AtendimentoId);
         if (n.PedidoId.HasValue) return tipo == TipoUsuario.Administrador
             ? new("Admin", "DetalhesPedido", n.PedidoId) : new("Pedido", "Detalhes", n.PedidoId);
         if (n.ReservaId.HasValue && n.Reserva != null)
+        {
+            if(tipo==TipoUsuario.Gerente)return new("Restaurante","Portaria",Data:HorarioRestaurante.ParaLocal(n.Reserva.InicioUtc??n.Reserva.CriadaEmUtc).ToString("yyyy-MM-dd"));
             return tipo == TipoUsuario.Administrador ? new("ReservasAdmin", "Index", Data: HorarioRestaurante.ParaLocal(n.Reserva.InicioUtc ?? n.Reserva.CriadaEmUtc).ToString("yyyy-MM-dd"))
                 : new("Reservas", "Detalhes", Codigo: n.Reserva.Codigo);
+        }
         if (n.CupomId.HasValue) return new("Cupons", "Detalhes", n.CupomId);
         return null;
     }

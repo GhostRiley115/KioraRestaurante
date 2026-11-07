@@ -1,0 +1,17 @@
+@model PainelSalaoViewModel
+@{ViewData["Title"]="Portaria e reservas";var gestor=User.IsInRole("Administrador")||User.IsInRole("Gerente");var opera=gestor||User.IsInRole("Portaria");}
+<header class="equipe-cabecalho"><div><h1>Portaria e reservas</h1><p>Registre a chegada e organize a fila. A mesa é ativada pelo garçom após acomodar o grupo.</p></div><a asp-action="Portaria">Atualizar</a></header>
+<div class="equipe-mesas">@foreach(var m in Model.Mesas){<section class="equipe-box"><h2>@m.Nome</h2><p>@m.Capacidade lugares · <strong>@m.Situacao</strong></p>
+@if(opera&&m.Situacao=="Livre"){<form asp-action="Chamar" method="post"><input type="hidden" name="MesaId" value="@m.Id"/><input type="hidden" name="ChaveSolicitacao" value="@Guid.NewGuid()"/><button type="submit">Chamar primeiro grupo compatível</button></form>}
+</section>}</div>
+@if(opera){<details class="equipe-box mt-4"><summary>Adicionar grupo que chegou sem reserva</summary><form asp-action="Fila" method="post" class="equipe-form"><input type="hidden" name="ChaveSolicitacao" value="@Guid.NewGuid()"/>
+<label for="fila-nome">Nome</label><input id="fila-nome" name="Nome" maxlength="100" minlength="2" required/><label for="fila-pessoas">Pessoas</label><input id="fila-pessoas" name="Pessoas" type="number" min="1" max="30" value="2" required/>
+<label for="fila-telefone">Telefone (opcional)</label><input id="fila-telefone" name="Telefone" type="tel" maxlength="25"/><button type="submit">Registrar chegada e incluir na fila</button></form></details>}
+<h2 class="mt-4">Solicitações e grupos</h2>
+<form method="get" class="equipe-form-inline"><label>Data <input name="data" type="date"/></label><button type="submit">Consultar</button></form>
+<div class="equipe-mesas">@foreach(var g in Model.Grupos){<article class="equipe-box"><h3>@g.Nome · @g.Pessoas pessoa(s)</h3><p>@g.Situacao · @(g.HorarioUtc.HasValue?HorarioRestaurante.ParaLocal(g.HorarioUtc.Value).ToString("dd/MM HH:mm"):"Fila presencial")</p>
+@if(opera&&g.ChegadaUtc==null){<form asp-action="Chegada" method="post"><input type="hidden" name="Codigo" value="@g.Codigo"/><input type="hidden" name="Versao" value="@g.Versao"/><input type="hidden" name="ChaveSolicitacao" value="@Guid.NewGuid()"/><button type="submit">Registrar chegada na portaria</button></form>}
+@if(g.ChegadaUtc.HasValue){<p>Chegada: @HorarioRestaurante.ParaLocal(g.ChegadaUtc.Value).ToString("HH:mm")</p>}
+@if(gestor){<details><summary>Cancelar solicitação</summary><form asp-action="CancelarReserva" method="post" class="equipe-form"><input type="hidden" name="Codigo" value="@g.Codigo"/><input type="hidden" name="Versao" value="@g.Versao"/><input type="hidden" name="ChaveSolicitacao" value="@Guid.NewGuid()"/><label for="cancelar-@g.Codigo">Motivo</label><input id="cancelar-@g.Codigo" name="Motivo" maxlength="400" required/><button type="submit">Confirmar cancelamento</button></form></details>}
+</article>}</div>
+@if(Model.Grupos.Count==0){<p>Nenhum grupo aguardando nesta consulta.</p>}

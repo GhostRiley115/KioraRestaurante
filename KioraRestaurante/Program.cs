@@ -80,10 +80,24 @@ builder.Services.AddSingleton(_ => new LimitadorRecuperacaoSenha(
 builder.Services.AddScoped<LimitarRecuperacaoSenha>();
 builder.Services.AddScoped<EnderecoUsuarioService>();
 builder.Services.AddScoped<GerenciarPedidoService>();
+builder.Services.AddScoped<KioraRestaurante.Services.Salao.AcessoSalaoService>();
+builder.Services.AddScoped<KioraRestaurante.Services.Salao.ComandoSalaoService>();
+builder.Services.AddScoped<KioraRestaurante.Services.Salao.ComandaService>();
+builder.Services.AddScoped<KioraRestaurante.Services.Salao.ConsultaSalaoService>();
+builder.Services.AddScoped<KioraRestaurante.Services.Salao.PortariaService>();
+builder.Services.AddScoped<KioraRestaurante.Services.Salao.AvisosSalaoService>();
+builder.Services.AddScoped<KioraRestaurante.Services.Salao.CozinhaService>();
+builder.Services.AddScoped<KioraRestaurante.Services.Salao.FuncionarioService>();
+builder.Services.AddHttpClient<EmailService>(http=>http.Timeout=TimeSpan.FromSeconds(15));
 builder.Services.AddScoped<KioraRestaurante.Services.Pedidos.AndamentoPedidoService>();
 builder.Services.AddHostedService<OperacoesPedidoService>();
 builder.Services.AddRateLimiter(limites =>
 {
+    limites.AddPolicy("salao", contexto=>RateLimitPartition.GetFixedWindowLimiter(
+        contexto.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? contexto.Connection.RemoteIpAddress?.ToString() ?? "anonimo",
+        _=>new FixedWindowRateLimiterOptions{PermitLimit=120,Window=TimeSpan.FromMinutes(1),QueueLimit=0}));
+    limites.AddPolicy("convite-funcionario", contexto=>RateLimitPartition.GetFixedWindowLimiter(
+        contexto.Connection.RemoteIpAddress?.ToString() ?? "anonimo", _=>new FixedWindowRateLimiterOptions{PermitLimit=10,Window=TimeSpan.FromMinutes(1),QueueLimit=0}));
     limites.AddPolicy("cotacao-entrega", contexto => RateLimitPartition.GetFixedWindowLimiter(
         contexto.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "sem-sessao",
         _ => new FixedWindowRateLimiterOptions { PermitLimit = 12, Window = TimeSpan.FromMinutes(1), QueueLimit = 0 }));

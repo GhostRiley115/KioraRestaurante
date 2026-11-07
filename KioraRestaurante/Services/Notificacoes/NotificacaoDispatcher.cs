@@ -38,7 +38,7 @@ public class NotificacaoDispatcher(AppDbContext db, CupomService cupons, TimePro
             var admin = evento.Tipo is TipoNotificacao.NovoPedidoAdmin or TipoNotificacao.NovaReservaAdmin;
             var tipoUsuario = admin ? TipoUsuario.Administrador : TipoUsuario.Cliente;
             var dono = evento.Pedido?.UsuarioId ?? evento.Reserva?.UsuarioId;
-            var usuarios = await db.Usuarios.Where(u => u.Ativo && u.Tipo == tipoUsuario && (admin || u.Id == dono)).Select(u => u.Id).ToListAsync(ct);
+            var usuarios = await db.Usuarios.Where(u => u.Ativo && (u.Tipo == tipoUsuario || evento.Tipo == TipoNotificacao.NovaReservaAdmin && u.Tipo == TipoUsuario.Gerente) && (admin || u.Id == dono)).Select(u => u.Id).ToListAsync(ct);
             var (titulo, mensagem) = Texto(evento);
             await using var tx = await db.Database.BeginTransactionAsync(ct);
             // Só a instância que ainda possui a concessão pode confirmar a distribuição.

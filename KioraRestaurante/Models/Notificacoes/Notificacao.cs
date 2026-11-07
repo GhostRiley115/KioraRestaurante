@@ -2,10 +2,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace KioraRestaurante.Models.Notificacoes;
 
-public enum PublicoNotificacao { Cliente = 0, Administrador = 1, Todos = 2 }
+public enum PublicoNotificacao { Cliente = 0, Administrador = 1, Todos = 2, Funcionario = 3 }
 public enum TipoNotificacao { PedidoRecebido = 0, PedidoEmPreparo = 1, PedidoSaiuParaEntrega = 2, PedidoEntregue = 3,
     PedidoCancelado = 4, PagamentoConfirmado = 5, NovoPedidoAdmin = 6, NovaReservaAdmin = 7, ReservaAtualizada = 8,
-    Comunicado = 9, CupomPromocional = 10, ConferirCupomInterno = 11 }
+    Comunicado = 9, CupomPromocional = 10, ConferirCupomInterno = 11, ItemSalaoPronto = 12, CorrecaoCozinha = 13, MesaTransferida = 14 }
 
 // O evento é salvo junto com o pedido/reserva; a distribuição ocorre depois da gravação confirmada.
 public class EventoNotificacao
@@ -36,6 +36,8 @@ public class Notificacao
     public Pedido? Pedido { get; set; }
     public int? ReservaId { get; set; }
     public Reserva? Reserva { get; set; }
+    public Guid? AtendimentoId { get; set; }
+    public Salao.AtendimentoMesa? Atendimento { get; set; }
     public int? CupomId { get; set; }
     public Cupons.Cupom? Cupom { get; set; }
     public List<NotificacaoUsuario> Destinatarios { get; set; } = [];

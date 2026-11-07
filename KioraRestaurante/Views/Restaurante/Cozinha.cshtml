@@ -1,0 +1,20 @@
+@model List<ItemCozinhaDTO>
+@{ViewData["Title"]="Cozinha";var salao=Model.Where(i=>i.Origem=="salao").ToList();var delivery=Model.Where(i=>i.Origem=="delivery").ToList();}
+<header class="equipe-cabecalho"><div><h1>Cozinha</h1><p>Marque o início do preparo e depois o prato pronto. O garçom registra a entrega à mesa.</p></div><a asp-action="Cozinha">Atualizar fila</a></header>
+<p data-cozinha-atualiza role="status">A fila é atualizada a cada 15 segundos enquanto esta aba está visível. Você também pode usar Atualizar fila.</p>
+@if(ViewData["Correcoes"] is List<KioraRestaurante.DTOs.Notificacoes.ItemNotificacaoDTO> correcoes && correcoes.Count>0){
+<section class="equipe-box"><h2>Correções recentes</h2>@foreach(var aviso in correcoes){<p><strong>@aviso.Titulo</strong> — @aviso.Mensagem</p>}</section>}
+<div class="cozinha-origens">
+@foreach(var origem in new[]{"salao","delivery"}){var itens=origem=="salao"?salao:delivery;
+<section><h2>@(origem=="salao"?"Restaurante físico":"Delivery") · @itens.Count item(ns)</h2>
+@if(itens.Count==0){<p class="equipe-box">Nenhum item ativo nesta origem.</p>}
+@foreach(var item in itens){<article class="equipe-box cozinha-item" data-cozinha-item data-chave="@(item.ItemSalaoId?.ToString()??item.ItemDeliveryId?.ToString())" data-versao="@item.Versao">
+<span class="equipe-origem">@(origem=="salao"?"MESA":"DELIVERY")</span><h3>@item.Destino</h3><p class="cozinha-produto"><strong>@item.Quantidade × @item.Nome</strong></p>
+@if(!string.IsNullOrWhiteSpace(item.Composicao)){<p>Combo: @item.Composicao</p>}
+@if(!string.IsNullOrWhiteSpace(item.Observacao)){<p class="cozinha-observacao">Observação: @item.Observacao</p>}
+<p>@HorarioRestaurante.ParaLocal(item.EnviadoEmUtc).ToString("HH:mm") · <strong>@(item.Situacao==SituacaoPreparo.NaFila?"Na fila":item.Situacao==SituacaoPreparo.EmPreparo?"Em preparo":"Pronto para retirada")</strong></p>
+@if(item.Situacao is SituacaoPreparo.NaFila or SituacaoPreparo.EmPreparo){<form asp-action="Preparo" method="post"><input type="hidden" name="ChaveSolicitacao" value="@Guid.NewGuid()"/><input type="hidden" name="Origem" value="@origem"/><input type="hidden" name="ItemSalaoId" value="@item.ItemSalaoId"/><input type="hidden" name="ItemDeliveryId" value="@item.ItemDeliveryId"/><input type="hidden" name="Versao" value="@item.Versao"/><input type="hidden" name="Acao" value="@(item.Situacao==SituacaoPreparo.NaFila?"iniciar":"pronto")"/><button type="submit">@(item.Situacao==SituacaoPreparo.NaFila?"Iniciar preparo":"Marcar prato pronto")</button></form>}
+</article>}
+</section>}
+</div>
+<div id="filaCozinha" data-url="@Url.Content("~/api/salao/cozinha")"></div>

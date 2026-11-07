@@ -29,6 +29,7 @@ public class HorariosReserva(IOptions<ReservaOptions> options, TimeProvider temp
             throw new RegraReservaException("Este horário não faz parte da agenda de reservas.");
         var inicio=Utc(data,minutos);
         if(inicio<Agora) throw new RegraReservaException("Este horário já passou.");
+        // O segundo valor mantém compatibilidade do contrato antigo; não limita mais a ocupação da mesa.
         return (inicio,Utc(data,Math.Min(minutos+Regras.PermanenciaMinutos,Regras.FechamentoMinutos)));
     }
     public DateTime FimAtendimentoAgora(DateTime? agora = null)
@@ -45,7 +46,7 @@ public class HorariosReserva(IOptions<ReservaOptions> options, TimeProvider temp
             throw new RegraReservaException("A fila funciona das 11h às 23h20, no horário de Brasília.");
     }
     public static string Texto(SituacaoReserva status)=>status switch {
-        SituacaoReserva.Confirmada=>"Reserva confirmada",SituacaoReserva.Aguardando=>"Aguardando na fila",
+        SituacaoReserva.AguardandoChegada=>"Aguardando chegada",SituacaoReserva.Confirmada=>"Aguardando chegada",SituacaoReserva.Aguardando=>"Aguardando na fila",
         SituacaoReserva.Chamada=>"É a sua vez",SituacaoReserva.EmAtendimento=>"Na mesa",
         SituacaoReserva.Concluida=>"Atendimento encerrado",SituacaoReserva.Cancelada=>"Cancelada",_=>"Prazo encerrado"};
 }

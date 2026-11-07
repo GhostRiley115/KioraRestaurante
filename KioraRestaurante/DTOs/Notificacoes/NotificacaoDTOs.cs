@@ -14,7 +14,7 @@ public class CriarNotificacaoDTO
 }
 
 public record PreviaNotificacao(CriarNotificacaoDTO Dados, int Destinatarios, string? CodigoCupom, DateTime ExpiraEmUtc);
-public record ItemNotificacaoDTO(Guid Id, string Titulo, string Mensagem, DateTime CriadaEmUtc, bool NaoLida, bool TemDestino);
+public record ItemNotificacaoDTO(Guid Id, string Titulo, string Mensagem, DateTime CriadaEmUtc, bool NaoLida, bool TemDestino, Guid? AtendimentoId = null, int? PedidoId = null, Guid? ReservaCodigo = null);
 public record ListaNotificacoesDTO(List<ItemNotificacaoDTO> Itens, int Pagina, int TotalPaginas, int NaoLidas);
 public record DestinoNotificacao(string Controller, string Action, int? Id = null, Guid? Codigo = null, string? Data = null);
 public record ComunicadoAdminDTO(Guid Id, string Titulo, DateTime CriadaEmUtc, int Destinatarios, int Leituras, string? CodigoCupom);
