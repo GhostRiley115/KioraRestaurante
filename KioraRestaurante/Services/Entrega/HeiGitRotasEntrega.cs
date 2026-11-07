@@ -39,13 +39,16 @@ public class HeiGitRotasEntrega(HttpClient http, IOptions<EntregaOptions> option
         }
     }
 
-    public async Task<decimal> CalcularMetros(EnderecoEntrega destino, CancellationToken ct = default)
+    public async Task<decimal> CalcularMetros(EnderecoEntrega destino, CancellationToken ct = default) =>
+        (await Calcular(destino, ct)).DistanciaMetros;
+
+    public async Task<RotaEntrega> Calcular(EnderecoEntrega destino, CancellationToken ct = default)
     {
         var restaurante = options.Value.Restaurante;
         var origem = restaurante.EnderecoCompleto;
         var endereco = $"{destino.Logradouro}, {destino.Numero}, {destino.Bairro}, {destino.Cidade}, {destino.Uf}, {destino.Cep}, Brasil";
-        var chave = "entrega:rota:" + Chave(origem + "|" + endereco);
-        if (cache.TryGetValue<decimal>(chave, out var salvo)) return salvo;
+        var chave = "entrega:rota:duracao:" + Chave(origem + "|" + endereco);
+        if (cache.TryGetValue<RotaEntrega>(chave, out var salvo) && salvo != null) return salvo;
 
         var partida = await geocodificador.Localizar(new(restaurante.Logradouro, restaurante.Numero, restaurante.Bairro, restaurante.Cidade, restaurante.Uf), ct);
         var chegada = await geocodificador.Localizar(new(destino.Logradouro, destino.Numero, destino.Bairro, destino.Cidade, destino.Uf, destino.Cep), ct);
@@ -64,10 +67,13 @@ public class HeiGitRotasEntrega(HttpClient http, IOptions<EntregaOptions> option
             || rotas.GetArrayLength() == 0 || rotas[0].ValueKind != JsonValueKind.Object
             || !rotas[0].TryGetProperty("summary", out var resumo) || resumo.ValueKind != JsonValueKind.Object
             || !resumo.TryGetProperty("distance", out var distancia) || distancia.ValueKind != JsonValueKind.Number
-            || !distancia.TryGetDecimal(out var metros) || metros < 0)
+            || !distancia.TryGetDecimal(out var metros) || metros < 0
+            || !resumo.TryGetProperty("duration", out var duracao) || duracao.ValueKind != JsonValueKind.Number
+            || !duracao.TryGetDecimal(out var segundos) || segundos < 0 || segundos > 86400)
             throw new ValidationException("Não foi encontrada uma rota de entrega para esse endereço.");
 
-        cache.Set(chave, metros, TimeSpan.FromMinutes(15));
-        return metros;
+        var rota = new RotaEntrega(metros, (int)Math.Ceiling(segundos));
+        cache.Set(chave, rota, TimeSpan.FromMinutes(15));
+        return rota;
     }
 }

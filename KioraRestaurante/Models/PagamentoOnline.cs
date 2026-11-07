@@ -9,6 +9,7 @@ public class PagamentoOnline
     [MaxLength(80)] public string? OrderId { get; set; }
     [MaxLength(2048)] public string? CheckoutUrl { get; set; }
     [Column(TypeName = "decimal(10,2)")] public decimal Valor { get; set; }
+    public int RevisaoFinanceira { get; set; }
     // Persiste o mesmo corpo para repetir uma criação após timeout com a mesma chave.
     [Column(TypeName = "text")] public string CorpoCriacao { get; set; } = "";
     public DateTime CriadoEmUtc { get; set; } = DateTime.UtcNow;

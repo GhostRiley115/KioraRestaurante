@@ -123,6 +123,15 @@
 }
 
 /* Checkout: o endereço e a cotação permanecem na mesma página. */
+.checkout-produto { border-top: 1px solid var(--k-borda); padding: 20px 0; }
+.checkout-produto:last-child { padding-bottom: 0; }
+.checkout-produto-cabecalho { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; }
+.checkout-produto-cabecalho img { flex-shrink: 0; object-fit: cover; border-radius: 10px; }
+.checkout-produto-cabecalho h3 { font-size: 1.15rem; margin: 0 0 6px; }
+.checkout-produto textarea { resize: vertical; min-height: 80px; }
+.checkout-produto small { display: block; margin-top: 6px; }
+.checkout-previsao { background: var(--k-fundo); padding: 16px; border: 1px solid var(--k-borda); border-radius: 8px; margin: 16px 0; }
+.pedido-ajuda { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-top: 12px; }
 .pedido-etapa { display: block; margin-bottom: 10px; color: var(--k-dourado); font-size: .8rem; font-weight: 700; letter-spacing: .12em; }
 .checkout-escolhas { border: 0; padding: 0; margin: 20px 0; }
 .checkout-endereco { padding: 16px; border: 1px solid var(--k-borda); border-radius: 10px; margin-bottom: 12px; transition: border-color .2s ease; }

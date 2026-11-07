@@ -1,6 +1,6 @@
 (() => {
     "use strict";
-    const formularioCheckout = document.getElementById("formCheckout");
+    const formularioCheckout = document.getElementById("formCheckout") ?? document.getElementById("formAlterarEndereco");
     if (!formularioCheckout) return;
     const confirmarPedido = document.getElementById("confirmarPedido");
     const novo = document.getElementById("endereco-novo");
@@ -22,6 +22,9 @@
         document.getElementById("taxaEntrega").textContent = "A calcular";
         document.getElementById("distanciaEntrega").textContent = "A calcular";
         document.getElementById("totalComEntrega").textContent = "A calcular";
+        document.getElementById("prazoEntrega").textContent = "30 min de preparo + percurso a calcular";
+        const diferenca = document.getElementById("diferencaEntrega");
+        if (diferenca) diferenca.textContent = "A calcular";
         mensagem.textContent = "Calcule a entrega para conferir a distância e a taxa.";
     }
 
@@ -77,13 +80,18 @@
             if (!resposta.ok) throw new Error(dados.mensagem ?? "Não foi possível calcular a entrega.");
             const taxa = Number(dados.taxa);
             const distancia = Number(dados.distanciaMetros);
-            if (!Number.isFinite(taxa) || taxa < 0 || !Number.isFinite(distancia) || distancia < 0 || distancia > 20000 || !dados.token)
+            if (!Number.isFinite(taxa) || taxa < 0 || !Number.isFinite(distancia) || distancia < 0 || distancia > 35000 || !dados.token
+                || !Number.isInteger(dados.percursoMinutos) || dados.percursoMinutos < 0 || dados.preparoMinutos !== 30
+                || dados.prazoTotalMinutos !== dados.percursoMinutos + 30)
                 throw new Error("Não foi possível conferir a entrega. Tente novamente.");
             token.value = dados.token;
             formularioCheckout.dataset.validadeEntrega = dados.expiraEmUtc;
             document.getElementById("taxaEntrega").textContent = moeda.format(taxa);
             document.getElementById("distanciaEntrega").textContent = (distancia / 1000).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " km";
             document.getElementById("totalComEntrega").textContent = moeda.format(Number(formularioCheckout.dataset.totalProdutos) + taxa);
+            document.getElementById("prazoEntrega").textContent = `Cerca de ${dados.prazoTotalMinutos} min: 30 min de preparo + ${dados.percursoMinutos} min de percurso`;
+            const diferenca = document.getElementById("diferencaEntrega");
+            if (diferenca) diferenca.textContent = moeda.format(taxa - Number(formularioCheckout.dataset.taxaAtual));
             confirmarPedido.disabled = formularioCheckout.dataset.podeProsseguir !== "true";
             mensagem.textContent = "Entrega disponível. Confira a taxa e o total antes de confirmar.";
         } catch (erro) {
@@ -119,7 +127,16 @@
         } else {
             confirmarPedido.disabled = formularioCheckout.dataset.podeProsseguir !== "true";
         }
-        confirmarPedido.textContent = "Confirmar pedido";
+        confirmarPedido.textContent = formularioCheckout.dataset.textoConfirmar ?? "Confirmar pedido";
+    });
+    document.querySelectorAll('[data-foto-produto]').forEach(foto => {
+        const alternativa = () => {
+            if (foto.dataset.fotoFalhou) return;
+            foto.dataset.fotoFalhou = "true";
+            foto.src = foto.dataset.fotoAlternativa;
+        };
+        foto.addEventListener("error", alternativa);
+        if (foto.complete && foto.naturalWidth === 0) alternativa();
     });
     mostrarCampos();
 })();

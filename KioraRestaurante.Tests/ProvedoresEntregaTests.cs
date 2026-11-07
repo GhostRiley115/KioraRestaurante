@@ -83,7 +83,7 @@ public class ProvedoresEntregaTests
     public async Task RotaUsaPercursoDeCarroEmMetrosEChaveNoCabecalho()
     {
         using var cache = new MemoryCache(new MemoryCacheOptions());
-        using var handler = new Resposta("{\"routes\":[{\"summary\":{\"distance\":4474.7}}]}");
+        using var handler = new Resposta("{\"routes\":[{\"summary\":{\"distance\":4474.7,\"duration\":612.1}}]}");
         using var http = new HttpClient(handler) { BaseAddress = new("https://api.heigit.org/") };
         var rota = new HeiGitRotasEntrega(http, Config(), cache, NullLogger<HeiGitRotasEntrega>.Instance, new GeoSimulado());
         Assert.Equal(4474.7m, await rota.CalcularMetros(new EnderecoEntrega()));

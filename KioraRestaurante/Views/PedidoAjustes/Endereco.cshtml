@@ -1,0 +1,41 @@
+@model KioraRestaurante.ViewModels.AlterarEnderecoPedidoViewModel
+@using System.Globalization
+@{ ViewData["Title"] = "Corrigir endereço"; var cultura = CultureInfo.GetCultureInfo("pt-BR"); var produtos = Model.Pedido.ItensPedido.Sum(i => i.Subtotal); }
+<section class="container pedido-pagina">
+    <a asp-controller="Pedido" asp-action="Detalhes" asp-route-id="@Model.Pedido.Id" class="pedido-link">← Voltar ao pedido</a>
+    <h1>Corrigir endereço do pedido #@Model.Pedido.Id</h1>
+    <p>Confira o novo percurso e o valor antes de confirmar. A alteração só poderá ser aplicada antes de sair para entrega.</p>
+    <div asp-validation-summary="All" class="pedido-erros" role="alert"></div>
+    <form asp-action="Endereco" method="post" id="formAlterarEndereco" data-endereco-form data-endereco-prefixo="Dados_NovoEndereco_"
+          data-cep-base="@Url.Content("~/api/cep/")" data-cotacao-url="@Url.Action("Cotar")"
+          data-total-produtos="@produtos.ToString(CultureInfo.InvariantCulture)" data-taxa-atual="@Model.Pedido.TaxaEntrega.ToString(CultureInfo.InvariantCulture)"
+          data-pode-prosseguir="true" data-validade-entrega="@Model.Entrega?.ExpiraEmUtc.ToString("O")" data-texto-confirmar="Confirmar alteração de endereço">
+        <input asp-for="Dados.PedidoId" type="hidden" /><input asp-for="Dados.VersaoPedido" type="hidden" /><input asp-for="Dados.TokenEntrega" type="hidden" />
+        <div class="row g-4">
+            <div class="col-12 col-lg-7"><partial name="~/Views/Pedido/_EnderecoCheckout.cshtml" model="@(new KioraRestaurante.ViewModels.EnderecoFormularioViewModel { Dados = Model.Dados, Enderecos = Model.Enderecos, Entrega = Model.Entrega })" /></div>
+            <div class="col-12 col-lg-5"><section class="pedido-box checkout-resumo">
+                <h2>Confira o ajuste</h2>
+                <dl class="checkout-resumo-valores">
+                    <div><dt>Produtos</dt><dd>@produtos.ToString("C", cultura)</dd></div>
+                    <div><dt>Taxa atual</dt><dd>@Model.Pedido.TaxaEntrega.ToString("C", cultura)</dd></div>
+                    <div><dt>Nova distância</dt><dd id="distanciaEntrega">@(Model.Entrega == null ? "A calcular" : (Model.Entrega.DistanciaMetros / 1000m).ToString("0.00", cultura) + " km")</dd></div>
+                    <div><dt>Nova taxa</dt><dd id="taxaEntrega">@(Model.Entrega == null ? "A calcular" : Model.Entrega.Taxa.ToString("C", cultura))</dd></div>
+                    <div><dt>Diferença de entrega</dt><dd id="diferencaEntrega">@(Model.Entrega == null ? "A calcular" : (Model.Entrega.Taxa - Model.Pedido.TaxaEntrega).ToString("C", cultura))</dd></div>
+                    <div class="pedido-total"><dt>Novo total</dt><dd id="totalComEntrega">@(Model.Entrega == null ? "A calcular" : (produtos + Model.Entrega.Taxa).ToString("C", cultura))</dd></div>
+                </dl>
+                <p id="prazoEntrega" class="pedido-texto-suave">@(Model.Entrega == null ? "30 min de preparo + percurso a calcular" : $"30 min de preparo + {Model.Entrega.PercursoMinutos} min de percurso")</p>
+                <p class="pedido-texto-suave">O preparo é contado desde a compra; corrigir o endereço não reinicia os 30 minutos. O tempo é estimado.</p>
+                <p>Se o pedido já estiver pago, você pagará somente o aumento ou acompanhará a devolução da diferença. O endereço atual permanece válido até a conclusão.</p>
+                <button type="submit" id="confirmarPedido" class="pedido-botao" disabled="@(Model.Entrega == null)">Confirmar alteração de endereço</button>
+                <partial name="_AjudaPedido" model="@((int?)Model.Pedido.Id)" />
+            </section></div>
+        </div>
+    </form>
+    <partial name="_ConfirmarExclusaoEndereco" />
+</section>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/Endereco.js" asp-append-version="true"></script>
+    <script src="~/js/endereco-exclusao.js" asp-append-version="true"></script>
+    <script src="~/js/checkout.js" asp-append-version="true"></script>
+}

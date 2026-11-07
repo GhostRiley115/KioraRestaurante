@@ -6,6 +6,13 @@ public class PedidoDetalhesAdminDTO : PedidoAdminDTO
     public bool ClienteAtivo { get; set; }
     public decimal TaxaEntrega { get; set; }
     public int? DistanciaEntregaMetros { get; set; }
+    public int? DuracaoPercursoSegundos { get; set; }
+    public int? PreparoMinutos { get; set; }
+    public DateTime? CanceladoEmUtc { get; set; }
+    public string? MotivoCancelamento { get; set; }
+    public bool ReembolsoCancelamentoPendente { get; set; }
+    public Guid? OperacaoPendenteId { get; set; }
+    public List<string> HistoricoAlteracoes { get; set; } = [];
     public List<ItemPedidoAdminDTO> Itens { get; set; } = new();
     public EnderecoPedidoAdminDTO? Endereco { get; set; }
 }

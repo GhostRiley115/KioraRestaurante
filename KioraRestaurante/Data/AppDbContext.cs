@@ -27,11 +27,20 @@ namespace KioraRestaurante.Data
         public DbSet<EventoReserva> EventosReserva { get; set; }
         public DbSet<LimpezaImagemPendente> LimpezasImagensPendentes { get; set; }
         public DbSet<PagamentoOnline> PagamentosOnline { get; set; }
+        public DbSet<OperacaoPedido> OperacoesPedido { get; set; }
+        public DbSet<MovimentoPedido> MovimentosPedido { get; set; }
 
         //Cria a relação entre tabelas
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<OperacaoPedido>().HasOne(o => o.Pedido).WithMany(p => p.Operacoes)
+                .HasForeignKey(o => o.PedidoId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<MovimentoPedido>().HasOne(m => m.Operacao).WithMany(o => o.Movimentos)
+                .HasForeignKey(m => m.OperacaoPedidoId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<OperacaoPedido>().HasIndex(o => new { o.Estado, o.ConferidaEmUtc });
+            modelBuilder.Entity<MovimentoPedido>().HasIndex(m => m.OrderId);
 
             modelBuilder.Entity<PagamentoOnline>().HasIndex(p => p.Referencia).IsUnique();
             modelBuilder.Entity<PagamentoOnline>().HasIndex(p => p.OrderId).IsUnique();

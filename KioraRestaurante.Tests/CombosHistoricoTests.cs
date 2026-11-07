@@ -110,6 +110,28 @@ public class CombosHistoricoTests
         }
     }
 
+    [Fact]
+    public async Task ObservacaoNaoExecutaHtmlNoCheckoutENosDetalhesDoClienteEAdministrador()
+    {
+        const string observacao = "Sem cebola </textarea><script>alert('teste')</script>";
+        using var banco = new BancoCombos();
+        var pedido = banco.CriarPedido(null);
+        pedido.ItensPedido.Single().Observacao = observacao;
+        await banco.Contexto.SaveChangesAsync();
+        var admin = await new AdminService(banco.Contexto).DetalhesPedido(banco.Admin.Id, pedido.Id);
+        var checkout = new CheckoutViewModel { Resumo = new() { Itens = [new ItemCarrinhoResponseDTO
+        { ProdutoId = banco.Combo.Id, NomeProduto = "Combo", ImagemUrl = "/foto-de-teste.jpg" }] } };
+        checkout.Dados.Observacoes[banco.Combo.Id] = observacao;
+        await using var telas = new TelasRazor();
+        foreach (var html in new[] { await telas.Renderizar("/Views/Pedido/Checkout.cshtml", checkout),
+            await telas.Renderizar("/Views/Pedido/Detalhes.cshtml", pedido), await telas.Renderizar("/Views/Admin/Pedidos/Detalhes.cshtml", admin!) })
+        {
+            Assert.Contains(observacao, WebUtility.HtmlDecode(html));
+            Assert.DoesNotContain("<script>alert", html);
+            Assert.Contains("&lt;script&gt;", html);
+        }
+    }
+
     private sealed class BancoCombos : IDisposable
     {
         private readonly SqliteConnection _conexao = new("Data Source=:memory:");

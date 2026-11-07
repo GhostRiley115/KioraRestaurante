@@ -14,7 +14,7 @@ public class CotarEntregaRequestDTO : IValidatableObject
     [ValidateNever]
     public EnderecoCheckoutRequestDTO? NovoEndereco { get; set; } = new();
 
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    public virtual IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
         if (EnderecoId.HasValue)
         {

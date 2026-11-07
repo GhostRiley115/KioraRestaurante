@@ -102,6 +102,7 @@ public class CepService
     public void ExigirAreaAtendida(string uf, string ibge)
     {
         // Municípios vizinhos também podem estar próximos; o limite final é conferido pela rota de 20 km.
+        // Atualização: o limite original acima foi ampliado para 35 km, mantendo a conferência pela rota.
         var ufRestaurante = _configuration["Entrega:Restaurante:Uf"] ?? "SP";
         if (uf != ufRestaurante || !Regex.IsMatch(ibge, @"^[0-9]{7}$"))
         {

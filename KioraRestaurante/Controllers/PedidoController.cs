@@ -215,7 +215,8 @@ public class PedidoController : Controller
         {
             var endereco = await _enderecoService.PrepararParaCheckout(usuarioId.Value, dados);
             var cotacao = await _entregaService.Cotar(usuarioId.Value, endereco.Entrega, HttpContext.RequestAborted);
-            return Ok(new { cotacao.Token, cotacao.Taxa, cotacao.DistanciaMetros, cotacao.ExpiraEmUtc });
+            return Ok(new { cotacao.Token, cotacao.Taxa, cotacao.DistanciaMetros, cotacao.ExpiraEmUtc,
+                cotacao.PreparoMinutos, cotacao.PercursoMinutos, cotacao.PrazoTotalMinutos });
         }
         catch (ValidationException ex) { return BadRequest(new { mensagem = ex.Message }); }
         catch (UnauthorizedAccessException) { return Forbid(); }

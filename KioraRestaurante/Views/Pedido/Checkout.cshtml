@@ -51,10 +51,30 @@
 
         <div class="row g-4">
             <div class="col-12 col-lg-7">
-                <partial name="~/Views/Pedido/_EnderecoCheckout.cshtml" model="Model" />
+                <partial name="~/Views/Pedido/_EnderecoCheckout.cshtml" model="@(new KioraRestaurante.ViewModels.EnderecoFormularioViewModel { Dados = Model.Dados, Enderecos = Model.Enderecos, Entrega = Model.Entrega })" />
 
                 <section class="pedido-box mt-4">
-                    <span class="pedido-etapa">2 · PAGAMENTO</span>
+                    <span class="pedido-etapa">2 · SEUS PRODUTOS</span>
+                    <h2>Alguma preferência no preparo?</h2>
+                    <p class="pedido-texto-suave">Deixe uma observação para cada produto, se precisar.</p>
+                    @foreach (var item in Model.Resumo.Itens)
+                    {
+                        var foto = string.IsNullOrWhiteSpace(item.ImagemUrl) ? Url.Content("~/imagens/produto-sem-foto.svg") : item.ImagemUrl;
+                        var observacao = Model.Dados.Observacoes?.GetValueOrDefault(item.ProdutoId);
+                        <article class="checkout-produto">
+                            <div class="checkout-produto-cabecalho">
+                                <img src="@foto" alt="" width="88" height="88" loading="lazy" decoding="async" data-foto-produto data-foto-alternativa="@Url.Content("~/imagens/produto-sem-foto.svg")" />
+                                <div><h3>@item.NomeProduto</h3><p class="pedido-texto-suave mb-0">@item.Quantidade unidade(s) · @item.Subtotal.ToString("C", cultura)</p></div>
+                            </div>
+                            <label for="observacao-@item.ProdutoId">Observações para @item.NomeProduto <span class="pedido-texto-suave">— opcional</span></label>
+                            <textarea id="observacao-@item.ProdutoId" name="Dados.Observacoes[@item.ProdutoId]" class="form-control" maxlength="500" rows="2"
+                                      placeholder="Ex.: sem cebola, pouco molho" aria-describedby="ajuda-observacao-@item.ProdutoId">@observacao</textarea>
+                            <small id="ajuda-observacao-@item.ProdutoId" class="pedido-texto-suave">Até 500 caracteres. A observação vale para as @item.Quantidade unidade(s) deste produto.</small>
+                        </article>
+                    }
+                </section>
+                <section class="pedido-box mt-4">
+                    <span class="pedido-etapa">3 · PAGAMENTO</span>
                     <h2>Forma de pagamento</h2>
 
                     <label asp-for="Dados.FormaPagamento">
@@ -76,7 +96,7 @@
 
             <div class="col-12 col-lg-5">
                 <section class="pedido-box checkout-resumo">
-                    <span class="pedido-etapa">3 · RESUMO</span>
+                    <span class="pedido-etapa">4 · RESUMO</span>
                     <h2>Seu pedido</h2>
 
                     @if (Model.Resumo.Itens.Count == 0)
@@ -123,6 +143,12 @@
                         <div class="pedido-total"><dt>Total do pedido</dt><dd id="totalComEntrega">@(Model.Entrega == null ? "A calcular" : (Model.Resumo.Total + Model.Entrega.Taxa).ToString("C", cultura))</dd></div>
                     </dl>
 
+                    <div class="checkout-previsao" role="status" aria-live="polite">
+                        <strong>Tempo estimado</strong>
+                        <p id="prazoEntrega" class="mb-1">@(Model.Entrega == null ? "30 min de preparo + percurso a calcular" : $"Cerca de {Model.Entrega.PrazoTotalMinutos} min: 30 min de preparo + {Model.Entrega.PercursoMinutos} min de percurso")</p>
+                        <small class="pedido-texto-suave">Estimativa a partir da confirmação do pedido. Pode variar; não considera trânsito em tempo real.</small>
+                    </div>
+
                     <button type="submit"
                             id="confirmarPedido"
                             class="pedido-botao"
@@ -146,6 +172,7 @@
                             aria-controls="painelCarrinho">
                         Abrir carrinho
                     </button>
+                    <partial name="_AjudaPedido" model="@((int?)null)" />
                 </section>
             </div>
         </div>

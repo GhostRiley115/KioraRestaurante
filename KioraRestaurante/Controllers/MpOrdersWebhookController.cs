@@ -8,7 +8,8 @@ namespace KioraRestaurante.Controllers;
 [AllowAnonymous, IgnoreAntiforgeryToken]
 [Route("integracoes/mercadopago/orders")]
 public class MpOrdersWebhookController(CheckoutOnlineService pagamentos,
-    IOptions<MercadoPagoConfig> options, ILogger<MpOrdersWebhookController> logger) : ControllerBase
+    IOptions<MercadoPagoConfig> options, ILogger<MpOrdersWebhookController> logger,
+    KioraRestaurante.Services.GerenciarPedidoService operacoes) : ControllerBase
 {
     [HttpPost, RequestSizeLimit(65536)]
     public async Task<IActionResult> Receber(CancellationToken ct)
@@ -18,7 +19,7 @@ public class MpOrdersWebhookController(CheckoutOnlineService pagamentos,
         var id = Request.Query["data.id"].ToString();
         if (!AssinaturaOrders.Validar(Request.Headers["x-signature"].ToString(),
                 Request.Headers["x-request-id"].ToString(), id, options.Value.WebhookSecret)) return Unauthorized();
-        try { await pagamentos.Sincronizar(id, ct); return Ok(); }
+        try { await pagamentos.Sincronizar(id, ct); await operacoes.SincronizarOrder(id, ct); return Ok(); }
         catch (Exception ex) when (ex is FalhaPagamento or DbUpdateException or FormatException
                                        or System.Text.Json.JsonException or KeyNotFoundException or InvalidOperationException)
         {

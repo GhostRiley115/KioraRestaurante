@@ -1,4 +1,4 @@
-@model KioraRestaurante.ViewModels.CheckoutViewModel
+@model KioraRestaurante.ViewModels.EnderecoFormularioViewModel
 @inject Microsoft.Extensions.Options.IOptions<KioraRestaurante.Options.EntregaOptions> EntregaConfig
 @{ var culturaEntrega = System.Globalization.CultureInfo.GetCultureInfo("pt-BR"); var limiteAnterior = 0; }
 
@@ -88,7 +88,7 @@
     </fieldset>
 
     <div class="checkout-cotacao">
-        <p>Entregamos até <strong>20 km pelas ruas</strong> a partir de @EntregaConfig.Value.Restaurante.Logradouro, @EntregaConfig.Value.Restaurante.Numero.</p>
+        <p>Entregamos até <strong>35 km pelas ruas</strong> a partir de @EntregaConfig.Value.Restaurante.Logradouro, @EntregaConfig.Value.Restaurante.Numero.</p>
         <button type="submit" name="acao" value="calcular" formnovalidate id="calcularEntrega"
                 class="pedido-botao pedido-botao-secundario">Calcular entrega</button>
         <p id="mensagemEntrega" role="status" aria-live="polite" class="pedido-texto-suave mt-3 mb-0">

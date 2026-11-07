@@ -14,13 +14,22 @@ public class MpOrdersClient(HttpClient http, IOptions<MercadoPagoConfig> options
         && u.Scheme == "https" && u.IsDefaultPort && u.UserInfo == ""
         && u.Host is "www.mercadopago.com.br" or "mercadopago.com.br";
     public async Task<JsonDocument> Enviar(string? id, string? corpo, string? chave, CancellationToken ct)
+        => await Requisitar(id, null, corpo, chave, ct);
+
+    public async Task<JsonDocument> Operar(string id, string operacao, string? corpo, string chave, CancellationToken ct)
+    {
+        if (operacao is not "cancel" and not "refund") throw new ArgumentException("Operação inválida.");
+        return await Requisitar(id, operacao, corpo, chave, ct);
+    }
+
+    private async Task<JsonDocument> Requisitar(string? id, string? operacao, string? corpo, string? chave, CancellationToken ct)
     {
         var o = options.Value;
         if (!o.Ativado || string.IsNullOrWhiteSpace(o.AccessToken))
             throw new FalhaPagamento("O pagamento online não está habilitado.");
         if (id != null && !IdValido(id)) throw new FalhaPagamento("Identificador externo inválido.");
-        using var req = new HttpRequestMessage(id == null ? HttpMethod.Post : HttpMethod.Get,
-            id == null ? "v1/orders" : "v1/orders/" + Uri.EscapeDataString(id));
+        using var req = new HttpRequestMessage(id == null || operacao != null ? HttpMethod.Post : HttpMethod.Get,
+            id == null ? "v1/orders" : "v1/orders/" + Uri.EscapeDataString(id) + (operacao == null ? "" : "/" + operacao));
         req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", o.AccessToken);
         if (chave != null) req.Headers.Add("X-Idempotency-Key", chave);
         if (corpo != null) req.Content = new StringContent(corpo, Encoding.UTF8, "application/json");

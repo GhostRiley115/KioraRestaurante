@@ -62,6 +62,8 @@ public class CheckoutOnlineService(AppDbContext db, MpOrdersClient api, IOptions
             || pedido.StatusPedido == StatusPedido.Cancelado
             || pedido.StatusPagamento != StatusPagamento.Pendente)
             throw new FalhaPagamento("Este pedido não está disponível para iniciar um pagamento online.");
+        if (pedido.OperacaoPendenteId.HasValue)
+            throw new FalhaPagamento("Conclua a alteração pendente do pedido antes de iniciar o pagamento.");
         var o = config.Value;
         if (!o.Ativado || string.IsNullOrWhiteSpace(o.VendedorId) || string.IsNullOrWhiteSpace(o.ApplicationId)
             || !Uri.TryCreate(o.UrlPublica, UriKind.Absolute, out var baseUri) || baseUri.Scheme != "https")
@@ -70,6 +72,12 @@ public class CheckoutOnlineService(AppDbContext db, MpOrdersClient api, IOptions
         var registro = await db.PagamentosOnline.SingleOrDefaultAsync(p => p.PedidoId == id, ct);
         if (registro == null)
         {
+            await using var transacao = await db.Database.BeginTransactionAsync(ct);
+            var novaVersaoPedido = Guid.NewGuid();
+            var atualizados = await db.Pedidos.Where(p => p.Id == id && p.Versao == pedido.Versao
+                    && p.StatusPedido == pedido.StatusPedido && p.OperacaoPendenteId == null)
+                .ExecuteUpdateAsync(s => s.SetProperty(p => p.Versao, novaVersaoPedido), ct);
+            if (atualizados != 1) throw new FalhaPagamento("O pedido mudou. Consulte os detalhes antes de pagar.");
             // O comprador já é identificado na criação, antes de abrir o checkout.
             // Em teste, não envia o e-mail real do cliente ao ambiente de simulação.
             var emailComprador = o.ModoTeste
@@ -95,7 +103,8 @@ public class CheckoutOnlineService(AppDbContext db, MpOrdersClient api, IOptions
             if (pedido.TaxaEntrega > 0)
                 itensPagamento.Add(new { title = "Taxa de entrega", quantity = 1,
                     unit_price = pedido.TaxaEntrega.ToString("0.00", CultureInfo.InvariantCulture) });
-            registro = new PagamentoOnline { PedidoId = id, Referencia = referencia, Valor = pedido.ValorTotal };
+            registro = new PagamentoOnline { PedidoId = id, Referencia = referencia, Valor = pedido.ValorTotal,
+                RevisaoFinanceira = pedido.RevisaoFinanceira };
             registro.CorpoCriacao = JsonSerializer.Serialize(new
             {
                 type = "online", processing_mode = "manual", capture_mode = "automatic_async",
@@ -108,13 +117,8 @@ public class CheckoutOnlineService(AppDbContext db, MpOrdersClient api, IOptions
                 }}
             });
             db.PagamentosOnline.Add(registro);
-            try { await db.SaveChangesAsync(ct); }
-            catch (DbUpdateException)
-            {
-                db.ChangeTracker.Clear();
-                registro = await db.PagamentosOnline.SingleOrDefaultAsync(p => p.PedidoId == id, ct);
-                if (registro == null) throw;
-            }
+            await db.SaveChangesAsync(ct);
+            await transacao.CommitAsync(ct);
         }
         if (registro.Valor != pedido.ValorTotal)
             throw new FalhaPagamento("O valor do pedido mudou. Solicite conferência antes de pagar.");
@@ -125,6 +129,9 @@ public class CheckoutOnlineService(AppDbContext db, MpOrdersClient api, IOptions
             await Sincronizar(registro.OrderId, ct);
             db.ChangeTracker.Clear();
             var atual = await ExigirPedido(usuarioId, id, ct);
+            if (atual.OperacaoPendenteId.HasValue || atual.ValorTotal != registro.Valor
+                || !await db.PagamentosOnline.AsNoTracking().AnyAsync(p => p.PedidoId == id && p.Referencia == registro.Referencia, ct))
+                throw new FalhaPagamento("O pedido está sendo alterado. Confira os detalhes antes de pagar.");
             if (atual.StatusPagamento != StatusPagamento.Pendente)
                 throw new FalhaPagamento("O pagamento já foi atualizado. Confira o status do pedido.");
             if (DateTime.UtcNow >= registro.CriadoEmUtc.AddMinutes(30))
@@ -147,13 +154,13 @@ public class CheckoutOnlineService(AppDbContext db, MpOrdersClient api, IOptions
         catch (DbUpdateConcurrencyException)
         {
             db.ChangeTracker.Clear();
-            var salvo = await db.PagamentosOnline.AsNoTracking().SingleAsync(p => p.PedidoId == id, ct);
-            if (salvo.OrderId != orderId) throw new FalhaPagamento("Consulte novamente o pagamento.");
+            var salvo = await db.PagamentosOnline.AsNoTracking().SingleOrDefaultAsync(p => p.PedidoId == id, ct);
+            if (salvo == null || salvo.OrderId != orderId) throw new FalhaPagamento("Consulte novamente o pagamento.");
         }
         return url;
     }
 
-    private void Conferir(JsonElement json, PagamentoOnline registro)
+    public void Conferir(JsonElement json, PagamentoOnline registro)
     {
         var o = config.Value;
         var divergencias = new List<string>();
@@ -241,16 +248,33 @@ public class CheckoutOnlineService(AppDbContext db, MpOrdersClient api, IOptions
             var registro = await db.PagamentosOnline.Include(p => p.Pedido)
                 .SingleOrDefaultAsync(p => p.Referencia == referencia, ct);
             if (registro == null) return; // Outro fluxo da mesma aplicação, sem pedido local.
-            if (registro.Valor != registro.Pedido.ValorTotal)
+            var alteracoes = await db.OperacoesPedido.Where(o => o.PedidoId == registro.PedidoId
+                    && o.Tipo == TipoOperacaoPedido.Endereco && o.Estado == EstadoOperacaoPedido.Concluida
+                    && o.RevisaoFinanceiraAplicada > registro.RevisaoFinanceira)
+                .Select(o => new { o.TaxaAnterior, o.NovaTaxa }).ToListAsync(ct);
+            if (registro.Valor + alteracoes.Sum(o => o.NovaTaxa - o.TaxaAnterior) != registro.Pedido.ValorTotal)
                 throw new FalhaPagamento("O total local mudou e precisa ser conferido.");
             Conferir(json, registro);
             if (registro.OrderId != null && registro.OrderId != orderId)
                 throw new FalhaPagamento("Order diferente da registrada para o pedido.");
             var data = DateTimeOffset.Parse(Texto(json, "last_updated_date"), CultureInfo.InvariantCulture).UtcDateTime;
-            if (registro.AtualizacaoExternaUtc.HasValue && data <= registro.AtualizacaoExternaUtc.Value) return;
+            if (registro.AtualizacaoExternaUtc.HasValue && data < registro.AtualizacaoExternaUtc.Value) return;
             var status = Texto(json, "status"); var detalhe = Texto(json, "status_detail");
             var pago = Valor(json, "total_paid_amount");
             var proximo = Mapear(status, detalhe, pago, registro.Valor);
+            if (status == "processed" && detalhe == "partially_refunded")
+            {
+                var conhecidos = await db.MovimentosPedido.AsNoTracking().Where(m => m.OrderId == orderId
+                    && m.Tipo == TipoMovimentoPedido.Devolucao && m.Estado == EstadoMovimentoPedido.Confirmado)
+                    .Select(m => new { m.ReembolsoId, m.Valor, m.TransacaoId }).ToListAsync(ct);
+                var externos = DadosOrder.Transacoes(json, "refunds");
+                if (conhecidos.Count > 0 && externos.Length == conhecidos.Count
+                    && externos.All(r => DadosOrder.Texto(r, "status") == "processed"
+                        && conhecidos.Any(c => c.ReembolsoId == DadosOrder.Texto(r, "id")
+                            && c.TransacaoId == DadosOrder.Texto(r, "transaction_id") && c.Valor == DadosOrder.Valor(r, "amount")))
+                    && (pago == registro.Valor || pago == registro.Valor - conhecidos.Sum(c => c.Valor)))
+                    proximo = StatusPagamento.Aprovado;
+            }
             registro.OrderId = orderId;
             registro.AtualizacaoExternaUtc = data;
             registro.ConferidoEmUtc = DateTime.UtcNow;
@@ -258,6 +282,15 @@ public class CheckoutOnlineService(AppDbContext db, MpOrdersClient api, IOptions
             registro.RevisaoNecessaria = proximo is StatusPagamento.Conferencia or StatusPagamento.Reembolsado
                 || (registro.Pedido.StatusPedido == StatusPedido.Cancelado && proximo == StatusPagamento.Aprovado);
             registro.Pedido.StatusPagamento = proximo;
+            if (proximo == StatusPagamento.Reembolsado)
+            {
+                var extras = await db.MovimentosPedido.AsNoTracking().Where(m => m.Operacao.PedidoId == registro.PedidoId
+                    && m.Tipo == TipoMovimentoPedido.Cobranca && m.Estado == EstadoMovimentoPedido.Confirmado).ToListAsync(ct);
+                var devolucoesExtras = await db.MovimentosPedido.AsNoTracking().Where(m => m.Operacao.PedidoId == registro.PedidoId
+                    && m.Tipo == TipoMovimentoPedido.Devolucao && m.Estado == EstadoMovimentoPedido.Confirmado
+                    && m.OrderId != orderId).ToListAsync(ct);
+                registro.Pedido.ReembolsoCancelamentoPendente = extras.Sum(m => m.Valor) > devolucoesExtras.Sum(m => m.Valor);
+            }
             registro.Versao = Guid.NewGuid();
             try { await db.SaveChangesAsync(ct); return; }
             catch (DbUpdateConcurrencyException) when (tentativa < 2) { }

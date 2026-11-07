@@ -30,6 +30,12 @@ public class CheckoutEntregaTests
     [InlineData(15000, 12)]
     [InlineData(15000.01, 16)]
     [InlineData(20000, 16)]
+    [InlineData(20000.01, 20)]
+    [InlineData(25000, 20)]
+    [InlineData(25000.01, 24)]
+    [InlineData(30000, 24)]
+    [InlineData(30000.01, 28)]
+    [InlineData(35000, 28)]
     public void TaxasRespeitamLimitesInclusivos(decimal metros, decimal esperado)
     {
         using var banco = new Banco();
@@ -38,7 +44,7 @@ public class CheckoutEntregaTests
 
     [Theory]
     [InlineData(-1)]
-    [InlineData(20000.01)]
+    [InlineData(35000.01)]
     public void NaoAceitaDistanciaInvalidaOuSuperiorAVinteKm(decimal metros)
     {
         using var banco = new Banco();
@@ -60,6 +66,9 @@ public class CheckoutEntregaTests
         Assert.Equal(45m, pedido!.ValorTotal);
         Assert.Equal(5m, pedido.TaxaEntrega);
         Assert.Equal(1000, pedido.DistanciaEntregaMetros);
+        Assert.Equal(30, pedido.PreparoMinutos);
+        Assert.Equal(600, pedido.DuracaoPercursoSegundos);
+        Assert.Equal(40, pedido.PrazoTotalMinutos);
         Assert.Equal("Rua de Teste", pedido.EnderecoEntrega.Logradouro);
         Assert.Equal(salvar ? 1 : 0, await banco.Db.EnderecosUsuario.CountAsync());
         Assert.Empty(await banco.Db.ItensCarrinho.ToListAsync());
@@ -73,6 +82,33 @@ public class CheckoutEntregaTests
             Assert.Empty(await banco.Db.EnderecosUsuario.ToListAsync());
             Assert.Equal("77", pedido!.EnderecoEntrega.Numero);
         }
+    }
+
+    [Fact]
+    public async Task ObservacaoERegistradaNoItemCertoSemMudarPreco()
+    {
+        using var banco = new Banco();
+        var dto = await banco.Preparar(false);
+        var produto = await banco.Db.Produtos.SingleAsync();
+        dto.Observacoes[produto.Id] = "  Sem cebola e pouco molho <script>não executar</script>  ";
+        var id = await banco.Pedidos.ConfirmarPedido(banco.Acesso, dto);
+        var pedido = await banco.Pedidos.BuscarPedido(banco.Cliente.Id, id);
+        Assert.Equal("Sem cebola e pouco molho <script>não executar</script>", pedido!.ItensPedido.Single().Observacao);
+        Assert.Equal(45m, pedido.ValorTotal);
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task ObservacaoLongaOuDeOutroProdutoNaoConfirmaPedido(bool longa)
+    {
+        using var banco = new Banco();
+        var dto = await banco.Preparar(false);
+        var produto = await banco.Db.Produtos.SingleAsync();
+        dto.Observacoes[longa ? produto.Id : produto.Id + 99] = longa ? new string('x', 501) : "Sem molho";
+        await Assert.ThrowsAsync<ValidationException>(() => banco.Pedidos.ConfirmarPedido(banco.Acesso, dto));
+        Assert.Empty(await banco.Db.Pedidos.ToListAsync());
+        Assert.Single(await banco.Db.ItensCarrinho.ToListAsync());
     }
 
     [Fact]
@@ -131,7 +167,7 @@ public class CheckoutEntregaTests
         var salvo = await banco.Db.EnderecosUsuario.SingleAsync();
         var escolha = new CotarEntregaRequestDTO { EnderecoId = salvo.Id, EnderecoVersao = salvo.Versao };
         var endereco = (await banco.Enderecos.PrepararParaCheckout(banco.Cliente.Id, escolha)).Entrega;
-        banco.Rotas.Metros = 20001;
+        banco.Rotas.Metros = 35001;
         await Assert.ThrowsAsync<ValidationException>(() => banco.Entrega.Cotar(banco.Cliente.Id, endereco));
     }
 
@@ -231,5 +267,5 @@ public class CheckoutEntregaTests
 internal sealed class RotasEntregaSimuladas : IRotasEntrega
 {
     public decimal Metros { get; set; } = 1000;
-    public Task<decimal> CalcularMetros(EnderecoEntrega destino, CancellationToken ct = default) => Task.FromResult(Metros);
+    public Task<RotaEntrega> Calcular(EnderecoEntrega destino, CancellationToken ct = default) => Task.FromResult(new RotaEntrega(Metros, 600));
 }

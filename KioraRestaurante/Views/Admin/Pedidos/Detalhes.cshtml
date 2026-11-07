@@ -22,12 +22,17 @@
         <p>Conta @(Model.ClienteAtivo ? "ativa" : "inativa") · Usuário #@Model.UsuarioId</p>
         <a asp-action="Pedidos" asp-route-UsuarioId="@Model.UsuarioId">Ver pedidos deste cliente</a>
         <p class="mt-3">Pedido: <span class="status-etiqueta @StatusVisual.Pedido(Model.StatusPedido)">@TextosAdmin.Pedido(Model.StatusPedido)</span></p>
+        @if (Model.CanceladoEmUtc.HasValue) { <p>Cancelado pelo cliente em @HorarioRestaurante.ParaLocal(Model.CanceladoEmUtc.Value).ToString("dd/MM/yyyy HH:mm"). Motivo: @(Model.MotivoCancelamento ?? "Não informado").</p> }
+        @if (Model.ReembolsoCancelamentoPendente) { <p class="pedido-erros" role="status">Pedido cancelado com pagamento aprovado. Conferir a devolução no Mercado Pago, incluindo eventuais cobranças adicionais de entrega. O sistema não confirmou estorno automático deste cancelamento.</p> }
+        @if (Model.OperacaoPendenteId.HasValue) { <p class="pedido-erros" role="status">Há uma solicitação pendente. O endereço atual continua válido até a conclusão. Confira os pagamentos antes de resolver manualmente.</p> }
         <p>Pagamento: <span class="status-etiqueta @StatusVisual.Pagamento(Model.StatusPagamento)">@Model.StatusPagamento</span> · @TextosAdmin.Pagamento(Model.FormaPagamento)</p>
         <h2>Entrega</h2>
+        @if (Model.DuracaoPercursoSegundos.HasValue) { <p>Estimativa registrada: @Model.PreparoMinutos min de preparo + @((int)Math.Ceiling(Model.DuracaoPercursoSegundos.Value / 60m)) min de percurso.</p> }
         @if(Model.Endereco is { } endereco) {
             <p>@endereco.Logradouro, @endereco.Numero<br />@endereco.Bairro<br />@endereco.Cidade — @endereco.Uf<br />CEP @endereco.Cep</p>
             @if(!string.IsNullOrWhiteSpace(endereco.Complemento)) { <p>Complemento: @endereco.Complemento</p> }
             @if(!string.IsNullOrWhiteSpace(endereco.Referencia)) { <p>Referência: @endereco.Referencia</p> }
         } else { <p>Endereço não registrado.</p> }
+        @if (Model.HistoricoAlteracoes.Count > 0) { <details><summary>Solicitações do cliente</summary><ul>@foreach (var registro in Model.HistoricoAlteracoes) { <li>@registro</li> }</ul></details> }
     </section>
 </div>

@@ -246,10 +246,14 @@ public class PedidoService : IPedidoService
 
             EnderecoEntrega = enderecoEntrega,
             TaxaEntrega = entrega.Taxa,
-            DistanciaEntregaMetros = entrega.DistanciaMetros
+            DistanciaEntregaMetros = entrega.DistanciaMetros,
+            DuracaoPercursoSegundos = entrega.DuracaoPercursoSegundos,
+            PreparoMinutos = entrega.PreparoMinutos
         };
 
-        CopiarItensParaPedido(carrinho, pedido);
+        if (dto.Observacoes.Keys.Any(id => !carrinho.ItensCarrinho.Any(i => i.ProdutoId == id)))
+            throw new ValidationException("As observações não correspondem aos produtos do carrinho. Confira a revisão.");
+        CopiarItensParaPedido(carrinho, pedido, dto.Observacoes);
 
         return await SalvarPedidoELimparCarrinho(pedido, carrinho, enderecoPreparado.Salvar);
     }
@@ -306,7 +310,7 @@ public class PedidoService : IPedidoService
     }
 
     // Copia os dados da compra para preservar o histórico e calcula o total.
-    private static void CopiarItensParaPedido(Carrinho carrinho, Pedido pedido)
+    private static void CopiarItensParaPedido(Carrinho carrinho, Pedido pedido, IReadOnlyDictionary<int, string?> observacoes)
     {
         foreach (var item in carrinho.ItensCarrinho)
         {
@@ -320,6 +324,8 @@ public class PedidoService : IPedidoService
             {
                 ProdutoId = produto.Id,
                 NomeProduto = produto.Nome,
+                Observacao = observacoes.TryGetValue(produto.Id, out var observacao) && !string.IsNullOrWhiteSpace(observacao)
+                    ? observacao.Trim() : null,
                 Quantidade = item.Quantidade,
 
                 PrecoOriginalUnitario = produto.Preco,
@@ -382,6 +388,7 @@ public class PedidoService : IPedidoService
             .AsNoTracking()
             .Include(p => p.EnderecoEntrega)
             .Include(p => p.ItensPedido)
+            .Include(p => p.Operacoes)
             .SingleOrDefaultAsync(p =>
                 p.Id == pedidoId
                 && p.UsuarioId == usuarioId

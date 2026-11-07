@@ -21,4 +21,5 @@
         <button type="submit" class="btn btn-outline-secondary">Atualizar pagamento</button>
     </form>
     <a asp-controller="Pedido" asp-action="Detalhes" asp-route-id="@Model.Id">Ver detalhes do pedido</a>
+    <partial name="_AjudaPedido" model="@((int?)Model.Id)" />
 </section>

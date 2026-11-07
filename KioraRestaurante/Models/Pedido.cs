@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using KioraRestaurante.Models.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace KioraRestaurante.Models
 {
@@ -13,6 +14,7 @@ namespace KioraRestaurante.Models
         public EnderecoEntrega EnderecoEntrega { get; set; } = null!;
 
         public FormaPagamento FormaPagamento { get; set; }
+        [ConcurrencyCheck]
         public StatusPedido StatusPedido { get; set; } = StatusPedido.Recebido;
         public StatusPagamento StatusPagamento { get; set; } = StatusPagamento.Pendente;
 
@@ -23,6 +25,23 @@ namespace KioraRestaurante.Models
         [Column(TypeName = "decimal(10,2)")]
         public decimal TaxaEntrega { get; set; }
         public int? DistanciaEntregaMetros { get; set; }
+        public int? DuracaoPercursoSegundos { get; set; }
+        public int? PreparoMinutos { get; set; }
+
+        [NotMapped]
+        public int? PrazoTotalMinutos => PreparoMinutos.HasValue && DuracaoPercursoSegundos.HasValue
+            ? PreparoMinutos.Value + (int)Math.Ceiling(DuracaoPercursoSegundos.Value / 60m) : null;
+        [NotMapped]
+        public DateTime? PrevisaoEntregaUtc => PrazoTotalMinutos.HasValue ? DataPedido.AddMinutes(PrazoTotalMinutos.Value) : null;
+
+        [ConcurrencyCheck]
+        public Guid Versao { get; set; } = Guid.NewGuid();
+        public Guid? OperacaoPendenteId { get; set; }
+        public int RevisaoFinanceira { get; set; }
+        public DateTime? CanceladoEmUtc { get; set; }
+        [MaxLength(300)] public string? MotivoCancelamento { get; set; }
+        public bool ReembolsoCancelamentoPendente { get; set; }
+        public List<OperacaoPedido> Operacoes { get; set; } = [];
 
         public List<ItemPedido> ItensPedido { get; set; } = new();
 

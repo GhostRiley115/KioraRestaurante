@@ -1,0 +1,30 @@
+@model KioraRestaurante.Models.OperacaoPedido
+@using KioraRestaurante.Models
+@using System.Globalization
+@{ ViewData["Title"] = "Andamento da solicitação"; var cultura = CultureInfo.GetCultureInfo("pt-BR"); }
+<section class="container pedido-pagina">
+    <a asp-controller="Pedido" asp-action="Detalhes" asp-route-id="@Model.PedidoId" class="pedido-link">← Ver pedido #@Model.PedidoId</a>
+    <h1>@(Model.Tipo == TipoOperacaoPedido.Cancelamento ? "Cancelamento do pedido" : "Alteração de endereço")</h1>
+    @if (TempData["OperacaoAviso"] is string aviso) { <p class="pedido-erros" role="alert">@aviso</p> }
+    <section class="pedido-box">
+        <h2>@(Model.Estado switch { EstadoOperacaoPedido.Concluida => "Solicitação concluída", EstadoOperacaoPedido.Desfeita => "Alteração encerrada", EstadoOperacaoPedido.AguardandoPagamento => "Aguardando pagamento da diferença", EstadoOperacaoPedido.AguardandoDevolucao => "Aguardando devolução da diferença", EstadoOperacaoPedido.Conferencia => "Precisamos conferir sua solicitação", _ => "Conferindo a solicitação" })</h2>
+        <p role="status">@(string.IsNullOrWhiteSpace(Model.Mensagem) ? "Estamos conferindo os dados antes de concluir." : Model.Mensagem)</p>
+        @if (Model.Tipo == TipoOperacaoPedido.Endereco) {
+            <p>Taxa anterior: <strong>@Model.TaxaAnterior.ToString("C", cultura)</strong> · Nova taxa: <strong>@Model.NovaTaxa.ToString("C", cultura)</strong></p>
+            <p>Diferença: <strong>@Math.Abs(Model.Diferenca).ToString("C", cultura)</strong> @(Model.Diferenca > 0 ? "a acrescentar" : Model.Diferenca < 0 ? "a reduzir" : "— taxa mantida").</p>
+            @foreach (var mov in Model.Movimentos) {
+                <p>@(mov.Tipo == TipoMovimentoPedido.Cobranca ? "Cobrança adicional" : "Devolução"): @mov.Valor.ToString("C", cultura) — @(mov.Estado == EstadoMovimentoPedido.Confirmado ? "confirmada pelo provedor" : mov.Estado == EstadoMovimentoPedido.Encerrado ? "encerrada" : "em conferência")</p>
+            }
+        }
+        @if (!Model.Finalizada) {
+            @if (Model.Estado == EstadoOperacaoPedido.AguardandoPagamento) {
+                <form asp-action="Pagar" method="post"><input type="hidden" name="id" value="@Model.Id" /><button type="submit" class="pedido-botao">Pagar diferença com Mercado Pago</button></form>
+            }
+            <form asp-action="Atualizar" method="post" class="mt-3"><input type="hidden" name="id" value="@Model.Id" /><button type="submit" class="pedido-botao pedido-botao-secundario">Atualizar andamento</button></form>
+            @if (Model.Tipo == TipoOperacaoPedido.Endereco && !Model.Movimentos.Any(m => m.Tipo == TipoMovimentoPedido.Devolucao || m.Estado == EstadoMovimentoPedido.Confirmado)) {
+                <form asp-action="Desistir" method="post" class="mt-3"><input type="hidden" name="id" value="@Model.Id" /><button type="submit" class="pedido-link">Desistir da alteração e manter endereço atual</button></form>
+            }
+        }
+        <partial name="_AjudaPedido" model="@((int?)Model.PedidoId)" />
+    </section>
+</section>

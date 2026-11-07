@@ -2,6 +2,7 @@
 @using System.Globalization
 @using KioraRestaurante.Models.Enums
 @using KioraRestaurante.Helpers
+@using KioraRestaurante.Services
 
 @{
     ViewData["Title"] = $"Pedido #{Model.Id}";
@@ -55,6 +56,7 @@
 
 <section class="container pedido-pagina pedido-detalhes">
     <a asp-action="MeusPedidos" class="pedido-link">← Meus pedidos</a>
+    @if (TempData["PedidoAviso"] is string avisoPedido) { <p class="pedido-erros" role="alert">@avisoPedido</p> }
     <header class="pedido-cabecalho">
         <div><span class="pedido-sobretitulo">KIORA · SEU PEDIDO</span><h1>Pedido #@Model.Id</h1>
             <p class="pedido-texto-suave mb-0">@dataLocal.ToString("dd/MM/yyyy 'às' HH:mm") · horário de Brasília</p></div>
@@ -64,6 +66,13 @@
     <section class="pedido-box pedido-acompanhamento" aria-labelledby="tituloAndamento">
         <h2 id="tituloAndamento">Acompanhe seu pedido</h2>
         <p>@mensagem</p>
+        @if (Model.PrazoTotalMinutos.HasValue && Model.StatusPedido is not StatusPedido.Cancelado and not StatusPedido.Entregue) {
+            <div class="checkout-previsao">
+                <strong>Previsão estimada: @HorarioRestaurante.ParaLocal(DateTime.SpecifyKind(Model.PrevisaoEntregaUtc!.Value, DateTimeKind.Utc)).ToString("HH:mm")</strong>
+                <p class="mb-0">@Model.PreparoMinutos min de preparo + @((int)Math.Ceiling(Model.DuracaoPercursoSegundos!.Value / 60m)) min de percurso · cerca de @Model.PrazoTotalMinutos min a partir da compra.</p>
+                <small class="pedido-texto-suave">Estimativa sujeita a variações. Não é acompanhamento em tempo real.</small>
+            </div>
+        }
         @if (Model.StatusPedido != StatusPedido.Cancelado) {
             <ol class="pedido-progresso" aria-label="Etapas do pedido">
                 @for (var i = 0; i < etapas.Length; i++) {
@@ -120,6 +129,10 @@
             </section>
             <section class="pedido-box mt-4">
                 <h2>Endereço de entrega</h2>
+                @if (Model.OperacaoPendenteId.HasValue) {
+                    <p role="status">Há uma solicitação em conferência. O endereço exibido abaixo continua sendo o endereço válido.</p>
+                    <a asp-controller="PedidoAjustes" asp-action="Andamento" asp-route-id="@Model.OperacaoPendenteId" class="pedido-link">Acompanhar solicitação</a>
+                }
                 @if (Model.EnderecoEntrega is { } endereco) {
                     <address class="pedido-endereco-historico">
                         <strong>@endereco.Logradouro, @endereco.Numero</strong><br />
@@ -128,12 +141,34 @@
                     @if (!string.IsNullOrWhiteSpace(endereco.Complemento)) { <p><strong>Complemento:</strong> @endereco.Complemento</p> }
                     @if (!string.IsNullOrWhiteSpace(endereco.Referencia)) { <p><strong>Referência:</strong> @endereco.Referencia</p> }
                     @if (Model.DistanciaEntregaMetros.HasValue) {
-                        <p class="pedido-texto-suave">Percurso estimado na compra: @((Model.DistanciaEntregaMetros.Value / 1000m).ToString("0.00", cultura)) km.</p>
+                        <p class="pedido-texto-suave">Percurso estimado para este endereço: @((Model.DistanciaEntregaMetros.Value / 1000m).ToString("0.00", cultura)) km.</p>
                     }
-                    <p class="pedido-texto-suave mb-0">Endereço informado ao fazer este pedido.</p>
+                    <p class="pedido-texto-suave mb-0">Endereço válido para este pedido.</p>
                 } else { <p>Endereço não registrado.</p> }
+                @if (!Model.OperacaoPendenteId.HasValue && GerenciarPedidoService.PodeAlterarEndereco(Model)) {
+                    <a asp-controller="PedidoAjustes" asp-action="Endereco" asp-route-id="@Model.Id" class="pedido-link mt-2">Corrigir endereço de entrega</a>
+                    <p class="pedido-texto-suave mb-0">Disponível antes de sair para entrega. Uma nova taxa pode exigir cobrança ou devolução da diferença.</p>
+                } else if (Model.StatusPedido == StatusPedido.SaiuParaEntrega) {
+                    <p class="pedido-texto-suave mt-3">O pedido já saiu para entrega. Não é mais possível alterar o endereço pelo site. Se precisar, use Preciso de ajuda.</p>
+                }
             </section>
             <a asp-controller="Home" asp-action="Cardapio" class="pedido-link mt-3">Continuar no cardápio</a>
         </div>
     </div>
+    @if (Model.ReembolsoCancelamentoPendente) { <p class="pedido-erros mt-4" role="status">Pedido cancelado com pagamento confirmado. O restaurante precisa conferir a devolução. Use Preciso de ajuda para acompanhar; o cancelamento não confirma um estorno automático.</p> }
+    @if (Model.StatusPedido == StatusPedido.Recebido && !Model.OperacaoPendenteId.HasValue) {
+        <details class="pedido-box mt-4 pedido-cancelamento">
+            <summary>Cancelar este pedido</summary>
+            <p class="mt-3">Você pode cancelar enquanto estiver Recebido, antes de começar o preparo. Se já houver pagamento, a devolução será conferida pelo restaurante.</p>
+            <form asp-controller="PedidoAjustes" asp-action="Cancelar" method="post">
+                <input type="hidden" name="PedidoId" value="@Model.Id" /><input type="hidden" name="VersaoPedido" value="@Model.Versao" />
+                <label for="motivoCancelamento">Motivo — opcional</label>
+                <textarea name="Motivo" id="motivoCancelamento" class="form-control" rows="2" maxlength="300"></textarea>
+                <button type="submit" class="pedido-botao mt-3">Confirmar cancelamento</button>
+            </form>
+        </details>
+    } else if (Model.StatusPedido == StatusPedido.EmPreparo) {
+        <p class="pedido-texto-suave mt-4">O preparo já começou. O cancelamento pelo site não está mais disponível; use Preciso de ajuda para falar com o restaurante.</p>
+    }
+    <partial name="_AjudaPedido" model="@((int?)Model.Id)" />
 </section>

@@ -10,6 +10,8 @@
 
 ## Área e tabela aprovadas para o TCC
 
+Atualizada para 35 km. As observações, estimativas e regras de alteração/cancelamento estão detalhadas em [Complementos do checkout e dos pedidos](COMPLEMENTOS-CHECKOUT-E-PEDIDOS.md).
+
 Saída: **Rua dos Pinheiros, 1234, Pinheiros, São Paulo/SP**.
 
 | Percurso pelas ruas | Taxa |
@@ -18,7 +20,10 @@ Saída: **Rua dos Pinheiros, 1234, Pinheiros, São Paulo/SP**.
 | Acima de 5 até 10 km | R$ 8,00 |
 | Acima de 10 até 15 km | R$ 12,00 |
 | Acima de 15 até 20 km | R$ 16,00 |
-| Acima de 20 km | Pedido bloqueado |
+| Acima de 20 até 25 km | R$ 20,00 |
+| Acima de 25 até 30 km | R$ 24,00 |
+| Acima de 30 até 35 km | R$ 28,00 |
+| Acima de 35 km | Pedido bloqueado |
 
 Essa tabela é fictícia e foi escolhida para o projeto; não representa uma média de mercado. O limite considera a rota de carro com preferência pelo menor percurso, respeitando as vias disponíveis na base do provedor. Não usa raio em linha reta, trânsito ao vivo nem tempo de entrega garantido.
 
@@ -73,12 +78,14 @@ A migration **20261106222110_AdicionarTaxaEDistanciaEntrega** acrescenta somente
 - `TaxaEntrega`: decimal, com padrão zero para pedidos anteriores.
 - `DistanciaEntregaMetros`: inteiro opcional, vazio nos pedidos anteriores.
 
+A versão atual também depende da migration **20261106233758_ComplementarCheckoutEPedidos**, descrita no documento de complementos. O comando abaixo aponta para essa versão atual.
+
 Ela não apaga pedidos, clientes nem endereços. É compatível com a versão anterior da aplicação, portanto deve ser aplicada antes de iniciar a versão nova. Não deve ser aplicada uma migration `Down` em produção como tentativa de desfazer uma publicação: isso apagaria as duas colunas e seus dados.
 
 Depois de conferir o destino da conexão e o estado das migrations do banco, a atualização é feita na pasta do projeto web com:
 
 ```zsh
-dotnet ef database update 20261106222110_AdicionarTaxaEDistanciaEntrega
+dotnet ef database update 20261106233758_ComplementarCheckoutEPedidos
 ```
 
 No Render, além da publicação do código, cadastrar estas duas variáveis no serviço da Kiora (o valor de cada uma é a respectiva chave):

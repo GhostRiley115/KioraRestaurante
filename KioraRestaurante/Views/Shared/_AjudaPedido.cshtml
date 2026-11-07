@@ -1,0 +1,5 @@
+@model int?
+@{ var textoAjuda = Model.HasValue ? $"Olá, preciso de ajuda com o pedido #{Model.Value} na Kiora." : "Olá, preciso de ajuda para finalizar meu pedido na Kiora."; }
+<a class="pedido-link pedido-ajuda" href="https://wa.me/5511942764888?text=@Uri.EscapeDataString(textoAjuda)" target="_blank" rel="noopener noreferrer">
+    <i class="bi bi-whatsapp" aria-hidden="true"></i> Preciso de ajuda <span class="visually-hidden">— abre o WhatsApp em outra aba</span>
+</a>
