@@ -1,0 +1,16 @@
+@model KioraRestaurante.DTOs.Notificacoes.PreviaNotificacao
+@{ ViewData["Title"] = "Conferir publicação"; }
+<h1>Confira antes de publicar</h1>
+<div class="pedido-box aviso-item"><h2>@Model.Dados.Titulo</h2><p class="aviso-mensagem">@Model.Dados.Mensagem</p>
+    @if (Model.CodigoCupom != null) { <p>Cupom associado: <strong>@Model.CodigoCupom</strong>. A notificação terá acesso às condições.</p> }
+</div>
+<p>Público: <strong>@(Model.Dados.Publico == KioraRestaurante.Models.Notificacoes.PublicoNotificacao.Todos ? "Todas as contas ativas, incluindo administradores" : "Todos os clientes ativos")</strong>.</p>
+<p>Atualmente, <strong>@Model.Destinatarios conta(s)</strong>. O público será conferido novamente na publicação. Contas criadas depois não receberão este comunicado.</p>
+<form asp-action="Publicar" method="post">
+    <input type="hidden" name="ChavePublicacao" value="@Model.Dados.ChavePublicacao" />
+    <input type="hidden" name="Titulo" value="@Model.Dados.Titulo" /><input type="hidden" name="Mensagem" value="@Model.Dados.Mensagem" />
+    <input type="hidden" name="Publico" value="@((int)Model.Dados.Publico)" /><input type="hidden" name="CupomId" value="@Model.Dados.CupomId" />
+    <input type="hidden" name="TokenPrevia" value="@Model.Dados.TokenPrevia" />
+    <button type="submit" class="pedido-botao" disabled="@(Model.Destinatarios == 0)">Publicar notificação</button>
+    <a asp-action="Criar" asp-route-cupomId="@Model.Dados.CupomId" class="pedido-link">Voltar sem publicar</a>
+</form>

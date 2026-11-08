@@ -2,13 +2,14 @@
 (() => {
     "use strict";
 
-    const formulario = document.getElementById("formEndereco");
+    const formulario = document.querySelector("[data-endereco-form]") ?? document.getElementById("formEndereco");
     if (!formulario) return;
 
-    const cep = document.getElementById("Cep");
-    const rua = document.getElementById("Logradouro");
-    const bairro = document.getElementById("Bairro");
-    const numero = document.getElementById("Numero");
+    const prefixo = formulario.dataset.enderecoPrefixo ?? "";
+    const cep = document.getElementById(prefixo + "Cep");
+    const rua = document.getElementById(prefixo + "Logradouro");
+    const bairro = document.getElementById(prefixo + "Bairro");
+    const numero = document.getElementById(prefixo + "Numero");
     const mensagem = document.getElementById("mensagemCep");
     const botao = document.getElementById("buscarCep");
 
@@ -63,6 +64,7 @@
             cep.value = dados.cep;
             rua.value = dados.logradouro;
             bairro.value = dados.bairro;
+            rua.dispatchEvent(new Event("change", { bubbles: true }));
 
             mensagem.textContent =
                 `${dados.cidade}/${dados.uf}. Confira os dados e complete o número.`;

@@ -6,6 +6,9 @@ namespace KioraRestaurante.ViewModels;
 
 public class CheckoutViewModel
 {
+    [Microsoft.AspNetCore.Mvc.ModelBinding.BindNever, ValidateNever]
+    public KioraRestaurante.DTOs.Cupons.CupomAplicado? Cupom { get; set; }
+
     // Campos que o cliente preenche e envia.
     public CriarPedidoRequestDTO Dados { get; set; } = new();
 
@@ -16,4 +19,7 @@ public class CheckoutViewModel
     [Microsoft.AspNetCore.Mvc.ModelBinding.BindNever]
     [ValidateNever]
     public List<KioraRestaurante.Models.EnderecoUsuario> Enderecos { get; set; } = new();
+
+    [Microsoft.AspNetCore.Mvc.ModelBinding.BindNever, ValidateNever]
+    public KioraRestaurante.Services.Entrega.CotacaoEntrega? Entrega { get; set; }
 }

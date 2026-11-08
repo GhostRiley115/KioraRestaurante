@@ -1,0 +1,11 @@
+@model KioraRestaurante.DTOs.Notificacoes.CriarNotificacaoDTO
+@{ ViewData["Title"] = "Preparar notificação"; var cupons = ViewData["Cupons"] as List<KioraRestaurante.DTOs.Cupons.CupomResumoAdminDTO> ?? []; }
+<a asp-action="Index">← Comunicados</a><h1>Preparar notificação</h1>
+<form asp-action="Previa" method="post" class="admin-box cupom-form">
+    <div asp-validation-summary="All" class="pedido-erros" role="alert"></div><input asp-for="ChavePublicacao" type="hidden" />
+    <label asp-for="Titulo">Título</label><input asp-for="Titulo" class="form-control" maxlength="120" />
+    <label asp-for="Mensagem">Mensagem</label><textarea asp-for="Mensagem" class="form-control" maxlength="1500" rows="5"></textarea>
+    <label asp-for="Publico">Público</label><select asp-for="Publico" class="form-select"><option value="0">Todos os clientes ativos</option><option value="2">Todas as contas ativas, incluindo administradores</option></select>
+    <label asp-for="CupomId">Cupom associado (opcional)</label><select asp-for="CupomId" class="form-select"><option value="">Sem cupom</option>@foreach (var c in cupons) { <option value="@c.Id">@c.Codigo — @c.Descricao</option> }</select>
+    <p class="mt-3">Confira o conteúdo e o público na próxima tela antes de publicar.</p><button type="submit" class="pedido-botao">Conferir prévia</button>
+</form>

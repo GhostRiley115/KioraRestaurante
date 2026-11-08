@@ -6,6 +6,10 @@ namespace KioraRestaurante.Models
     public class ItemPedido
     {
         public int Id { get; set; }
+        public Salao.SituacaoPreparo SituacaoPreparo { get; set; }
+        public DateTime? IniciadoEmUtc { get; set; }
+        public DateTime? ProntoEmUtc { get; set; }
+        [ConcurrencyCheck] public Guid VersaoPreparo { get; set; } = Guid.NewGuid();
 
         public int PedidoId { get; set; }
         public Pedido Pedido { get; set; } = null!;
@@ -17,6 +21,9 @@ namespace KioraRestaurante.Models
 
         [MaxLength(500)]
         public string? Observacao { get; set; }
+        // Preserva a foto da compra mesmo se o catálogo receber outra imagem.
+        [MaxLength(500)] public string? ImagemUrl { get; set; }
+        [MaxLength(200)] public string? ImagemPublicId { get; set; }
 
         /*snapshot do preço no momento da compra, evita com que quando o
         proprietario mude o preço mude o valor de um pedido no dia anterior*/

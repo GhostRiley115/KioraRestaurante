@@ -1,0 +1,13 @@
+@model KioraRestaurante.DTOs.Notificacoes.ItemNotificacaoDTO
+@using KioraRestaurante.Services
+@{ ViewData["Title"] = "Notificação"; }
+<section class="container pedido-pagina avisos-pagina">
+    <a asp-action="Index" class="pedido-link">← Suas notificações</a>
+    <article class="pedido-box aviso-item">
+        <time datetime="@Model.CriadaEmUtc.ToString("O")">@HorarioRestaurante.ParaLocal(Model.CriadaEmUtc).ToString("dd/MM/yyyy HH:mm")</time>
+        <h1>@Model.Titulo</h1><p class="aviso-mensagem">@Model.Mensagem</p>
+        @if (Model.TemDestino) {
+            <form asp-action="Abrir" method="post"><input type="hidden" name="id" value="@Model.Id" /><button type="submit" class="pedido-link">Ver informações relacionadas</button></form>
+        }
+    </article>
+</section>

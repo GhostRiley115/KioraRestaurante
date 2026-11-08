@@ -2740,3 +2740,9 @@
 .conta-opcao i { color: var(--k-dourado); }
 .conta-opcao:hover, .conta-opcao:focus-visible { background: #7D1F1F; color: var(--k-texto); border-color: #D9B27A; }
 .painel-conta .usuario-logado { color: var(--k-dourado); white-space: normal; overflow-wrap: anywhere; }
+
+/* A conta da equipe organiza atalhos por finalidade e mantém todos acessíveis com rolagem. */
+.painel-conta-gestao .conta-opcoes { gap:8px; }
+.painel-conta-gestao .conta-opcao { min-height:44px; padding:10px 14px; border-color:var(--k-borda); background:var(--k-campo); }
+.painel-conta-gestao .conta-opcao:hover,.painel-conta-gestao .conta-opcao:focus-visible { background:var(--k-elevado); color:var(--k-dourado); border-color:var(--k-dourado); }
+.painel-conta-gestao .conta-grupo { margin-top:12px; color:var(--k-suave); font-size:.8rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; }

@@ -7,6 +7,8 @@ using KioraRestaurante.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Claims;
@@ -182,6 +184,114 @@ builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 builder.Services.AddScoped<IImagemProdutoService, ImagemProdutoService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
 
+// Serviços de cupons.
+builder.Services.AddScoped<KioraRestaurante.Services.Cupons.CupomService>();
+
+// Serviços de notificações.
+builder.Services.AddScoped<KioraRestaurante.Services.Notificacoes.NotificacaoService>();
+builder.Services.AddScoped<KioraRestaurante.Services.Notificacoes.NotificacaoDispatcher>();
+builder.Services.AddHostedService<KioraRestaurante.Services.Notificacoes.DistribuirNotificacoesService>();
+
+// Relatórios e gerenciamento de pedidos.
+builder.Services.AddScoped<RelatoriosAdminService>();
+builder.Services.AddScoped<GerenciarPedidoService>();
+
+// Serviços de salão e atendimento.
+builder.Services.AddScoped<KioraRestaurante.Services.Salao.AcessoSalaoService>();
+builder.Services.AddScoped<KioraRestaurante.Services.Salao.ComandoSalaoService>();
+builder.Services.AddScoped<KioraRestaurante.Services.Salao.ComandaService>();
+builder.Services.AddScoped<KioraRestaurante.Services.Salao.ConsultaSalaoService>();
+builder.Services.AddScoped<KioraRestaurante.Services.Salao.PortariaService>();
+builder.Services.AddScoped<KioraRestaurante.Services.Salao.AvisosSalaoService>();
+builder.Services.AddScoped<KioraRestaurante.Services.Salao.CozinhaService>();
+builder.Services.AddScoped<KioraRestaurante.Services.Salao.FuncionarioService>();
+
+// Serviços de andamento e operações de pedidos.
+builder.Services.AddHttpClient<EmailService>(
+    http => http.Timeout = TimeSpan.FromSeconds(15));
+
+builder.Services.AddScoped<KioraRestaurante.Services.Pedidos.AndamentoPedidoService>();
+builder.Services.AddHostedService<OperacoesPedidoService>();
+
+// Limita a quantidade de requisições por usuário.
+builder.Services.AddRateLimiter(limites =>
+{
+    limites.AddPolicy("salao", contexto =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            contexto.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
+                ?? contexto.Connection.RemoteIpAddress?.ToString()
+                ?? "anonimo",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 120,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0
+            }));
+
+    limites.AddPolicy("convite-funcionario", contexto =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            contexto.Connection.RemoteIpAddress?.ToString() ?? "anonimo",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 10,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0
+            }));
+
+    limites.AddPolicy("cotacao-entrega", contexto =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            contexto.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
+                ?? "sem-sessao",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 12,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0
+            }));
+
+    limites.AddPolicy("alteracoes-pedido", contexto =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            contexto.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
+                ?? "sem-sessao",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 6,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0
+            }));
+
+    limites.OnRejected = async (contexto, ct) =>
+    {
+        contexto.HttpContext.Response.StatusCode =
+            StatusCodes.Status429TooManyRequests;
+
+        await contexto.HttpContext.Response.WriteAsJsonAsync(
+            new { mensagem = "Aguarde um minuto antes de tentar novamente." },
+            ct);
+    };
+});
+
+// Configurações de entrega.
+builder.Services.AddOptions<KioraRestaurante.Options.EntregaOptions>()
+    .Configure(o => o.Faixas = [])
+    .Bind(builder.Configuration.GetSection("Entrega"))
+    .PostConfigure(o =>
+    {
+        if (o.Faixas.Length == 0)
+            o.Faixas = new KioraRestaurante.Options.EntregaOptions().Faixas;
+    })
+    .Validate(o =>
+        o.LimiteMetros == 35000 &&
+        o.Faixas.Length > 0 &&
+        o.Faixas.All(f =>
+            f.AteMetros > 0 &&
+            f.Valor is >= 0 and <= 99999999.99m &&
+            decimal.Round(f.Valor, 2) == f.Valor) &&
+        o.Faixas.Select(f => f.AteMetros).Distinct().Count() == o.Faixas.Length &&
+        o.Faixas.Max(f => f.AteMetros) == o.LimiteMetros,
+        "Confira a área e a tabela de entrega.")
+    .ValidateOnStart();
+
 builder.Services.AddScoped<ValidarSessaoUsuario>();
 
 // Limita tentativas de login.
@@ -222,6 +332,26 @@ builder.Services.AddHttpClient<CepService>(http =>
 
 builder.Services.AddSingleton<TimeProvider>(TimeProvider.System);
 
+// Serviço responsável por identificar os produtos mais pedidos.
+builder.Services.AddScoped<KioraRestaurante.Services.Cardapio.MaisPedidosService>();
+
+// Configuração do Mercado Pago.
+builder.Services.Configure<KioraRestaurante.Options.MercadoPagoConfig>(
+    builder.Configuration.GetSection("MercadoPago"));
+
+// Cliente HTTP para comunicação com o Mercado Pago.
+builder.Services.AddHttpClient<KioraRestaurante.Services.PagamentosOnline.MpOrdersClient>(http =>
+{
+    http.BaseAddress = new Uri("https://api.mercadopago.com/");
+    http.Timeout = TimeSpan.FromSeconds(10);
+});
+
+// Serviço de checkout dos pagamentos online.
+builder.Services.AddScoped<KioraRestaurante.Services.PagamentosOnline.CheckoutOnlineService>();
+
+// Serviço de conferência dos pagamentos online.
+builder.Services.AddHostedService<KioraRestaurante.Services.PagamentosOnline.ConferenciaOnlineService>();
+
 builder.Services.AddOptions<KioraRestaurante.Options.ReservaOptions>()
     .Bind(builder.Configuration.GetSection("Reservas"))
     .Validate(o =>
@@ -236,6 +366,35 @@ builder.Services.AddOptions<KioraRestaurante.Options.ReservaOptions>()
         o.AntecedenciaDias is > 0 and <= 90,
         "Configuração de reservas inválida.")
     .ValidateOnStart();
+
+// Serviço de cotação de entrega.
+builder.Services.AddScoped<KioraRestaurante.Services.Entrega.CotacaoEntregaService>();
+
+// Integração com o serviço de cálculo de rotas.
+builder.Services.AddHttpClient<
+    KioraRestaurante.Services.Entrega.IRotasEntrega,
+    KioraRestaurante.Services.Entrega.HeiGitRotasEntrega>(http =>
+    {
+        http.BaseAddress = new Uri("https://api.heigit.org/");
+        http.Timeout = TimeSpan.FromSeconds(15);
+        http.MaxResponseContentBufferSize = 1_000_000;
+    })
+.ConfigurePrimaryHttpMessageHandler(() =>
+    new HttpClientHandler { AllowAutoRedirect = false })
+.RemoveAllLoggers();
+
+// Integração com o serviço de geocodificação.
+builder.Services.AddHttpClient<
+    KioraRestaurante.Services.Entrega.IGeocodificadorEntrega,
+    KioraRestaurante.Services.Entrega.GeoapifyGeocodificadorEntrega>(http =>
+    {
+        http.BaseAddress = new Uri("https://api.geoapify.com/");
+        http.Timeout = TimeSpan.FromSeconds(15);
+        http.MaxResponseContentBufferSize = 1_000_000;
+    })
+.ConfigurePrimaryHttpMessageHandler(() =>
+    new HttpClientHandler { AllowAutoRedirect = false })
+.RemoveAllLoggers();
 
 builder.Services.AddScoped<KioraRestaurante.Services.Reservas.HorariosReserva>();
 builder.Services.AddScoped<KioraRestaurante.Services.Reservas.IdentidadeReserva>();
@@ -272,6 +431,9 @@ app.UseRouting();
 // Autenticação e autorização.
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Aplica os limites de requisições configurados.
+app.UseRateLimiter();
 
 app.MapStaticAssets();
 

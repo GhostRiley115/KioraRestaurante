@@ -17,7 +17,7 @@ public class ReservasAdminController(ReservaService service,HorariosReserva hora
     public async Task<IActionResult> Index(DateOnly? data,CancellationToken ct)
     {
         if(!ModelState.IsValid)return BadRequest();
-        try{return View("~/Views/Admin/Reservas/Index.cshtml",await service.Painel(Admin,data??horarios.Hoje,ct));}
+        try{await service.Painel(Admin,data??horarios.Hoje,ct);return RedirectToAction("Portaria","Restaurante",new {data});}
         catch(UnauthorizedAccessException){return Forbid();}
     }
     private async Task<IActionResult> Executar(Func<Task> acao)

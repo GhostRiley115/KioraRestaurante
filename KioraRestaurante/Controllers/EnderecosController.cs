@@ -74,6 +74,34 @@ public class EnderecosController : Controller
     }
 
     [HttpPost]
+    public async Task<IActionResult> Excluir(int id, Guid versao)
+    {
+        var ajax = Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+        try
+        {
+            if (!ModelState.IsValid || versao == Guid.Empty)
+                throw new ValidationException("Atualize a página antes de excluir o endereço.");
+            await _service.Excluir(UsuarioId, id, versao);
+            if (ajax) return Ok(new { mensagem = "Endereço excluído. Os pedidos anteriores foram preservados." });
+            TempData["EnderecoSucesso"] = "Endereço excluído. Os pedidos anteriores foram preservados.";
+            return RedirectToAction(nameof(Index));
+        }
+        catch (UnauthorizedAccessException) { return Forbid(); }
+        catch (KeyNotFoundException)
+        {
+            if (ajax) return NotFound(new { mensagem = "Esse endereço não está disponível na sua conta. Atualize a página." });
+            TempData["EnderecoErro"] = "Esse endereço não está disponível na sua conta.";
+        }
+        catch (Exception ex) when (ex is ValidationException or DbUpdateConcurrencyException or DbUpdateException)
+        {
+            var mensagem = ex is ValidationException ? ex.Message : "O endereço mudou. Atualize a página antes de tentar novamente.";
+            if (ajax) return BadRequest(new { mensagem });
+            TempData["EnderecoErro"] = mensagem;
+        }
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpPost]
     public async Task<IActionResult> Salvar(int? id, SalvarEnderecoRequestDTO dto)
     {
         ViewData["EnderecoId"] = id;

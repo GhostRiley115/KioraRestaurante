@@ -12,6 +12,16 @@ public class ValidarSessaoUsuario : CookieAuthenticationEvents
 
     private readonly AppDbContext _context;
     public ValidarSessaoUsuario(AppDbContext context) => _context = context;
+    public override Task RedirectToLogin(RedirectContext<CookieAuthenticationOptions> context)
+    {
+        if(context.Request.Path.StartsWithSegments("/api")){context.Response.StatusCode=401;return Task.CompletedTask;}
+        return base.RedirectToLogin(context);
+    }
+    public override Task RedirectToAccessDenied(RedirectContext<CookieAuthenticationOptions> context)
+    {
+        if(context.Request.Path.StartsWithSegments("/api")){context.Response.StatusCode=403;return Task.CompletedTask;}
+        return base.RedirectToAccessDenied(context);
+    }
     public override async Task ValidatePrincipal(CookieValidatePrincipalContext context)
     {
         var valor = context.Principal?.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -19,8 +29,8 @@ public class ValidarSessaoUsuario : CookieAuthenticationEvents
         var versaoValida = Guid.TryParse(context.Principal?.FindFirstValue(ClaimVersaoSessao), out var versao)
             && versao != Guid.Empty;
         var usuario = await _context.Usuarios.AsNoTracking().Where(u => u.Id == id)
-            .Select(u => new { u.Ativo, u.Tipo, u.VersaoSessao }).SingleOrDefaultAsync();
-        if (usuario == null || !usuario.Ativo || !versaoValida || versao != usuario.VersaoSessao
+            .Select(u => new { u.Ativo, u.Tipo, u.VersaoSessao, u.ConvitePendente }).SingleOrDefaultAsync();
+        if (usuario == null || !usuario.Ativo || usuario.ConvitePendente || !versaoValida || versao != usuario.VersaoSessao
             || context.Principal?.FindFirstValue(ClaimTypes.Role) != usuario.Tipo.ToString()) {
             context.RejectPrincipal();
             await context.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);

@@ -6,18 +6,10 @@
 
     var cultura = CultureInfo.GetCultureInfo("pt-BR");
 
-    var estados = new[]
-    {
-        "AC", "AL", "AP", "AM", "BA", "CE", "DF",
-        "ES", "GO", "MA", "MT", "MS", "MG", "PA",
-        "PB", "PR", "PE", "PI", "RJ", "RN", "RS",
-        "RO", "RR", "SC", "SP", "SE", "TO"
-    };
-
     var podeConfirmar =
         Model.Resumo.PodeProsseguir
         && !string.IsNullOrWhiteSpace(Model.Dados.TokenRevisao)
-        && Model.Enderecos.Count > 0;
+        && Model.Entrega != null;
 }
 
 <section class="container pedido-pagina">
@@ -46,59 +38,44 @@
     <form asp-controller="Pedido"
           asp-action="Checkout"
           method="post"
-          id="formCheckout">
+          id="formCheckout"
+          data-endereco-form data-endereco-prefixo="Dados_NovoEndereco_"
+          data-cep-base="@Url.Content("~/api/cep/")"
+          data-cotacao-url="@Url.Action("CotarEntrega", "Pedido")"
+          data-total-produtos="@((Model.Resumo.Total - (Model.Cupom?.Desconto ?? 0)).ToString(CultureInfo.InvariantCulture))"
+          data-pode-prosseguir="@(Model.Resumo.PodeProsseguir && !string.IsNullOrWhiteSpace(Model.Dados.TokenRevisao) ? "true" : "false")"
+          data-validade-entrega="@Model.Entrega?.ExpiraEmUtc.ToString("O")">
 
         <input asp-for="Dados.TokenRevisao" type="hidden" />
+        <input asp-for="Dados.TokenCupom" type="hidden" />
+        <input asp-for="Dados.TokenEntrega" type="hidden" />
 
         <div class="row g-4">
             <div class="col-12 col-lg-7">
-                <section class="pedido-box">
-                    <h2>Endereço de entrega</h2>
-
-                    <input asp-for="Dados.EnderecoVersao" type="hidden" />
-
-                    @if (Model.Enderecos.Count == 0)
-                    {
-                        <p>Cadastre um endereço para continuar.</p>
-                    }
-
-                    @foreach (var endereco in Model.Enderecos)
-                    {
-                        var identificador = $"endereco-{endereco.Id}";
-
-                        <div class="mb-3">
-                            <input asp-for="Dados.EnderecoId"
-                                   type="radio"
-                                   id="@identificador"
-                                   value="@endereco.Id"
-                                   data-endereco-versao="@endereco.Versao" />
-
-                            <label for="@identificador">
-                                <strong>@endereco.Apelido</strong><br />
-
-                                @endereco.Logradouro, @endereco.Numero<br />
-
-                                @endereco.Bairro — @endereco.Cidade/@endereco.Uf<br />
-
-                                CEP @endereco.Cep
-
-                                @if (!string.IsNullOrWhiteSpace(endereco.Complemento))
-                                {
-                                    <br />
-                                    @endereco.Complemento
-                                }
-                            </label>
-                        </div>
-                    }
-
-                    <a asp-controller="Enderecos"
-                       asp-action="Index"
-                       class="pedido-link">
-                        Cadastrar ou editar meus endereços
-                    </a>
-                </section>
+                <partial name="~/Views/Pedido/_EnderecoCheckout.cshtml" model="@(new KioraRestaurante.ViewModels.EnderecoFormularioViewModel { Dados = Model.Dados, Enderecos = Model.Enderecos, Entrega = Model.Entrega })" />
 
                 <section class="pedido-box mt-4">
+                    <span class="pedido-etapa">2 · SEUS PRODUTOS</span>
+                    <h2>Alguma preferência no preparo?</h2>
+                    <p class="pedido-texto-suave">Deixe uma observação para cada produto, se precisar.</p>
+                    @foreach (var item in Model.Resumo.Itens)
+                    {
+                        var foto = string.IsNullOrWhiteSpace(item.ImagemUrl) ? Url.Content("~/imagens/produto-sem-foto.svg") : item.ImagemUrl;
+                        var observacao = Model.Dados.Observacoes?.GetValueOrDefault(item.ProdutoId);
+                        <article class="checkout-produto">
+                            <div class="checkout-produto-cabecalho">
+                                <img src="@foto" alt="" width="88" height="88" loading="lazy" decoding="async" data-foto-produto data-foto-alternativa="@Url.Content("~/imagens/produto-sem-foto.svg")" />
+                                <div><h3 id="nome-produto-@item.ProdutoId">@item.NomeProduto</h3><p class="pedido-texto-suave mb-0">@(item.Quantidade == 1 ? "1 unidade" : $"{item.Quantidade} unidades") · @item.Subtotal.ToString("C", cultura)</p></div>
+                            </div>
+                            <label for="observacao-@item.ProdutoId" id="rotulo-observacao-@item.ProdutoId">Observações <span class="pedido-texto-suave">(opcional)</span></label>
+                            <textarea id="observacao-@item.ProdutoId" name="Dados.Observacoes[@item.ProdutoId]" class="form-control" maxlength="500" rows="2"
+                                      placeholder="Ex.: sem cebola, pouco molho" aria-labelledby="nome-produto-@item.ProdutoId rotulo-observacao-@item.ProdutoId" aria-describedby="ajuda-observacao-@item.ProdutoId">@observacao</textarea>
+                            <small id="ajuda-observacao-@item.ProdutoId" class="pedido-texto-suave">@(item.Quantidade == 1 ? "Até 500 caracteres." : $"Até 500 caracteres. As observações se aplicam às {item.Quantidade} unidades.")</small>
+                        </article>
+                    }
+                </section>
+                <section class="pedido-box mt-4">
+                    <span class="pedido-etapa">3 · PAGAMENTO</span>
                     <h2>Forma de pagamento</h2>
 
                     <label asp-for="Dados.FormaPagamento">
@@ -109,21 +86,19 @@
                             class="form-select">
                         <option value="">Selecione</option>
                         <option value="0">Dinheiro</option>
-                        <option value="1">Pix</option>
-                        <option value="2">Cartão de crédito</option>
-                        <option value="3">Cartão de débito</option>
+                        <option value="4">Mercado Pago — pagamento online</option>
                     </select>
 
                     <p class="pedido-texto-suave mt-3 mb-0">
-                        O pagamento será acertado com o restaurante.
-                        Nenhuma cobrança é realizada nesta página.
+                        Escolha Mercado Pago para pagar online ou dinheiro para pagar na entrega.
                     </p>
                 </section>
             </div>
 
             <div class="col-12 col-lg-5">
-                <section class="pedido-box">
-                    <h2>Seus produtos</h2>
+                <section class="pedido-box checkout-resumo">
+                    <span class="pedido-etapa">4 · RESUMO</span>
+                    <h2>Seu pedido</h2>
 
                     @if (Model.Resumo.Itens.Count == 0)
                     {
@@ -162,11 +137,30 @@
                         </div>
                     }
 
-                    <div class="pedido-total">
-                        <span>Total dos produtos</span>
-                        <strong>
-                            @Model.Resumo.Total.ToString("C", cultura)
-                        </strong>
+                    <div class="checkout-cupom">
+                        @if (Model.Cupom != null) {
+                            <p role="status">Cupom <strong>@Model.Cupom.Codigo</strong> aplicado.</p>
+                            <input asp-for="Dados.CodigoCupom" type="hidden" />
+                            <button class="pedido-link" type="submit" name="acao" value="remover-cupom" formnovalidate>Remover cupom</button>
+                        } else {
+                            <label asp-for="Dados.CodigoCupom">Cupom de desconto</label>
+                            <div class="checkout-cupom-campos"><input asp-for="Dados.CodigoCupom" class="form-control" maxlength="40" autocomplete="off" placeholder="Código do cupom" />
+                            <button class="pedido-botao" type="submit" name="acao" value="aplicar-cupom" formnovalidate>Aplicar</button></div>
+                        }
+                    </div>
+                    <dl class="checkout-resumo-valores">
+                        @if (Model.Cupom != null) { <div><dt>Desconto · @Model.Cupom.Codigo</dt><dd>− @Model.Cupom.Desconto.ToString("C", cultura)</dd></div> }
+
+                        <div><dt>Subtotal dos produtos</dt><dd>@Model.Resumo.Total.ToString("C", cultura)</dd></div>
+                        <div><dt>Distância pelas ruas</dt><dd id="distanciaEntrega">@(Model.Entrega == null ? "A calcular" : (Model.Entrega.DistanciaMetros / 1000m).ToString("0.00", cultura) + " km")</dd></div>
+                        <div><dt>Taxa de entrega</dt><dd id="taxaEntrega">@(Model.Entrega == null ? "A calcular" : Model.Entrega.Taxa.ToString("C", cultura))</dd></div>
+                        <div class="pedido-total"><dt>Total do pedido</dt><dd id="totalComEntrega">@(Model.Entrega == null ? "A calcular" : (Model.Resumo.Total - (Model.Cupom?.Desconto ?? 0) + Model.Entrega.Taxa).ToString("C", cultura))</dd></div>
+                    </dl>
+
+                    <div class="checkout-previsao" role="status" aria-live="polite">
+                        <strong>Tempo estimado</strong>
+                        <p id="prazoEntrega" class="mb-1">@(Model.Entrega == null ? "30 min de preparo + percurso a calcular" : $"Cerca de {Model.Entrega.PrazoTotalMinutos} min: 30 min de preparo + {Model.Entrega.PercursoMinutos} min de percurso")</p>
+                        <small class="pedido-texto-suave">Estimativa a partir da confirmação do pedido. Pode variar; não considera trânsito em tempo real.</small>
                     </div>
 
                     <button type="submit"
@@ -192,45 +186,18 @@
                             aria-controls="painelCarrinho">
                         Abrir carrinho
                     </button>
+                    <partial name="_AjudaPedido" model="@((int?)null)" />
                 </section>
             </div>
         </div>
     </form>
 </section>
 
+<partial name="_ConfirmarExclusaoEndereco" />
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-
-    <script>
-        const formularioCheckout =
-            document.getElementById("formCheckout");
-
-        const confirmarPedido =
-            document.getElementById("confirmarPedido");
-
-        const inicialmenteDesabilitado =
-            confirmarPedido.disabled;
-
-        // Guarda a versão do endereço que o cliente escolheu nesta revisão.
-        document.querySelectorAll("[data-endereco-versao]").forEach(opcao => {
-            opcao.addEventListener("change", () => {
-                document.getElementById("Dados_EnderecoVersao").value =
-                    opcao.dataset.enderecoVersao;
-            });
-        });
-
-        formularioCheckout.addEventListener("submit", function () {
-            // A validação jQuery pode impedir o envio.
-            if (!$(formularioCheckout).valid()) return;
-
-            confirmarPedido.disabled = true;
-            confirmarPedido.textContent = "Confirmando…";
-        });
-
-        // Recupera o botão ao voltar pelo histórico do navegador.
-        window.addEventListener("pageshow", function () {
-            confirmarPedido.disabled = inicialmenteDesabilitado;
-            confirmarPedido.textContent = "Confirmar pedido";
-        });
-    </script>
+    <script src="~/js/Endereco.js" asp-append-version="true"></script>
+    <script src="~/js/endereco-exclusao.js" asp-append-version="true"></script>
+    <script src="~/js/checkout.js" asp-append-version="true"></script>
 }

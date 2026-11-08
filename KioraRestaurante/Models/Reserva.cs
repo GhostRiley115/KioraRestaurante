@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 namespace KioraRestaurante.Models;
 
 public enum TipoReserva { Agendada = 0, Fila = 1 }
-public enum SituacaoReserva { Confirmada = 0, Aguardando = 1, Chamada = 2, EmAtendimento = 3, Concluida = 4, Cancelada = 5, Expirada = 6 }
+public enum SituacaoReserva { Confirmada = 0, Aguardando = 1, Chamada = 2, EmAtendimento = 3, Concluida = 4, Cancelada = 5, Expirada = 6, AguardandoChegada = 7 }
 
 public class MesaRestaurante
 {
@@ -10,6 +10,7 @@ public class MesaRestaurante
     [MaxLength(30)] public string Nome { get; set; } = "";
     public int Capacidade { get; set; }
     public bool Ativa { get; set; } = true;
+    [ConcurrencyCheck] public Guid Versao { get; set; } = Guid.NewGuid();
 }
 
 // Esta linha é bloqueada em transação antes de alterar reservas/mesas.

@@ -110,6 +110,42 @@ public class CombosHistoricoTests
         }
     }
 
+    [Fact]
+    public async Task ObservacaoNaoExecutaHtmlNoCheckoutENosDetalhesDoClienteEAdministrador()
+    {
+        const string observacao = "Sem cebola </textarea><script>alert('teste')</script>";
+        using var banco = new BancoCombos();
+        var pedido = banco.CriarPedido(null);
+        pedido.ItensPedido.Single().Observacao = observacao;
+        await banco.Contexto.SaveChangesAsync();
+        var admin = await new AdminService(banco.Contexto).DetalhesPedido(banco.Admin.Id, pedido.Id);
+        var checkout = new CheckoutViewModel { Resumo = new() { Itens = [new ItemCarrinhoResponseDTO
+        { ProdutoId = banco.Combo.Id, NomeProduto = "Combo", ImagemUrl = "/foto-de-teste.jpg" }] } };
+        checkout.Dados.Observacoes[banco.Combo.Id] = observacao;
+        await using var telas = new TelasRazor();
+        foreach (var html in new[] { await telas.Renderizar("/Views/Pedido/Checkout.cshtml", checkout),
+            await telas.Renderizar("/Views/Pedido/Detalhes.cshtml", pedido), await telas.Renderizar("/Views/Admin/Pedidos/Detalhes.cshtml", admin!) })
+        {
+            Assert.Contains(observacao, WebUtility.HtmlDecode(html));
+            Assert.DoesNotContain("<script>alert", html);
+            Assert.Contains("&lt;script&gt;", html);
+        }
+    }
+
+    [Fact]
+    public async Task MensagensDeNotificacaoSaoTextoEAsFotosAparecemNosDetalhes()
+    {
+        await using var telas = new TelasRazor();
+        var malicioso = "<script>alert('teste')</script>";
+        var html = await telas.Renderizar("/Views/Notificacoes/Index.cshtml", new KioraRestaurante.DTOs.Notificacoes.ListaNotificacoesDTO(
+            [new(Guid.NewGuid(), malicioso, malicioso, DateTime.UtcNow, true, true)], 1, 1, 1));
+        Assert.DoesNotContain("<script>alert", html); Assert.Contains("&lt;script&gt;", html);
+        using var banco = new BancoCombos(); var pedido = banco.CriarPedido("Combo histórico");
+        pedido.ItensPedido[0].ImagemUrl = "https://example.com/historica.webp";
+        var detalhes = await telas.Renderizar("/Views/Pedido/Detalhes.cshtml", pedido);
+        Assert.Contains("https://example.com/historica.webp", detalhes); Assert.DoesNotContain("Continuar no cardápio", detalhes);
+    }
+
     private sealed class BancoCombos : IDisposable
     {
         private readonly SqliteConnection _conexao = new("Data Source=:memory:");
@@ -139,7 +175,11 @@ public class CombosHistoricoTests
             Contexto.SaveChanges();
             var cep = new CepService(_http, _cache, new ConfigurationBuilder().Build());
             Pedidos = new PedidoService(Contexto, new CarrinhoService(Contexto),
-                new EphemeralDataProtectionProvider(), new EnderecoUsuarioService(Contexto, cep));
+                new EphemeralDataProtectionProvider(), new EnderecoUsuarioService(Contexto, cep),
+                new KioraRestaurante.Services.Entrega.CotacaoEntregaService(new RotasEntregaSimuladas(),
+                    Microsoft.Extensions.Options.Options.Create(new KioraRestaurante.Options.EntregaOptions()),
+                    new EphemeralDataProtectionProvider(), TimeProvider.System),
+                new KioraRestaurante.Services.Cupons.CupomService(Contexto, new EphemeralDataProtectionProvider(), TimeProvider.System));
         }
 
         public Pedido CriarPedido(string? composicao)

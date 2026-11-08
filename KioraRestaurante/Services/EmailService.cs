@@ -20,6 +20,26 @@ namespace KioraRestaurante.Services
             _logger = logger;
         }
 
+        public async Task<bool> EnviarConviteFuncionarioAsync(string destino, string link, CancellationToken ct = default)
+        {
+            var chave = _configuration["Brevo:ApiKey"];
+            var remetente = _configuration["Brevo:RemetenteEmail"];
+            if (string.IsNullOrWhiteSpace(chave) || chave.StartsWith("SUA_", StringComparison.OrdinalIgnoreCase) || string.IsNullOrWhiteSpace(remetente)) return false;
+            var dados = new { sender = new { name = _configuration["Brevo:RemetenteNome"], email = remetente },
+                to = new[] { new { email = destino } }, subject = "Seu convite para a equipe Kiora",
+                htmlContent = $"<h2>Bem-vindo à equipe Kiora</h2><p>Seu acesso de funcionário foi criado. Defina sua senha pelo link abaixo, válido por 24 horas e para um único uso.</p><p><a href=\"{System.Net.WebUtility.HtmlEncode(link)}\">Definir minha senha</a></p><p>Se não esperava este convite, entre em contato com o restaurante.</p>" };
+            using var requisicao = new HttpRequestMessage(HttpMethod.Post, "https://api.brevo.com/v3/smtp/email");
+            requisicao.Headers.Add("api-key", chave); requisicao.Content = new StringContent(JsonSerializer.Serialize(dados), Encoding.UTF8, "application/json");
+            try
+            {
+                using var resposta = await _httpClient.SendAsync(requisicao, ct);
+                if (resposta.IsSuccessStatusCode) return true;
+                _logger.LogWarning("Falha ao enviar convite de funcionário. HTTP {Status}.", (int)resposta.StatusCode); return false;
+            }
+            catch (Exception ex) when (ex is HttpRequestException or OperationCanceledException)
+            { _logger.LogWarning("Falha de comunicação ao enviar convite de funcionário."); return false; }
+        }
+
         public async Task<bool> EnviarCodigoRecuperacaoSenhaAsync(
             string emailDestino,
             string codigo)

@@ -1,0 +1,15 @@
+@model ItemComandaViewModel
+@using KioraRestaurante.Services.Salao
+@{var item=Model.Item;var a=Model.Mesa.Comanda;var c=CultureInfo.GetCultureInfo("pt-BR");var aberta=a.Situacao==SituacaoAtendimento.Aberto;var gestor=User.IsInRole("Administrador")||User.IsInRole("Gerente");}
+<article class="equipe-box comanda-item"><div class="comanda-item-topo"><img class="comanda-foto" src="@(string.IsNullOrWhiteSpace(item.ImagemUrl)?Url.Content("~/imagens/produto-sem-foto.svg"):item.ImagemUrl)" alt="" width="64" height="64" loading="lazy" data-foto-produto data-foto-alternativa="@Url.Content("~/imagens/produto-sem-foto.svg")"/><div><span class="equipe-status etapa-@item.Situacao.ToString().ToLowerInvariant()">@TextosSalao.Preparo(item.Situacao)</span><h3>@item.Quantidade × @item.Nome</h3><p class="admin-suave">@item.PrecoUnitario.ToString("C",c) cada · enviado às @HorarioRestaurante.ParaLocal(item.EnviadoEmUtc).ToString("HH:mm")</p></div><strong class="comanda-subtotal">@((item.Quantidade*item.PrecoUnitario).ToString("C",c))</strong></div>
+@if(!string.IsNullOrWhiteSpace(item.Composicao)){<p class="admin-suave">Composição do combo: @item.Composicao</p>}
+@if(!string.IsNullOrWhiteSpace(item.Observacao)){<p class="cozinha-observacao"><strong>Observação:</strong> @item.Observacao</p>}
+@if(aberta&&item.Situacao==SituacaoPreparo.Pronto){<form asp-action="Entregar" method="post"><partial name="_ChavesComanda" model="a"/><input type="hidden" name="ItemId" value="@item.Id"/><button type="submit">Confirmar entrega à mesa</button></form>}
+@if(aberta&&(gestor||item.Situacao==SituacaoPreparo.NaFila)){
+<details class="comanda-correcao"><summary>Corrigir ou cancelar este item</summary><form asp-action="Corrigir" method="post" class="equipe-form"><partial name="_ChavesComanda" model="a"/><input type="hidden" name="ItemId" value="@item.Id"/>
+<label for="produto-@item.Id">Produto correto</label><select id="produto-@item.Id" name="ProdutoId"><option value="@item.ProdutoId">Manter @item.Nome</option>@foreach(var p in Model.Mesa.Produtos.Where(p=>p.Disponivel&&p.Id!=item.ProdutoId)){<option value="@p.Id">@p.Nome · @p.Preco.ToString("C",c)</option>}</select>
+<label for="quantidade-@item.Id">Quantidade correta</label><input id="quantidade-@item.Id" name="Quantidade" type="number" min="0" max="30" value="@item.Quantidade" required/><small class="admin-suave">Use zero para cancelar o item.</small>
+<label for="observacao-@item.Id">Observações do preparo</label><textarea id="observacao-@item.Id" name="Observacao" maxlength="500">@item.Observacao</textarea>
+<label for="motivo-@item.Id">Motivo da correção ou cancelamento</label><input id="motivo-@item.Id" name="Motivo" maxlength="400" required/><p class="admin-suave">O registro anterior permanece no histórico. O item substituído volta à fila da cozinha.</p><button type="submit">Salvar correção</button></form></details>}
+else if(aberta&&item.Situacao!=SituacaoPreparo.NaFila){<p class="admin-suave">Para corrigir um item após o início do preparo, solicite ao gerente.</p>}
+</article>

@@ -3,7 +3,7 @@
 @section Styles { <link rel="stylesheet" href="~/css/reservas.css" asp-append-version="true" /> }
 <section class="container reservas-pagina">
     <header class="reservas-cabecalho"><span>KIORA · À SUA MESA</span><h1>Um lugar para o seu próximo encontro</h1>
-        <p>Escolha o dia e o horário. Nós cuidamos da sua mesa.</p>
+        <p>Informe quando pretende chegar. A equipe acompanha sua solicitação e acomoda o grupo em uma mesa disponível.</p>
         <a asp-action="Minhas" class="pedido-link">Minhas reservas e fila</a></header>
     <div class="reservas-grade">
         <section class="reservas-card"><h2>Faça sua reserva</h2>
@@ -21,15 +21,13 @@
                 <label asp-for="Dados.Horario">Horário de chegada</label>
                 <select asp-for="Dados.Horario" class="form-select">
                     <option value="">Selecione um horário</option>
-                    @foreach(var h in Model.Horarios){<option value="@h.Horario" disabled="@(!h.Disponivel)">@h.Horario — até @h.Encerramento (@h.Minutos min) @(!h.Disponivel?"· lotado":"")</option>}
+                    @foreach(var h in Model.Horarios){<option value="@h.Horario" disabled="@(!h.Disponivel)">@h.Horario @(!h.Disponivel?"· lotado":"")</option>}
                 </select>
-                <p id="avisoHorarios" class="reservas-suave" role="status">A disponibilidade será conferida novamente ao confirmar.</p>
-                <div class="reservas-aceite"><input asp-for="Dados.AceitaPermanenciaReduzida" />
-                    <label asp-for="Dados.AceitaPermanenciaReduzida">Se houver menos de 90 minutos disponíveis, aceito que o atendimento termine à meia-noite.</label></div>
-                <button class="pedido-botao" type="submit" name="tipo" value="reserva">Confirmar reserva</button>
+                <p id="avisoHorarios" class="reservas-suave" role="status">A solicitação não garante uma mesa no horário. Apresente-se à portaria ao chegar.</p>
+                <button class="pedido-botao" type="submit" name="tipo" value="reserva">Solicitar reserva</button>
                 <!-- A fila é para quem pretende ir hoje, não uma reserva de data futura. -->
                 <details class="reservas-fila"><summary>Não encontrou horário? Entrar na fila de hoje</summary>
-                    <p>Use o mesmo nome, telefone e número de pessoas. A recepção chama o primeiro grupo que couber em uma mesa livre. A data e o horário acima não são usados na fila.</p>
+                    <p>Use o mesmo nome, telefone e número de pessoas. Sua posição é definida após registrar a chegada na portaria. A data e o horário acima não são usados na fila.</p>
                     <button class="pedido-botao" type="submit" name="tipo" value="fila">Entrar na fila de hoje</button>
                 </details>
             </form>
@@ -40,12 +38,12 @@
         <aside class="reservas-card reservas-regras"><h2>Antes de reservar</h2>
             <ul><li>Funcionamento: <strong>11h à meia-noite</strong>, horário de Brasília.</li>
                 <li>Último horário reservável: <strong>23h20</strong>.</li>
-                <li>Até <strong>90 minutos</strong> de permanência. Às 23h20, são 40 minutos.</li>
-                <li>Tolerância de atraso: <strong>15 minutos</strong>. O atraso não estende o horário de saída.</li>
+                <li><strong>Sem limite de permanência.</strong> A equipe libera a mesa após fechar a conta e concluir a limpeza.</li>
+                <li>Tolerância de atraso: <strong>15 minutos</strong>. Apresente-se à portaria dentro desse prazo.</li>
                 <li>Grupos de <strong>1 a 6 pessoas</strong>. Para grupos maiores, fale com o restaurante.</li>
                 <li>Não é necessário login. Guarde este navegador para acompanhar e cancelar.</li>
                 <li>Logado, você pode consultar suas reservas em outros dispositivos usando a mesma conta.</li>
-                <li>Você pode cancelar enquanto aguarda a chegada. Depois de sentar, procure a recepção.</li></ul>
+                <li>Você pode cancelar enquanto aguarda a chegada. Depois de sentar, procure o garçom.</li></ul>
             <p>A mesa é definida pela equipe na chegada. A posição na fila pode variar conforme o tamanho dos grupos; não apresentamos uma estimativa de espera sem dados reais.</p>
         </aside>
     </div>

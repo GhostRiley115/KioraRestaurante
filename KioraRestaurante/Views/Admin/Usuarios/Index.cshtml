@@ -32,7 +32,7 @@ else {
     <tbody>@foreach (var usuario in Model.Resultado.Itens) {
         <tr><td><strong>@usuario.Nome</strong><span class="admin-texto-bloco">@usuario.Email</span><small>#@usuario.Id</small></td>
         <td>@usuario.Tipo</td><td><span class="admin-etiqueta">@(usuario.Ativo ? "Ativo" : "Inativo")</span></td>
-        <td><a asp-action="Pedidos" asp-route-UsuarioId="@usuario.Id">Ver pedidos (@usuario.QuantidadePedidos)</a></td>
+        <td><a asp-action="Pedidos" asp-route-Aba="todos" asp-route-UsuarioId="@usuario.Id">Ver pedidos (@usuario.QuantidadePedidos)</a></td>
         <td>@if (usuario.Tipo == TipoUsuario.Cliente) {
             <!-- POST com antiforgery: a situação nunca é alterada por um link GET. -->
             <form asp-action="AlterarSituacaoUsuario" method="post" data-confirmar="@(usuario.Ativo ? $"Desativar a conta de {usuario.Nome}? O acesso será bloqueado e os pedidos serão mantidos." : $"Reativar a conta de {usuario.Nome}?")">

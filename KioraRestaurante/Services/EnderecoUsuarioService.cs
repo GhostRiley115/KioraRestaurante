@@ -80,6 +80,21 @@ public class EnderecoUsuarioService
             };
         }
 
+        await PreencherEndereco(endereco, dto);
+
+        // Uma edição gera uma nova versão.
+        endereco.Versao = Guid.NewGuid();
+
+        if (!id.HasValue)
+        {
+            _context.EnderecosUsuario.Add(endereco);
+        }
+
+        await _context.SaveChangesAsync();
+    }
+
+    private async Task PreencherEndereco(EnderecoUsuario endereco, SalvarEnderecoRequestDTO dto)
+    {
         // O servidor verifica o CEP mesmo que o JavaScript já tenha consultado.
         var cep = await _cepService.Consultar(dto.Cep);
 
@@ -104,14 +119,42 @@ public class EnderecoUsuarioService
         endereco.Complemento = dto.Complemento?.Trim();
         endereco.Referencia = dto.Referencia?.Trim();
 
-        // Uma edição gera uma nova versão.
-        endereco.Versao = Guid.NewGuid();
+    }
 
-        if (!id.HasValue)
+    public async Task<(EnderecoEntrega Entrega, EnderecoUsuario? Salvar)> PrepararParaCheckout(
+        int usuarioId, KioraRestaurante.DTOs.Pedido.CotarEntregaRequestDTO dados)
+    {
+        await ExigirUsuario(usuarioId);
+        var escolha = dados.SomenteEndereco();
+        Validator.ValidateObject(escolha, new ValidationContext(escolha), true);
+        if (escolha.EnderecoId.HasValue)
+            return (await CriarCopiaParaPedido(usuarioId, escolha.EnderecoId.Value, escolha.EnderecoVersao!.Value), null);
+
+        var novo = escolha.NovoEndereco!;
+        var dto = new SalvarEnderecoRequestDTO
         {
-            _context.EnderecosUsuario.Add(endereco);
-        }
+            Apelido = novo.SalvarNaConta ? novo.Apelido!.Trim() : "Entrega",
+            Cep = novo.Cep, Logradouro = novo.Logradouro, Numero = novo.Numero,
+            Bairro = novo.Bairro, Complemento = novo.Complemento, Referencia = novo.Referencia
+        };
+        Validator.ValidateObject(dto, new ValidationContext(dto), true);
+        var endereco = new EnderecoUsuario { UsuarioId = usuarioId };
+        await PreencherEndereco(endereco, dto);
+        endereco.Versao = Guid.NewGuid();
+        // Só será adicionado ao contexto quando todas as regras do pedido forem aprovadas.
+        return (Copiar(endereco), novo.SalvarNaConta ? endereco : null);
+    }
 
+    public async Task Excluir(int usuarioId, int id, Guid versao)
+    {
+        await ExigirUsuario(usuarioId);
+        var endereco = await _context.EnderecosUsuario
+            .SingleOrDefaultAsync(e => e.Id == id && e.UsuarioId == usuarioId)
+            ?? throw new KeyNotFoundException();
+        if (versao == Guid.Empty || versao != endereco.Versao)
+            throw new ValidationException("O endereço mudou. Atualize a página antes de excluir.");
+        // Pedidos possuem cópias próprias, que permanecem no histórico.
+        _context.EnderecosUsuario.Remove(endereco);
         await _context.SaveChangesAsync();
     }
 
@@ -130,6 +173,11 @@ public class EnderecoUsuarioService
         _cepService.ExigirAreaAtendida(endereco.Uf, endereco.MunicipioIbge);
 
         // Uma entidade NOVA: não reutiliza nem vincula o endereço editável.
+        return Copiar(endereco);
+    }
+
+    private static EnderecoEntrega Copiar(EnderecoUsuario endereco)
+    {
         return new EnderecoEntrega
         {
             Cep = endereco.Cep,

@@ -1,0 +1,6 @@
+@model ProdutoComandaViewModel
+@{var p=Model.Produto;var c=CultureInfo.GetCultureInfo("pt-BR");}
+<article class="equipe-box comanda-produto" data-produto-salao="@p.Nome"><div class="comanda-produto-info"><img class="comanda-foto" src="@(string.IsNullOrWhiteSpace(p.ImagemUrl)?Url.Content("~/imagens/produto-sem-foto.svg"):p.ImagemUrl)" alt="" width="64" height="64" loading="lazy" data-foto-produto data-foto-alternativa="@Url.Content("~/imagens/produto-sem-foto.svg")"/><div><h4>@p.Nome</h4><strong>@p.Preco.ToString("C",c)</strong></div></div><p class="admin-suave">@p.Descricao</p>
+<details><summary class="equipe-abrir-form">Adicionar item</summary><form asp-action="Adicionar" method="post" class="equipe-form"><partial name="_ChavesComanda" model="Model.Comanda"/><input type="hidden" name="Itens[0].ProdutoId" value="@p.Id"/>
+<label for="novo-q-@p.Id">Quantidade de @p.Nome</label><input id="novo-q-@p.Id" name="Itens[0].Quantidade" type="number" min="1" max="30" value="1" required/>
+<label for="novo-o-@p.Id">Observações para o preparo (opcional)</label><textarea id="novo-o-@p.Id" name="Itens[0].Observacao" maxlength="500" rows="2" placeholder="Ex.: sem cebola, pouco molho"></textarea><button type="submit">Enviar à cozinha</button></form></details></article>

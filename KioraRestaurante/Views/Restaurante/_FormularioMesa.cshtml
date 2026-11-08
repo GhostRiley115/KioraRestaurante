@@ -1,0 +1,5 @@
+@model ConfigurarMesaDTO
+<form asp-action="Configurar" method="post" class="equipe-form"><input asp-for="MesaId" type="hidden"/><input asp-for="Versao" type="hidden"/><input asp-for="ChaveSolicitacao" type="hidden"/>
+<label asp-for="Nome">Nome da mesa</label><input asp-for="Nome" maxlength="30" placeholder="Ex.: Mesa 01 ou Varanda 02" required/>
+<label asp-for="Capacidade">Quantidade de lugares</label><input asp-for="Capacidade" type="number" min="1" max="30" required/>
+<label class="equipe-checkbox"><input asp-for="Ativa"/> Habilitada para novos atendimentos</label><p class="admin-suave">Desativar a configuração não fecha contas. Mesas ocupadas, em limpeza ou com grupo chamado precisam ser liberadas antes de editar.</p><button type="submit">Salvar configuração</button>@if(Model.MesaId>0){<a asp-action="Configurar">Cancelar edição / cadastrar outra mesa</a>}</form>

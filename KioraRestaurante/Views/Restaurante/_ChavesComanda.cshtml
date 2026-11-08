@@ -1,0 +1,4 @@
+@model ComandaDetalhesDTO
+<input type="hidden" name="AtendimentoId" value="@Model.Id"/>
+<input type="hidden" name="Versao" value="@Model.Versao"/>
+<input type="hidden" name="ChaveSolicitacao" value="@Guid.NewGuid()"/>

@@ -1,0 +1,18 @@
+@{var admin=User.IsInRole("Administrador");var gestor=admin||User.IsInRole("Gerente");}
+<li class="conta-grupo">@(admin?"Gestão do restaurante":"Meu trabalho")</li>
+@if(admin){
+<li><a class="conta-opcao" asp-controller="Admin" asp-action="Index"><i class="bi bi-speedometer2" aria-hidden="true"></i>Visão geral</a></li>
+<li><a class="conta-opcao" asp-controller="Admin" asp-action="Pedidos" asp-route-Aba="ativos"><i class="bi bi-receipt" aria-hidden="true"></i>Pedidos</a></li>
+<li><a class="conta-opcao" asp-controller="Admin" asp-action="Relatorios"><i class="bi bi-graph-up-arrow" aria-hidden="true"></i>Relatórios de vendas</a></li>
+}
+@if(gestor||User.IsInRole("Garcom")){<li><a class="conta-opcao" asp-controller="Restaurante" asp-action="Index"><i class="bi bi-shop" aria-hidden="true"></i>Salão e mesas</a></li>}
+@if(gestor||User.IsInRole("Cozinha")){<li><a class="conta-opcao" asp-controller="Restaurante" asp-action="Cozinha"><i class="bi bi-fire" aria-hidden="true"></i>Fila da cozinha</a></li>}
+@if(gestor||User.IsInRole("Garcom")||User.IsInRole("Portaria")){<li><a class="conta-opcao" asp-controller="Restaurante" asp-action="Portaria"><i class="bi bi-calendar-check" aria-hidden="true"></i>Reservas e recepção</a></li>}
+@if(admin){
+<li class="conta-grupo">Gerenciar</li>
+<li><a class="conta-opcao" asp-controller="ProdutosAdmin" asp-action="Index"><i class="bi bi-grid" aria-hidden="true"></i>Produtos e descontos</a></li>
+<li><a class="conta-opcao" asp-controller="CuponsAdmin" asp-action="Index"><i class="bi bi-ticket-perforated" aria-hidden="true"></i>Cupons e parceiros</a></li>
+<li><a class="conta-opcao" asp-controller="NotificacoesAdmin" asp-action="Index"><i class="bi bi-megaphone" aria-hidden="true"></i>Comunicados</a></li>
+<li><a class="conta-opcao" asp-controller="Admin" asp-action="Usuarios"><i class="bi bi-person-lines-fill" aria-hidden="true"></i>Clientes e contas</a></li>
+}
+@if(gestor){<li><a class="conta-opcao" asp-controller="Funcionarios" asp-action="Index"><i class="bi bi-people" aria-hidden="true"></i>Equipe e permissões</a></li>}

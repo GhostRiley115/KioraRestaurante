@@ -53,6 +53,8 @@ public class AdminService : IAdminService
         await ExigirAdministrador(administradorId);
         Validator.ValidateObject(filtro, new ValidationContext(filtro), true);
         var consulta = _context.Pedidos.AsNoTracking();
+        if (filtro.Aba == "ativos") consulta = consulta.Where(p => p.StatusPedido != StatusPedido.Entregue && p.StatusPedido != StatusPedido.Cancelado);
+        if (filtro.Aba == "historico") consulta = consulta.Where(p => p.StatusPedido == StatusPedido.Entregue || p.StatusPedido == StatusPedido.Cancelado);
         var busca = filtro.Busca?.Trim();
         if (!string.IsNullOrEmpty(busca)) consulta = consulta.Where(p => p.Usuario.Nome.Contains(busca) || p.Usuario.Email.Contains(busca));
         if (filtro.PedidoId.HasValue) consulta = consulta.Where(p => p.Id == filtro.PedidoId.Value);
@@ -68,10 +70,13 @@ public class AdminService : IAdminService
             var fim = HorarioRestaurante.InicioDiaUtc(filtro.Fim.Value.AddDays(1));
             consulta = consulta.Where(p => p.DataPedido < fim);
         }
-        return await Paginar(consulta.OrderByDescending(p => p.DataPedido).ThenByDescending(p => p.Id).Select(p => new PedidoAdminDTO {
+        var ordenada = filtro.Aba == "ativos"
+            ? consulta.OrderBy(p=>p.StatusPedido==StatusPedido.Recebido?0:p.StatusPedido==StatusPedido.EmPreparo?1:2).ThenBy(p=>p.DataPedido).ThenBy(p=>p.Id)
+            : consulta.OrderByDescending(p=>p.DataPedido).ThenByDescending(p=>p.Id);
+        return await Paginar(ordenada.Select(p => new PedidoAdminDTO {
             Id = p.Id, UsuarioId = p.UsuarioId, NomeCliente = p.Usuario.Nome, EmailCliente = p.Usuario.Email,
             DataPedido = p.DataPedido, ValorTotal = p.ValorTotal, StatusPedido = p.StatusPedido,
-            StatusPagamento = p.StatusPagamento, FormaPagamento = p.FormaPagamento
+            TemAjustePendente = p.OperacaoPendenteId != null, StatusPagamento = p.StatusPagamento, FormaPagamento = p.FormaPagamento
         }), filtro.Pagina);
     }
 
@@ -87,13 +92,25 @@ public class AdminService : IAdminService
     public async Task<PedidoDetalhesAdminDTO?> DetalhesPedido(int administradorId, int pedidoId)
     {
         await ExigirAdministrador(administradorId);
-        return await _context.Pedidos.AsNoTracking().Where(p => p.Id == pedidoId).Select(p => new PedidoDetalhesAdminDTO {
+        var detalhes = await _context.Pedidos.AsNoTracking().AsSplitQuery().Where(p => p.Id == pedidoId).Select(p => new PedidoDetalhesAdminDTO {
             Id = p.Id, UsuarioId = p.UsuarioId, NomeCliente = p.Usuario.Nome, EmailCliente = p.Usuario.Email,
             ClienteAtivo = p.Usuario.Ativo, DataPedido = p.DataPedido, ValorTotal = p.ValorTotal,
-            StatusPedido = p.StatusPedido, StatusPagamento = p.StatusPagamento, FormaPagamento = p.FormaPagamento,
+            TaxaEntrega = p.TaxaEntrega, DistanciaEntregaMetros = p.DistanciaEntregaMetros,
+            DuracaoPercursoSegundos = p.DuracaoPercursoSegundos, PreparoMinutos = p.PreparoMinutos,
+            CanceladoEmUtc = p.CanceladoEmUtc, MotivoCancelamento = p.MotivoCancelamento,
+            ReembolsoCancelamentoPendente = p.ReembolsoCancelamentoPendente, OperacaoPendenteId = p.OperacaoPendenteId,
+            Operacoes = p.Operacoes.OrderByDescending(o => o.CriadaEmUtc).Select(o => new HistoricoPedidoAdminDTO {
+                Tipo=o.Tipo, Estado=o.Estado, CriadaEmUtc=o.CriadaEmUtc, ConcluidaEmUtc=o.ConcluidaEmUtc,
+                AdministradorId=o.AdministradorSolicitanteId, AdministradorNome=o.AdministradorSolicitanteNome,
+                Motivo=o.Motivo, Mensagem=o.Mensagem
+            }).ToList(),
+            Versao = p.Versao, CodigoCupom = p.CodigoCupom, DescontoCupom = p.DescontoCupom,
+            StatusPedido = p.StatusPedido, TemAjustePendente = p.OperacaoPendenteId != null, StatusPagamento = p.StatusPagamento, FormaPagamento = p.FormaPagamento,
             Itens = p.ItensPedido.OrderBy(i => i.Id).Select(i => new ItemPedidoAdminDTO {
                 Nome = i.NomeProduto, Quantidade = i.Quantidade, PrecoUnitario = i.PrecoUnitario,
-                Composicao = i.Composicao, Observacao = i.Observacao
+                ImagemUrl = i.ImagemUrl ?? i.Produto.Imagem,
+                Composicao = i.Composicao, Observacao = i.Observacao, SituacaoPreparo=i.SituacaoPreparo,
+                PrecoOriginalUnitario=i.PrecoOriginalUnitario, DescontoPercentual=i.DescontoPercentual
             }).ToList(),
             Endereco = p.EnderecoEntrega == null ? null : new EnderecoPedidoAdminDTO {
                 Logradouro = p.EnderecoEntrega.Logradouro, Numero = p.EnderecoEntrega.Numero,
@@ -101,6 +118,8 @@ public class AdminService : IAdminService
                 Cep = p.EnderecoEntrega.Cep, Complemento = p.EnderecoEntrega.Complemento, Referencia = p.EnderecoEntrega.Referencia
             }
         }).SingleOrDefaultAsync();
+        if (detalhes != null) detalhes.HistoricoAlteracoes = detalhes.Operacoes.OrderBy(o=>o.CriadaEmUtc).Select(o=>o.Mensagem).ToList();
+        return detalhes;
     }
 
     public async Task AlterarSituacaoUsuario(int administradorId, int usuarioId, bool ativo)

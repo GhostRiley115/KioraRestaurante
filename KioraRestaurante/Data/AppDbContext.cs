@@ -26,11 +26,105 @@ namespace KioraRestaurante.Data
         public DbSet<ControleSala> ControlesSala { get; set; }
         public DbSet<EventoReserva> EventosReserva { get; set; }
         public DbSet<LimpezaImagemPendente> LimpezasImagensPendentes { get; set; }
+        public DbSet<PagamentoOnline> PagamentosOnline { get; set; }
+        public DbSet<OperacaoPedido> OperacoesPedido { get; set; }
+        public DbSet<MovimentoPedido> MovimentosPedido { get; set; }
+        public DbSet<KioraRestaurante.Models.Cupons.Cupom> Cupons { get; set; }
+        public DbSet<KioraRestaurante.Models.Cupons.UsoCupom> UsosCupom { get; set; }
+        public DbSet<KioraRestaurante.Models.Notificacoes.EventoNotificacao> EventosNotificacao { get; set; }
+        public DbSet<KioraRestaurante.Models.Notificacoes.Notificacao> Notificacoes { get; set; }
+        public DbSet<KioraRestaurante.Models.Notificacoes.NotificacaoUsuario> NotificacoesUsuarios { get; set; }
+
+        public DbSet<KioraRestaurante.Models.Salao.ConviteFuncionario> ConvitesFuncionarios { get; set; }
+        public DbSet<KioraRestaurante.Models.Salao.AtendimentoMesa> AtendimentosMesa { get; set; }
+        public DbSet<KioraRestaurante.Models.Salao.ItemComanda> ItensComanda { get; set; }
+        public DbSet<KioraRestaurante.Models.Salao.PagamentoPresencial> PagamentosPresenciais { get; set; }
+        public DbSet<KioraRestaurante.Models.Salao.MovimentoSalao> MovimentosSalao { get; set; }
+
+        public override int SaveChanges(bool acceptAllChangesOnSuccess)
+        {
+            RegistrarEventosNotificacao.Preparar(this);
+            return base.SaveChanges(acceptAllChangesOnSuccess);
+        }
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+        {
+            RegistrarEventosNotificacao.Preparar(this);
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
 
         //Cria a relação entre tabelas
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<KioraRestaurante.Models.Salao.ConviteFuncionario>().Property(c=>c.Id).ValueGeneratedNever();
+            modelBuilder.Entity<KioraRestaurante.Models.Salao.ConviteFuncionario>().HasIndex(c=>c.TokenHash).IsUnique();
+            modelBuilder.Entity<KioraRestaurante.Models.Salao.ConviteFuncionario>().HasOne(c=>c.Usuario).WithMany().HasForeignKey(c=>c.UsuarioId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<KioraRestaurante.Models.Salao.AtendimentoMesa>().Property(x=>x.Id).ValueGeneratedNever();
+            modelBuilder.Entity<KioraRestaurante.Models.Salao.AtendimentoMesa>().HasIndex(x=>x.MesaOcupadaId).IsUnique();
+            modelBuilder.Entity<KioraRestaurante.Models.Salao.AtendimentoMesa>().HasIndex(x=>x.FechadoEmUtc);
+            modelBuilder.Entity<KioraRestaurante.Models.Salao.AtendimentoMesa>().HasOne(x=>x.Mesa).WithMany().HasForeignKey(x=>x.MesaId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<KioraRestaurante.Models.Salao.AtendimentoMesa>().HasOne<MesaRestaurante>().WithMany().HasForeignKey(x=>x.MesaOcupadaId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<KioraRestaurante.Models.Salao.AtendimentoMesa>().HasOne(x=>x.Garcom).WithMany().HasForeignKey(x=>x.GarcomId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<KioraRestaurante.Models.Salao.AtendimentoMesa>().HasOne(x=>x.Reserva).WithMany().HasForeignKey(x=>x.ReservaId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<KioraRestaurante.Models.Salao.ItemComanda>().Property(x=>x.Id).ValueGeneratedNever();
+            modelBuilder.Entity<KioraRestaurante.Models.Salao.ItemComanda>().HasIndex(x=>new{x.Situacao,x.EnviadoEmUtc});
+            modelBuilder.Entity<KioraRestaurante.Models.Salao.ItemComanda>().HasOne(x=>x.Atendimento).WithMany(x=>x.Itens).HasForeignKey(x=>x.AtendimentoId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<KioraRestaurante.Models.Salao.ItemComanda>().HasOne(x=>x.Produto).WithMany().HasForeignKey(x=>x.ProdutoId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<KioraRestaurante.Models.Salao.PagamentoPresencial>().Property(x=>x.Id).ValueGeneratedNever();
+            modelBuilder.Entity<KioraRestaurante.Models.Salao.PagamentoPresencial>().HasOne(x=>x.Atendimento).WithMany(x=>x.Pagamentos).HasForeignKey(x=>x.AtendimentoId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<KioraRestaurante.Models.Salao.MovimentoSalao>().Property(x=>x.Id).ValueGeneratedNever();
+            modelBuilder.Entity<KioraRestaurante.Models.Salao.MovimentoSalao>().HasOne(x=>x.Atendimento).WithMany(x=>x.Historico).HasForeignKey(x=>x.AtendimentoId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<KioraRestaurante.Models.Salao.MovimentoSalao>().HasOne(x=>x.Usuario).WithMany().HasForeignKey(x=>x.UsuarioId).OnDelete(DeleteBehavior.Restrict);
+
+
+            modelBuilder.Entity<KioraRestaurante.Models.Cupons.Cupom>().HasIndex(c => c.Codigo).IsUnique();
+            modelBuilder.Entity<KioraRestaurante.Models.Cupons.Cupom>().HasOne(c => c.CriadoPor).WithMany()
+                .HasForeignKey(c => c.CriadoPorId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<KioraRestaurante.Models.Cupons.UsoCupom>().Property(u => u.Id).ValueGeneratedNever();
+            modelBuilder.Entity<KioraRestaurante.Models.Cupons.UsoCupom>().HasIndex(u => u.PedidoId).IsUnique();
+            modelBuilder.Entity<KioraRestaurante.Models.Cupons.UsoCupom>().HasIndex(u => new { u.CupomId, u.UsuarioId, u.Situacao });
+            modelBuilder.Entity<KioraRestaurante.Models.Cupons.UsoCupom>().HasOne(u => u.Pedido).WithOne(p => p.UsoCupom)
+                .HasForeignKey<KioraRestaurante.Models.Cupons.UsoCupom>(u => u.PedidoId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<KioraRestaurante.Models.Cupons.UsoCupom>().HasOne(u => u.Cupom).WithMany(c => c.Usos)
+                .HasForeignKey(u => u.CupomId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<KioraRestaurante.Models.Cupons.UsoCupom>().HasOne(u => u.Usuario).WithMany()
+                .HasForeignKey(u => u.UsuarioId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<KioraRestaurante.Models.Notificacoes.EventoNotificacao>().Property(e => e.Id).ValueGeneratedNever();
+            modelBuilder.Entity<KioraRestaurante.Models.Notificacoes.EventoNotificacao>().HasIndex(e => new { e.ProcessadoEmUtc, e.CriadoEmUtc });
+            modelBuilder.Entity<KioraRestaurante.Models.Notificacoes.EventoNotificacao>().HasOne(e => e.Pedido).WithMany()
+                .HasForeignKey(e => e.PedidoId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<KioraRestaurante.Models.Notificacoes.EventoNotificacao>().HasOne(e => e.Reserva).WithMany()
+                .HasForeignKey(e => e.ReservaId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<KioraRestaurante.Models.Notificacoes.Notificacao>().HasOne(n=>n.Atendimento).WithMany().HasForeignKey(n=>n.AtendimentoId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<KioraRestaurante.Models.Notificacoes.Notificacao>().Property(n => n.Id).ValueGeneratedNever();
+            modelBuilder.Entity<KioraRestaurante.Models.Notificacoes.Notificacao>().HasOne(n => n.Autor).WithMany()
+                .HasForeignKey(n => n.AutorId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<KioraRestaurante.Models.Notificacoes.Notificacao>().HasOne(n => n.Pedido).WithMany()
+                .HasForeignKey(n => n.PedidoId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<KioraRestaurante.Models.Notificacoes.Notificacao>().HasOne(n => n.Reserva).WithMany()
+                .HasForeignKey(n => n.ReservaId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<KioraRestaurante.Models.Notificacoes.Notificacao>().HasOne(n => n.Cupom).WithMany()
+                .HasForeignKey(n => n.CupomId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<KioraRestaurante.Models.Notificacoes.NotificacaoUsuario>().HasKey(n => new { n.NotificacaoId, n.UsuarioId });
+            modelBuilder.Entity<KioraRestaurante.Models.Notificacoes.NotificacaoUsuario>().HasIndex(n => new { n.UsuarioId, n.LidaEmUtc });
+            modelBuilder.Entity<KioraRestaurante.Models.Notificacoes.NotificacaoUsuario>().HasOne(n => n.Notificacao).WithMany(n => n.Destinatarios)
+                .HasForeignKey(n => n.NotificacaoId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<KioraRestaurante.Models.Notificacoes.NotificacaoUsuario>().HasOne(n => n.Usuario).WithMany()
+                .HasForeignKey(n => n.UsuarioId).OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<OperacaoPedido>().HasOne(o => o.Pedido).WithMany(p => p.Operacoes)
+                .HasForeignKey(o => o.PedidoId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<MovimentoPedido>().HasOne(m => m.Operacao).WithMany(o => o.Movimentos)
+                .HasForeignKey(m => m.OperacaoPedidoId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<OperacaoPedido>().HasIndex(o => new { o.Estado, o.ConferidaEmUtc });
+            modelBuilder.Entity<MovimentoPedido>().HasIndex(m => m.OrderId);
+
+            modelBuilder.Entity<PagamentoOnline>().HasIndex(p => p.Referencia).IsUnique();
+            modelBuilder.Entity<PagamentoOnline>().HasIndex(p => p.OrderId).IsUnique();
+            modelBuilder.Entity<PagamentoOnline>().HasIndex(p => p.ConferidoEmUtc);
+            modelBuilder.Entity<PagamentoOnline>().HasOne(p => p.Pedido).WithOne()
+                .HasForeignKey<PagamentoOnline>(p => p.PedidoId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             // RESERVAS: trava compartilhada, histórico e identificação idempotente.
             modelBuilder.Entity<ControleSala>().HasData(new ControleSala { Id = 1 });
@@ -47,7 +141,8 @@ namespace KioraRestaurante.Data
             modelBuilder.Entity<EventoReserva>().HasOne(e => e.Reserva).WithMany(r => r.Eventos).HasForeignKey(e => e.ReservaId).OnDelete(DeleteBehavior.Restrict);
             // Restaurante fictício: 4 mesas de 2, 6 de 4 e 2 de 6 = 44 lugares.
             modelBuilder.Entity<MesaRestaurante>().HasData(Enumerable.Range(1, 12).Select(id => new MesaRestaurante {
-                Id = id, Nome = "Mesa " + id.ToString("00"), Capacidade = id <= 4 ? 2 : id <= 10 ? 4 : 6, Ativa = true
+                Id = id, Nome = "Mesa " + id.ToString("00"), Capacidade = id <= 4 ? 2 : id <= 10 ? 4 : 6, Ativa = true,
+                Versao = Guid.Parse("00000000-0000-4000-8000-" + id.ToString("D12"))
             }));
 
             modelBuilder.Entity<LimpezaImagemPendente>()

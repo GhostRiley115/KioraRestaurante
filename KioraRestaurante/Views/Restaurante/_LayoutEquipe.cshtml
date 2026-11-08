@@ -1,0 +1,8 @@
+@{Layout="~/Views/Admin/_LayoutAdmin.cshtml";}
+@section Styles {<link rel="stylesheet" href="~/css/equipe.css" asp-append-version="true" />@await RenderSectionAsync("Styles",false)}
+<div class="equipe-pagina equipe-integrada">
+
+@if(TempData["EquipeErro"] is string erro){<p class="pedido-erros" role="alert">@erro</p>}
+@if(TempData["EquipeSucesso"] is string sucesso){<p class="equipe-sucesso" role="status">@sucesso</p>}
+@RenderBody()</div>
+@section Scripts {<script src="~/js/equipe.js" asp-append-version="true"></script>@await RenderSectionAsync("Scripts",false)}

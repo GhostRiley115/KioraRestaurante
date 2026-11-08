@@ -1,0 +1,80 @@
+@model KioraRestaurante.DTOs.Produto.ProdutoResponseDTO
+@using System.Globalization
+@{
+    var produto = Model;
+    var cultura = CultureInfo.GetCultureInfo("pt-BR");
+}
+
+<article class="produto-card">
+    <!-- FOTO: produtos sem imagem recebem um ícone de substituição. -->
+    <div class="produto-imagem">
+        @if (!string.IsNullOrWhiteSpace(produto.ImagemUrl))
+        {
+            <img src="@Url.Content(produto.ImagemUrl)" alt="@produto.Nome" loading="lazy" />
+        }
+        else
+        {
+            <div class="produto-imagem-placeholder" aria-hidden="true"><i class="bi bi-image"></i></div>
+        }
+    </div>
+    <div class="produto-informacoes">
+        <span class="categoria-label">@produto.NomeCategoria</span>
+        <h3>@produto.Nome</h3>
+        @if (produto.EhCombo)
+        {
+            <span class="produto-etiqueta">Combo</span>
+        }
+        <p>@produto.Descricao</p>
+
+        <!-- PREÇO: apresenta o original e o valor atual quando há desconto. -->
+        <div class="produto-rodape">
+            <div>
+                @if (produto.DescontoPercentual > 0)
+                {
+                    <div class="produto-desconto">
+                        <span class="visually-hidden">Preço anterior:</span>
+
+                        <del>
+                            @produto.PrecoOriginal.ToString("C", cultura)
+                        </del>
+
+                        <span class="produto-etiqueta">
+                            @produto.DescontoPercentual.ToString("0.##", cultura)%
+                            de desconto
+                        </span>
+                    </div>
+                }
+
+                <span class="visually-hidden">Preço atual:</span>
+
+                <strong class="produto-preco">
+                    @produto.Preco.ToString("C", cultura)
+                </strong>
+            </div>
+        </div>
+
+        <!-- COMPRA: os identificadores abaixo conectam o card ao carrinho.js. -->
+        @if (produto.Disponivel)
+        {
+            <form class="kc-compra" data-produto-id="@produto.Id">
+                <label for="quantidade-@produto.Id">Quantidade</label>
+                <div class="produto-controles">
+                    <button type="button" data-seletor="-1" data-carrinho-mutacao disabled
+                            aria-label="Diminuir quantidade de @produto.Nome">−</button>
+                    <input id="quantidade-@produto.Id" name="quantidade" type="number"
+                           min="1" max="30" step="1" value="1" required data-carrinho-mutacao disabled />
+                    <button type="button" data-seletor="1" data-carrinho-mutacao disabled
+                            aria-label="Aumentar quantidade de @produto.Nome">+</button>
+                </div>
+                <button type="submit" class="btn-adicionar-produto" data-carrinho-mutacao disabled>
+                    <i class="bi bi-plus-lg" aria-hidden="true"></i><span>Adicionar</span>
+                </button>
+            </form>
+        }
+        else
+        {
+            <!-- INDISPONÍVEL: continua visível, sem permitir uma nova compra. -->
+            <p class="produto-indisponivel">Indisponível no momento</p>
+        }
+    </div>
+</article>

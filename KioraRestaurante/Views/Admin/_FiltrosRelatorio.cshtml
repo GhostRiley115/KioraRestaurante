@@ -1,0 +1,17 @@
+@inject TimeProvider Relogio
+@model FiltroRelatorioAdmin
+@{var acao=ViewData["AcaoRelatorio"] as string??"Relatorios";}
+@{var hoje=HorarioRestaurante.ParaLocal(Relogio.GetUtcNow().UtcDateTime).Date;var mes=new DateTime(hoje.Year,hoje.Month,1);}
+<nav class="admin-acoes admin-etapas" aria-label="Períodos rápidos">
+<a asp-action="@acao" asp-route-Inicio="@hoje.ToString("yyyy-MM-dd")" asp-route-Fim="@hoje.ToString("yyyy-MM-dd")" asp-route-Canal="@Model.Canal">Hoje</a>
+<a asp-action="@acao" asp-route-Inicio="@hoje.AddDays(-6).ToString("yyyy-MM-dd")" asp-route-Fim="@hoje.ToString("yyyy-MM-dd")" asp-route-Canal="@Model.Canal">Últimos 7 dias</a>
+<a asp-action="@acao" asp-route-Canal="@Model.Canal">Este mês</a>
+<a asp-action="@acao" asp-route-Inicio="@mes.AddMonths(-1).ToString("yyyy-MM-dd")" asp-route-Fim="@mes.AddDays(-1).ToString("yyyy-MM-dd")" asp-route-Canal="@Model.Canal">Mês anterior completo</a>
+</nav>
+<div asp-validation-summary="All" class="admin-erro" role="alert"></div>
+<form method="get" asp-action="@acao" id="filtrosResultados" class="admin-filtros admin-filtros-relatorio">
+<fieldset><legend>Período de vendas</legend><div class="admin-campos-data"><div><label for="Inicio">De</label><input id="Inicio" name="Inicio" type="date" min="2000-01-01" max="2100-12-31" value="@Model.Inicio?.ToString("yyyy-MM-dd")" /></div><div><label for="Fim">Até</label><input id="Fim" name="Fim" type="date" min="2000-01-01" max="2100-12-31" value="@Model.Fim?.ToString("yyyy-MM-dd")" /></div></div></fieldset>
+<fieldset><legend>Comparar com</legend><div class="admin-campos-data"><div><label for="CompararInicio">De</label><input id="CompararInicio" name="CompararInicio" type="date" min="2000-01-01" max="2100-12-31" value="@Model.CompararInicio?.ToString("yyyy-MM-dd")" /></div><div><label for="CompararFim">Até</label><input id="CompararFim" name="CompararFim" type="date" min="2000-01-01" max="2100-12-31" value="@Model.CompararFim?.ToString("yyyy-MM-dd")" /></div></div></fieldset>
+<div><label for="Canal">Canal de venda</label><select id="Canal" name="Canal"><option value="todos" selected="@(Model.Canal=="todos")">Delivery e salão</option><option value="delivery" selected="@(Model.Canal=="delivery")">Somente delivery</option><option value="salao" selected="@(Model.Canal=="salao")">Somente restaurante físico</option></select></div>
+<div class="admin-acoes"><button type="submit">Atualizar relatório</button><a asp-action="@acao">Este mês</a></div>
+</form>

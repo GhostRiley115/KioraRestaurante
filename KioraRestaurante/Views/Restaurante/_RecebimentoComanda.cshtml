@@ -1,0 +1,3 @@
+@model RecebimentoComandaViewModel
+@{var i=Model.Indice;var c=CultureInfo.GetCultureInfo("pt-BR");}
+<fieldset class="equipe-grupo-form"><legend>Recebimento @(i+1)</legend><label for="meio-@i">Forma de pagamento</label><select id="meio-@i" name="Pagamentos[@i].Meio"><option value="0">Dinheiro</option><option value="1">Cartão de crédito</option><option value="2">Cartão de débito</option><option value="3">Pix</option><option value="4">Outro</option></select><label for="valor-@i">Valor recebido (R$)</label><input id="valor-@i" name="Pagamentos[@i].Valor" inputmode="decimal" data-valor-recebido value="@Model.Valor.ToString("F2",c)" required/></fieldset>

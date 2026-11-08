@@ -14,6 +14,9 @@ namespace KioraRestaurante.Models
         public string Email { get; set; } = null!;
         public string SenhaHash { get; set; } = null!;
         public bool Ativo { get; set; } = true;
+        [MaxLength(11)] public string? TelefoneFuncionario { get; set; }
+        public bool ConvitePendente { get; set; }
+        [ConcurrencyCheck] public Guid VersaoFuncionario { get; set; } = Guid.NewGuid();
 
         // Cada mudança de segurança invalida os cookies emitidos com a versão anterior.
         public Guid VersaoSessao { get; set; } = Guid.NewGuid();

@@ -5,15 +5,25 @@
     var cultura = CultureInfo.GetCultureInfo("pt-BR");
     var paginacao = new PaginacaoAdminViewModel { Acao = "Pedidos", Pagina = Model.Resultado.Pagina,
         TotalPaginas = Model.Resultado.TotalPaginas, Filtros = new() {
-            ["Busca"] = f.Busca ?? "", ["PedidoId"] = f.PedidoId?.ToString() ?? "", ["UsuarioId"] = f.UsuarioId?.ToString() ?? "",
+            ["Aba"] = f.Aba, ["Busca"] = f.Busca ?? "", ["PedidoId"] = f.PedidoId?.ToString() ?? "", ["UsuarioId"] = f.UsuarioId?.ToString() ?? "",
             ["Status"] = f.Status?.ToString() ?? "", ["Pagamento"] = f.Pagamento?.ToString() ?? "",
             ["Inicio"] = f.Inicio?.ToString("yyyy-MM-dd") ?? "", ["Fim"] = f.Fim?.ToString("yyyy-MM-dd") ?? ""
         }};
 }
-<h1>Pedidos</h1>
-<p class="admin-suave">Mais recentes primeiro. Datas e horários de Brasília. Consulte também pedidos de clientes inativos.</p>
+<header class="admin-cabecalho"><div><span class="admin-sobretitulo">OPERAÇÃO DO DELIVERY</span><h1>Pedidos de delivery</h1><p class="admin-suave">@(f.Aba=="ativos"?"Pendentes separados do histórico. Os mais antigos de cada etapa aparecem primeiro.":"Consulte entregas concluídas, cancelamentos e pagamentos anteriores.")</p></div><a class="admin-botao admin-botao-secundario" asp-controller="Restaurante" asp-action="Cozinha">Abrir fila da cozinha</a></header>
+<nav class="admin-abas" aria-label="Listas de pedidos"><a asp-action="Pedidos" asp-route-Aba="ativos" aria-current="@(f.Aba=="ativos"?"page":null)">Em andamento</a><a asp-action="Pedidos" asp-route-Aba="historico" aria-current="@(f.Aba=="historico"?"page":null)">Concluídos e cancelados</a><a asp-action="Pedidos" asp-route-Aba="todos" aria-current="@(f.Aba=="todos"?"page":null)">Todos</a></nav>
+@if(f.Aba=="ativos"){
+<nav class="admin-acoes admin-etapas" aria-label="Etapas do delivery">
+<a asp-action="Pedidos" asp-route-Aba="ativos" aria-current="@(f.Status==null?"page":null)">Todas as etapas</a>
+<a asp-action="Pedidos" asp-route-Aba="ativos" asp-route-Status="Recebido" aria-current="@(f.Status==StatusPedido.Recebido?"page":null)">Recebidos</a>
+<a asp-action="Pedidos" asp-route-Aba="ativos" asp-route-Status="EmPreparo" aria-current="@(f.Status==StatusPedido.EmPreparo?"page":null)">Em preparo</a>
+<a asp-action="Pedidos" asp-route-Aba="ativos" asp-route-Status="SaiuParaEntrega" aria-current="@(f.Status==StatusPedido.SaiuParaEntrega?"page":null)">Em entrega</a>
+</nav>}
+<p class="admin-suave">Histórico: mais recentes primeiro. Datas e horários de Brasília. Consulte também pedidos de clientes inativos.</p>
 <div asp-validation-summary="All" class="admin-erro" role="alert"></div>
+<details class="admin-box admin-busca-pedidos" open="@(Context.Request.Query.Keys.Any(k=>k != "Aba" && k != "Pagina"))"><summary>Buscar e filtrar pedidos</summary>
 <form method="get" asp-controller="Admin" asp-action="Pedidos" class="admin-filtros">
+    <input name="Aba" type="hidden" value="@f.Aba" />
     <div><label for="Busca">Nome ou e-mail do cliente</label><input id="Busca" name="Busca" type="search" value="@f.Busca" maxlength="150" /></div>
     <div><label for="PedidoId">Número do pedido</label><input id="PedidoId" name="PedidoId" type="number" min="1" value="@f.PedidoId" /></div>
     <div><label for="UsuarioId">Código do usuário</label><input id="UsuarioId" name="UsuarioId" type="number" min="1" value="@f.UsuarioId" /></div>
@@ -23,26 +33,28 @@
     @foreach(var status in Enum.GetValues<StatusPagamento>()) { <option value="@status" selected="@(f.Pagamento == status)">@status</option> }</select></div>
     <div><label for="Inicio">De</label><input id="Inicio" name="Inicio" type="date" value="@f.Inicio?.ToString("yyyy-MM-dd")" min="2000-01-01" max="2100-12-31" /></div>
     <div><label for="Fim">Até</label><input id="Fim" name="Fim" type="date" value="@f.Fim?.ToString("yyyy-MM-dd")" min="2000-01-01" max="2100-12-31" /></div>
-    <div class="admin-acoes"><button type="submit">Filtrar</button><a asp-action="Pedidos">Limpar</a></div>
-</form>
+    <div class="admin-acoes"><button type="submit">Filtrar</button><a asp-action="Pedidos" asp-route-Aba="@f.Aba">Limpar filtros</a></div>
+</form></details>
 <p class="admin-suave">@Model.Resultado.Total pedido(s) encontrado(s).</p>
 @if(Model.Resultado.Itens.Count == 0) { <p class="admin-vazio">Nenhum pedido encontrado para os filtros informados.</p> }
 else {
 <div class="admin-tabela-scroll" tabindex="0" role="region" aria-label="Lista de pedidos">
-<table class="admin-tabela"><thead><tr><th scope="col">Pedido</th><th scope="col">Cliente</th><th scope="col">Situação</th><th scope="col">Pagamento</th><th scope="col">Total</th><th scope="col">Ações</th></tr></thead>
+<table class="admin-tabela admin-tabela-pedidos"><thead><tr><th scope="col">Pedido</th><th scope="col">Cliente</th><th scope="col">Situação</th><th scope="col">Pagamento</th><th scope="col">Total</th><th scope="col">Ações</th></tr></thead>
 <tbody>@foreach(var pedido in Model.Resultado.Itens) {
-<tr><td><strong>#@pedido.Id</strong><span class="admin-texto-bloco">@HorarioRestaurante.ParaLocal(pedido.DataPedido).ToString("dd/MM/yyyy HH:mm")</span></td>
-<td>@pedido.NomeCliente<span class="admin-texto-bloco">@pedido.EmailCliente</span></td>
-<td>
+<tr><td data-label="Pedido"><strong>#@pedido.Id</strong><span class="admin-texto-bloco">@HorarioRestaurante.ParaLocal(pedido.DataPedido).ToString("dd/MM/yyyy HH:mm")</span></td>
+<td data-label="Cliente">@pedido.NomeCliente<span class="admin-texto-bloco">@pedido.EmailCliente</span></td>
+<td data-label="Situação">
     <span class="status-etiqueta @StatusVisual.Pedido(pedido.StatusPedido)">@TextosAdmin.Pedido(pedido.StatusPedido)</span>
+    @if(pedido.TemAjustePendente){<small class="admin-texto-bloco">Alteração do pedido em andamento</small>}
+    else if(pedido.StatusPedido==StatusPedido.Recebido){<small class="admin-texto-bloco">@(pedido.StatusPagamento==StatusPagamento.Aprovado || pedido.FormaPagamento==FormaPagamento.Dinheiro && pedido.StatusPagamento==StatusPagamento.Pendente?"Liberado para preparo":"Aguardando confirmação do pagamento")</small>}
 </td>
-<td>
+<td data-label="Pagamento">
     <div class="admin-pagamento">
         <span class="status-etiqueta @StatusVisual.Pagamento(pedido.StatusPagamento)">@pedido.StatusPagamento</span>
         <span class="admin-texto-bloco">@TextosAdmin.Pagamento(pedido.FormaPagamento)</span>
     </div>
 </td>
-<td class="admin-valor">@pedido.ValorTotal.ToString("C", cultura)</td><td><a asp-action="DetalhesPedido" asp-route-id="@pedido.Id">Ver detalhes</a></td></tr>
+<td data-label="Total" class="admin-valor">@pedido.ValorTotal.ToString("C", cultura)</td><td data-label="Ações"><a class="admin-botao admin-botao-secundario" asp-action="DetalhesPedido" asp-route-id="@pedido.Id">Ver detalhes</a></td></tr>
 }</tbody></table></div>
 }
 <partial name="~/Views/Admin/_Paginacao.cshtml" model="paginacao" />

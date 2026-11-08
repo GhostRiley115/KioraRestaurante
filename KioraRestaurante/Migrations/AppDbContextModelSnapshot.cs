@@ -143,6 +143,132 @@ namespace KioraRestaurante.Migrations
                         });
                 });
 
+            modelBuilder.Entity("KioraRestaurante.Models.Cupons.Cupom", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Codigo")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("varchar(40)");
+
+                    b.Property<DateTime>("CriadoEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("CriadoPorId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("DescontoMaximo")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
+
+                    b.Property<DateTime>("FimEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("InicioEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int?>("LimitePorCliente")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("LimiteTotal")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Parceiro")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<int>("Tipo")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UtilizacoesAtivas")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Valor")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<decimal>("ValorMinimoProdutos")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<Guid>("Versao")
+                        .IsConcurrencyToken()
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Codigo")
+                        .IsUnique();
+
+                    b.HasIndex("CriadoPorId");
+
+                    b.ToTable("Cupons");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.Cupons.UsoCupom", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime?>("CanceladoEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Codigo")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("varchar(40)");
+
+                    b.Property<DateTime?>("ConfirmadoEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("CupomId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Desconto")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<string>("Parceiro")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<int>("PedidoId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ReservadoEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("Situacao")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("Versao")
+                        .IsConcurrencyToken()
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PedidoId")
+                        .IsUnique();
+
+                    b.HasIndex("UsuarioId");
+
+                    b.HasIndex("CupomId", "UsuarioId", "Situacao");
+
+                    b.ToTable("UsosCupom");
+                });
+
             modelBuilder.Entity("KioraRestaurante.Models.EnderecoEntrega", b =>
                 {
                     b.Property<int>("Id")
@@ -340,6 +466,17 @@ namespace KioraRestaurante.Migrations
                     b.Property<decimal?>("DescontoPercentual")
                         .HasColumnType("decimal(5,2)");
 
+                    b.Property<string>("ImagemPublicId")
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
+
+                    b.Property<string>("ImagemUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<DateTime?>("IniciadoEmUtc")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("NomeProduto")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -361,8 +498,18 @@ namespace KioraRestaurante.Migrations
                     b.Property<int>("ProdutoId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("ProntoEmUtc")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<int>("Quantidade")
                         .HasColumnType("int");
+
+                    b.Property<int>("SituacaoPreparo")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("VersaoPreparo")
+                        .IsConcurrencyToken()
+                        .HasColumnType("char(36)");
 
                     b.HasKey("Id");
 
@@ -420,6 +567,10 @@ namespace KioraRestaurante.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("varchar(30)");
 
+                    b.Property<Guid>("Versao")
+                        .IsConcurrencyToken()
+                        .HasColumnType("char(36)");
+
                     b.HasKey("Id");
 
                     b.ToTable("MesasRestaurante");
@@ -430,85 +581,418 @@ namespace KioraRestaurante.Migrations
                             Id = 1,
                             Ativa = true,
                             Capacidade = 2,
-                            Nome = "Mesa 01"
+                            Nome = "Mesa 01",
+                            Versao = new Guid("00000000-0000-4000-8000-000000000001")
                         },
                         new
                         {
                             Id = 2,
                             Ativa = true,
                             Capacidade = 2,
-                            Nome = "Mesa 02"
+                            Nome = "Mesa 02",
+                            Versao = new Guid("00000000-0000-4000-8000-000000000002")
                         },
                         new
                         {
                             Id = 3,
                             Ativa = true,
                             Capacidade = 2,
-                            Nome = "Mesa 03"
+                            Nome = "Mesa 03",
+                            Versao = new Guid("00000000-0000-4000-8000-000000000003")
                         },
                         new
                         {
                             Id = 4,
                             Ativa = true,
                             Capacidade = 2,
-                            Nome = "Mesa 04"
+                            Nome = "Mesa 04",
+                            Versao = new Guid("00000000-0000-4000-8000-000000000004")
                         },
                         new
                         {
                             Id = 5,
                             Ativa = true,
                             Capacidade = 4,
-                            Nome = "Mesa 05"
+                            Nome = "Mesa 05",
+                            Versao = new Guid("00000000-0000-4000-8000-000000000005")
                         },
                         new
                         {
                             Id = 6,
                             Ativa = true,
                             Capacidade = 4,
-                            Nome = "Mesa 06"
+                            Nome = "Mesa 06",
+                            Versao = new Guid("00000000-0000-4000-8000-000000000006")
                         },
                         new
                         {
                             Id = 7,
                             Ativa = true,
                             Capacidade = 4,
-                            Nome = "Mesa 07"
+                            Nome = "Mesa 07",
+                            Versao = new Guid("00000000-0000-4000-8000-000000000007")
                         },
                         new
                         {
                             Id = 8,
                             Ativa = true,
                             Capacidade = 4,
-                            Nome = "Mesa 08"
+                            Nome = "Mesa 08",
+                            Versao = new Guid("00000000-0000-4000-8000-000000000008")
                         },
                         new
                         {
                             Id = 9,
                             Ativa = true,
                             Capacidade = 4,
-                            Nome = "Mesa 09"
+                            Nome = "Mesa 09",
+                            Versao = new Guid("00000000-0000-4000-8000-000000000009")
                         },
                         new
                         {
                             Id = 10,
                             Ativa = true,
                             Capacidade = 4,
-                            Nome = "Mesa 10"
+                            Nome = "Mesa 10",
+                            Versao = new Guid("00000000-0000-4000-8000-000000000010")
                         },
                         new
                         {
                             Id = 11,
                             Ativa = true,
                             Capacidade = 6,
-                            Nome = "Mesa 11"
+                            Nome = "Mesa 11",
+                            Versao = new Guid("00000000-0000-4000-8000-000000000011")
                         },
                         new
                         {
                             Id = 12,
                             Ativa = true,
                             Capacidade = 6,
-                            Nome = "Mesa 12"
+                            Nome = "Mesa 12",
+                            Versao = new Guid("00000000-0000-4000-8000-000000000012")
                         });
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.MovimentoPedido", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("CheckoutUrl")
+                        .HasMaxLength(2048)
+                        .HasColumnType("varchar(2048)");
+
+                    b.Property<DateTime?>("ConfirmadoEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Corpo")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CriadoEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("Estado")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("OperacaoPedidoId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("OrderId")
+                        .HasMaxLength(80)
+                        .HasColumnType("varchar(80)");
+
+                    b.Property<string>("ReembolsoId")
+                        .HasMaxLength(80)
+                        .HasColumnType("varchar(80)");
+
+                    b.Property<string>("ReembolsosAnterioresJson")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Tipo")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TransacaoId")
+                        .HasMaxLength(80)
+                        .HasColumnType("varchar(80)");
+
+                    b.Property<decimal>("Valor")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<Guid>("Versao")
+                        .IsConcurrencyToken()
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OperacaoPedidoId");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("MovimentosPedido");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.Notificacoes.EventoNotificacao", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("Concessao")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("CriadoEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int?>("PedidoId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ProcessadoEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("ProcessandoAteUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int?>("ReservaId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Tipo")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PedidoId");
+
+                    b.HasIndex("ReservaId");
+
+                    b.HasIndex("ProcessadoEmUtc", "CriadoEmUtc");
+
+                    b.ToTable("EventosNotificacao");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.Notificacoes.Notificacao", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid?>("AtendimentoId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int?>("AutorId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CriadaEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int?>("CupomId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Mensagem")
+                        .IsRequired()
+                        .HasMaxLength(1500)
+                        .HasColumnType("varchar(1500)");
+
+                    b.Property<int?>("PedidoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Publico")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ReservaId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Tipo")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Titulo")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("varchar(120)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AtendimentoId");
+
+                    b.HasIndex("AutorId");
+
+                    b.HasIndex("CupomId");
+
+                    b.HasIndex("PedidoId");
+
+                    b.HasIndex("ReservaId");
+
+                    b.ToTable("Notificacoes");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.Notificacoes.NotificacaoUsuario", b =>
+                {
+                    b.Property<Guid>("NotificacaoId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("LidaEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("NotificacaoId", "UsuarioId");
+
+                    b.HasIndex("UsuarioId", "LidaEmUtc");
+
+                    b.ToTable("NotificacoesUsuarios");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.OperacaoPedido", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<int?>("AdministradorSolicitanteId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("AdministradorSolicitanteNome")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<DateTime?>("ConcluidaEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("ConferidaEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("CriadaEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("DesistenciaSolicitada")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("DistanciaMetros")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DuracaoSegundos")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EnderecoAnteriorJson")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("EnderecoSalvarJson")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Estado")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Mensagem")
+                        .IsRequired()
+                        .HasMaxLength(400)
+                        .HasColumnType("varchar(400)");
+
+                    b.Property<string>("Motivo")
+                        .HasMaxLength(300)
+                        .HasColumnType("varchar(300)");
+
+                    b.Property<decimal>("NovaTaxa")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<string>("NovoEnderecoJson")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PagamentoAnteriorJson")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("PagamentoConfirmado")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("PedidoId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ProcessandoAteUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int?>("RevisaoFinanceiraAplicada")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TaxaAnterior")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<int>("Tipo")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("Versao")
+                        .IsConcurrencyToken()
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PedidoId");
+
+                    b.HasIndex("Estado", "ConferidaEmUtc");
+
+                    b.ToTable("OperacoesPedido");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.PagamentoOnline", b =>
+                {
+                    b.Property<int>("PedidoId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("AtualizacaoExternaUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("CheckoutUrl")
+                        .HasMaxLength(2048)
+                        .HasColumnType("varchar(2048)");
+
+                    b.Property<DateTime>("ConferidoEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("CorpoCriacao")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CriadoEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("OrderId")
+                        .HasMaxLength(80)
+                        .HasColumnType("varchar(80)");
+
+                    b.Property<Guid>("Referencia")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("RevisaoFinanceira")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("RevisaoNecessaria")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("SituacaoExterna")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)");
+
+                    b.Property<decimal>("Valor")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<Guid>("Versao")
+                        .IsConcurrencyToken()
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("PedidoId");
+
+                    b.HasIndex("ConferidoEmUtc");
+
+                    b.HasIndex("OrderId")
+                        .IsUnique();
+
+                    b.HasIndex("Referencia")
+                        .IsUnique();
+
+                    b.ToTable("PagamentosOnline");
                 });
 
             modelBuilder.Entity("KioraRestaurante.Models.Pedido", b =>
@@ -519,16 +1003,48 @@ namespace KioraRestaurante.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime?>("CanceladoEmUtc")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<Guid?>("ChaveConfirmacao")
                         .HasColumnType("char(36)");
 
+                    b.Property<string>("CodigoCupom")
+                        .HasMaxLength(40)
+                        .HasColumnType("varchar(40)");
+
                     b.Property<DateTime>("DataPedido")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<decimal>("DescontoCupom")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<int?>("DistanciaEntregaMetros")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("DuracaoPercursoSegundos")
+                        .HasColumnType("int");
 
                     b.Property<string>("FormaPagamento")
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("varchar(30)");
+
+                    b.Property<string>("MotivoCancelamento")
+                        .HasMaxLength(300)
+                        .HasColumnType("varchar(300)");
+
+                    b.Property<Guid?>("OperacaoPendenteId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int?>("PreparoMinutos")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("ReembolsoCancelamentoPendente")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("RevisaoFinanceira")
+                        .HasColumnType("int");
 
                     b.Property<string>("StatusPagamento")
                         .IsRequired()
@@ -536,15 +1052,23 @@ namespace KioraRestaurante.Migrations
                         .HasColumnType("varchar(30)");
 
                     b.Property<string>("StatusPedido")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("varchar(30)");
+
+                    b.Property<decimal>("TaxaEntrega")
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<int>("UsuarioId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("ValorTotal")
                         .HasColumnType("decimal(10,2)");
+
+                    b.Property<Guid>("Versao")
+                        .IsConcurrencyToken()
+                        .HasColumnType("char(36)");
 
                     b.HasKey("Id");
 
@@ -700,6 +1224,289 @@ namespace KioraRestaurante.Migrations
                     b.ToTable("Reservas");
                 });
 
+            modelBuilder.Entity("KioraRestaurante.Models.Salao.AtendimentoMesa", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("AbertoEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int?>("DescontoPorId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("FechadoEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int?>("FechadoPorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("GarcomFechamento")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<int>("GarcomId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("LiberadoEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("MesaId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("MesaOcupadaId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("MotivoDesconto")
+                        .HasMaxLength(400)
+                        .HasColumnType("varchar(400)");
+
+                    b.Property<string>("NomeGrupo")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("NomeMesa")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)");
+
+                    b.Property<int>("Pessoas")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ReservaId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Situacao")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("SubtotalFechamento")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<int?>("TipoDesconto")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalFechamento")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<decimal>("ValorDescontoInformado")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<Guid>("Versao")
+                        .IsConcurrencyToken()
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FechadoEmUtc");
+
+                    b.HasIndex("GarcomId");
+
+                    b.HasIndex("MesaId");
+
+                    b.HasIndex("MesaOcupadaId")
+                        .IsUnique();
+
+                    b.HasIndex("ReservaId");
+
+                    b.ToTable("AtendimentosMesa");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.Salao.ConviteFuncionario", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("CriadoEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("CriadoPorId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ExpiraEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("TokenHash")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
+
+                    b.Property<DateTime?>("UsadoEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("VersaoSessao")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TokenHash")
+                        .IsUnique();
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("ConvitesFuncionarios");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.Salao.ItemComanda", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("AtendimentoId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime?>("CanceladoEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Composicao")
+                        .HasColumnType("text");
+
+                    b.Property<decimal?>("DescontoPercentual")
+                        .HasColumnType("decimal(5,2)");
+
+                    b.Property<DateTime?>("EntregueEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("EnviadoEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("ImagemPublicId")
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
+
+                    b.Property<string>("ImagemUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<DateTime?>("IniciadoEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("MotivoCancelamento")
+                        .HasMaxLength(400)
+                        .HasColumnType("varchar(400)");
+
+                    b.Property<string>("NomeProduto")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("Observacao")
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<decimal?>("PrecoOriginalUnitario")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<decimal>("PrecoUnitario")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<int>("ProdutoId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ProntoEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("Quantidade")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("RodadaId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("Situacao")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("SubstituiItemId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("Versao")
+                        .IsConcurrencyToken()
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AtendimentoId");
+
+                    b.HasIndex("ProdutoId");
+
+                    b.HasIndex("Situacao", "EnviadoEmUtc");
+
+                    b.ToTable("ItensComanda");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.Salao.MovimentoSalao", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Acao")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("varchar(40)");
+
+                    b.Property<Guid?>("AtendimentoId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("CriadoEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("DadosHash")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasMaxLength(1500)
+                        .HasColumnType("varchar(1500)");
+
+                    b.Property<string>("Responsavel")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<Guid?>("ResultadoId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AtendimentoId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("MovimentosSalao");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.Salao.PagamentoPresencial", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("AtendimentoId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("Meio")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Referencia")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<decimal>("Valor")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AtendimentoId");
+
+                    b.ToTable("PagamentosPresenciais");
+                });
+
             modelBuilder.Entity("KioraRestaurante.Models.Usuario", b =>
                 {
                     b.Property<int>("Id")
@@ -715,6 +1522,9 @@ namespace KioraRestaurante.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValue(true);
+
+                    b.Property<bool>("ConvitePendente")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -733,6 +1543,10 @@ namespace KioraRestaurante.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<string>("TelefoneFuncionario")
+                        .HasMaxLength(11)
+                        .HasColumnType("varchar(11)");
+
                     b.Property<string>("Tipo")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -741,6 +1555,10 @@ namespace KioraRestaurante.Migrations
                     b.Property<string>("TokenRecuperacaoSenha")
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)");
+
+                    b.Property<Guid>("VersaoFuncionario")
+                        .IsConcurrencyToken()
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid>("VersaoSessao")
                         .HasColumnType("char(36)");
@@ -779,6 +1597,44 @@ namespace KioraRestaurante.Migrations
                     b.Navigation("Combo");
 
                     b.Navigation("Produto");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.Cupons.Cupom", b =>
+                {
+                    b.HasOne("KioraRestaurante.Models.Usuario", "CriadoPor")
+                        .WithMany()
+                        .HasForeignKey("CriadoPorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("CriadoPor");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.Cupons.UsoCupom", b =>
+                {
+                    b.HasOne("KioraRestaurante.Models.Cupons.Cupom", "Cupom")
+                        .WithMany("Usos")
+                        .HasForeignKey("CupomId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("KioraRestaurante.Models.Pedido", "Pedido")
+                        .WithOne("UsoCupom")
+                        .HasForeignKey("KioraRestaurante.Models.Cupons.UsoCupom", "PedidoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("KioraRestaurante.Models.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Cupom");
+
+                    b.Navigation("Pedido");
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("KioraRestaurante.Models.EnderecoEntrega", b =>
@@ -852,6 +1708,113 @@ namespace KioraRestaurante.Migrations
                     b.Navigation("Produto");
                 });
 
+            modelBuilder.Entity("KioraRestaurante.Models.MovimentoPedido", b =>
+                {
+                    b.HasOne("KioraRestaurante.Models.OperacaoPedido", "Operacao")
+                        .WithMany("Movimentos")
+                        .HasForeignKey("OperacaoPedidoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Operacao");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.Notificacoes.EventoNotificacao", b =>
+                {
+                    b.HasOne("KioraRestaurante.Models.Pedido", "Pedido")
+                        .WithMany()
+                        .HasForeignKey("PedidoId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("KioraRestaurante.Models.Reserva", "Reserva")
+                        .WithMany()
+                        .HasForeignKey("ReservaId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Pedido");
+
+                    b.Navigation("Reserva");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.Notificacoes.Notificacao", b =>
+                {
+                    b.HasOne("KioraRestaurante.Models.Salao.AtendimentoMesa", "Atendimento")
+                        .WithMany()
+                        .HasForeignKey("AtendimentoId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("KioraRestaurante.Models.Usuario", "Autor")
+                        .WithMany()
+                        .HasForeignKey("AutorId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("KioraRestaurante.Models.Cupons.Cupom", "Cupom")
+                        .WithMany()
+                        .HasForeignKey("CupomId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("KioraRestaurante.Models.Pedido", "Pedido")
+                        .WithMany()
+                        .HasForeignKey("PedidoId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("KioraRestaurante.Models.Reserva", "Reserva")
+                        .WithMany()
+                        .HasForeignKey("ReservaId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Atendimento");
+
+                    b.Navigation("Autor");
+
+                    b.Navigation("Cupom");
+
+                    b.Navigation("Pedido");
+
+                    b.Navigation("Reserva");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.Notificacoes.NotificacaoUsuario", b =>
+                {
+                    b.HasOne("KioraRestaurante.Models.Notificacoes.Notificacao", "Notificacao")
+                        .WithMany("Destinatarios")
+                        .HasForeignKey("NotificacaoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("KioraRestaurante.Models.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Notificacao");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.OperacaoPedido", b =>
+                {
+                    b.HasOne("KioraRestaurante.Models.Pedido", "Pedido")
+                        .WithMany("Operacoes")
+                        .HasForeignKey("PedidoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Pedido");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.PagamentoOnline", b =>
+                {
+                    b.HasOne("KioraRestaurante.Models.Pedido", "Pedido")
+                        .WithOne()
+                        .HasForeignKey("KioraRestaurante.Models.PagamentoOnline", "PedidoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Pedido");
+                });
+
             modelBuilder.Entity("KioraRestaurante.Models.Pedido", b =>
                 {
                     b.HasOne("KioraRestaurante.Models.Usuario", "Usuario")
@@ -891,6 +1854,96 @@ namespace KioraRestaurante.Migrations
                     b.Navigation("Usuario");
                 });
 
+            modelBuilder.Entity("KioraRestaurante.Models.Salao.AtendimentoMesa", b =>
+                {
+                    b.HasOne("KioraRestaurante.Models.Usuario", "Garcom")
+                        .WithMany()
+                        .HasForeignKey("GarcomId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("KioraRestaurante.Models.MesaRestaurante", "Mesa")
+                        .WithMany()
+                        .HasForeignKey("MesaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("KioraRestaurante.Models.MesaRestaurante", null)
+                        .WithMany()
+                        .HasForeignKey("MesaOcupadaId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("KioraRestaurante.Models.Reserva", "Reserva")
+                        .WithMany()
+                        .HasForeignKey("ReservaId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Garcom");
+
+                    b.Navigation("Mesa");
+
+                    b.Navigation("Reserva");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.Salao.ConviteFuncionario", b =>
+                {
+                    b.HasOne("KioraRestaurante.Models.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.Salao.ItemComanda", b =>
+                {
+                    b.HasOne("KioraRestaurante.Models.Salao.AtendimentoMesa", "Atendimento")
+                        .WithMany("Itens")
+                        .HasForeignKey("AtendimentoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("KioraRestaurante.Models.Produto", "Produto")
+                        .WithMany()
+                        .HasForeignKey("ProdutoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Atendimento");
+
+                    b.Navigation("Produto");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.Salao.MovimentoSalao", b =>
+                {
+                    b.HasOne("KioraRestaurante.Models.Salao.AtendimentoMesa", "Atendimento")
+                        .WithMany("Historico")
+                        .HasForeignKey("AtendimentoId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("KioraRestaurante.Models.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Atendimento");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.Salao.PagamentoPresencial", b =>
+                {
+                    b.HasOne("KioraRestaurante.Models.Salao.AtendimentoMesa", "Atendimento")
+                        .WithMany("Pagamentos")
+                        .HasForeignKey("AtendimentoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Atendimento");
+                });
+
             modelBuilder.Entity("KioraRestaurante.Models.Carrinho", b =>
                 {
                     b.Navigation("ItensCarrinho");
@@ -901,12 +1954,31 @@ namespace KioraRestaurante.Migrations
                     b.Navigation("Produtos");
                 });
 
+            modelBuilder.Entity("KioraRestaurante.Models.Cupons.Cupom", b =>
+                {
+                    b.Navigation("Usos");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.Notificacoes.Notificacao", b =>
+                {
+                    b.Navigation("Destinatarios");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.OperacaoPedido", b =>
+                {
+                    b.Navigation("Movimentos");
+                });
+
             modelBuilder.Entity("KioraRestaurante.Models.Pedido", b =>
                 {
                     b.Navigation("EnderecoEntrega")
                         .IsRequired();
 
                     b.Navigation("ItensPedido");
+
+                    b.Navigation("Operacoes");
+
+                    b.Navigation("UsoCupom");
                 });
 
             modelBuilder.Entity("KioraRestaurante.Models.Produto", b =>
@@ -921,6 +1993,15 @@ namespace KioraRestaurante.Migrations
             modelBuilder.Entity("KioraRestaurante.Models.Reserva", b =>
                 {
                     b.Navigation("Eventos");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.Salao.AtendimentoMesa", b =>
+                {
+                    b.Navigation("Historico");
+
+                    b.Navigation("Itens");
+
+                    b.Navigation("Pagamentos");
                 });
 
             modelBuilder.Entity("KioraRestaurante.Models.Usuario", b =>
