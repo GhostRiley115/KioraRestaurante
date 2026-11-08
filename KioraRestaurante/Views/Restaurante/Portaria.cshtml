@@ -1,17 +1,28 @@
+@inject TimeProvider Relogio
 @model PainelSalaoViewModel
-@{ViewData["Title"]="Portaria e reservas";var gestor=User.IsInRole("Administrador")||User.IsInRole("Gerente");var opera=gestor||User.IsInRole("Portaria");}
-<header class="equipe-cabecalho"><div><h1>Portaria e reservas</h1><p>Registre a chegada e organize a fila. A mesa é ativada pelo garçom após acomodar o grupo.</p></div><a asp-action="Portaria">Atualizar</a></header>
-<div class="equipe-mesas">@foreach(var m in Model.Mesas){<section class="equipe-box"><h2>@m.Nome</h2><p>@m.Capacidade lugares · <strong>@m.Situacao</strong></p>
-@if(opera&&m.Situacao=="Livre"){<form asp-action="Chamar" method="post"><input type="hidden" name="MesaId" value="@m.Id"/><input type="hidden" name="ChaveSolicitacao" value="@Guid.NewGuid()"/><button type="submit">Chamar primeiro grupo compatível</button></form>}
-</section>}</div>
-@if(opera){<details class="equipe-box mt-4"><summary>Adicionar grupo que chegou sem reserva</summary><form asp-action="Fila" method="post" class="equipe-form"><input type="hidden" name="ChaveSolicitacao" value="@Guid.NewGuid()"/>
-<label for="fila-nome">Nome</label><input id="fila-nome" name="Nome" maxlength="100" minlength="2" required/><label for="fila-pessoas">Pessoas</label><input id="fila-pessoas" name="Pessoas" type="number" min="1" max="30" value="2" required/>
-<label for="fila-telefone">Telefone (opcional)</label><input id="fila-telefone" name="Telefone" type="tel" maxlength="25"/><button type="submit">Registrar chegada e incluir na fila</button></form></details>}
-<h2 class="mt-4">Solicitações e grupos</h2>
-<form method="get" class="equipe-form-inline"><label>Data <input name="data" type="date"/></label><button type="submit">Consultar</button></form>
-<div class="equipe-mesas">@foreach(var g in Model.Grupos){<article class="equipe-box"><h3>@g.Nome · @g.Pessoas pessoa(s)</h3><p>@g.Situacao · @(g.HorarioUtc.HasValue?HorarioRestaurante.ParaLocal(g.HorarioUtc.Value).ToString("dd/MM HH:mm"):"Fila presencial")</p>
-@if(opera&&g.ChegadaUtc==null){<form asp-action="Chegada" method="post"><input type="hidden" name="Codigo" value="@g.Codigo"/><input type="hidden" name="Versao" value="@g.Versao"/><input type="hidden" name="ChaveSolicitacao" value="@Guid.NewGuid()"/><button type="submit">Registrar chegada na portaria</button></form>}
-@if(g.ChegadaUtc.HasValue){<p>Chegada: @HorarioRestaurante.ParaLocal(g.ChegadaUtc.Value).ToString("HH:mm")</p>}
-@if(gestor){<details><summary>Cancelar solicitação</summary><form asp-action="CancelarReserva" method="post" class="equipe-form"><input type="hidden" name="Codigo" value="@g.Codigo"/><input type="hidden" name="Versao" value="@g.Versao"/><input type="hidden" name="ChaveSolicitacao" value="@Guid.NewGuid()"/><label for="cancelar-@g.Codigo">Motivo</label><input id="cancelar-@g.Codigo" name="Motivo" maxlength="400" required/><button type="submit">Confirmar cancelamento</button></form></details>}
-</article>}</div>
-@if(Model.Grupos.Count==0){<p>Nenhum grupo aguardando nesta consulta.</p>}
+@using KioraRestaurante.Services.Salao
+@{ViewData["Title"]="Reservas e recepção";var gestor=User.IsInRole("Administrador")||User.IsInRole("Gerente");var opera=gestor||User.IsInRole("Portaria");var hoje=DateOnly.FromDateTime(HorarioRestaurante.ParaLocal(Relogio.GetUtcNow().UtcDateTime));var data=Model.DataConsulta??hoje;}
+<header class="admin-cabecalho"><div><span class="admin-sobretitulo">CHEGADA E ACOMODAÇÃO</span><h1>Reservas e recepção</h1><p class="admin-suave">Registre a chegada, organize a fila e chame o grupo. O garçom ativa a mesa ao acomodar.</p></div><a asp-action="Portaria" asp-route-data="@data.ToString("yyyy-MM-dd")" class="admin-botao admin-botao-secundario">Atualizar recepção</a></header>
+<div class="equipe-fluxo"><span>1 · Registrar chegada</span><span>2 · Chamar para mesa disponível</span><span>3 · Garçom acomoda e abre comanda</span></div>
+<div class="equipe-indicadores"><p><span>Aguardando chegada</span><strong>@Model.Grupos.Count(g=>g.ChegadaUtc==null)</strong></p><p><span>Na fila presencial</span><strong>@Model.Grupos.Count(g=>g.ChegadaUtc!=null&&g.MesaId==null)</strong></p><p><span>Aguardando garçom</span><strong>@Model.Grupos.Count(g=>g.MesaId!=null)</strong></p><p><span>Mesas livres agora</span><strong>@Model.Mesas.Count(m=>m.Situacao=="Livre")</strong></p></div>
+<div class="equipe-recepcao-ferramentas"><form method="get" class="equipe-form-inline"><div><label for="dataRecepcao">Dia das reservas e da fila</label><input id="dataRecepcao" name="data" type="date" value="@data.ToString("yyyy-MM-dd")" required/></div><button type="submit">Consultar dia</button><a asp-action="Portaria">Hoje</a></form>
+@if(opera&&data==hoje){<details class="equipe-box"><summary>+ Incluir grupo sem reserva</summary><form asp-action="Fila" method="post" class="equipe-form"><input type="hidden" name="ChaveSolicitacao" value="@Guid.NewGuid()"/>
+<label for="fila-nome">Nome do grupo</label><input id="fila-nome" name="Nome" maxlength="100" minlength="2" required/><label for="fila-pessoas">Quantidade de pessoas</label><input id="fila-pessoas" name="Pessoas" type="number" min="1" max="30" value="2" required/>
+<label for="fila-telefone">Telefone (opcional)</label><input id="fila-telefone" name="Telefone" type="tel" maxlength="25"/><button type="submit">Registrar chegada e incluir na fila</button></form></details>}</div>
+<h2>Grupos de @data.ToString("dd/MM/yyyy")</h2><p class="admin-suave">Até 300 solicitações ativas do dia. A ordem da fila segue a chegada registrada.</p>
+<div class="recepcao-grupos-colunas">
+@foreach(var etapa in new[]{"chegada","fila","chamados"}){var grupos=Model.Grupos.Where(g=>etapa=="chegada"?g.ChegadaUtc==null:etapa=="fila"?g.ChegadaUtc!=null&&g.MesaId==null:g.MesaId!=null).ToList();
+<section><h3 class="recepcao-coluna-titulo">@(etapa=="chegada"?"Aguardando chegada":etapa=="fila"?"Na fila":"Grupo chamado") <span>@grupos.Count</span></h3>
+@if(grupos.Count==0){<p class="equipe-vazio">Nenhum grupo nesta etapa.</p>}
+@foreach(var g in grupos){var podeChegar=data==hoje&&(!g.HorarioUtc.HasValue||g.HorarioUtc<=Relogio.GetUtcNow().UtcDateTime.AddMinutes(15));<article class="equipe-box recepcao-grupo"><h3>@g.Nome</h3><p><strong>@g.Pessoas pessoa(s)</strong> · @(g.Tipo=="Agendada"?"Reserva online":"Chegada presencial")</p><p class="admin-suave">@(g.HorarioUtc.HasValue?"Reserva: "+HorarioRestaurante.ParaLocal(g.HorarioUtc.Value).ToString("dd/MM HH:mm"):"Sem agendamento")</p>
+@if(g.ChegadaUtc.HasValue){<p class="admin-suave">Chegou às @HorarioRestaurante.ParaLocal(g.ChegadaUtc.Value).ToString("HH:mm")</p>}
+@if(g.MesaId.HasValue){<p class="equipe-status estado-chamada">@(Model.Mesas.FirstOrDefault(m=>m.Id==g.MesaId)?.Nome??"Mesa atribuída") · aguardando garçom</p>}
+@if(opera&&g.ChegadaUtc==null){<form asp-action="Chegada" method="post"><input type="hidden" name="Codigo" value="@g.Codigo"/><input type="hidden" name="Versao" value="@g.Versao"/><input type="hidden" name="ChaveSolicitacao" value="@Guid.NewGuid()"/><input type="hidden" name="data" value="@data.ToString("yyyy-MM-dd")"/><button type="submit" disabled="@(!podeChegar)">Registrar chegada</button></form>@if(!podeChegar){<p class="admin-suave">A chegada pode ser registrada perto do horário reservado.</p>}}
+@if(gestor){<details><summary>Cancelar reserva ou fila</summary><form asp-action="CancelarReserva" method="post" class="equipe-form"><input type="hidden" name="Codigo" value="@g.Codigo"/><input type="hidden" name="Versao" value="@g.Versao"/><input type="hidden" name="ChaveSolicitacao" value="@Guid.NewGuid()"/><input type="hidden" name="data" value="@data.ToString("yyyy-MM-dd")"/><label for="cancelar-@g.Codigo">Motivo do cancelamento</label><input id="cancelar-@g.Codigo" name="Motivo" maxlength="400" required/><button type="submit">Confirmar cancelamento</button></form></details>}
+</article>}
+</section>}
+</div>
+<section class="equipe-box"><div class="admin-secao-topo"><h2>Disponibilidade das mesas agora</h2>@if(gestor||User.IsInRole("Garcom")){<a asp-action="Index">Abrir salão</a>}</div><p class="admin-suave">A situação das mesas é atual, mesmo quando a consulta de reservas está em outro dia. A chamada seleciona o primeiro grupo da fila que cabe nos lugares da mesa.</p>
+<div class="recepcao-mesas">@foreach(var m in Model.Mesas){<article><div><strong>@m.Nome</strong><span class="admin-suave">@m.Capacidade lugares</span><span class="equipe-status estado-@TextosSalao.ClasseMesa(m.Situacao)">@m.Situacao</span></div>
+@if(opera&&data==hoje&&m.Situacao=="Livre"){var compativel=Model.Grupos.Any(g=>g.ChegadaUtc!=null&&g.MesaId==null&&g.Pessoas<=m.Capacidade);<form asp-action="Chamar" method="post"><input type="hidden" name="MesaId" value="@m.Id"/><input type="hidden" name="ChaveSolicitacao" value="@Guid.NewGuid()"/><button type="submit" disabled="@(!compativel)">Chamar próximo grupo</button></form>}
+</article>}</div></section>

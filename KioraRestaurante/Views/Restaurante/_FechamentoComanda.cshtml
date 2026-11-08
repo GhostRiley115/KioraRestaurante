@@ -1,0 +1,12 @@
+@model ComandaDetalhesDTO
+@{var pendentes=Model.Itens.Any(i=>i.Situacao is SituacaoPreparo.NaFila or SituacaoPreparo.EmPreparo or SituacaoPreparo.Pronto);var c=CultureInfo.GetCultureInfo("pt-BR");}
+<details class="equipe-box comanda-fechamento"><summary>Fechar conta da mesa</summary>
+@if(pendentes){<p class="admin-alerta">Ainda há itens aguardando preparo ou entrega. Entregue ou corrija esses itens antes de fechar.</p>}
+<form asp-action="Fechar" method="post" class="equipe-form" data-fechamento-comanda data-total="@Model.Total.ToString(CultureInfo.InvariantCulture)"><partial name="_ChavesComanda" model="Model"/>
+<p>Valor da conta: <strong>@Model.Total.ToString("C",c)</strong></p><p class="admin-suave">O pagamento acontece na maquininha, em dinheiro ou Pix fora do sistema. Registre aqui o que já foi recebido.</p>
+<partial name="_RecebimentoComanda" model="new RecebimentoComandaViewModel(0,Model.Total)"/>
+<details class="equipe-dividir"><summary>Dividir em mais formas de pagamento</summary>
+@for(var i=1;i<3;i++){<partial name="_RecebimentoComanda" model="new RecebimentoComandaViewModel(i,0)"/>}
+</details>
+<output class="comanda-conferencia" data-conferencia-recebimento aria-live="polite">Confira se a soma dos recebimentos corresponde ao total.</output>
+<label class="equipe-checkbox"><input name="PagamentoExternoConferido" type="checkbox" value="true" required/> Conferi o recebimento total ou a cortesia.</label><p class="admin-suave">Depois do fechamento, a mesa aguardará limpeza. A liberação é feita em uma etapa separada.</p><button type="submit" disabled="@pendentes">Confirmar fechamento</button></form></details>

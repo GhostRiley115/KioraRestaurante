@@ -1,5 +1,8 @@
-@model ConfigurarMesaDTO
-@{ViewData["Title"]="Configurar mesa";}
-<h1>Configurar mesa</h1><form method="post" class="equipe-box equipe-form"><input asp-for="MesaId" type="hidden"/><input asp-for="Versao" type="hidden"/><input asp-for="ChaveSolicitacao" type="hidden"/>
-<label asp-for="Nome">Nome da mesa</label><input asp-for="Nome" maxlength="30" required/><label asp-for="Capacidade">Lugares</label><input asp-for="Capacidade" min="1" max="30"/>
-<label><input asp-for="Ativa"/> Mesa habilitada para atendimento</label><p>Mesas ocupadas, aguardando limpeza ou com grupo chamado precisam ser liberadas antes de alterar a configuração.</p><button type="submit">Salvar mesa</button></form>
+@model ConfigurarMesasViewModel
+@using KioraRestaurante.Services.Salao
+@{ViewData["Title"]="Configurar mesas";}
+<header class="admin-cabecalho"><div><span class="admin-sobretitulo">ESTRUTURA DO SALÃO</span><h1>Configurar mesas</h1><p class="admin-suave">Defina os nomes, lugares e quais mesas recebem novos grupos.</p></div><a asp-action="Index" class="admin-botao admin-botao-secundario">Ver salão</a></header>
+<div class="equipe-config-grid"><section class="equipe-box"><h2>@(Model.Edicao.MesaId==0?"Nova mesa":"Editar "+Model.Edicao.Nome)</h2>@if(Model.Bloqueada){<p class="admin-alerta">Esta mesa tem um atendimento ou grupo chamado. Conclua a operação e libere a mesa antes de editar a configuração.</p>}else{<partial name="_FormularioMesa" model="Model.Edicao"/>}</section>
+<section class="equipe-box"><h2>Mesas cadastradas · @Model.Mesas.Count</h2><div class="equipe-lista-config">
+@foreach(var mesa in Model.Mesas){var bloqueada=mesa.AtendimentoId.HasValue||mesa.Situacao=="Aguardando garçom";<article><div><strong>@mesa.Nome</strong><p>@mesa.Capacidade lugares · <span class="equipe-status estado-@TextosSalao.ClasseMesa(mesa.Situacao)">@mesa.Situacao</span></p></div>@if(bloqueada){<span class="admin-suave">Libere o atendimento ou a chamada para editar.</span>}else{<a asp-action="Configurar" asp-route-id="@mesa.Id" class="admin-botao admin-botao-secundario">Editar mesa</a>}</article>}
+</div></section></div>

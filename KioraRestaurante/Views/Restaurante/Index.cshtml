@@ -1,23 +1,27 @@
 @model PainelSalaoViewModel
+@using KioraRestaurante.Services.Salao
 @{ViewData["Title"]="Salão e mesas";var gestor=User.IsInRole("Administrador")||User.IsInRole("Gerente");var meuId=User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;}
-<header class="equipe-cabecalho"><div><h1>Salão e mesas</h1><p>Uma comanda por atendimento. A conta permanece aberta entre novas rodadas.</p></div><a asp-action="Index">Atualizar mesas</a></header>
-<div class="equipe-indicadores"><p><strong>@Model.Mesas.Count(m=>m.Situacao=="Livre")</strong> livres</p><p><strong>@Model.Mesas.Count(m=>m.Situacao=="Ocupada")</strong> ocupadas</p><p><strong>@Model.Mesas.Count(m=>m.Situacao=="Aguardando limpeza")</strong> aguardando limpeza</p></div>
-@if(gestor){<p><a asp-action="Configurar">Cadastrar mesa</a></p>}
-<div class="equipe-mesas">
-@foreach(var mesa in Model.Mesas){var propria=gestor||mesa.GarcomId?.ToString()==meuId;
-<section class="equipe-box"><h2>@mesa.Nome</h2><p>@mesa.Capacidade lugares · <strong>@mesa.Situacao</strong></p>
-    @if(mesa.AtendimentoId.HasValue){<p>@mesa.Pessoas pessoa(s) · Garçom: @mesa.Garcom</p>@if(propria){<a class="pedido-botao" asp-action="Comanda" asp-route-id="@mesa.AtendimentoId">Abrir comanda</a>}else{<p>Atendimento de outro garçom. Peça ao gerente para transferir, se necessário.</p>}}
-    else if(mesa.Habilitada){
-        <details><summary>Acomodar grupo</summary><form asp-action="Acomodar" method="post" class="equipe-form">
-            <input type="hidden" name="ChaveSolicitacao" value="@Guid.NewGuid()"/><input type="hidden" name="MesaId" value="@mesa.Id"/><input type="hidden" name="Versao" value="@mesa.Versao"/>
-            <label for="grupo-@mesa.Id">Grupo registrado pela portaria (opcional)</label><select id="grupo-@mesa.Id" name="ReservaCodigo"><option value="">Atendimento direto, sem reserva</option>
-                @foreach(var g in Model.Grupos.Where(g=>g.ChegadaUtc!=null&&g.Pessoas<=mesa.Capacidade&&(g.MesaId==null||g.MesaId==mesa.Id))){<option value="@g.Codigo">@g.Nome · @g.Pessoas pessoa(s)</option>}</select>
-            <label for="nome-@mesa.Id">Nome do grupo, se atendimento direto</label><input id="nome-@mesa.Id" name="NomeGrupo" maxlength="100"/>
-            <label for="pessoas-@mesa.Id">Pessoas, se atendimento direto</label><input id="pessoas-@mesa.Id" name="Pessoas" type="number" min="1" max="@mesa.Capacidade" value="2"/>
-            @if(gestor){<label for="garcom-@mesa.Id">Garçom responsável</label><select id="garcom-@mesa.Id" name="GarcomId">@foreach(var g in Model.Garcons){<option value="@g.Id" selected="@(g.Id.ToString()==meuId)">@g.Nome</option>}</select>}
-            <button type="submit" class="pedido-botao">Confirmar acomodação e abrir comanda</button>
-        </form></details>
-    }
-    @if(gestor){<p class="mt-3"><a asp-action="Configurar" asp-route-id="@mesa.Id">Configurar mesa</a></p>}
+<header class="admin-cabecalho"><div><span class="admin-sobretitulo">ATENDIMENTO PRESENCIAL</span><h1>Salão e mesas</h1><p class="admin-suave">Escolha uma mesa para iniciar ou continuar o atendimento.</p></div><div class="admin-acoes"><a asp-action="Index" class="admin-botao admin-botao-secundario">Atualizar mesas</a>@if(gestor){<a asp-action="Configurar" class="admin-botao">Gerenciar mesas</a>}</div></header>
+<div class="equipe-indicadores"><p><span>Disponíveis</span><strong>@Model.Mesas.Count(m=>m.Situacao=="Livre")</strong></p><p><span>Em atendimento</span><strong>@Model.Mesas.Count(m=>m.Situacao=="Ocupada")</strong></p><p><span>Aguardando limpeza</span><strong>@Model.Mesas.Count(m=>m.Situacao=="Aguardando limpeza")</strong></p><p><span>Grupo chamado</span><strong>@Model.Mesas.Count(m=>m.Situacao=="Aguardando garçom")</strong></p></div>
+<div class="equipe-ferramentas"><label for="buscarMesas">Buscar mesa ou garçom</label><input id="buscarMesas" type="search" class="equipe-busca" placeholder="Ex.: Mesa 02 ou nome do garçom" data-buscar-mesas /></div>
+<nav class="equipe-filtros" aria-label="Filtrar mesas"><button type="button" data-filtro-mesa="todas" aria-pressed="true">Todas</button><button type="button" data-filtro-mesa="livre" aria-pressed="false">Disponíveis</button><button type="button" data-filtro-mesa="ocupada" aria-pressed="false">Em atendimento</button><button type="button" data-filtro-mesa="limpeza" aria-pressed="false">Limpeza</button><button type="button" data-filtro-mesa="chamada" aria-pressed="false">Grupo chamado</button>@if(!gestor){<button type="button" data-filtro-mesa="minhas" aria-pressed="false">Minhas mesas</button>}</nav>
+<p class="equipe-apenas-filtro" data-mesas-vazias hidden role="status">Nenhuma mesa corresponde à busca e ao filtro.</p>
+<div class="equipe-mesas equipe-mapa">
+@foreach(var mesa in Model.Mesas){var propria=gestor||mesa.GarcomId?.ToString()==meuId;var status=TextosSalao.ClasseMesa(mesa.Situacao);var chamada=Model.Grupos.FirstOrDefault(g=>g.MesaId==mesa.Id&&g.ChegadaUtc!=null);
+<section class="equipe-box equipe-mesa-card" data-mesa data-estado="@status" data-minha="@(mesa.GarcomId?.ToString()==meuId?"true":"false")" data-busca="@mesa.Nome @mesa.Garcom">
+<div class="equipe-card-topo"><span class="equipe-status estado-@status">@(mesa.Situacao=="Livre"?"Disponível":mesa.Situacao)</span><span class="admin-suave">@mesa.Capacidade lugares</span></div>
+<h2>@mesa.Nome</h2>
+@if(mesa.AtendimentoId.HasValue){<p class="equipe-mesa-grupo">@mesa.Pessoas pessoa(s) à mesa</p><p class="admin-suave">Responsável: @mesa.Garcom<br/>Desde @HorarioRestaurante.ParaLocal(mesa.AbertoEmUtc!.Value).ToString("HH:mm")</p>@if(propria){<a class="admin-botao @(status=="limpeza"?"admin-botao-secundario":"")" asp-action="Comanda" asp-route-id="@mesa.AtendimentoId">@(status=="limpeza"?"Conferir e liberar mesa":"Abrir atendimento")</a>}else{<p class="admin-suave">Atendimento de outro garçom.</p>}}
+else if(mesa.Habilitada){
+@if(chamada!=null){<p><strong>@chamada.Nome</strong> aguarda acomodação.</p>}else{<p class="admin-suave">Pronta para receber um novo grupo.</p>}
+<details class="equipe-acomodacao"><summary class="equipe-abrir-form">@(chamada!=null?"Acomodar grupo chamado":"Iniciar atendimento")</summary><form asp-action="Acomodar" method="post" class="equipe-form">
+<input type="hidden" name="ChaveSolicitacao" value="@Guid.NewGuid()"/><input type="hidden" name="MesaId" value="@mesa.Id"/><input type="hidden" name="Versao" value="@mesa.Versao"/>
+<label for="grupo-@mesa.Id">Quem vai ocupar a mesa?</label><select id="grupo-@mesa.Id" name="ReservaCodigo" data-grupo-acomodar><option value="">Novo grupo, sem registro na recepção</option>@foreach(var g in Model.Grupos.Where(g=>g.ChegadaUtc!=null&&g.Pessoas<=mesa.Capacidade&&(g.MesaId==null||g.MesaId==mesa.Id))){<option value="@g.Codigo" selected="@(g.Codigo==chamada?.Codigo)">@g.Nome · @g.Pessoas pessoa(s)</option>}</select>
+<div data-grupo-manual><label for="nome-@mesa.Id">Nome do grupo (opcional)</label><input id="nome-@mesa.Id" name="NomeGrupo" maxlength="100"/><label for="pessoas-@mesa.Id">Pessoas à mesa</label><input id="pessoas-@mesa.Id" name="Pessoas" type="number" min="1" max="@mesa.Capacidade" value="@(Math.Min(2,mesa.Capacidade))" required/></div>
+@if(gestor){<label for="garcom-@mesa.Id">Garçom responsável</label><select id="garcom-@mesa.Id" name="GarcomId">@foreach(var g in Model.Garcons){<option value="@g.Id" selected="@(g.Id.ToString()==meuId)">@g.Nome</option>}</select>}
+<button type="submit">Acomodar e abrir comanda</button></form></details>}
+else{<p class="admin-suave">Mesa desativada para novos atendimentos.</p>}
+@if(gestor&&!mesa.AtendimentoId.HasValue&&status!="chamada"){<a class="equipe-link-menor" asp-action="Configurar" asp-route-id="@mesa.Id">Editar configuração</a>}
 </section>}
 </div>
+@if(Model.Mesas.Count==0){<p class="admin-vazio">Cadastre uma mesa para começar a organizar o salão.</p>}

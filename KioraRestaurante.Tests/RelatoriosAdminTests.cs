@@ -40,6 +40,8 @@ public class RelatoriosAdminTests
     [InlineData(StatusPagamento.Recusado,StatusPedido.Entregue,FormaPagamento.Dinheiro,false)]
     [InlineData(StatusPagamento.Pendente,StatusPedido.Recebido,FormaPagamento.Dinheiro,false)]
     [InlineData(StatusPagamento.Pendente,StatusPedido.Entregue,FormaPagamento.Dinheiro,true)]
+    [InlineData(StatusPagamento.Aprovado,StatusPedido.Recebido,FormaPagamento.Dinheiro,false)]
+    [InlineData(StatusPagamento.Aprovado,StatusPedido.Entregue,FormaPagamento.Dinheiro,true)]
     [InlineData(StatusPagamento.Aprovado,StatusPedido.Recebido,FormaPagamento.MercadoPago,true)]
     public async Task ReceitaRespeitaPagamentoEntregaECancelamento(StatusPagamento pagamento,StatusPedido status,FormaPagamento forma,bool incluir)
     {

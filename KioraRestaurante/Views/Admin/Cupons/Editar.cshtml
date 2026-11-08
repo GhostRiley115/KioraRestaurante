@@ -15,7 +15,7 @@
     <div class="col-md-6"><label asp-for="InicioLocal">Início · Brasília</label><input asp-for="InicioLocal" type="datetime-local" asp-format="{0:yyyy-MM-ddTHH:mm}" class="form-control" /></div>
     <div class="col-md-6"><label asp-for="FimLocal">Fim · Brasília</label><input asp-for="FimLocal" type="datetime-local" asp-format="{0:yyyy-MM-ddTHH:mm}" class="form-control" /></div>
     <div class="col-md-6"><label asp-for="LimiteTotal">Limite total (opcional)</label><input asp-for="LimiteTotal" class="form-control" min="1" /></div>
-    <div class="col-md-6"><label asp-for="LimitePorCliente">Limite por cliente</label><input asp-for="LimitePorCliente" class="form-control" min="1" /></div></div>
+    <div class="col-md-6"><label asp-for="LimitePorCliente">Uso por cliente</label><select asp-for="LimitePorCliente" class="form-select" aria-describedby="regraUsoCupom"><option value="1">Uma vez por cliente</option><option value="">Reutilizável até o vencimento</option>@if(Model.LimitePorCliente>1){<option value="@Model.LimitePorCliente">Até @Model.LimitePorCliente vezes por cliente (regra existente)</option>}</select><small id="regraUsoCupom">As duas opções respeitam a validade e o limite total da campanha. Cancelamentos liberam a utilização.</small></div></div>
     <label class="mt-3"><input asp-for="Ativo" /> Cupom ativo</label>
     <p>Pausar impede novas reservas. Pedidos já confirmados mantêm o desconto registrado.</p>
     <button type="submit" class="pedido-botao">Salvar cupom</button>

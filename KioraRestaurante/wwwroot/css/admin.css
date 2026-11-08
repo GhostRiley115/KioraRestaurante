@@ -225,3 +225,8 @@
 .admin-pagina button.admin-barra-dia,
 .admin-pagina .admin-produto-situacao button { color:var(--k-texto)!important; }
 .admin-dia-label { color:var(--k-texto); }
+/* Menus longos continuam acessíveis em notebooks e com ampliação da fonte. */
+.admin-lateral { max-height:calc(100vh - 116px); max-height:calc(100dvh - 116px); overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--k-borda) transparent; }
+.admin-nav a { min-height:44px; display:flex; align-items:center; }
+@media(max-width:991.98px){.admin-lateral{max-height:none;overflow:visible;}}
+@media(max-width:380px){.admin-campos-data{grid-template-columns:minmax(0,1fr);}}

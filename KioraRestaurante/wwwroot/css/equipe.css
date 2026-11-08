@@ -25,3 +25,121 @@
 .equipe-tabela-scroll {overflow-x:auto;}.equipe-tabela {width:100%;min-width:680px;}.equipe-tabela th,.equipe-tabela td {padding:1rem;border-bottom:1px solid var(--k-borda);text-align:left;}
 .equipe-total {font-size:1.4rem;font-weight:700;}
 @media(max-width:767px){.comanda-colunas,.cozinha-origens{grid-template-columns:minmax(0,1fr);}.comanda-cardapio{max-height:none;}.equipe-box{padding:1rem;}}
+
+/* Integração com a administração: os cargos compartilham o menu, mantendo suas permissões. */
+.equipe-pagina.equipe-integrada { padding:0; }
+.equipe-integrada .admin-cabecalho h1 { margin:8px 0 12px; }
+.equipe-integrada .admin-cabecalho p { margin-bottom:0; }
+.equipe-integrada h2 { font-size:1.35rem; color:var(--k-dourado); }
+.equipe-integrada h3 { font-size:1.15rem; }
+.equipe-integrada .equipe-box { border-radius:14px; margin-block:0 18px; padding:20px; }
+.equipe-indicadores { display:grid; grid-template-columns:repeat(auto-fit,minmax(145px,1fr)); gap:12px; margin:20px 0; }
+.equipe-indicadores p { min-width:0; padding:16px; border-radius:12px; }
+.equipe-indicadores span { color:var(--k-suave); font-size:.9rem; }
+.equipe-indicadores strong { font-size:1.8rem; margin-top:8px; }
+.equipe-card-topo { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:16px; }
+.equipe-status { display:inline-flex; align-items:center; gap:5px; font:700 .75rem/1.4 "Lato",sans-serif; padding:5px 10px; border-radius:20px; border:1px solid currentColor; width:fit-content; }
+.estado-livre,.etapa-entregue { color:var(--k-verde); }
+.estado-ocupada,.etapa-empreparo { color:var(--k-amarelo); }
+.estado-limpeza,.etapa-pronto { color:var(--k-roxo); }
+.estado-chamada,.etapa-nafila { color:var(--k-azul); }
+.estado-inativa,.etapa-cancelado { color:var(--k-suave); }
+.equipe-mesa-card { display:flex; flex-direction:column; border-top:3px solid var(--k-borda); }
+.equipe-mesa-card[data-estado="livre"] { border-top-color:var(--k-verde); }
+.equipe-mesa-card[data-estado="ocupada"] { border-top-color:var(--k-amarelo); }
+.equipe-mesa-card[data-estado="limpeza"] { border-top-color:var(--k-roxo); }
+.equipe-mesa-card[data-estado="chamada"] { border-top-color:var(--k-azul); }
+.equipe-mesa-card h2 { font-size:1.7rem; margin:0 0 12px; color:var(--k-texto); }
+.equipe-mesa-card .admin-botao { margin-top:auto; }
+.equipe-mesa-card .equipe-link-menor { margin-top:16px; }
+.equipe-mapa { grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr)); gap:16px; align-items:start; }
+.equipe-mesa-grupo { margin-bottom:6px; font-weight:700; }
+.equipe-ferramentas { margin:24px 0 16px; max-width:600px; }
+.equipe-ferramentas label { display:block; margin-bottom:8px; }
+.equipe-filtros,.equipe-abas { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 22px; }
+.admin-pagina .equipe-filtros button,.admin-pagina .equipe-abas button { background:var(--k-campo); border:1px solid var(--k-borda); color:var(--k-texto)!important; font-size:.9rem; }
+.equipe-filtros button[aria-pressed="true"],.equipe-abas button[aria-pressed="true"] { background:var(--k-elevado); border-color:var(--k-dourado); box-shadow:inset 0 -3px var(--k-dourado); }
+.equipe-filtros button:hover,.equipe-abas button:hover { border-color:var(--k-dourado); }
+.equipe-rotulo-filtro { font-size:.8rem; text-transform:uppercase; color:var(--k-suave); letter-spacing:.08em; }
+.equipe-form { max-width:none; }
+.equipe-form label { margin-top:6px; }
+.equipe-form label.equipe-checkbox { display:flex; gap:10px; align-items:flex-start; }
+.equipe-checkbox input { width:20px; height:20px; margin-top:3px; flex-shrink:0; accent-color:#7d1f1f; }
+.equipe-form input[type="hidden"] { display:none; }
+.equipe-grupo-form { border:1px solid var(--k-borda); border-radius:10px; padding:12px; display:grid; gap:8px; }
+.equipe-grupo-form legend { float:none; width:auto; padding-inline:6px; margin:0; font-size:.9rem; color:var(--k-dourado); }
+.equipe-abrir-form { padding:10px 14px!important; min-height:44px; border:1px solid var(--k-dourado); border-radius:8px; color:var(--k-dourado); font-weight:700; }
+.equipe-acomodacao[open] summary { margin-bottom:16px; }
+.equipe-acomodacao [data-grupo-manual] { display:grid; gap:8px; }
+.equipe-apenas-filtro,.equipe-vazio { padding:20px; border:1px dashed var(--k-borda); border-radius:10px; color:var(--k-suave); }
+.equipe-pagina [hidden] { display:none!important; }
+.equipe-link-menor { display:inline-block; font-size:.85rem; text-underline-offset:4px; }
+.equipe-voltar { display:inline-flex; min-height:44px; align-items:center; margin-bottom:8px; }
+.comanda-workspace { display:grid; grid-template-columns:minmax(0,1fr) 285px; gap:24px; align-items:start; }
+.comanda-principal,.comanda-resumo { min-width:0; }
+.comanda-resumo { position:sticky; top:105px; }
+.equipe-integrada .comanda-resumo h2 { font-size:1.25rem; }
+.equipe-integrada .comanda-resumo .equipe-box { padding:18px; }
+.comanda-valores { margin:0; }
+.comanda-valores>div { display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px; padding:12px 0; border-bottom:1px solid var(--k-borda); }
+.comanda-valores dt { font-weight:400; font-size:.9rem; }
+.comanda-valores dd { font-weight:700; margin:0; white-space:nowrap; }
+.comanda-valores .comanda-total { border-bottom:0; padding-top:20px; color:var(--k-dourado); }
+.comanda-total dd { font-size:1.7rem; }
+.comanda-proximo-passo { color:var(--k-suave); margin:12px 0 0; font-size:.9rem; }
+.comanda-item-topo { display:flex; gap:14px; align-items:flex-start; margin-bottom:16px; }
+.comanda-item-topo>div { min-width:0; flex:1; }
+.comanda-item-topo h3 { margin:10px 0 6px; }
+.comanda-item-topo p { font-size:.85rem; margin:0; }
+.comanda-foto { width:64px; height:64px; object-fit:cover; border-radius:10px; flex-shrink:0; }
+.comanda-subtotal { font-size:1rem; white-space:nowrap; }
+.comanda-correcao { border-top:1px solid var(--k-borda); margin-top:16px; padding-top:4px; }
+.comanda-correcao summary { font-size:.85rem; color:var(--k-suave); }
+.equipe-titulo-menor { color:var(--k-suave); font-size:1rem!important; margin:20px 0 12px; }
+.comanda-cardapio { max-height:none; overflow:visible; padding:0; }
+.comanda-produtos-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr)); gap:16px; }
+.comanda-categoria { margin:24px 0; }
+.comanda-produto { display:flex; flex-direction:column; }
+.comanda-produto-info { display:flex; gap:14px; align-items:center; margin-bottom:14px; }
+.comanda-produto h4 { font-size:1.1rem; margin-bottom:6px; }
+.comanda-produto p { font-size:.85rem; }
+.comanda-produto details { margin-top:auto; }
+.comanda-historico { margin-top:24px!important; }
+.comanda-historico p { border-bottom:1px solid var(--k-borda); padding:12px 0; font-size:.9rem; }
+.comanda-conferencia { display:block; border-left:3px solid var(--k-dourado); background:var(--k-elevado); padding:12px; font-size:.9rem; }
+.equipe-aviso-limpeza { display:flex; justify-content:space-between; gap:20px; align-items:center; flex-wrap:wrap; padding:24px; background:var(--k-elevado); border:1px solid var(--k-roxo); border-radius:14px; margin-bottom:24px; }
+.equipe-aviso-limpeza p { margin:0; }
+.equipe-config-grid { display:grid; grid-template-columns:minmax(250px,.85fr) minmax(0,1.4fr); gap:24px; align-items:start; }
+.equipe-lista-config article,.recepcao-mesas article { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px; padding:18px 0; border-bottom:1px solid var(--k-borda); }
+.equipe-lista-config p { margin:8px 0 0; }
+.equipe-funcionarios { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr)); gap:18px; margin:20px 0; }
+.equipe-funcionarios h2 { color:var(--k-texto); margin-bottom:12px; }
+.equipe-email { overflow-wrap:anywhere; }
+.equipe-permissoes>div { display:grid; grid-template-columns:140px minmax(0,1fr); gap:20px; padding:14px 0; border-bottom:1px solid var(--k-borda); }
+.equipe-permissoes dd { margin:0; color:var(--k-suave); }
+.equipe-atualizacao { font-size:.85rem; color:var(--k-suave); }
+.equipe-filtros-cozinha { display:flex; flex-wrap:wrap; gap:24px; margin-top:24px; }
+.cozinha-coluna-topo { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:18px; }
+.cozinha-item { border-left:4px solid var(--k-borda); }
+.cozinha-item.etapa-nafila { border-left-color:var(--k-azul); }
+.cozinha-item.etapa-empreparo { border-left-color:var(--k-amarelo); }
+.cozinha-item.etapa-pronto { border-left-color:var(--k-roxo); }
+.cozinha-pronto-aviso { color:var(--k-suave); padding:12px; border:1px dashed var(--k-roxo); border-radius:8px; margin-bottom:0; font-size:.9rem; }
+.cozinha-item button { width:100%; }
+.cozinha-correcoes { border-left:4px solid var(--k-vermelho)!important; }
+.equipe-fluxo { display:flex; flex-wrap:wrap; gap:12px; margin:20px 0; color:var(--k-suave); font-size:.85rem; }
+.equipe-fluxo span { padding:10px 14px; border:1px solid var(--k-borda); border-radius:8px; }
+.equipe-recepcao-ferramentas { margin:24px 0; }
+.equipe-form-inline>div { min-width:180px; }
+.equipe-form-inline label { display:block; margin-bottom:6px; }
+.equipe-form-inline { align-items:flex-end; }
+.recepcao-grupos-colunas { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; margin:20px 0 32px; }
+.recepcao-coluna-titulo { display:flex; justify-content:space-between; gap:8px; font-size:1rem!important; margin-bottom:18px; }
+.recepcao-coluna-titulo span { color:var(--k-dourado); }
+.recepcao-grupo h3 { font-size:1.2rem; }
+.recepcao-grupo p { font-size:.9rem; }
+.recepcao-grupo button { width:100%; }
+.recepcao-grupo details summary { font-size:.8rem; color:var(--k-suave); margin-top:8px; }
+.recepcao-mesas article>div { display:flex; flex-wrap:wrap; align-items:center; gap:12px; }
+@media(max-width:1199.98px){.comanda-workspace{grid-template-columns:minmax(0,1fr)}.comanda-resumo{position:static}.comanda-resumo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start}.equipe-config-grid{grid-template-columns:minmax(0,1fr)}.recepcao-grupos-colunas{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:575.98px){.equipe-integrada .equipe-box{padding:16px}.equipe-indicadores{grid-template-columns:repeat(2,minmax(0,1fr))}.comanda-resumo{grid-template-columns:minmax(0,1fr);gap:0}.comanda-item-topo{flex-wrap:wrap}.comanda-subtotal{margin-left:78px}.equipe-permissoes>div{grid-template-columns:minmax(0,1fr);gap:6px}.equipe-integrada h1 .equipe-status{display:flex;margin-top:12px}.equipe-fluxo{display:grid}.cozinha-origens{grid-template-columns:minmax(0,1fr)}}

@@ -62,7 +62,7 @@ public class CupomService(AppDbContext db, IDataProtectionProvider protecao, Tim
         ExigirValido(cupom);
         if (cupom.LimiteTotal.HasValue && cupom.UtilizacoesAtivas >= cupom.LimiteTotal.Value)
             throw new ValidationException("Este cupom já atingiu o limite de utilizações disponíveis.");
-        if (await db.UsosCupom.CountAsync(u => u.CupomId == cupom.Id && u.UsuarioId == usuarioId && u.Situacao != SituacaoUsoCupom.Cancelado, ct) >= cupom.LimitePorCliente)
+        if (cupom.LimitePorCliente.HasValue && await db.UsosCupom.CountAsync(u => u.CupomId == cupom.Id && u.UsuarioId == usuarioId && u.Situacao != SituacaoUsoCupom.Cancelado, ct) >= cupom.LimitePorCliente.Value)
             throw new ValidationException("Você já atingiu o limite de uso deste cupom.");
         var dados = new Cotacao(usuarioId, cupom.Id, cupom.Codigo, cupom.Parceiro, cupom.Versao,
             CalcularDesconto(cupom, resumo.Total), Hash(resumo), Agora.AddMinutes(15));
@@ -103,7 +103,7 @@ public class CupomService(AppDbContext db, IDataProtectionProvider protecao, Tim
         await ReconciliarComTrava(c, 1, ct);
         if (c.LimiteTotal.HasValue && c.UtilizacoesAtivas > c.LimiteTotal.Value)
             throw new ValidationException("A última utilização deste cupom já foi reservada. Remova o cupom ou tente outro.");
-        if (await db.UsosCupom.CountAsync(u => u.CupomId == c.Id && u.UsuarioId == pedido.UsuarioId && u.Situacao != SituacaoUsoCupom.Cancelado, ct) >= c.LimitePorCliente)
+        if (c.LimitePorCliente.HasValue && await db.UsosCupom.CountAsync(u => u.CupomId == c.Id && u.UsuarioId == pedido.UsuarioId && u.Situacao != SituacaoUsoCupom.Cancelado, ct) >= c.LimitePorCliente.Value)
             throw new ValidationException("Você já atingiu o limite de uso deste cupom.");
         var uso = new UsoCupom { CupomId = c.Id, Pedido = pedido, UsuarioId = pedido.UsuarioId, Codigo = aplicado.Codigo,
             Parceiro = aplicado.Parceiro, Desconto = aplicado.Desconto, ReservadoEmUtc = agora };

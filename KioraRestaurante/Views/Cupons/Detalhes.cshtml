@@ -7,7 +7,7 @@
     <p><strong>@(Model.Tipo == TipoDescontoCupom.Percentual ? Model.Valor.ToString("0.##", cultura) + "% de desconto" : Model.Valor.ToString("C", cultura) + " de desconto")</strong> nos produtos.</p>
     <p>Mínimo em produtos: @Model.ValorMinimoProdutos.ToString("C", cultura). @if (Model.DescontoMaximo.HasValue) { <span>Desconto máximo: @Model.DescontoMaximo.Value.ToString("C", cultura).</span> }</p>
     <p>De @HorarioRestaurante.ParaLocal(Model.InicioEmUtc).ToString("dd/MM/yyyy HH:mm") até @HorarioRestaurante.ParaLocal(Model.FimEmUtc).ToString("dd/MM/yyyy HH:mm") · Brasília.</p>
-    <p>Um cupom por pedido, até @Model.LimitePorCliente utilização(ões) por cliente. Frete integral. Sujeito à disponibilidade da cota no momento da confirmação.</p>
+    <p>Um cupom por pedido. @(Model.LimitePorCliente==1?"Uma utilização por cliente.":Model.LimitePorCliente.HasValue?$"Até {Model.LimitePorCliente} utilizações por cliente.":"Pode ser utilizado novamente até o vencimento.") Frete integral. Sujeito à disponibilidade da cota no momento da confirmação.</p>
     @if (!Model.Ativo || Model.FimEmUtc <= DateTime.UtcNow) { <p role="status">Este cupom está pausado ou encerrado.</p> }
     <p>Digite o código no checkout e clique em Aplicar para conferir o desconto.</p><a asp-controller="Pedido" asp-action="Checkout" class="pedido-botao">Ir ao checkout</a></div>
 </section>

@@ -28,9 +28,12 @@ public class AdminController : Controller
         catch (UnauthorizedAccessException) { return Forbid(); }
     }
     [HttpGet]
-    public Task<IActionResult> Index() => Consultar(async () => {
+    public Task<IActionResult> Index([FromQuery] FiltroRelatorioAdmin filtro) => Consultar(async () => {
         var painel=await _service.Painel(AdministradorId);
-        painel.Relatorio=await _relatorios.Obter(AdministradorId,new());
+        painel.Relatorio.Filtros=filtro;
+        if(ModelState.IsValid) try { painel.Relatorio=await _relatorios.Obter(AdministradorId,filtro); }
+        catch(ValidationException ex) { ModelState.AddModelError("",ex.Message); }
+        if(!ModelState.IsValid){painel.Relatorio=await _relatorios.Obter(AdministradorId,new());painel.Relatorio.Filtros=filtro;}
         return View(painel);
     });
 

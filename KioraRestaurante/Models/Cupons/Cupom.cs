@@ -19,7 +19,7 @@ public class Cupom
     public DateTime InicioEmUtc { get; set; }
     public DateTime FimEmUtc { get; set; }
     public int? LimiteTotal { get; set; }
-    public int LimitePorCliente { get; set; } = 1;
+    public int? LimitePorCliente { get; set; } = 1;
     public int UtilizacoesAtivas { get; set; }
     public bool Ativo { get; set; } = true;
     public DateTime CriadoEmUtc { get; set; } = DateTime.UtcNow;

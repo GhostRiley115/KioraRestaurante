@@ -1,20 +1,23 @@
 @model List<ItemCozinhaDTO>
-@{ViewData["Title"]="Cozinha";var salao=Model.Where(i=>i.Origem=="salao").ToList();var delivery=Model.Where(i=>i.Origem=="delivery").ToList();}
-<header class="equipe-cabecalho"><div><h1>Cozinha</h1><p>Marque o início do preparo e depois o prato pronto. O garçom registra a entrega à mesa.</p></div><a asp-action="Cozinha">Atualizar fila</a></header>
-<p data-cozinha-atualiza role="status">A fila é atualizada a cada 15 segundos enquanto esta aba está visível. Você também pode usar Atualizar fila.</p>
-@if(ViewData["Correcoes"] is List<KioraRestaurante.DTOs.Notificacoes.ItemNotificacaoDTO> correcoes && correcoes.Count>0){
-<section class="equipe-box"><h2>Correções recentes</h2>@foreach(var aviso in correcoes){<p><strong>@aviso.Titulo</strong> — @aviso.Mensagem</p>}</section>}
+@{ViewData["Title"]="Fila da cozinha";var admin=User.IsInRole("Administrador");}
+<header class="admin-cabecalho"><div><span class="admin-sobretitulo">PRODUÇÃO E EXPEDIÇÃO</span><h1>Fila da cozinha</h1><p class="admin-suave">Inicie o preparo e marque o prato pronto. O garçom confirma a entrega à mesa.</p></div><a asp-action="Cozinha" data-atualizar-cozinha class="admin-botao admin-botao-secundario">Atualizar fila</a></header>
+<div class="equipe-indicadores"><p><span>Na fila de preparo</span><strong>@Model.Where(i=>i.Situacao==SituacaoPreparo.NaFila).Sum(i=>i.Quantidade)</strong></p><p><span>Em preparo</span><strong>@Model.Where(i=>i.Situacao==SituacaoPreparo.EmPreparo).Sum(i=>i.Quantidade)</strong></p><p><span>Prontos para retirada</span><strong>@Model.Where(i=>i.Situacao==SituacaoPreparo.Pronto).Sum(i=>i.Quantidade)</strong></p></div>
+<p class="equipe-atualizacao" data-cozinha-atualiza role="status">Atualização automática a cada 15 segundos enquanto esta aba estiver visível.</p>
+<div class="equipe-filtros-cozinha"><div><span class="equipe-rotulo-filtro">Origem</span><nav class="equipe-filtros" aria-label="Origem dos pedidos"><button type="button" data-fila-origem="todas" aria-pressed="true">Todos</button><button type="button" data-fila-origem="salao" aria-pressed="false">Restaurante físico</button><button type="button" data-fila-origem="delivery" aria-pressed="false">Delivery</button></nav></div><div><span class="equipe-rotulo-filtro">Etapa</span><nav class="equipe-filtros" aria-label="Etapa do preparo"><button type="button" data-fila-etapa="todas" aria-pressed="true">Todas</button><button type="button" data-fila-etapa="NaFila" aria-pressed="false">A preparar</button><button type="button" data-fila-etapa="EmPreparo" aria-pressed="false">Preparando</button><button type="button" data-fila-etapa="Pronto" aria-pressed="false">Prontos</button></nav></div></div>
+@if(ViewData["Correcoes"] is List<KioraRestaurante.DTOs.Notificacoes.ItemNotificacaoDTO> correcoes&&correcoes.Count>0){<details class="equipe-box cozinha-correcoes" open><summary>Correções recentes · @correcoes.Count</summary>@foreach(var aviso in correcoes){<p><strong>@aviso.Titulo</strong><br/>@aviso.Mensagem</p>}</details>}
+<p class="equipe-vazio" data-fila-vazia hidden role="status">Nenhum item nesta origem e etapa.</p>
 <div class="cozinha-origens">
-@foreach(var origem in new[]{"salao","delivery"}){var itens=origem=="salao"?salao:delivery;
-<section><h2>@(origem=="salao"?"Restaurante físico":"Delivery") · @itens.Count item(ns)</h2>
-@if(itens.Count==0){<p class="equipe-box">Nenhum item ativo nesta origem.</p>}
-@foreach(var item in itens){<article class="equipe-box cozinha-item" data-cozinha-item data-chave="@(item.ItemSalaoId?.ToString()??item.ItemDeliveryId?.ToString())" data-versao="@item.Versao">
-<span class="equipe-origem">@(origem=="salao"?"MESA":"DELIVERY")</span><h3>@item.Destino</h3><p class="cozinha-produto"><strong>@item.Quantidade × @item.Nome</strong></p>
-@if(!string.IsNullOrWhiteSpace(item.Composicao)){<p>Combo: @item.Composicao</p>}
-@if(!string.IsNullOrWhiteSpace(item.Observacao)){<p class="cozinha-observacao">Observação: @item.Observacao</p>}
-<p>@HorarioRestaurante.ParaLocal(item.EnviadoEmUtc).ToString("HH:mm") · <strong>@(item.Situacao==SituacaoPreparo.NaFila?"Na fila":item.Situacao==SituacaoPreparo.EmPreparo?"Em preparo":"Pronto para retirada")</strong></p>
-@if(item.Situacao is SituacaoPreparo.NaFila or SituacaoPreparo.EmPreparo){<form asp-action="Preparo" method="post"><input type="hidden" name="ChaveSolicitacao" value="@Guid.NewGuid()"/><input type="hidden" name="Origem" value="@origem"/><input type="hidden" name="ItemSalaoId" value="@item.ItemSalaoId"/><input type="hidden" name="ItemDeliveryId" value="@item.ItemDeliveryId"/><input type="hidden" name="Versao" value="@item.Versao"/><input type="hidden" name="Acao" value="@(item.Situacao==SituacaoPreparo.NaFila?"iniciar":"pronto")"/><button type="submit">@(item.Situacao==SituacaoPreparo.NaFila?"Iniciar preparo":"Marcar prato pronto")</button></form>}
+@foreach(var origem in new[]{"salao","delivery"}){var itens=Model.Where(i=>i.Origem==origem).OrderBy(i=>i.EnviadoEmUtc).ToList();
+<section data-cozinha-coluna="@origem"><div class="cozinha-coluna-topo"><h2>@(origem=="salao"?"Restaurante físico":"Delivery")</h2><span class="equipe-origem">@itens.Sum(i=>i.Quantidade) unidade(s)</span></div>
+@if(itens.Count==0){<p class="equipe-vazio">Sem itens ativos nesta origem.</p>}
+@foreach(var item in itens){<article class="equipe-box cozinha-item etapa-@item.Situacao.ToString().ToLowerInvariant()" data-cozinha-item data-origem="@origem" data-etapa="@item.Situacao" data-chave="@(item.ItemSalaoId?.ToString()??item.ItemDeliveryId?.ToString())" data-versao="@item.Versao">
+<div class="equipe-card-topo"><span class="equipe-status etapa-@item.Situacao.ToString().ToLowerInvariant()">@(item.Situacao==SituacaoPreparo.NaFila?"A preparar":item.Situacao==SituacaoPreparo.EmPreparo?"Em preparo":"Pronto para retirada")</span><span class="admin-suave">@HorarioRestaurante.ParaLocal(item.EnviadoEmUtc).ToString("HH:mm")</span></div>
+<h3>@item.Destino</h3><p class="cozinha-produto"><strong>@item.Quantidade × @item.Nome</strong></p>
+@if(!string.IsNullOrWhiteSpace(item.Composicao)){<p class="admin-suave">Combo: @item.Composicao</p>}
+@if(!string.IsNullOrWhiteSpace(item.Observacao)){<p class="cozinha-observacao"><strong>Preparo:</strong> @item.Observacao</p>}
+@if(item.Situacao is SituacaoPreparo.NaFila or SituacaoPreparo.EmPreparo){<form asp-action="Preparo" method="post"><input type="hidden" name="origemFiltro"/><input type="hidden" name="etapaFiltro"/><input type="hidden" name="ChaveSolicitacao" value="@Guid.NewGuid()"/><input type="hidden" name="Origem" value="@origem"/><input type="hidden" name="ItemSalaoId" value="@item.ItemSalaoId"/><input type="hidden" name="ItemDeliveryId" value="@item.ItemDeliveryId"/><input type="hidden" name="Versao" value="@item.Versao"/><input type="hidden" name="Acao" value="@(item.Situacao==SituacaoPreparo.NaFila?"iniciar":"pronto")"/><button type="submit">@(item.Situacao==SituacaoPreparo.NaFila?"Iniciar preparo":"Prato pronto para retirada")</button></form>}
+else{<p class="cozinha-pronto-aviso">@(origem=="salao"?"Garçom avisado. Aguardando retirada e entrega à mesa.":"Aguardando expedição. O andamento da entrega é controlado no delivery.")</p>}
+@if(admin&&item.PedidoId.HasValue){<a class="equipe-link-menor" asp-controller="Admin" asp-action="DetalhesPedido" asp-route-id="@item.PedidoId">Consultar pedido de delivery</a>}
 </article>}
 </section>}
-</div>
-<div id="filaCozinha" data-url="@Url.Content("~/api/salao/cozinha")"></div>
+</div><div id="filaCozinha" data-url="@Url.Content("~/api/salao/cozinha")"></div>

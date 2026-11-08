@@ -3,21 +3,8 @@
 var rotas=new Dictionary<string,string>{["Inicio"]=f.Inicio?.ToString("yyyy-MM-dd")??"",["Fim"]=f.Fim?.ToString("yyyy-MM-dd")??"",["CompararInicio"]=f.CompararInicio?.ToString("yyyy-MM-dd")??"",["CompararFim"]=f.CompararFim?.ToString("yyyy-MM-dd")??"",["Canal"]=f.Canal};
 var paginas=Math.Max(1,(int)Math.Ceiling(Model.Vendas.Count/20d));var pagina=Math.Clamp(f.Pagina,1,paginas);
 }
-<header class="admin-cabecalho"><div><span class="admin-sobretitulo">ANÁLISE DO NEGÓCIO</span><h1>Relatórios de vendas</h1><p class="admin-suave">Compare períodos, canais e produtos para planejar os próximos dias.</p></div><a asp-action="Index">Voltar à visão geral</a></header>
-@{var hoje=HorarioRestaurante.ParaLocal(DateTime.UtcNow).Date;var mes=new DateTime(hoje.Year,hoje.Month,1);}
-<nav class="admin-acoes admin-etapas" aria-label="Períodos rápidos">
-<a asp-action="Relatorios" asp-route-Inicio="@hoje.ToString("yyyy-MM-dd")" asp-route-Fim="@hoje.ToString("yyyy-MM-dd")" asp-route-Canal="@f.Canal">Hoje</a>
-<a asp-action="Relatorios" asp-route-Inicio="@hoje.AddDays(-6).ToString("yyyy-MM-dd")" asp-route-Fim="@hoje.ToString("yyyy-MM-dd")" asp-route-Canal="@f.Canal">Últimos 7 dias</a>
-<a asp-action="Relatorios" asp-route-Canal="@f.Canal">Este mês</a>
-<a asp-action="Relatorios" asp-route-Inicio="@mes.AddMonths(-1).ToString("yyyy-MM-dd")" asp-route-Fim="@mes.AddDays(-1).ToString("yyyy-MM-dd")" asp-route-Canal="@f.Canal">Mês anterior completo</a>
-</nav>
-<div asp-validation-summary="All" class="admin-erro" role="alert"></div>
-<form method="get" asp-action="Relatorios" class="admin-filtros admin-filtros-relatorio">
-<fieldset><legend>Período de vendas</legend><div class="admin-campos-data"><div><label for="Inicio">De</label><input id="Inicio" name="Inicio" type="date" min="2000-01-01" max="2100-12-31" value="@f.Inicio?.ToString("yyyy-MM-dd")" /></div><div><label for="Fim">Até</label><input id="Fim" name="Fim" type="date" min="2000-01-01" max="2100-12-31" value="@f.Fim?.ToString("yyyy-MM-dd")" /></div></div></fieldset>
-<fieldset><legend>Comparar com</legend><div class="admin-campos-data"><div><label for="CompararInicio">De</label><input id="CompararInicio" name="CompararInicio" type="date" min="2000-01-01" max="2100-12-31" value="@f.CompararInicio?.ToString("yyyy-MM-dd")" /></div><div><label for="CompararFim">Até</label><input id="CompararFim" name="CompararFim" type="date" min="2000-01-01" max="2100-12-31" value="@f.CompararFim?.ToString("yyyy-MM-dd")" /></div></div></fieldset>
-<div><label for="Canal">Canal de venda</label><select id="Canal" name="Canal"><option value="todos" selected="@(f.Canal=="todos")">Delivery e salão</option><option value="delivery" selected="@(f.Canal=="delivery")">Somente delivery</option><option value="salao" selected="@(f.Canal=="salao")">Somente restaurante físico</option></select></div>
-<div class="admin-acoes"><button type="submit">Atualizar relatório</button><a asp-action="Relatorios">Este mês</a></div>
-</form>
+<header class="admin-cabecalho"><div><span class="admin-sobretitulo">ANÁLISE DO NEGÓCIO</span><h1>Relatórios de vendas</h1><p class="admin-suave">Compare períodos, canais e produtos para planejar os próximos dias.</p></div><a asp-action="Index" asp-all-route-data="rotas">Voltar à visão geral</a></header>
+<partial name="_FiltrosRelatorio" model="f" />
 @if(ViewData.ModelState.IsValid){
 <partial name="_ResumoRelatorio" model="Model" />
 <section class="admin-box"><div class="admin-secao-topo"><div><h2>Vendas do período</h2><p class="admin-suave">@Model.Vendas.Count vendas confirmadas · clique para consultar o histórico completo.</p></div><a class="admin-botao admin-botao-secundario" asp-action="ExportarVendas" asp-all-route-data="rotas">Exportar vendas (CSV)</a></div>

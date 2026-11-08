@@ -10,6 +10,7 @@ public class RelatorioAdminDTO
     public List<DiaVendasAdminDTO> Dias { get; set; } = [];
     public List<ProdutoVendidoAdminDTO> Produtos { get; set; } = [];
     public List<HoraMovimentoAdminDTO> Horas { get; set; } = [];
+    public List<CupomPeriodoAdminDTO> Cupons { get; set; } = [];
     public List<VendaAdminDTO> Vendas { get; set; } = [];
     public int DeliveryNaFila { get; set; }
     public int DeliveryEmPreparo { get; set; }
@@ -45,6 +46,8 @@ public record ProdutoVendidoAdminDTO(int Id, string Nome, int Quantidade, int De
 public record HoraMovimentoAdminDTO(int Hora, int Delivery, int Salao, int Reservas);
 public class VendaAdminDTO
 {
+    public string? CodigoCupom { get; set; }
+    public string? ParceiroCupom { get; set; }
     public string Canal { get; set; } = "";
     public string Identificacao { get; set; } = "";
     public int? PedidoId { get; set; }
@@ -56,3 +59,5 @@ public class VendaAdminDTO
     public List<ItemVendaAdminDTO> Itens { get; set; } = [];
 }
 public record ItemVendaAdminDTO(int ProdutoId, string Nome, int Quantidade, decimal Preco, decimal? Original);
+
+public record CupomPeriodoAdminDTO(int? Id,string Codigo,string? Parceiro,int Utilizados,decimal Descontos);

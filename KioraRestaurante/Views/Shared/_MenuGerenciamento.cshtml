@@ -1,0 +1,30 @@
+@{
+    var admin=User.IsInRole("Administrador");
+    var gestor=admin||User.IsInRole("Gerente");
+    var garcom=User.IsInRole("Garcom");var portaria=User.IsInRole("Portaria");var cozinha=User.IsInRole("Cozinha");
+    var controller=ViewContext.RouteData.Values["controller"]?.ToString();
+    var action=ViewContext.RouteData.Values["action"]?.ToString();
+    string? Atual(string c,params string[] a)=>controller==c&&(a.Length==0||a.Contains(action))?"page":null;
+}
+<nav class="admin-nav" aria-label="Gerenciamento do restaurante">
+@if(admin){
+    <span class="admin-nav-grupo">Acompanhar</span>
+    <a asp-controller="Admin" asp-action="Index" aria-current="@Atual("Admin","Index")">Visão geral</a>
+    <a asp-controller="Admin" asp-action="Relatorios" aria-current="@Atual("Admin","Relatorios")">Relatórios de vendas</a>
+    <a asp-controller="Admin" asp-action="Pedidos" aria-current="@Atual("Admin","Pedidos","DetalhesPedido")">Pedidos de delivery</a>
+}
+    <span class="admin-nav-grupo">Restaurante físico</span>
+@if(gestor||garcom){<a asp-controller="Restaurante" asp-action="Index" aria-current="@Atual("Restaurante","Index","Comanda")">Salão e mesas</a>}
+@if(gestor||cozinha){<a asp-controller="Restaurante" asp-action="Cozinha" aria-current="@Atual("Restaurante","Cozinha")">Fila da cozinha</a>}
+@if(gestor||portaria||garcom){<a asp-controller="Restaurante" asp-action="Portaria" aria-current="@Atual("Restaurante","Portaria")">Reservas e recepção</a>}
+@if(gestor){<a asp-controller="Restaurante" asp-action="Configurar" aria-current="@Atual("Restaurante","Configurar")">Configurar mesas</a>}
+@if(gestor&&!admin){<a asp-controller="Restaurante" asp-action="Relatorio" aria-current="@Atual("Restaurante","Relatorio")">Vendas presenciais</a>}
+@if(admin){
+    <span class="admin-nav-grupo">Gerenciar</span>
+    <a asp-controller="ProdutosAdmin" asp-action="Index" aria-current="@Atual("ProdutosAdmin")">Produtos e descontos</a>
+    <a asp-controller="CuponsAdmin" asp-action="Index" aria-current="@Atual("CuponsAdmin")">Cupons e parceiros</a>
+    <a asp-controller="NotificacoesAdmin" asp-action="Index" aria-current="@Atual("NotificacoesAdmin")">Comunicados</a>
+    <a asp-controller="Admin" asp-action="Usuarios" aria-current="@Atual("Admin","Usuarios")">Clientes e contas</a>
+}
+@if(gestor){<a asp-controller="Funcionarios" asp-action="Index" aria-current="@Atual("Funcionarios")">Equipe e permissões</a>}
+</nav>

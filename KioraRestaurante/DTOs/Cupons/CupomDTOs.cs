@@ -20,7 +20,7 @@ public class SalvarCupomDTO
     public DateTime InicioLocal { get; set; }
     public DateTime FimLocal { get; set; }
     [Range(1, 1000000000, ErrorMessage = "O limite total deve ser positivo.")] public int? LimiteTotal { get; set; }
-    [Range(1, 1000000, ErrorMessage = "Informe um limite por cliente entre 1 e 1 milhão.")] public int LimitePorCliente { get; set; } = 1;
+    [Range(1, 1000000, ErrorMessage = "Informe um limite por cliente entre 1 e 1 milhão.")] public int? LimitePorCliente { get; set; } = 1;
     public bool Ativo { get; set; } = true;
 }
 
@@ -38,7 +38,7 @@ public class CupomResumoAdminDTO
     public bool Ativo { get; set; }
     public DateTime FimEmUtc { get; set; }
     public int? LimiteTotal { get; set; }
-    public int LimitePorCliente { get; set; }
+    public int? LimitePorCliente { get; set; }
     public int Reservas { get; set; }
     public int Confirmados { get; set; }
     public int Cancelados { get; set; }

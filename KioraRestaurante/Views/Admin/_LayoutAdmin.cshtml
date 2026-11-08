@@ -6,29 +6,13 @@
     @await RenderSectionAsync("Styles", required: false)
 }
 <div class="container admin-pagina">
-    <span class="admin-sobretitulo">KIORA · ADMINISTRAÇÃO</span>
+    <span class="admin-sobretitulo">KIORA · @(User.IsInRole("Administrador")?"ADMINISTRAÇÃO":"EQUIPE")</span>
     <!-- Links acessíveis em todas as telas administrativas. -->
     <div class="admin-shell">
     <aside class="admin-lateral">
         <details class="admin-menu" open>
         <summary>Menu de gerenciamento</summary>
-        <nav class="admin-nav" aria-label="Administração">
-            <span class="admin-nav-grupo">Acompanhar</span>
-            <a asp-controller="Admin" asp-action="Index">Visão geral</a>
-            <a asp-controller="Admin" asp-action="Relatorios">Relatórios de vendas</a>
-            <a asp-controller="Admin" asp-action="Pedidos">Pedidos de delivery</a>
-            <span class="admin-nav-grupo">Restaurante físico</span>
-            <a asp-controller="Restaurante" asp-action="Index">Salão e mesas</a>
-            <a asp-controller="Restaurante" asp-action="Cozinha">Fila da cozinha</a>
-            <a asp-controller="Restaurante" asp-action="Portaria">Reservas e recepção</a>
-            <a asp-controller="Restaurante" asp-action="Configurar">Configurar mesas</a>
-            <span class="admin-nav-grupo">Gerenciar</span>
-            <a asp-controller="ProdutosAdmin" asp-action="Index">Produtos e descontos</a>
-            <a asp-controller="CuponsAdmin" asp-action="Index">Cupons e parceiros</a>
-            <a asp-controller="NotificacoesAdmin" asp-action="Index">Comunicados</a>
-            <a asp-controller="Admin" asp-action="Usuarios">Clientes e contas</a>
-            <a asp-controller="Funcionarios" asp-action="Index">Equipe e permissões</a>
-        </nav>
+        <partial name="~/Views/Shared/_MenuGerenciamento.cshtml" />
         </details>
     </aside>
     <div class="admin-conteudo" id="gerenciamento">

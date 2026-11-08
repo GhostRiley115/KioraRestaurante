@@ -179,7 +179,7 @@ namespace KioraRestaurante.Migrations
                     b.Property<DateTime>("InicioEmUtc")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("LimitePorCliente")
+                    b.Property<int?>("LimitePorCliente")
                         .HasColumnType("int");
 
                     b.Property<int?>("LimiteTotal")

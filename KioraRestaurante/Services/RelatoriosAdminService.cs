@@ -32,10 +32,10 @@ public class RelatoriosAdminService(AppDbContext db, TimeProvider relogio)
             vendas.AddRange(await db.Pedidos.AsNoTracking().Where(p=>
                 ((p.DataPedido>=inicio && p.DataPedido<fim) || (p.DataPedido>=anteriorInicio && p.DataPedido<anteriorFim))
                 && p.StatusPedido!=StatusPedido.Cancelado && p.OperacaoPendenteId==null
-                && (p.StatusPagamento==StatusPagamento.Aprovado || (p.FormaPagamento==FormaPagamento.Dinheiro
-                    && p.StatusPedido==StatusPedido.Entregue && p.StatusPagamento==StatusPagamento.Pendente)))
+                && ((p.FormaPagamento!=FormaPagamento.Dinheiro && p.StatusPagamento==StatusPagamento.Aprovado) || (p.FormaPagamento==FormaPagamento.Dinheiro
+                    && p.StatusPedido==StatusPedido.Entregue && (p.StatusPagamento==StatusPagamento.Pendente || p.StatusPagamento==StatusPagamento.Aprovado))))
                 .Select(p=>new VendaAdminDTO { Canal="delivery", Identificacao="#"+p.Id, PedidoId=p.Id, DataUtc=p.DataPedido,
-                    Total=p.ValorTotal, Frete=p.TaxaEntrega, DescontoPedido=p.DescontoCupom,
+                    Total=p.ValorTotal, Frete=p.TaxaEntrega, DescontoPedido=p.DescontoCupom, CodigoCupom=p.CodigoCupom,ParceiroCupom=p.UsoCupom==null?null:p.UsoCupom.Parceiro,
                     Itens=p.ItensPedido.Select(i=>new ItemVendaAdminDTO(i.ProdutoId,i.NomeProduto,i.Quantidade,i.PrecoUnitario,i.PrecoOriginalUnitario)).ToList()
                 }).ToListAsync(ct));
         }
@@ -65,6 +65,20 @@ public class RelatoriosAdminService(AppDbContext db, TimeProvider relogio)
                 g.Sum(x=>x.Item.Quantidade),g.Where(x=>x.Canal=="delivery").Sum(x=>x.Item.Quantidade),
                 g.Where(x=>x.Canal=="salao").Sum(x=>x.Item.Quantidade),g.Where(x=>x.Item.Original>x.Item.Preco).Sum(x=>x.Item.Quantidade),
                 g.Sum(x=>x.Item.Quantidade*x.Item.Preco))).OrderByDescending(p=>p.Quantidade).ThenBy(p=>p.Nome).ToList();
+        if(filtro.Canal!="salao")
+        {
+            var campanhas=await db.Cupons.AsNoTracking().Where(c=>c.CriadoEmUtc<fim).Select(c=>new {c.Id,c.Codigo,c.Parceiro}).ToListAsync(ct);
+            var comCupom=atuais.Where(v=>v.Canal=="delivery" && v.DescontoPedido>0).ToList();
+            var codigos=campanhas.Select(c=>c.Codigo).Union(comCupom.Select(v=>v.CodigoCupom??"Sem código no histórico"));
+            r.Cupons=codigos.Select(codigo=>
+            {
+                var campanha=campanhas.FirstOrDefault(c=>c.Codigo==codigo);
+                var usos=comCupom.Where(v=>(v.CodigoCupom??"Sem código no histórico")==codigo).ToList();
+                var parceiros=usos.Select(v=>v.ParceiroCupom).Distinct().ToList();
+                var parceiro=usos.Count==0?campanha?.Parceiro:parceiros.Count==1?parceiros[0]:"Vários parceiros no histórico";
+                return new CupomPeriodoAdminDTO(campanha?.Id,codigo,parceiro,usos.Count,usos.Sum(v=>v.DescontoPedido));
+            }).OrderByDescending(c=>c.Utilizados).ThenBy(c=>c.Codigo).ToList();
+        }
         // A procura por reservas pertence ao restaurante físico e não depende do canal financeiro selecionado.
         var reservas=await db.Reservas.AsNoTracking().Where(a=>a.Tipo==KioraRestaurante.Models.TipoReserva.Agendada && a.InicioUtc>=inicio && a.InicioUtc<fim)
             .Select(a=>new { a.InicioUtc, a.Situacao }).ToListAsync(ct);

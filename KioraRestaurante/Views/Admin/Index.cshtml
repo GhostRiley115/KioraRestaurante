@@ -1,8 +1,10 @@
 @model PainelAdminDTO
-@{ ViewData["Title"] = "Visão geral"; var r=Model.Relatorio; }
-<header class="admin-cabecalho"><div><span class="admin-sobretitulo">SEU RESTAURANTE EM NÚMEROS</span><h1>Visão geral</h1><p class="admin-suave">O movimento de agora e os resultados deste mês, em um só lugar.</p></div><a class="admin-botao" asp-action="Relatorios">Explorar relatórios <span aria-hidden="true">↗</span></a></header>
+@{ ViewData["Title"] = "Visão geral"; var r=Model.Relatorio;
+var rotas=new Dictionary<string,string>{["Inicio"]=r.Filtros.Inicio?.ToString("yyyy-MM-dd")??"",["Fim"]=r.Filtros.Fim?.ToString("yyyy-MM-dd")??"",["CompararInicio"]=r.Filtros.CompararInicio?.ToString("yyyy-MM-dd")??"",["CompararFim"]=r.Filtros.CompararFim?.ToString("yyyy-MM-dd")??"",["Canal"]=r.Filtros.Canal};
+}
+<header class="admin-cabecalho"><div><span class="admin-sobretitulo">SEU RESTAURANTE EM NÚMEROS</span><h1>Visão geral</h1><p class="admin-suave">O movimento de agora e os resultados do período selecionado, em um só lugar.</p></div><a class="admin-botao" asp-action="Relatorios" asp-all-route-data="rotas">Explorar relatórios <span aria-hidden="true">↗</span></a></header>
 <section class="admin-box admin-operacao" aria-labelledby="operacao-titulo">
-<div class="admin-secao-topo"><h2 id="operacao-titulo">Acontecendo agora</h2><small class="admin-suave">Atualizado às @HorarioRestaurante.ParaLocal(r.GeradoEmUtc).ToString("HH:mm") · <a asp-action="Index">Atualizar</a></small></div>
+<div class="admin-secao-topo"><h2 id="operacao-titulo">Acontecendo agora</h2><small class="admin-suave">Atualizado às @HorarioRestaurante.ParaLocal(r.GeradoEmUtc).ToString("HH:mm") · <a asp-action="Index" asp-all-route-data="rotas">Atualizar</a></small></div>
 <div class="admin-operacao-grid">
 <a asp-action="Pedidos" asp-route-Aba="ativos"><strong>@r.DeliveryNaFila</strong><span>Delivery na fila de preparo</span></a>
 <a asp-action="Pedidos" asp-route-Aba="ativos" asp-route-Status="EmPreparo"><strong>@r.DeliveryEmPreparo</strong><span>Em preparo</span></a>
@@ -14,7 +16,9 @@
 @if(r.DeliveryAguardandoPagamento>0){<p class="admin-alerta">@r.DeliveryAguardandoPagamento delivery(s) aguardam pagamento ou resolução de ajuste antes do preparo. <a asp-action="Pedidos" asp-route-Aba="ativos">Conferir pedidos</a></p>}
 @if(r.RevisoesFinanceiras>0){<p class="admin-alerta">@r.RevisoesFinanceiras pedido(s) precisam de conferência financeira ou estorno. <a asp-action="Pedidos" asp-route-Aba="todos">Conferir histórico</a></p>}
 </section>
-<partial name="_ResumoRelatorio" model="r" />
+@{ViewData["AcaoRelatorio"]="Index";}
+<partial name="_FiltrosRelatorio" model="r.Filtros" />
+@if(ViewData.ModelState.IsValid){<partial name="_ResumoRelatorio" model="r" />}
 <!-- Contadores são consultas ao banco, sem valores fictícios. -->
 <section class="admin-box"><div class="admin-secao-topo"><h2>Acesso e relacionamento</h2><a asp-action="Usuarios">Gerenciar clientes</a></div><p>@Model.UsuariosAtivos contas ativas · @Model.UsuariosInativos inativas · @Model.TotalPedidos pedidos de delivery registrados no histórico.</p><div class="admin-acoes"><a asp-controller="Funcionarios" asp-action="Index">Gerenciar equipe</a><a asp-controller="NotificacoesAdmin" asp-action="Criar">Criar comunicado</a><a asp-controller="CuponsAdmin" asp-action="Index">Acompanhar cupons</a></div>
 <p class="admin-suave mt-3">Desativar uma conta mantém o histórico de pedidos e bloqueia o acesso na próxima requisição.</p></section>
