@@ -69,6 +69,7 @@ builder.Services.AddScoped<IProdutoService, ProdutoService>();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 builder.Services.AddScoped<IImagemProdutoService, ImagemProdutoService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
+builder.Services.AddScoped<RelatoriosAdminService>();
 builder.Services.AddScoped<ValidarSessaoUsuario>();
 // Limita o login por e-mail e, opcionalmente, por IP antes de executar a autenticação.
 builder.Services.AddSingleton(_ => new LimitadorLogin(

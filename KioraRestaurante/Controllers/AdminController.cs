@@ -15,9 +15,10 @@ namespace KioraRestaurante.Controllers;
 public class AdminController : Controller
 {
     private readonly IAdminService _service;
+    private readonly KioraRestaurante.Services.RelatoriosAdminService _relatorios;
     private readonly ILogger<AdminController> _logger;
 
-    public AdminController(IAdminService service, ILogger<AdminController> logger) { _service = service; _logger = logger; }
+    public AdminController(IAdminService service, ILogger<AdminController> logger, KioraRestaurante.Services.RelatoriosAdminService relatorios) { _service = service; _logger = logger; _relatorios = relatorios; }
     private int AdministradorId => int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var id) ? id : 0;
 
     // Centraliza a resposta de acesso negado sem expor erros internos.
@@ -27,7 +28,31 @@ public class AdminController : Controller
         catch (UnauthorizedAccessException) { return Forbid(); }
     }
     [HttpGet]
-    public Task<IActionResult> Index() => Consultar(async () => View(await _service.Painel(AdministradorId)));
+    public Task<IActionResult> Index() => Consultar(async () => {
+        var painel=await _service.Painel(AdministradorId);
+        painel.Relatorio=await _relatorios.Obter(AdministradorId,new());
+        return View(painel);
+    });
+
+    [HttpGet]
+    public Task<IActionResult> Relatorios([FromQuery] FiltroRelatorioAdmin filtro) => Consultar(async () => {
+        if (!ModelState.IsValid) return View(new KioraRestaurante.DTOs.Admin.RelatorioAdminDTO { Filtros=filtro });
+        try { return View(await _relatorios.Obter(AdministradorId,filtro)); }
+        catch (ValidationException ex) {
+            ModelState.AddModelError("",ex.Message);
+            return View(new KioraRestaurante.DTOs.Admin.RelatorioAdminDTO { Filtros=filtro });
+        }
+    });
+
+    [HttpGet]
+    public Task<IActionResult> ExportarVendas([FromQuery] FiltroRelatorioAdmin filtro) => Consultar(async () => {
+        if (!ModelState.IsValid) return BadRequest("Confira os filtros do relatório.");
+        KioraRestaurante.DTOs.Admin.RelatorioAdminDTO relatorio;
+        try { relatorio=await _relatorios.Obter(AdministradorId,filtro); }
+        catch (ValidationException) { return BadRequest("Confira os filtros do relatório."); }
+        var csv=KioraRestaurante.Services.CsvVendasAdmin.Gerar(relatorio.Vendas);
+        return File(csv,"text/csv; charset=utf-8",$"vendas-kiora-{filtro.Inicio:yyyyMMdd}-{filtro.Fim:yyyyMMdd}.csv");
+    });
 
     [HttpGet]
     public Task<IActionResult> Usuarios([FromQuery] FiltroUsuariosAdmin filtros) => Consultar(async () => {

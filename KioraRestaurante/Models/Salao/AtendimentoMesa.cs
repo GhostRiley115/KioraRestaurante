@@ -50,6 +50,9 @@ public class ItemComanda
     [MaxLength(100)] public string NomeProduto { get; set; } = "";
     public int Quantidade { get; set; }
     [Column(TypeName="decimal(10,2)")] public decimal PrecoUnitario { get; set; }
+    // Histórico da promoção no lançamento; nulo nas comandas anteriores a este registro.
+    [Column(TypeName="decimal(10,2)")] public decimal? PrecoOriginalUnitario { get; set; }
+    [Column(TypeName="decimal(5,2)")] public decimal? DescontoPercentual { get; set; }
     [MaxLength(500)] public string? Observacao { get; set; }
     [Column(TypeName="text")] public string? Composicao { get; set; }
     [MaxLength(500)] public string? ImagemUrl { get; set; }

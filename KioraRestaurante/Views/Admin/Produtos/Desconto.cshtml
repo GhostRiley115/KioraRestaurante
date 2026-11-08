@@ -22,7 +22,7 @@
     <form asp-controller="ProdutosAdmin"
           asp-action="Desconto"
           method="post"
-          class="produto-admin-form">
+          class="produto-admin-form" data-desconto-preview data-preco-original="@Model.PrecoOriginal.ToString(CultureInfo.InvariantCulture)">
 
         <input asp-for="Id" type="hidden" />
 
@@ -45,6 +45,7 @@
             Use 0 para remover o desconto.
         </p>
 
+        <div class="admin-desconto-preview"><span>Preço de venda com o desconto</span><output data-preco-preview aria-live="polite">Informe o percentual para simular.</output><small>O preço original permanece preservado. A promoção só muda ao salvar.</small></div>
         <div class="d-flex gap-3 flex-wrap mt-4">
             <button type="submit" class="produto-admin-botao">
                 Salvar desconto

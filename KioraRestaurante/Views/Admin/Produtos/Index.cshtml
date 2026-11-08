@@ -6,7 +6,8 @@
     var resultado = Model.Resultado;
 }
 
-<h1>Produtos</h1>
+<span class="admin-sobretitulo">CATÁLOGO E PREÇOS</span>
+<h1>Produtos e descontos</h1>
 
 <p class="admin-suave">
     Edite os produtos e controle o que aparece no cardápio
@@ -14,7 +15,7 @@
 </p>
 
 <div class="admin-acoes">
-    <a asp-controller="ProdutosAdmin" asp-action="Cadastrar">
+    <a class="admin-botao" asp-controller="ProdutosAdmin" asp-action="Cadastrar">
         Cadastrar produto
     </a>
 
@@ -141,15 +142,16 @@ else
 
                     <!-- As alterações usam POST, nunca links GET. -->
                     <div class="admin-produto-acoes">
-                        <a asp-action="Editar"
+                        <a class="admin-botao admin-botao-secundario" aria-label="Editar @produto.Nome" asp-action="Editar"
                            asp-route-id="@produto.Id">
                             Editar produto
                         </a>
-                        <a asp-action="Desconto"
+                        <a class="admin-botao" aria-label="Definir desconto de @produto.Nome" asp-action="Desconto"
                            asp-route-id="@produto.Id">
-                            Alterar desconto
+                            @(produto.DescontoPercentual > 0 ? "Editar promoção" : "Aplicar desconto")
                         </a>
 
+                        <details class="admin-produto-situacao"><summary>Disponibilidade e situação</summary>
                         @if (produto.Ativo)
                         {
                             <form asp-action="AlterarDisponibilidade"
@@ -192,6 +194,7 @@ else
                                 @(produto.Ativo ? "Desativar" : "Reativar")
                             </button>
                         </form>
+                        </details>
                     </div>
                 </div>
             </article>

@@ -106,12 +106,9 @@ public class ProdutosAdminController : Controller
                 {
                     await _produtoService.Criar(usuarioId, dto, model.Foto!);
 
-                    TempData["ProdutoSucesso"] = "Produto cadastrado com sucesso.";
+                    TempData["AdminSucesso"] = "Produto cadastrado com sucesso. Você já pode editar os dados ou aplicar um desconto.";
 
-                    return RedirectToAction(
-                        "Cardapio",
-                        "Home",
-                        new { categoriaId = model.CategoriaId });
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (UnauthorizedAccessException)
                 {

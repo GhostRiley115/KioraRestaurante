@@ -4,9 +4,9 @@
 @{ ViewData["Title"] = "Cupons"; var cultura = System.Globalization.CultureInfo.GetCultureInfo("pt-BR"); }
 <h1>Cupons de desconto</h1>
 <p>Um cupom por pedido, com desconto nos produtos. O frete é cobrado integralmente.</p>
-<a asp-action="Editar" class="pedido-botao">Criar cupom</a>
-<p class="admin-suave mt-3">A cota é reservada ao confirmar o pedido. O uso é confirmado no pagamento aprovado ou, em dinheiro, na entrega. Cancelamentos liberam a cota e permanecem no histórico.</p>
+<a asp-action="Editar" class="admin-botao">Criar cupom</a>
+<details class="admin-box mt-3"><summary>Como os usos do cupom são contados</summary><p class="admin-suave">A cota é reservada ao confirmar o pedido. O uso é confirmado no pagamento aprovado ou, em dinheiro, na entrega. Cancelamentos liberam a cota e permanecem no histórico.</p>
 @if (Model.Count == 0) { <p>Nenhum cupom cadastrado.</p> }
-<div class="admin-tabela-scroll"><table class="admin-tabela"><caption>Até 100 cupons mais recentes</caption><thead><tr><th>Código / parceiro</th><th>Desconto</th><th>Validade / situação</th><th>Reservas</th><th>Confirmados</th><th>Cancelados</th><th>Desconto confirmado</th><th>Ações</th></tr></thead><tbody>
+<div class="admin-tabela-scroll"><table class="admin-tabela"><caption>Até 100 cupons mais recentes</caption><thead><tr><th>Código / parceiro</th><th>Desconto</th><th>Validade / situação</th><th>Usos reservados</th><th>Usos confirmados</th><th>Usos cancelados</th><th>Desconto confirmado</th><th>Ações</th></tr></thead><tbody>
 @foreach (var c in Model) { <tr><td><strong>@c.Codigo</strong><br />@(c.Parceiro ?? "Sem parceiro")</td><td>@(c.Tipo == TipoDescontoCupom.Percentual ? c.Valor.ToString("0.##", cultura) + "%" : c.Valor.ToString("C", cultura))</td><td>@HorarioRestaurante.ParaLocal(c.FimEmUtc).ToString("dd/MM/yyyy HH:mm")<br />@(!c.Ativo ? "Pausado" : c.FimEmUtc <= DateTime.UtcNow ? "Encerrado" : "Ativo")</td><td>@c.Reservas</td><td>@c.Confirmados</td><td>@c.Cancelados</td><td>@c.DescontoConfirmado.ToString("C", cultura)</td><td><a asp-action="Relatorio" asp-route-id="@c.Id">Relatório</a><br /><a asp-action="Editar" asp-route-id="@c.Id">Editar</a><br /><a asp-controller="NotificacoesAdmin" asp-action="Criar" asp-route-cupomId="@c.Id">Divulgar</a></td></tr> }
 </tbody></table></div>

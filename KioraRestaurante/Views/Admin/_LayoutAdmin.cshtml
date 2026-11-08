@@ -8,20 +8,35 @@
 <div class="container admin-pagina">
     <span class="admin-sobretitulo">KIORA · ADMINISTRAÇÃO</span>
     <!-- Links acessíveis em todas as telas administrativas. -->
-    <nav class="admin-nav" aria-label="Administração">
-        <a asp-controller="Restaurante" asp-action="Index">Operação do restaurante</a>
-        <a asp-controller="ReservasAdmin" asp-action="Index">Reservas e mesas</a>
-        <a asp-controller="Admin" asp-action="Index">Visão geral</a>
-        <a asp-controller="Admin" asp-action="Pedidos">Pedidos</a>
-        <a asp-controller="CuponsAdmin" asp-action="Index">Cupons</a>
-        <a asp-controller="NotificacoesAdmin" asp-action="Index">Comunicados</a>
-        <a asp-controller="Admin" asp-action="Usuarios">Usuários</a>
-        <a asp-controller="ProdutosAdmin" asp-action="Cadastrar">Cadastrar produto</a>
-        <a asp-controller="ProdutosAdmin" asp-action="Index">Produtos</a>
-    </nav>
+    <div class="admin-shell">
+    <aside class="admin-lateral">
+        <details class="admin-menu" open>
+        <summary>Menu de gerenciamento</summary>
+        <nav class="admin-nav" aria-label="Administração">
+            <span class="admin-nav-grupo">Acompanhar</span>
+            <a asp-controller="Admin" asp-action="Index">Visão geral</a>
+            <a asp-controller="Admin" asp-action="Relatorios">Relatórios de vendas</a>
+            <a asp-controller="Admin" asp-action="Pedidos">Pedidos de delivery</a>
+            <span class="admin-nav-grupo">Restaurante físico</span>
+            <a asp-controller="Restaurante" asp-action="Index">Salão e mesas</a>
+            <a asp-controller="Restaurante" asp-action="Cozinha">Fila da cozinha</a>
+            <a asp-controller="Restaurante" asp-action="Portaria">Reservas e recepção</a>
+            <a asp-controller="Restaurante" asp-action="Configurar">Configurar mesas</a>
+            <span class="admin-nav-grupo">Gerenciar</span>
+            <a asp-controller="ProdutosAdmin" asp-action="Index">Produtos e descontos</a>
+            <a asp-controller="CuponsAdmin" asp-action="Index">Cupons e parceiros</a>
+            <a asp-controller="NotificacoesAdmin" asp-action="Index">Comunicados</a>
+            <a asp-controller="Admin" asp-action="Usuarios">Clientes e contas</a>
+            <a asp-controller="Funcionarios" asp-action="Index">Equipe e permissões</a>
+        </nav>
+        </details>
+    </aside>
+    <div class="admin-conteudo" id="gerenciamento">
     @if (TempData["AdminSucesso"] is string sucesso) { <p class="admin-aviso" role="status">@sucesso</p> }
     @if (TempData["AdminErro"] is string erro) { <p class="admin-erro" role="alert">@erro</p> }
     @RenderBody()
+    </div>
+    </div>
 </div>
 @section Scripts {
     <script src="~/js/admin.js" asp-append-version="true"></script>

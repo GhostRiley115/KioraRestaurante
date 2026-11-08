@@ -3,6 +3,7 @@ namespace KioraRestaurante.DTOs.Admin;
 
 public class PedidoAdminDTO
 {
+    public bool TemAjustePendente { get; set; }
     public int Id { get; set; }
     public int UsuarioId { get; set; }
     public string NomeCliente { get; set; } = "";

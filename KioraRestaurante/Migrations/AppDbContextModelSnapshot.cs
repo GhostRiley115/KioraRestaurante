@@ -1357,6 +1357,9 @@ namespace KioraRestaurante.Migrations
                     b.Property<string>("Composicao")
                         .HasColumnType("text");
 
+                    b.Property<decimal?>("DescontoPercentual")
+                        .HasColumnType("decimal(5,2)");
+
                     b.Property<DateTime?>("EntregueEmUtc")
                         .HasColumnType("datetime(6)");
 
@@ -1386,6 +1389,9 @@ namespace KioraRestaurante.Migrations
                     b.Property<string>("Observacao")
                         .HasMaxLength(500)
                         .HasColumnType("varchar(500)");
+
+                    b.Property<decimal?>("PrecoOriginalUnitario")
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<decimal>("PrecoUnitario")
                         .HasColumnType("decimal(10,2)");

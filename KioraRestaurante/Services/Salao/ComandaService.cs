@@ -43,7 +43,7 @@ public partial class ComandaService(AppDbContext db,AcessoSalaoService acesso,Co
     {
         Validar(dto);
         return new(){AtendimentoId=a.Id,ProdutoId=p.Id,RodadaId=rodada,NomeProduto=p.Nome,Quantidade=dto.Quantidade,
-            PrecoUnitario=PrecoProduto.Calcular(p.Preco,p.DescontoPercentual),Observacao=string.IsNullOrWhiteSpace(dto.Observacao)?null:dto.Observacao.Trim(),
+            PrecoOriginalUnitario=p.Preco,DescontoPercentual=p.DescontoPercentual,PrecoUnitario=PrecoProduto.Calcular(p.Preco,p.DescontoPercentual),Observacao=string.IsNullOrWhiteSpace(dto.Observacao)?null:dto.Observacao.Trim(),
             Composicao=ProdutoVenda.DescreverComposicao(p),ImagemUrl=p.Imagem,ImagemPublicId=p.ImagemPublicId,EnviadoEmUtc=Agora};
     }
     private static void ConferirTotal(AtendimentoMesa a)
@@ -120,7 +120,7 @@ public partial class ComandaService(AppDbContext db,AcessoSalaoService acesso,Co
             {
                 var produtoId=dto.ProdutoId??antigo.ProdutoId;
                 var novo=produtoId==antigo.ProdutoId
-                    ?new ItemComanda{AtendimentoId=a.Id,ProdutoId=antigo.ProdutoId,NomeProduto=antigo.NomeProduto,PrecoUnitario=antigo.PrecoUnitario,Composicao=antigo.Composicao,
+                    ?new ItemComanda{AtendimentoId=a.Id,ProdutoId=antigo.ProdutoId,NomeProduto=antigo.NomeProduto,PrecoOriginalUnitario=antigo.PrecoOriginalUnitario,DescontoPercentual=antigo.DescontoPercentual,PrecoUnitario=antigo.PrecoUnitario,Composicao=antigo.Composicao,
                         ImagemUrl=antigo.ImagemUrl,ImagemPublicId=antigo.ImagemPublicId,EnviadoEmUtc=Agora,RodadaId=dto.ChaveSolicitacao}
                     :Item(a,await ProdutoVendaAtual(produtoId,ct),new(){ProdutoId=produtoId,Quantidade=dto.Quantidade,Observacao=dto.Observacao},dto.ChaveSolicitacao);
                 novo.Quantidade=dto.Quantidade;novo.Observacao=string.IsNullOrWhiteSpace(dto.Observacao)?null:dto.Observacao.Trim();novo.SubstituiItemId=antigo.Id;

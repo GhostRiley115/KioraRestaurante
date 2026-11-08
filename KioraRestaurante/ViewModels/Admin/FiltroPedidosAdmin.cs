@@ -4,6 +4,8 @@ namespace KioraRestaurante.ViewModels.Admin;
 
 public class FiltroPedidosAdmin : IValidatableObject
 {
+    [RegularExpression("^(ativos|historico|todos)$", ErrorMessage="Escolha uma lista de pedidos válida.")]
+    public string Aba { get; set; } = "ativos";
     [StringLength(150)] public string? Busca { get; set; }
     [Range(1, int.MaxValue)] public int? PedidoId { get; set; }
     [Range(1, int.MaxValue)] public int? UsuarioId { get; set; }
