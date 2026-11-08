@@ -850,6 +850,13 @@ namespace KioraRestaurante.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
+                    b.Property<int?>("AdministradorSolicitanteId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("AdministradorSolicitanteNome")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
                     b.Property<DateTime?>("ConcluidaEmUtc")
                         .HasColumnType("datetime(6)");
 

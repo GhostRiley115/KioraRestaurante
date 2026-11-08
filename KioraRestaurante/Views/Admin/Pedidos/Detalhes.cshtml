@@ -1,47 +1,120 @@
 @model PedidoDetalhesAdminDTO
-@{ ViewData["Title"] = $"Pedido #{Model.Id}"; var cultura = CultureInfo.GetCultureInfo("pt-BR"); }
-<a asp-action="Pedidos">← Voltar aos pedidos</a>
-<h1 class="mt-3">Pedido #@Model.Id</h1>
-<p class="admin-suave">@HorarioRestaurante.ParaLocal(Model.DataPedido).ToString("dd/MM/yyyy HH:mm") — horário de Brasília</p>
-<div class="admin-detalhes">
-    <section class="admin-box"><h2>Itens do pedido</h2>
-        <!-- Valores históricos da compra: mudanças no cardápio não alteram este resumo. -->
-        @foreach(var item in Model.Itens) {
-            <div class="admin-item"><div class="pedido-item-detalhes"><img class="pedido-item-foto" src="@(string.IsNullOrWhiteSpace(item.ImagemUrl) ? Url.Content("~/imagens/produto-sem-foto.svg") : item.ImagemUrl)" alt="" width="80" height="80" loading="lazy" data-foto-produto data-foto-alternativa="@Url.Content("~/imagens/produto-sem-foto.svg")" /><div><strong>@item.Nome</strong><p>@item.Quantidade × @item.PrecoUnitario.ToString("C", cultura)</p>
-            @if(!string.IsNullOrWhiteSpace(item.Composicao)) { <p>Composição por combo: @item.Composicao</p> }
-            @if(!string.IsNullOrWhiteSpace(item.Observacao)) { <p>Observação: @item.Observacao</p> }</div></div>
-            <strong>@item.Subtotal.ToString("C", cultura)</strong></div>
-        }
-        <p>Produtos: @Model.Itens.Sum(i => i.Subtotal).ToString("C", cultura)</p>
-        @if (Model.DescontoCupom > 0) { <p>Cupom @Model.CodigoCupom: − @Model.DescontoCupom.ToString("C", cultura)</p> }
-        <p>Taxa de entrega: @Model.TaxaEntrega.ToString("C", cultura)</p>
-        @if (Model.DistanciaEntregaMetros.HasValue) { <p>Percurso estimado: @((Model.DistanciaEntregaMetros.Value / 1000m).ToString("0.00", cultura)) km</p> }
-        <p class="admin-total">Total <strong>@Model.ValorTotal.ToString("C", cultura)</strong></p>
-    </section>
-    <section class="admin-box"><h2>Cliente e pagamento</h2>
-        <p><strong>@Model.NomeCliente</strong><br />@Model.EmailCliente</p>
-        <p>Conta @(Model.ClienteAtivo ? "ativa" : "inativa") · Usuário #@Model.UsuarioId</p>
-        <a asp-action="Pedidos" asp-route-UsuarioId="@Model.UsuarioId">Ver pedidos deste cliente</a>
-        <p class="mt-3">Pedido: <span class="status-etiqueta @StatusVisual.Pedido(Model.StatusPedido)">@TextosAdmin.Pedido(Model.StatusPedido)</span></p>
-        @if (Model.CanceladoEmUtc.HasValue) { <p>Cancelado pelo cliente em @HorarioRestaurante.ParaLocal(Model.CanceladoEmUtc.Value).ToString("dd/MM/yyyy HH:mm"). Motivo: @(Model.MotivoCancelamento ?? "Não informado").</p> }
-        @if (Model.ReembolsoCancelamentoPendente) { <p class="pedido-erros" role="status">Pedido cancelado com pagamento aprovado. Conferir a devolução no Mercado Pago, incluindo eventuais cobranças adicionais de entrega. O sistema não confirmou estorno automático deste cancelamento.</p> }
-        @if (Model.OperacaoPendenteId.HasValue) { <p class="pedido-erros" role="status">Há uma solicitação pendente. O endereço atual continua válido até a conclusão. Confira os pagamentos antes de resolver manualmente.</p> }
-        <p>Pagamento: <span class="status-etiqueta @StatusVisual.Pagamento(Model.StatusPagamento)">@Model.StatusPagamento</span> · @TextosAdmin.Pagamento(Model.FormaPagamento)</p>
-        @if (!Model.OperacaoPendenteId.HasValue && Model.StatusPedido is StatusPedido.Recebido or StatusPedido.EmPreparo or StatusPedido.SaiuParaEntrega) {
-            var proximo = (StatusPedido)((int)Model.StatusPedido + 1);
-            <form asp-controller="PedidoAndamentoAdmin" asp-action="Avancar" method="post" class="my-3">
-                <input type="hidden" name="id" value="@Model.Id" /><input type="hidden" name="versao" value="@Model.Versao" /><input type="hidden" name="proximo" value="@((int)proximo)" />
-                <button type="submit">@($"Confirmar: {TextosAdmin.Pedido(proximo)}")</button>
-                @if (proximo == StatusPedido.Entregue && Model.FormaPagamento == FormaPagamento.Dinheiro) { <p>Ao confirmar a entrega, confirme também que o valor em dinheiro foi recebido.</p> }
-            </form>
-        }
-        <h2>Entrega</h2>
-        @if (Model.DuracaoPercursoSegundos.HasValue) { <p>Estimativa registrada: @Model.PreparoMinutos min de preparo + @((int)Math.Ceiling(Model.DuracaoPercursoSegundos.Value / 60m)) min de percurso.</p> }
-        @if(Model.Endereco is { } endereco) {
-            <p>@endereco.Logradouro, @endereco.Numero<br />@endereco.Bairro<br />@endereco.Cidade — @endereco.Uf<br />CEP @endereco.Cep</p>
-            @if(!string.IsNullOrWhiteSpace(endereco.Complemento)) { <p>Complemento: @endereco.Complemento</p> }
-            @if(!string.IsNullOrWhiteSpace(endereco.Referencia)) { <p>Referência: @endereco.Referencia</p> }
-        } else { <p>Endereço não registrado.</p> }
-        @if (Model.HistoricoAlteracoes.Count > 0) { <details><summary>Solicitações do cliente</summary><ul>@foreach (var registro in Model.HistoricoAlteracoes) { <li>@registro</li> }</ul></details> }
-    </section>
+@using KioraRestaurante.Models
+@using KioraRestaurante.Models.Salao
+@{
+    ViewData["Title"] = $"Pedido #{Model.Id}";
+    var cultura = CultureInfo.GetCultureInfo("pt-BR");
+    var finalizado = Model.StatusPedido is StatusPedido.Cancelado or StatusPedido.Entregue;
+    var pagamentoLiberado = Model.FormaPagamento == FormaPagamento.Dinheiro
+        ? Model.StatusPagamento is StatusPagamento.Pendente or StatusPagamento.Aprovado
+        : Model.StatusPagamento == StatusPagamento.Aprovado;
+    var cozinhaPronta = Model.Itens.Count > 0 && Model.Itens.All(i => i.SituacaoPreparo == SituacaoPreparo.Pronto);
+    var bloqueio = Model.OperacaoPendenteId.HasValue ? "Aguarde a conclusão da solicitação pendente."
+        : !pagamentoLiberado ? "O pagamento precisa ser confirmado ou conferido antes de avançar."
+        : Model.StatusPedido == StatusPedido.EmPreparo && !cozinhaPronta ? "A cozinha precisa marcar todos os itens como prontos antes da saída."
+        : null;
+    var acao = Model.StatusPedido switch { StatusPedido.Recebido => "Iniciar preparo", StatusPedido.EmPreparo => "Confirmar saída para entrega",
+        _ => Model.FormaPagamento == FormaPagamento.Dinheiro ? "Confirmar entrega e recebimento" : "Confirmar entrega ao cliente" };
+    var cancelamento = Model.Operacoes.FirstOrDefault(o => o.Tipo == TipoOperacaoPedido.Cancelamento && o.Estado == EstadoOperacaoPedido.Concluida);
+    string Preparo(ItemPedidoAdminDTO item) => Model.StatusPedido == StatusPedido.Cancelado ? "Pedido cancelado"
+        : Model.StatusPedido == StatusPedido.Entregue ? "Pedido entregue" : item.SituacaoPreparo switch {
+            SituacaoPreparo.NaFila => "Na fila da cozinha", SituacaoPreparo.EmPreparo => "Em preparo", SituacaoPreparo.Pronto => "Pronto para envio", _ => "Conferir preparo" };
+    string Estado(EstadoOperacaoPedido e) => e switch { EstadoOperacaoPedido.Concluida => "Concluída", EstadoOperacaoPedido.Desfeita => "Desfeita",
+        EstadoOperacaoPedido.Conferencia => "Em conferência", EstadoOperacaoPedido.AguardandoPagamento => "Aguardando pagamento", EstadoOperacaoPedido.AguardandoDevolucao => "Aguardando devolução", _ => "Em processamento" };
+}
+<div class="admin-cabecalho pedido-admin-cabecalho">
+    <div><a asp-action="Pedidos" asp-route-Aba="@(finalizado ? "historico" : "ativos")">← Voltar aos pedidos</a>
+        <h1>Pedido #@Model.Id <span class="admin-etiqueta">Delivery</span></h1>
+        <p class="admin-suave">@HorarioRestaurante.ParaLocal(Model.DataPedido).ToString("dd/MM/yyyy 'às' HH:mm") · horário de Brasília</p>
+    </div>
+    <div class="pedido-admin-situacoes"><span class="status-etiqueta @StatusVisual.Pedido(Model.StatusPedido)">@TextosAdmin.Pedido(Model.StatusPedido)</span>
+        <span class="status-etiqueta @StatusVisual.Pagamento(Model.StatusPagamento)">Pagamento: @TextosAdmin.Pagamento(Model.StatusPagamento)</span></div>
 </div>
+<section class="admin-box pedido-admin-andamento" aria-labelledby="tituloAndamento">
+    <div class="admin-secao-topo"><h2 id="tituloAndamento">Andamento do pedido</h2><a asp-controller="Restaurante" asp-action="Cozinha" asp-route-origem="delivery">Abrir fila da cozinha</a></div>
+    @if (Model.StatusPedido != StatusPedido.Cancelado) {
+        <ol class="pedido-admin-etapas" aria-label="Etapas do pedido">
+        @foreach (var etapa in new[]{StatusPedido.Recebido,StatusPedido.EmPreparo,StatusPedido.SaiuParaEntrega,StatusPedido.Entregue}) {
+            <li class="@((int)etapa <= (int)Model.StatusPedido ? "atingida" : "")" aria-current="@(etapa==Model.StatusPedido ? "step" : null)"><span aria-hidden="true">@((int)etapa+1)</span>@TextosAdmin.Pedido(etapa)</li>
+        }</ol>
+    }
+    @if (Model.CanceladoEmUtc.HasValue) {
+        <p><strong>Cancelado @(cancelamento?.AdministradorId.HasValue == true ? $"pela administração ({cancelamento.AdministradorNome})" : cancelamento != null ? "pelo cliente" : "no sistema")</strong> em @HorarioRestaurante.ParaLocal(Model.CanceladoEmUtc.Value).ToString("dd/MM/yyyy HH:mm").</p>
+        <p>Motivo: @(Model.MotivoCancelamento ?? "Não registrado")</p>
+    }
+    @if (Model.ReembolsoCancelamentoPendente) {
+        <p class="admin-alerta" role="status"><strong>Devolução pendente de conferência.</strong> Confira o pagamento e eventuais ajustes de entrega no meio utilizado. O cancelamento não confirma estorno automático.</p>
+    }
+    @if (Model.OperacaoPendenteId.HasValue) {
+        var pendente = Model.Operacoes.FirstOrDefault(o=>o.Estado is not EstadoOperacaoPedido.Concluida and not EstadoOperacaoPedido.Desfeita);
+        <p class="admin-alerta" role="status"><strong>@(pendente?.Tipo == TipoOperacaoPedido.Cancelamento ? "Cancelamento ainda não concluído." : "Alteração em andamento.")</strong> @(pendente?.Mensagem ?? "Aguarde a conferência antes de alterar o pedido.")</p>
+    }
+    @if (!finalizado) {
+        <div class="pedido-admin-proxima">
+            <div><strong>Próxima ação</strong><p>@(Model.StatusPedido == StatusPedido.Recebido ? "Confirme quando a cozinha começar o preparo." : Model.StatusPedido == StatusPedido.EmPreparo ? "Confira os itens e confirme a saída com o entregador." : "Confirme após a entrega ao cliente.")</p>
+            @if(bloqueio != null){<p id="bloqueioEtapa" class="admin-suave">@bloqueio</p>}</div>
+            <form asp-controller="PedidoAndamentoAdmin" asp-action="Avancar" method="post" data-confirmar="@(Model.StatusPedido == StatusPedido.SaiuParaEntrega && Model.FormaPagamento == FormaPagamento.Dinheiro ? "Confirma que o pedido foi entregue e que o valor em dinheiro foi recebido?" : $"{acao}?")">
+                <input type="hidden" name="id" value="@Model.Id" /><input type="hidden" name="versao" value="@Model.Versao" /><input type="hidden" name="proximo" value="@((int)Model.StatusPedido+1)" />
+                <button type="submit" disabled="@(bloqueio != null)" aria-describedby="@(bloqueio != null ? "bloqueioEtapa" : null)">@acao</button>
+                @if(Model.StatusPedido is StatusPedido.Recebido or StatusPedido.EmPreparo){<a href="#cancelamentoPedido" class="pedido-admin-cancelar-link">Cancelar pedido</a>}
+            </form>
+        </div>
+    }
+</section>
+<div class="pedido-admin-grid">
+    <div class="pedido-admin-coluna">
+        <section class="admin-box" aria-labelledby="tituloItens"><div class="admin-secao-topo"><h2 id="tituloItens">Itens e preparo</h2><span class="admin-suave">@Model.Itens.Sum(i=>i.Quantidade) unidade(s)</span></div>
+            <!-- Valores históricos da compra: mudanças no cardápio não alteram este resumo. -->
+            @foreach(var item in Model.Itens) {
+                <article class="pedido-admin-item"><img src="@(string.IsNullOrWhiteSpace(item.ImagemUrl) ? Url.Content("~/imagens/produto-sem-foto.svg") : item.ImagemUrl)" alt="" width="72" height="72" loading="lazy" data-foto-produto data-foto-alternativa="@Url.Content("~/imagens/produto-sem-foto.svg")" />
+                    <div><h3>@item.Nome</h3><p>@item.Quantidade × @item.PrecoUnitario.ToString("C",cultura)</p>
+                    @if(item.PrecoOriginalUnitario > item.PrecoUnitario){<p class="admin-suave">Preço anterior: <s>@item.PrecoOriginalUnitario.Value.ToString("C",cultura)</s> por unidade</p>}
+                    <span class="pedido-admin-preparo">@Preparo(item)</span>
+                    @if(!string.IsNullOrWhiteSpace(item.Composicao)){<p class="pedido-admin-observacao"><strong>Composição por combo:</strong> @item.Composicao</p>}
+                    @if(!string.IsNullOrWhiteSpace(item.Observacao)){<p class="pedido-admin-observacao"><strong>Observação do cliente:</strong> @item.Observacao</p>}</div>
+                    <strong class="pedido-admin-subtotal">@item.Subtotal.ToString("C",cultura)</strong>
+                </article>
+            }
+        </section>
+        <section class="admin-box" aria-labelledby="tituloEntrega"><h2 id="tituloEntrega">Entrega</h2>
+            @if(Model.Endereco is {} endereco){
+                <address>@endereco.Logradouro, @endereco.Numero<br />@endereco.Bairro · @endereco.Cidade / @endereco.Uf<br />CEP @endereco.Cep</address>
+                @if(!string.IsNullOrWhiteSpace(endereco.Complemento)){<p><strong>Complemento:</strong> @endereco.Complemento</p>}
+                @if(!string.IsNullOrWhiteSpace(endereco.Referencia)){<p><strong>Referência:</strong> @endereco.Referencia</p>}
+            }else{<p class="admin-suave">Endereço não registrado neste pedido.</p>}
+            @if(Model.DistanciaEntregaMetros.HasValue){<p class="admin-suave">Percurso estimado: @((Model.DistanciaEntregaMetros.Value/1000m).ToString("0.00",cultura)) km</p>}
+            @if(Model.DuracaoPercursoSegundos.HasValue){<p class="admin-suave">Estimativa registrada: @(Model.PreparoMinutos ?? 30) min de preparo + @((int)Math.Ceiling(Model.DuracaoPercursoSegundos.Value/60m)) min de percurso.</p>}
+        </section>
+    </div>
+    <div class="pedido-admin-coluna">
+        <section class="admin-box" aria-labelledby="tituloCobranca"><h2 id="tituloCobranca">Resumo da cobrança</h2>
+            <p>@TextosAdmin.Pagamento(Model.FormaPagamento) · <strong>@TextosAdmin.Pagamento(Model.StatusPagamento)</strong></p>
+            <dl class="pedido-admin-valores"><div><dt>Produtos</dt><dd>@Model.Itens.Sum(i=>i.Subtotal).ToString("C",cultura)</dd></div>
+            @if(Model.DescontoCupom>0){<div><dt>Cupom @Model.CodigoCupom</dt><dd>− @Model.DescontoCupom.ToString("C",cultura)</dd></div>}
+            <div><dt>Taxa de entrega</dt><dd>@Model.TaxaEntrega.ToString("C",cultura)</dd></div>
+            <div class="pedido-admin-total"><dt>Total do pedido</dt><dd>@Model.ValorTotal.ToString("C",cultura)</dd></div></dl>
+            @if(Model.FormaPagamento==FormaPagamento.Dinheiro&&!finalizado){<p class="admin-suave">Receber na entrega. A confirmação da entrega também registra o recebimento em dinheiro.</p>}
+            @if(Model.StatusPedido==StatusPedido.Cancelado){<p class="admin-suave">O total permanece como registro histórico da compra cancelada.</p>}
+        </section>
+        <section class="admin-box" aria-labelledby="tituloCliente"><h2 id="tituloCliente">Cliente</h2><p><strong>@Model.NomeCliente</strong><br />@Model.EmailCliente</p><p class="admin-suave">Conta @(Model.ClienteAtivo?"ativa":"inativa") · #@Model.UsuarioId</p><a asp-action="Pedidos" asp-route-UsuarioId="@Model.UsuarioId" asp-route-Aba="todos">Ver todos os pedidos deste cliente</a></section>
+        @if(Model.StatusPedido is StatusPedido.Recebido or StatusPedido.EmPreparo){
+            <section class="admin-box pedido-admin-cancelamento" id="cancelamentoPedido"><details open><summary>Cancelar pedido</summary>
+                <p>Permitido em Recebido ou Em preparo. O cliente e a cozinha serão avisados.</p>
+                <p class="admin-suave">Se houver pagamento, confira a devolução separadamente. O cancelamento não faz estorno automático.</p>
+                <form asp-controller="PedidoAndamentoAdmin" asp-action="Cancelar" method="post" data-confirmar="Cancelar este pedido e avisar o cliente e a cozinha? Valores já recebidos precisarão de conferência de devolução.">
+                    <input type="hidden" name="PedidoId" value="@Model.Id" /><input type="hidden" name="VersaoPedido" value="@Model.Versao" />
+                    <label for="motivoCancelamento">Motivo do cancelamento</label><textarea id="motivoCancelamento" name="Motivo" required maxlength="300" rows="3" placeholder="Ex.: ingrediente indisponível" aria-describedby="ajudaCancelamento" disabled="@Model.OperacaoPendenteId.HasValue"></textarea>
+                    <small id="ajudaCancelamento">Obrigatório, até 300 caracteres. O motivo fica no histórico e pode ser visto pelo cliente.</small>
+                    <button type="submit" disabled="@Model.OperacaoPendenteId.HasValue">Confirmar cancelamento</button>
+                </form>
+            </details></section>
+        }else if(Model.StatusPedido==StatusPedido.SaiuParaEntrega){<p class="admin-suave">O cancelamento está bloqueado porque o pedido já saiu para entrega.</p>}
+    </div>
+</div>
+@if(Model.Operacoes.Count>0){
+<section class="admin-box pedido-admin-historico"><h2>Histórico de solicitações</h2><ol>
+    @foreach(var registro in Model.Operacoes){<li><div><strong>@(registro.Tipo==TipoOperacaoPedido.Cancelamento?"Cancelamento":"Alteração de endereço")</strong> <span class="admin-etiqueta">@Estado(registro.Estado)</span></div>
+    <p class="admin-suave">@HorarioRestaurante.ParaLocal(registro.CriadaEmUtc).ToString("dd/MM/yyyy HH:mm") · @(registro.AdministradorId.HasValue?$"Administração: {registro.AdministradorNome}":"Cliente")</p>
+    @if(!string.IsNullOrWhiteSpace(registro.Motivo)){<p><strong>Motivo:</strong> @registro.Motivo</p>}<p>@registro.Mensagem</p></li>}
+</ol></section>
+}

@@ -4,7 +4,7 @@
                         =================================================
                     -->
 <!-- PAINEL DA CONTA: opções para visitante, cliente e administrador. -->
-<aside class="offcanvas offcanvas-end painel-conta" tabindex="-1" id="painelConta" aria-labelledby="tituloPainelConta">
+<aside class="offcanvas offcanvas-end painel-conta @(User.IsInRole("Administrador")||User.IsInRole("Gerente")||User.IsInRole("Garcom")||User.IsInRole("Portaria")||User.IsInRole("Cozinha")?"painel-conta-gestao":"")" tabindex="-1" id="painelConta" aria-labelledby="tituloPainelConta">
     <div class="offcanvas-header">
         <h2 class="offcanvas-title" id="tituloPainelConta">Sua conta</h2>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Fechar conta"></button>
@@ -49,37 +49,19 @@
 
                             </li>
 
-                            <li>
-                                <a class="conta-opcao"
-                                   asp-controller="Pedido"
-                                   asp-action="MeusPedidos">
-                                    <i class="bi bi-receipt" aria-hidden="true"></i>
-                                    Meus pedidos
-                                </a>
-                            </li>
-
-
-                            <li><a class="conta-opcao" asp-controller="Notificacoes" asp-action="Index"><i class="bi bi-bell" aria-hidden="true"></i>Notificações</a></li>
-
-                            @if (User.IsInRole("Administrador") || User.IsInRole("Gerente") || User.IsInRole("Garcom") || User.IsInRole("Portaria") || User.IsInRole("Cozinha")) {
-                                <li><a class="conta-opcao" asp-controller="Restaurante" asp-action="Index"><i class="bi bi-shop" aria-hidden="true"></i>Operação do restaurante</a></li>
+                            @if(User.IsInRole("Cliente")){
+                            <li><a class="conta-opcao" asp-controller="Pedido" asp-action="MeusPedidos"><i class="bi bi-receipt" aria-hidden="true"></i>Meus pedidos</a></li>
                             }
                             <!-- ADMINISTRAÇÃO: somente administradores veem esta opção. -->
-                            @if (User.IsInRole("Administrador"))
-                            {
-                                <!-- Central administrativa: pedidos, usuários e atalhos. -->
-                                <li><a class="conta-opcao" asp-controller="Admin" asp-action="Index">
-                                    <i class="bi bi-speedometer2" aria-hidden="true"></i>Administração
-                                </a></li>
-                                <li>
-                                    <a class="conta-opcao" asp-controller="ProdutosAdmin" asp-action="Cadastrar">
-                                        <i class="bi bi-plus-circle" aria-hidden="true"></i>
-                                        Cadastrar produto
-                                    </a>
-                                </li>
+                            <!-- Central administrativa: pedidos, usuários e atalhos. -->
+                            @if(User.IsInRole("Administrador")||User.IsInRole("Gerente")||User.IsInRole("Garcom")||User.IsInRole("Portaria")||User.IsInRole("Cozinha")){
+                                <partial name="_AtalhosContaEquipe" />
+                                <li class="conta-grupo">Minha conta</li>
                             }
-
+                            <li><a class="conta-opcao" asp-controller="Notificacoes" asp-action="Index"><i class="bi bi-bell" aria-hidden="true"></i>Notificações</a></li>
+                            @if(User.IsInRole("Cliente")){
                             <li><a class="conta-opcao" asp-controller="Reservas" asp-action="Minhas"><i class="bi bi-calendar-check" aria-hidden="true"></i>Minhas reservas</a></li>
+                            }
 
                             <!-- MEU PERFIL -->
 

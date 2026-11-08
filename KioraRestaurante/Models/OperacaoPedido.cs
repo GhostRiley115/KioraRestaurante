@@ -12,6 +12,9 @@ public class OperacaoPedido
     public Guid Id { get; set; } = Guid.NewGuid();
     public int PedidoId { get; set; }
     public Pedido Pedido { get; set; } = null!;
+    // A origem administrativa é registrada pelo servidor, sem substituir a identidade do cliente.
+    public int? AdministradorSolicitanteId { get; set; }
+    [MaxLength(100)] public string? AdministradorSolicitanteNome { get; set; }
     public TipoOperacaoPedido Tipo { get; set; }
     public EstadoOperacaoPedido Estado { get; set; }
     public DateTime CriadaEmUtc { get; set; } = DateTime.UtcNow;

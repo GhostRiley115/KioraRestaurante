@@ -277,7 +277,7 @@ public class GerenciarPedidoTests
         if (online) { await b.Pagamentos.Sincronizar(b.Provedor.Principal.Id, default); Assert.Equal(StatusPagamento.Aprovado, (await b.Pedido()).StatusPagamento); }
     }
 
-    private sealed class Banco : IDisposable
+    internal sealed class Banco : IDisposable
     {
         private readonly SqliteConnection _conn = new("Data Source=:memory:");
         private readonly MemoryCache _cache = new(new MemoryCacheOptions());
@@ -342,7 +342,7 @@ public class GerenciarPedidoTests
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter) => Console.WriteLine(formatter(state, exception));
     }
 
-    private sealed class Provedor : HttpMessageHandler
+    internal sealed class Provedor : HttpMessageHandler
     {
         private readonly Dictionary<string, Ordem> _ordens = [];
         private readonly Dictionary<string, Ordem> _criadas = [];

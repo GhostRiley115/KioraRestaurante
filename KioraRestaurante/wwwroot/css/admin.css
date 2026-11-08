@@ -230,3 +230,66 @@
 .admin-nav a { min-height:44px; display:flex; align-items:center; }
 @media(max-width:991.98px){.admin-lateral{max-height:none;overflow:visible;}}
 @media(max-width:380px){.admin-campos-data{grid-template-columns:minmax(0,1fr);}}
+
+/* Detalhes do delivery: operação, cobrança e endereço separados, sem painéis vazios esticados. */
+.pedido-admin-cabecalho h1 { display:flex; align-items:center; flex-wrap:wrap; gap:12px; }
+.pedido-admin-cabecalho h1 .admin-etiqueta { font:600 .9rem var(--bs-body-font-family, sans-serif); padding:6px 10px; color:var(--k-suave); }
+.pedido-admin-situacoes { display:flex; gap:10px; flex-wrap:wrap; }
+.pedido-admin-andamento { margin-bottom:20px; }
+.pedido-admin-etapas { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); list-style:none; padding:0; margin:20px 0; gap:10px; }
+.pedido-admin-etapas li { display:flex; align-items:center; gap:8px; color:var(--k-suave); border-top:3px solid var(--k-borda); padding-top:12px; font-size:.9rem; }
+.pedido-admin-etapas li>span { display:grid; place-items:center; width:26px; height:26px; flex:0 0 26px; border-radius:50%; background:var(--k-elevado); border:1px solid var(--k-borda); }
+.pedido-admin-etapas .atingida { border-color:var(--k-dourado); color:var(--k-texto); }
+.pedido-admin-etapas [aria-current="step"] { font-weight:700; }
+.pedido-admin-proxima { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; padding-top:16px; border-top:1px solid var(--k-borda); }
+.pedido-admin-proxima>div { flex:1 1 270px; }
+.pedido-admin-proxima p { margin:6px 0 0; }
+.pedido-admin-proxima form { flex:0 1 260px; }
+.pedido-admin-proxima button { width:100%; }
+.pedido-admin-grid { display:grid; grid-template-columns:minmax(0,1.35fr) minmax(0,1fr); gap:20px; align-items:start; }
+.pedido-admin-coluna { display:grid; gap:20px; min-width:0; }
+.pedido-admin-coluna h2 { margin-bottom:18px; }
+.pedido-admin-item { display:grid; grid-template-columns:64px minmax(0,1fr) auto; gap:14px; padding:18px 0; border-bottom:1px solid var(--k-borda); }
+.pedido-admin-item:last-child { border-bottom:0; padding-bottom:0; }
+.pedido-admin-item img { width:64px; height:64px; object-fit:cover; border-radius:10px; }
+.pedido-admin-item h3 { font:700 1rem var(--bs-body-font-family,sans-serif); margin:0 0 6px; color:var(--k-texto); }
+.pedido-admin-item p { margin:4px 0; font-size:.9rem; }
+.pedido-admin-preparo { display:inline-block; padding:4px 8px; margin:6px 0; border:1px solid var(--k-borda); border-radius:6px; font-size:.8rem; }
+.pedido-admin-item .pedido-admin-observacao { padding:10px; background:var(--k-elevado); border-radius:6px; white-space:pre-line; }
+.pedido-admin-subtotal { white-space:nowrap; }
+.pedido-admin-valores { margin:20px 0 12px; }
+.pedido-admin-valores>div { display:flex; justify-content:space-between; gap:12px; padding:10px 0; }
+.pedido-admin-valores dt { font-weight:400; }
+.pedido-admin-valores dd { margin:0; font-weight:700; white-space:nowrap; }
+.pedido-admin-valores .pedido-admin-total { border-top:1px solid var(--k-borda); margin-top:8px; padding-top:16px; font-size:1.1rem; color:var(--k-dourado); }
+.pedido-admin-total dt { font-weight:700; }
+.pedido-admin-coluna address { font-style:normal; line-height:1.8; }
+.pedido-admin-cancelamento summary { font-weight:700; color:var(--k-vermelho); }
+.pedido-admin-cancelamento form { display:grid; gap:10px; }
+.pedido-admin-cancelamento textarea { width:100%; background:var(--k-campo); border:1px solid var(--k-borda); color:var(--k-texto); border-radius:8px; padding:12px; }
+.pedido-admin-cancelamento small { color:var(--k-suave); line-height:1.6; }
+.pedido-admin-historico { margin-top:20px; }
+.pedido-admin-historico ol { list-style:none; padding:0; margin:0; }
+.pedido-admin-historico li { border-left:2px solid var(--k-borda); margin-top:18px; padding:0 0 4px 16px; }
+.pedido-admin-historico p { margin:8px 0 0; }
+/* A ajuda de cada campo fica vinculada ao controle para leitores de tela. */
+.cupom-admin-form { display:grid; gap:20px; }
+.cupom-admin-form .admin-box { margin:0; }
+.cupom-admin-form h2 { margin:12px 0 24px; }
+.cupom-admin-campos { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px; }
+.cupom-admin-campos>div { min-width:0; }
+.cupom-admin-linha { grid-column:1/-1; }
+.cupom-admin-form label { display:block; margin-bottom:8px; font-weight:600; }
+.cupom-admin-form label .admin-suave { font-weight:400; }
+.cupom-admin-form small { display:block; font-size:.875rem; line-height:1.65; color:var(--k-suave); margin-top:8px; }
+.cupom-admin-form input,.cupom-admin-form select { min-height:44px; }
+.cupom-admin-form .cupom-admin-ativo { margin-top:24px; padding:16px; background:var(--k-elevado); border-radius:10px; }
+.cupom-admin-ativo label { display:flex; align-items:center; gap:10px; }
+.cupom-admin-ativo input { min-height:20px; width:20px; accent-color:var(--k-dourado); }
+.cupom-admin-exemplo { margin-top:16px; }
+.cupom-admin-exemplo summary { color:var(--k-dourado); }
+@media(max-width:1199.98px){.pedido-admin-grid{grid-template-columns:minmax(0,1fr)}.pedido-admin-coluna{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:699.98px){.pedido-admin-etapas{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.pedido-admin-item{grid-template-columns:56px minmax(0,1fr);gap:12px}.pedido-admin-item img{width:56px;height:56px}.pedido-admin-subtotal{grid-column:2}.cupom-admin-campos{grid-template-columns:minmax(0,1fr)}.pedido-admin-proxima form{flex-basis:100%}}
+
+.pedido-admin-proxima .pedido-admin-cancelar-link { display:block; padding:12px 0 0; text-align:center; color:var(--k-vermelho); }
+#cancelamentoPedido { scroll-margin-top:110px; }

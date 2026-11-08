@@ -1,3 +1,5 @@
+using KioraRestaurante.DTOs.Admin;
+using KioraRestaurante.Models.Notificacoes;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Text.Json;
@@ -85,11 +87,48 @@ public class GerenciarPedidoService(AppDbContext db, EnderecoUsuarioService ende
         return op.Id;
     }
 
+    public async Task<ResultadoCancelamentoAdmin> CancelarPeloAdministrador(int adminId, CancelarPedidoAdminRequestDTO dto, CancellationToken ct = default)
+    {
+        var admin = await db.Usuarios.AsNoTracking().Where(u => u.Id == adminId && u.Ativo && u.Tipo == TipoUsuario.Administrador)
+            .Select(u => new { u.Id, u.Nome }).SingleOrDefaultAsync(ct) ?? throw new UnauthorizedAccessException();
+        Validator.ValidateObject(dto, new(dto), true);
+        var p = await db.Pedidos.AsNoTracking().SingleOrDefaultAsync(p => p.Id == dto.PedidoId, ct) ?? throw new KeyNotFoundException();
+        if (p.StatusPedido == StatusPedido.Cancelado) return new(true, p.ReembolsoCancelamentoPendente);
+        if (p.StatusPedido is not (StatusPedido.Recebido or StatusPedido.EmPreparo))
+            throw new ValidationException("O administrador só pode cancelar antes de o pedido sair para entrega.");
+        if (p.OperacaoPendenteId.HasValue) throw new ValidationException("Há uma solicitação em andamento. Aguarde sua conclusão antes de cancelar.");
+        if (p.Versao != dto.VersaoPedido) throw new ValidationException("O pedido mudou. Atualize os detalhes antes de cancelar.");
+        var op = new OperacaoPedido {
+            PedidoId = p.Id, Tipo = TipoOperacaoPedido.Cancelamento, Motivo = dto.Motivo.Trim(),
+            AdministradorSolicitanteId = admin.Id, AdministradorSolicitanteNome = admin.Nome, CriadaEmUtc = Agora, ConferidaEmUtc = Agora
+        };
+        await Registrar(p, op, dto.VersaoPedido, ct);
+        await Processar(op.Id, ct);
+        return await db.Pedidos.AsNoTracking().Where(x => x.Id == p.Id)
+            .Select(x => new ResultadoCancelamentoAdmin(x.StatusPedido == StatusPedido.Cancelado, x.ReembolsoCancelamentoPendente)).SingleAsync(ct);
+    }
+
+    private async Task AvisarCozinhaDoCancelamento(OperacaoPedido op, CancellationToken ct)
+    {
+        var ids = await db.Usuarios.Where(u => u.Ativo && (u.Tipo == TipoUsuario.Cozinha || u.Tipo == TipoUsuario.Gerente || u.Tipo == TipoUsuario.Administrador))
+            .Select(u => u.Id).ToListAsync(ct);
+        // O aviso e o cancelamento são gravados juntos; a chave da operação evita duplicação em retentativas.
+        var aviso = new Notificacao {
+            Id = op.Id, Tipo = TipoNotificacao.CorrecaoCozinha, Publico = PublicoNotificacao.Funcionario,
+            AutorId = op.AdministradorSolicitanteId, PedidoId = op.PedidoId, Titulo = $"Delivery #{op.PedidoId}: correção no pedido",
+            Mensagem = $"Pedido cancelado pelo restaurante. Interrompa o preparo. Motivo: {op.Motivo}", CriadaEmUtc = Agora
+        };
+        db.Notificacoes.Add(aviso);
+        db.NotificacoesUsuarios.AddRange(ids.Select(u => new NotificacaoUsuario { Notificacao = aviso, UsuarioId = u }));
+    }
+
     private async Task Registrar(Pedido p, OperacaoPedido op, Guid versao, CancellationToken ct)
     {
         await using var tx = await db.Database.BeginTransactionAsync(ct);
         var novaVersaoPedido = Guid.NewGuid();
-        var n = await db.Pedidos.Where(x => x.Id == p.Id && x.UsuarioId == p.UsuarioId && x.Usuario.Ativo
+        var n = await db.Pedidos.Where(x => x.Id == p.Id && x.UsuarioId == p.UsuarioId && (op.AdministradorSolicitanteId.HasValue
+                    ? db.Usuarios.Any(u=>u.Id==op.AdministradorSolicitanteId.Value&&u.Ativo&&u.Tipo==TipoUsuario.Administrador)
+                    : x.Usuario.Ativo)
                 && x.StatusPedido == p.StatusPedido && x.Versao == versao && x.OperacaoPendenteId == null)
             .ExecuteUpdateAsync(s => s.SetProperty(x => x.Versao, novaVersaoPedido).SetProperty(x => x.OperacaoPendenteId, (Guid?)op.Id), ct);
         if (n != 1) throw new ValidationException("O pedido mudou durante a confirmação. Atualize os detalhes.");
@@ -178,19 +217,36 @@ public class GerenciarPedidoService(AppDbContext db, EnderecoUsuarioService ende
                     if (!pago && !encerrado) throw new FalhaPagamento("O pagamento ainda está sendo processado. Aguarde a conferência.");
                 }
             }
+            else if (op.Tipo == TipoOperacaoPedido.Cancelamento && op.AdministradorSolicitanteId.HasValue)
+            {
+                // Pagamentos antigos/manuais não têm uma order online; não inventa confirmação do provedor.
+                pago = p.StatusPagamento == StatusPagamento.Aprovado;
+            }
             else if (p.StatusPagamento is StatusPagamento.Aprovado or StatusPagamento.Conferencia or StatusPagamento.Reembolsado)
                 throw new ValidationException("O pagamento deste pedido precisa ser conferido pelo restaurante antes da alteração.");
             op.PagamentoConfirmado = pago;
 
             if (op.Tipo == TipoOperacaoPedido.Cancelamento)
             {
-                if (p.StatusPedido != StatusPedido.Recebido) throw new ValidationException("O preparo já começou. O restaurante precisa conferir a solicitação.");
+                if (op.AdministradorSolicitanteId.HasValue
+                    ? p.StatusPedido is not (StatusPedido.Recebido or StatusPedido.EmPreparo)
+                    : p.StatusPedido != StatusPedido.Recebido) throw new ValidationException("O preparo já começou. O restaurante precisa conferir a solicitação.");
                 p.StatusPedido = StatusPedido.Cancelado; p.CanceladoEmUtc = Agora; p.MotivoCancelamento = op.Motivo;
-                p.ReembolsoCancelamentoPendente = pago;
-                p.StatusPagamento = pago ? StatusPagamento.Aprovado : StatusPagamento.Cancelado;
+                p.ReembolsoCancelamentoPendente = pago || p.StatusPagamento == StatusPagamento.Conferencia;
+                p.StatusPagamento = p.StatusPagamento is StatusPagamento.Conferencia or StatusPagamento.Reembolsado
+                    ? p.StatusPagamento : pago ? StatusPagamento.Aprovado : StatusPagamento.Cancelado;
                 if (principal != null) principal.RevisaoNecessaria = pago;
                 op.Mensagem = pago ? "Pedido cancelado. O restaurante precisa conferir a devolução do pagamento. Use Preciso de ajuda para acompanhar."
                     : "Pedido cancelado antes do preparo. Nenhuma cobrança confirmada foi identificada.";
+                if (op.AdministradorSolicitanteId.HasValue)
+                {
+                    await AvisarCozinhaDoCancelamento(op, ct);
+                    op.Mensagem = p.ReembolsoCancelamentoPendente
+                        ? "Pedido cancelado pelo restaurante. A devolução do valor precisa ser conferida; o cancelamento não confirma estorno."
+                        : p.StatusPagamento == StatusPagamento.Reembolsado
+                            ? "Pedido cancelado pelo restaurante. O pagamento consta como reembolsado no histórico."
+                            : "Pedido cancelado pelo restaurante. Nenhuma cobrança confirmada foi identificada no sistema.";
+                }
                 Concluir(op); await db.SaveChangesAsync(ct); return;
             }
 

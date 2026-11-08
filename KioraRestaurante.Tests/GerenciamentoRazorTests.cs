@@ -38,6 +38,23 @@ public class GerenciamentoRazorTests
         await using var telas=new Telas();var html=await telas.Render("~/Views/Admin/_FiltrosRelatorio.cshtml",new FiltroRelatorioAdmin{Inicio=new(2026,11,1),Fim=new(2026,11,8),CompararInicio=new(2026,10,1),CompararFim=new(2026,10,8)},"Administrador","Index");
         Assert.Contains("name=\"Inicio\"",html);Assert.Contains("name=\"CompararInicio\"",html);Assert.Contains("method=\"get\"",html);Assert.Contains("value=\"2026-11-08\"",html);
     }
+    [Theory][InlineData("Administrador",false,true)][InlineData("Cliente",true,false)][InlineData("Cozinha",false,false)]
+    public async Task PainelDaContaSeparaGestaoDeComprasPessoais(string cargo,bool pessoal,bool admin)
+    {
+        await using var telas=new Telas();var html=System.Net.WebUtility.HtmlDecode(await telas.Render("~/Views/Shared/_PainelConta.cshtml",new object(),cargo));
+        Assert.Equal(pessoal,html.Contains("Meus pedidos"));Assert.Equal(pessoal,html.Contains("Minhas reservas"));Assert.Equal(admin,html.Contains("Visão geral"));Assert.Equal(admin,html.Contains("Produtos e descontos"));
+    }
+    [Theory][InlineData(KioraRestaurante.Models.Enums.StatusPedido.Recebido,true)][InlineData(KioraRestaurante.Models.Enums.StatusPedido.EmPreparo,true)][InlineData(KioraRestaurante.Models.Enums.StatusPedido.SaiuParaEntrega,false)][InlineData(KioraRestaurante.Models.Enums.StatusPedido.Entregue,false)]
+    public async Task DetalhesEscondemCancelamentoAposSaidaEExigemMotivo(KioraRestaurante.Models.Enums.StatusPedido status,bool cancelar)
+    {
+        await using var telas=new Telas();var html=await telas.Render("~/Views/Admin/Pedidos/Detalhes.cshtml",new KioraRestaurante.DTOs.Admin.PedidoDetalhesAdminDTO{StatusPedido=status},"Administrador");
+        Assert.Equal(cancelar,html.Contains("name=\"Motivo\""));if(cancelar){Assert.Contains("required",html);Assert.Contains("maxlength=\"300\"",html);}
+    }
+    [Fact] public async Task PagamentoNaoConfirmadoNaoOfereceAvancoNemConteudoDoClienteComoHtml()
+    {
+        await using var telas=new Telas();var html=await telas.Render("~/Views/Admin/Pedidos/Detalhes.cshtml",new KioraRestaurante.DTOs.Admin.PedidoDetalhesAdminDTO{StatusPagamento=KioraRestaurante.Models.Enums.StatusPagamento.Pendente,FormaPagamento=KioraRestaurante.Models.Enums.FormaPagamento.Pix,NomeCliente="<script>teste</script>"},"Administrador");
+        Assert.Matches("<button[^>]*disabled[^>]*>Iniciar preparo",html);Assert.DoesNotContain("<script>teste</script>",html);Assert.Contains("&lt;script&gt;",html);
+    }
     private sealed class Telas:IAsyncDisposable
     {
         private readonly WebApplication _app;

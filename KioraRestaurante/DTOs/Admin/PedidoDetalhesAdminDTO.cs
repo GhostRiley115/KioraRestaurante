@@ -15,6 +15,7 @@ public class PedidoDetalhesAdminDTO : PedidoAdminDTO
     public string? MotivoCancelamento { get; set; }
     public bool ReembolsoCancelamentoPendente { get; set; }
     public Guid? OperacaoPendenteId { get; set; }
+    public List<HistoricoPedidoAdminDTO> Operacoes { get; set; } = [];
     public List<string> HistoricoAlteracoes { get; set; } = [];
     public List<ItemPedidoAdminDTO> Itens { get; set; } = new();
     public EnderecoPedidoAdminDTO? Endereco { get; set; }
@@ -25,6 +26,9 @@ public class ItemPedidoAdminDTO
     public string Nome { get; set; } = "";
     public int Quantidade { get; set; }
     public decimal PrecoUnitario { get; set; }
+    public decimal? PrecoOriginalUnitario { get; set; }
+    public decimal? DescontoPercentual { get; set; }
+    public KioraRestaurante.Models.Salao.SituacaoPreparo SituacaoPreparo { get; set; }
     public string? Composicao { get; set; }
     public string? Observacao { get; set; }
     public decimal Subtotal => Quantidade * PrecoUnitario;
@@ -39,4 +43,16 @@ public class EnderecoPedidoAdminDTO
     public string Cep { get; set; } = "";
     public string? Complemento { get; set; }
     public string? Referencia { get; set; }
+}
+
+public class HistoricoPedidoAdminDTO
+{
+    public KioraRestaurante.Models.TipoOperacaoPedido Tipo { get; set; }
+    public KioraRestaurante.Models.EstadoOperacaoPedido Estado { get; set; }
+    public DateTime CriadaEmUtc { get; set; }
+    public DateTime? ConcluidaEmUtc { get; set; }
+    public int? AdministradorId { get; set; }
+    public string? AdministradorNome { get; set; }
+    public string? Motivo { get; set; }
+    public string Mensagem { get; set; } = "";
 }

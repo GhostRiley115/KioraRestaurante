@@ -1,4 +1,4 @@
-﻿using KioraRestaurante.Models.Enums;
+using KioraRestaurante.Models.Enums;
 
 
 namespace KioraRestaurante.Helpers
@@ -20,6 +20,8 @@ namespace KioraRestaurante.Helpers
             StatusPagamento.Aprovado => "status-aprovado",
             StatusPagamento.Recusado => "status-recusado",
             StatusPagamento.Cancelado => "status-cancelado",
+            StatusPagamento.Reembolsado => "status-cancelado",
+            StatusPagamento.Conferencia => "status-pendente",
             _ => ""
         };
     }

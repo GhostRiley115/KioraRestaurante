@@ -75,6 +75,7 @@ public class NotificacaoService(AppDbContext db, IDataProtectionProvider proteca
             .SingleOrDefaultAsync(n => n.NotificacaoId == id, ct) ?? throw new KeyNotFoundException();
         var n = vinculo.Notificacao;
         await MarcarLida(usuarioId, id, ct);
+        if(n.Tipo==TipoNotificacao.CorrecaoCozinha&&n.Publico==PublicoNotificacao.Funcionario)return new("Restaurante","Cozinha");
         if (n.AtendimentoId.HasValue) return n.Tipo == TipoNotificacao.CorrecaoCozinha
             ? new("Restaurante", "Cozinha") : new("Restaurante", "Comanda", Codigo: n.AtendimentoId);
         if (n.PedidoId.HasValue) return tipo == TipoUsuario.Administrador
@@ -148,7 +149,7 @@ public class NotificacaoService(AppDbContext db, IDataProtectionProvider proteca
     public async Task<List<ComunicadoAdminDTO>> Comunicados(int adminId, CancellationToken ct = default)
     {
         await ExigirAdministrador(adminId, ct);
-        return await db.Notificacoes.AsNoTracking().Where(n => n.AutorId != null).OrderByDescending(n => n.CriadaEmUtc).Take(100)
+        return await db.Notificacoes.AsNoTracking().Where(n => n.AutorId != null && (n.Tipo == TipoNotificacao.Comunicado || n.Tipo == TipoNotificacao.CupomPromocional)).OrderByDescending(n => n.CriadaEmUtc).Take(100)
             .Select(n => new ComunicadoAdminDTO(n.Id, n.Titulo, n.CriadaEmUtc, n.Destinatarios.Count,
                 n.Destinatarios.Count(d => d.LidaEmUtc != null), n.Cupom != null ? n.Cupom.Codigo : null)).ToListAsync(ct);
     }

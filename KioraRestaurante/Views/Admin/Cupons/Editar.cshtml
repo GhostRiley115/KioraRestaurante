@@ -1,22 +1,47 @@
 @model KioraRestaurante.DTOs.Cupons.SalvarCupomDTO
 @{ ViewData["Title"] = Model.Id.HasValue ? "Editar cupom" : "Criar cupom"; }
-<a asp-action="Index">← Cupons</a><h1>@ViewData["Title"]</h1>
-<form asp-action="Editar" method="post" class="admin-box cupom-form">
+<a asp-action="Index">← Cupons e parceiros</a>
+<h1>@ViewData["Title"]</h1>
+<p class="admin-suave">Configure a oferta que o cliente usará no checkout. Um cupom por pedido, com desconto nos produtos; a taxa de entrega permanece inteira.</p>
+<form asp-action="Editar" method="post" class="cupom-form cupom-admin-form" data-cupom-form>
     <div asp-validation-summary="All" class="pedido-erros" role="alert"></div>
     <input asp-for="Id" type="hidden" /><input asp-for="Versao" type="hidden" />
-    <label asp-for="Codigo">Código</label><input asp-for="Codigo" class="form-control" maxlength="40" readonly="@Model.Id.HasValue" />
-    <small>De 3 a 40 letras sem acento, números, hífen ou sublinhado. Após criar, o código é mantido.</small>
-    <label asp-for="Descricao">Descrição</label><input asp-for="Descricao" class="form-control" maxlength="200" />
-    <label asp-for="Parceiro">Parceiro (opcional)</label><input asp-for="Parceiro" class="form-control" maxlength="100" />
-    <div class="row g-3"><div class="col-md-6"><label asp-for="Tipo">Tipo de desconto</label><select asp-for="Tipo" class="form-select"><option value="0">Porcentagem</option><option value="1">Valor em reais</option></select></div>
-    <div class="col-md-6"><label asp-for="Valor">Valor do desconto</label><input asp-for="Valor" type="text" inputmode="decimal" class="form-control" /></div>
-    <div class="col-md-6"><label asp-for="ValorMinimoProdutos">Mínimo em produtos (R$)</label><input asp-for="ValorMinimoProdutos" type="text" inputmode="decimal" class="form-control" /></div>
-    <div class="col-md-6"><label asp-for="DescontoMaximo">Desconto máximo (R$, opcional)</label><input asp-for="DescontoMaximo" type="text" inputmode="decimal" class="form-control" /></div>
-    <div class="col-md-6"><label asp-for="InicioLocal">Início · Brasília</label><input asp-for="InicioLocal" type="datetime-local" asp-format="{0:yyyy-MM-ddTHH:mm}" class="form-control" /></div>
-    <div class="col-md-6"><label asp-for="FimLocal">Fim · Brasília</label><input asp-for="FimLocal" type="datetime-local" asp-format="{0:yyyy-MM-ddTHH:mm}" class="form-control" /></div>
-    <div class="col-md-6"><label asp-for="LimiteTotal">Limite total (opcional)</label><input asp-for="LimiteTotal" class="form-control" min="1" /></div>
-    <div class="col-md-6"><label asp-for="LimitePorCliente">Uso por cliente</label><select asp-for="LimitePorCliente" class="form-select" aria-describedby="regraUsoCupom"><option value="1">Uma vez por cliente</option><option value="">Reutilizável até o vencimento</option>@if(Model.LimitePorCliente>1){<option value="@Model.LimitePorCliente">Até @Model.LimitePorCliente vezes por cliente (regra existente)</option>}</select><small id="regraUsoCupom">As duas opções respeitam a validade e o limite total da campanha. Cancelamentos liberam a utilização.</small></div></div>
-    <label class="mt-3"><input asp-for="Ativo" /> Cupom ativo</label>
-    <p>Pausar impede novas reservas. Pedidos já confirmados mantêm o desconto registrado.</p>
-    <button type="submit" class="pedido-botao">Salvar cupom</button>
+    <section class="admin-box"><span class="admin-sobretitulo">1 · Identificação</span><h2>Como o cliente encontra a oferta</h2>
+        <div class="cupom-admin-campos">
+            <div><label asp-for="Codigo">Código do cupom</label><input asp-for="Codigo" class="form-control" maxlength="40" readonly="@Model.Id.HasValue" placeholder="Ex.: PRIMEIRACOMPRA" aria-describedby="ajudaCodigo" />
+                <small id="ajudaCodigo">O cliente digita este código no checkout. Use de 3 a 40 letras sem acento, números, hífen ou sublinhado, sem espaços. Ex.: BLACKFRIDAY. Após criar, o código não pode ser trocado.</small></div>
+            <div><label asp-for="Parceiro">Parceiro ou campanha <span class="admin-suave">· opcional</span></label><input asp-for="Parceiro" class="form-control" maxlength="100" placeholder="Ex.: perfil do parceiro" aria-describedby="ajudaParceiro" />
+                <small id="ajudaParceiro">Identifica quem divulga a oferta para acompanhar o desempenho. Ex.: um influenciador ou “Campanha de novembro”. Deixe vazio se não houver parceiro.</small></div>
+            <div class="cupom-admin-linha"><label asp-for="Descricao">Descrição da oferta</label><input asp-for="Descricao" class="form-control" maxlength="200" placeholder="Ex.: 10% de desconto na primeira compra" aria-describedby="ajudaDescricao" />
+                <small id="ajudaDescricao">Obrigatória. Descreva o benefício de forma clara, pois o cliente pode ler este texto ao consultar a oferta. O código sozinho não cria regras: configure os limites abaixo.</small></div>
+        </div>
+    </section>
+    <section class="admin-box"><span class="admin-sobretitulo">2 · Benefício</span><h2>Quanto será descontado</h2>
+        <div class="cupom-admin-campos">
+            <div><label asp-for="Tipo">Tipo de desconto</label><select asp-for="Tipo" class="form-select" aria-describedby="ajudaTipo"><option value="0">Porcentagem (%)</option><option value="1">Valor em reais (R$)</option></select>
+                <small id="ajudaTipo">Porcentagem calcula uma parte do valor dos produtos. Em reais, o desconto é um valor fixo.</small></div>
+            <div><label asp-for="Valor">Valor do desconto</label><input asp-for="Valor" type="text" inputmode="decimal" class="form-control" aria-describedby="ajudaValor" />
+                <small id="ajudaValor" aria-live="polite">@(Model.Tipo==KioraRestaurante.Models.Cupons.TipoDescontoCupom.Percentual ? "Em porcentagem: digite 10 para dar 10%. O máximo é 100%." : "Em reais: digite 15,90 para descontar R$ 15,90 dos produtos.")</small></div>
+            <div><label asp-for="ValorMinimoProdutos">Compra mínima em produtos (R$)</label><input asp-for="ValorMinimoProdutos" type="text" inputmode="decimal" class="form-control" aria-describedby="ajudaMinimo" />
+                <small id="ajudaMinimo">Ex.: 50 exige pelo menos R$ 50 em produtos, antes do cupom e sem somar o frete. Use 0 para não exigir valor mínimo.</small></div>
+            <div><label asp-for="DescontoMaximo">Teto do desconto (R$) <span class="admin-suave">· opcional</span></label><input asp-for="DescontoMaximo" type="text" inputmode="decimal" class="form-control" placeholder="Sem teto adicional" aria-describedby="ajudaTeto" />
+                <small id="ajudaTeto">Limita quanto o cupom pode descontar por pedido. Ex.: 20% com teto de 15 dá no máximo R$ 15 de desconto. Vazio = sem teto adicional; o desconto nunca supera o valor dos produtos.</small></div>
+        </div>
+    </section>
+    <section class="admin-box"><span class="admin-sobretitulo">3 · Regras de utilização</span><h2>Quando e quantas vezes pode ser usado</h2>
+        <div class="cupom-admin-campos">
+            <div><label asp-for="InicioLocal">Início da validade · Brasília</label><input asp-for="InicioLocal" type="datetime-local" asp-format="{0:yyyy-MM-ddTHH:mm}" class="form-control" aria-describedby="ajudaInicio" />
+                <small id="ajudaInicio">Data e hora em que o cupom começa a funcionar. Antes disso, ele ainda não pode ser aplicado.</small></div>
+            <div><label asp-for="FimLocal">Fim da validade · Brasília</label><input asp-for="FimLocal" type="datetime-local" asp-format="{0:yyyy-MM-ddTHH:mm}" class="form-control" aria-describedby="ajudaFim" />
+                <small id="ajudaFim">Data e hora em que o cupom expira. Precisa ser posterior ao início. Os dois horários são de Brasília.</small></div>
+            <div><label asp-for="LimiteTotal">Limite total de usos <span class="admin-suave">· opcional</span></label><input asp-for="LimiteTotal" class="form-control" min="1" placeholder="Sem limite total" aria-describedby="ajudaLimite" />
+                <small id="ajudaLimite">Quantidade máxima de pedidos da campanha, somando todos os clientes. Ex.: 100 libera 100 usos no total. Vazio = sem limite total. Usos reservados também ocupam a cota; cancelamentos a liberam.</small></div>
+            <div><label asp-for="LimitePorCliente">Uso por cliente</label><select asp-for="LimitePorCliente" class="form-select" aria-describedby="regraUsoCupom"><option value="1">Uma vez por cliente</option><option value="">Reutilizável até o vencimento</option>@if(Model.LimitePorCliente>1){<option value="@Model.LimitePorCliente">Até @Model.LimitePorCliente vezes por cliente (regra existente)</option>}</select>
+                <small id="regraUsoCupom">“Uma vez” permite um pedido por conta. “Reutilizável” permite novos pedidos da mesma conta até expirar. As duas opções respeitam o limite total e a situação ativa. O nome PRIMEIRACOMPRA não restringe automaticamente a oferta a novos clientes.</small></div>
+        </div>
+        <div class="cupom-admin-ativo"><label><input asp-for="Ativo" aria-describedby="ajudaAtivo" /> Cupom ativo</label><small id="ajudaAtivo">Marcado permite novos usos dentro da validade. Desmarcado pausa a oferta. Pedidos já confirmados mantêm o desconto registrado.</small></div>
+        <details class="cupom-admin-exemplo"><summary>Ver um exemplo completo</summary><p><strong>BLACKFRIDAY:</strong> tipo Porcentagem, valor 20, compra mínima 50, teto 15, limite total 100 e uso uma vez por cliente. Em R$ 100 de produtos, o desconto será R$ 15 (por causa do teto). O frete é somado depois.</p><p>O uso é reservado ao confirmar o pedido e confirmado com o pagamento aprovado — ou na entrega, se for dinheiro. O relatório separa reservas, utilizações confirmadas e cancelamentos.</p></details>
+    </section>
+    <div class="admin-acoes"><button type="submit">Salvar cupom</button><a asp-action="Index">Voltar sem salvar</a></div>
 </form>
+@section Scripts { <script src="~/js/cupom-admin.js" asp-append-version="true"></script> }
