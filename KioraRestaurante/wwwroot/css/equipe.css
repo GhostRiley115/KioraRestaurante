@@ -1,42 +1,36 @@
 /* Operação do salão e cozinha: contraste dos temas e controles utilizáveis por toque. */
-.equipe-pagina { padding-block: 2rem 4rem; color:var(--k-texto); }
-.equipe-nav,.equipe-cabecalho,.equipe-form-inline { display:flex; flex-wrap:wrap; gap:1rem; align-items:center; margin-bottom:1.5rem; }
-.equipe-nav { border-bottom:1px solid var(--k-borda); padding-block:1rem; }
+.equipe-pagina { padding:0; color:var(--k-texto); }
+.equipe-form-inline { display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end; margin-bottom:1.5rem; }
 .equipe-pagina a { color:var(--k-dourado); text-underline-offset:4px; }
-.equipe-pagina h1 {font-size:clamp(1.8rem,5vw,2.5rem);margin-block:1rem;}
-.equipe-pagina h2 {font-size:1.5rem;}.equipe-pagina h3 {font-size:1.2rem;}
-.equipe-cabecalho {justify-content:space-between;align-items:flex-start;}
-.equipe-box {padding:1.25rem;border:1px solid var(--k-borda);border-radius:10px;background:var(--k-superficie);overflow-wrap:anywhere;margin-block:.8rem;min-width:0;}
+.equipe-pagina h1 {font-size:clamp(1.9rem,5vw,2.6rem);margin-block:1rem;}
+.equipe-box {padding:20px;border:1px solid var(--k-borda);border-radius:14px;background:var(--k-superficie);overflow-wrap:anywhere;margin-block:0 18px;min-width:0;}
 .equipe-mesas {display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:1rem;}
-.equipe-indicadores {display:flex;flex-wrap:wrap;gap:1rem;margin-block:1rem;}
-.equipe-indicadores p {padding:1rem;background:var(--k-superficie);border:1px solid var(--k-borda);border-radius:8px;margin:0;flex:1;min-width:150px;}
-.equipe-indicadores strong {display:block;font-size:1.35rem;}
-.equipe-form {display:grid;gap:.65rem;max-width:55rem;}.equipe-form button {margin-top:.5rem;}
+.equipe-indicadores {display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px;margin:20px 0;}
+.equipe-indicadores p {padding:16px;background:var(--k-superficie);border:1px solid var(--k-borda);border-radius:12px;margin:0;min-width:0;}
+.equipe-indicadores strong {display:block;font-size:1.8rem;margin-top:8px;}
+.equipe-form {display:grid;gap:.65rem;max-width:none;}.equipe-form button {margin-top:.5rem;}
 .equipe-form input:not([type=checkbox]):not([type=hidden]),.equipe-form textarea,.equipe-form select,.equipe-form-inline input,.equipe-busca {min-width:0;width:100%;border:1px solid var(--k-borda);border-radius:6px;background:var(--k-campo);color:var(--k-texto);padding:.65rem;min-height:44px;color-scheme:var(--k-esquema);}
 .equipe-pagina button,.equipe-pagina a.pedido-botao {min-height:44px;padding:.65rem 1rem;border:1px solid var(--k-dourado);border-radius:6px;background:#7d1f1f;color:#fff;}
 .equipe-pagina button:disabled {opacity:.6;}.equipe-pagina details summary {cursor:pointer;min-height:44px;padding-block:.6rem;}
 .equipe-pagina :focus-visible {outline:3px solid var(--k-dourado);outline-offset:3px;}
 .equipe-sucesso {background:var(--k-sucesso-fundo);color:var(--k-verde);padding:1rem;border-radius:6px;}
-.comanda-colunas,.cozinha-origens {display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.5rem;align-items:start;}
-.comanda-cardapio {max-height:75vh;overflow-y:auto;padding-right:.5rem;}
+.cozinha-origens {display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.5rem;align-items:start;}
+/* Ao filtrar uma única origem, a fila visível aproveita toda a área de trabalho. */
+.cozinha-origens:has(> [data-cozinha-coluna][hidden]) { grid-template-columns:minmax(0,1fr); }
+.comanda-cardapio {max-height:none;overflow:visible;padding:0;}
 .equipe-origem {display:inline-block;border:1px solid var(--k-dourado);border-radius:2rem;padding:.2rem .7rem;color:var(--k-dourado);font-size:.8rem;}
 .cozinha-observacao {padding:.7rem;border-inline-start:4px solid var(--k-dourado);background:var(--k-elevado);}
 .cozinha-produto {font-size:1.3rem;}.cozinha-item h3 {margin-top:.7rem;}
 .equipe-tabela-scroll {overflow-x:auto;}.equipe-tabela {width:100%;min-width:680px;}.equipe-tabela th,.equipe-tabela td {padding:1rem;border-bottom:1px solid var(--k-borda);text-align:left;}
 .equipe-total {font-size:1.4rem;font-weight:700;}
-@media(max-width:767px){.comanda-colunas,.cozinha-origens{grid-template-columns:minmax(0,1fr);}.comanda-cardapio{max-height:none;}.equipe-box{padding:1rem;}}
+@media(max-width:767px){.cozinha-origens{grid-template-columns:minmax(0,1fr);}}
 
 /* Integração com a administração: os cargos compartilham o menu, mantendo suas permissões. */
-.equipe-pagina.equipe-integrada { padding:0; }
 .equipe-integrada .admin-cabecalho h1 { margin:8px 0 12px; }
 .equipe-integrada .admin-cabecalho p { margin-bottom:0; }
 .equipe-integrada h2 { font-size:1.35rem; color:var(--k-dourado); }
 .equipe-integrada h3 { font-size:1.15rem; }
-.equipe-integrada .equipe-box { border-radius:14px; margin-block:0 18px; padding:20px; }
-.equipe-indicadores { display:grid; grid-template-columns:repeat(auto-fit,minmax(145px,1fr)); gap:12px; margin:20px 0; }
-.equipe-indicadores p { min-width:0; padding:16px; border-radius:12px; }
 .equipe-indicadores span { color:var(--k-suave); font-size:.9rem; }
-.equipe-indicadores strong { font-size:1.8rem; margin-top:8px; }
 .equipe-card-topo { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:16px; }
 .equipe-status { display:inline-flex; align-items:center; gap:5px; font:700 .75rem/1.4 "Lato",sans-serif; padding:5px 10px; border-radius:20px; border:1px solid currentColor; width:fit-content; }
 .estado-livre,.etapa-entregue { color:var(--k-verde); }
@@ -57,18 +51,17 @@
 .equipe-ferramentas { margin:24px 0 16px; max-width:600px; }
 .equipe-ferramentas label { display:block; margin-bottom:8px; }
 .equipe-filtros,.equipe-abas { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 22px; }
-.admin-pagina .equipe-filtros button,.admin-pagina .equipe-abas button { background:var(--k-campo); border:1px solid var(--k-borda); color:var(--k-texto)!important; font-size:.9rem; }
-.equipe-filtros button[aria-pressed="true"],.equipe-abas button[aria-pressed="true"] { background:var(--k-elevado); border-color:var(--k-dourado); box-shadow:inset 0 -3px var(--k-dourado); }
-.equipe-filtros button:hover,.equipe-abas button:hover { border-color:var(--k-dourado); }
+.admin-pagina .equipe-filtros button,.admin-pagina .equipe-abas button { background:var(--k-campo); border:1px solid var(--k-borda); color:var(--k-texto); font-size:.9rem; }
+.admin-pagina .equipe-filtros button[aria-pressed="true"],.admin-pagina .equipe-abas button[aria-pressed="true"] { background:var(--k-elevado); border-color:var(--k-dourado); box-shadow:inset 0 -3px var(--k-dourado); }
+.admin-pagina .equipe-filtros button:hover,.admin-pagina .equipe-abas button:hover { border-color:var(--k-dourado); }
 .equipe-rotulo-filtro { font-size:.8rem; text-transform:uppercase; color:var(--k-suave); letter-spacing:.08em; }
-.equipe-form { max-width:none; }
 .equipe-form label { margin-top:6px; }
 .equipe-form label.equipe-checkbox { display:flex; gap:10px; align-items:flex-start; }
 .equipe-checkbox input { width:20px; height:20px; margin-top:3px; flex-shrink:0; accent-color:#7d1f1f; }
 .equipe-form input[type="hidden"] { display:none; }
 .equipe-grupo-form { border:1px solid var(--k-borda); border-radius:10px; padding:12px; display:grid; gap:8px; }
 .equipe-grupo-form legend { float:none; width:auto; padding-inline:6px; margin:0; font-size:.9rem; color:var(--k-dourado); }
-.equipe-abrir-form { padding:10px 14px!important; min-height:44px; border:1px solid var(--k-dourado); border-radius:8px; color:var(--k-dourado); font-weight:700; }
+.equipe-pagina summary.equipe-abrir-form { padding:10px 14px; min-height:44px; border:1px solid var(--k-dourado); border-radius:8px; color:var(--k-dourado); font-weight:700; }
 .equipe-acomodacao[open] summary { margin-bottom:16px; }
 .equipe-acomodacao [data-grupo-manual] { display:grid; gap:8px; }
 .equipe-apenas-filtro,.equipe-vazio { padding:20px; border:1px dashed var(--k-borda); border-radius:10px; color:var(--k-suave); }
@@ -95,8 +88,7 @@
 .comanda-subtotal { font-size:1rem; white-space:nowrap; }
 .comanda-correcao { border-top:1px solid var(--k-borda); margin-top:16px; padding-top:4px; }
 .comanda-correcao summary { font-size:.85rem; color:var(--k-suave); }
-.equipe-titulo-menor { color:var(--k-suave); font-size:1rem!important; margin:20px 0 12px; }
-.comanda-cardapio { max-height:none; overflow:visible; padding:0; }
+.equipe-integrada .equipe-titulo-menor { color:var(--k-suave); font-size:1rem; margin:20px 0 12px; }
 .comanda-produtos-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr)); gap:16px; }
 .comanda-categoria { margin:24px 0; }
 .comanda-produto { display:flex; flex-direction:column; }
@@ -104,7 +96,7 @@
 .comanda-produto h4 { font-size:1.1rem; margin-bottom:6px; }
 .comanda-produto p { font-size:.85rem; }
 .comanda-produto details { margin-top:auto; }
-.comanda-historico { margin-top:24px!important; }
+.equipe-integrada .equipe-box.comanda-historico { margin-top:24px; }
 .comanda-historico p { border-bottom:1px solid var(--k-borda); padding:12px 0; font-size:.9rem; }
 .comanda-conferencia { display:block; border-left:3px solid var(--k-dourado); background:var(--k-elevado); padding:12px; font-size:.9rem; }
 .equipe-aviso-limpeza { display:flex; justify-content:space-between; gap:20px; align-items:center; flex-wrap:wrap; padding:24px; background:var(--k-elevado); border:1px solid var(--k-roxo); border-radius:14px; margin-bottom:24px; }
@@ -126,20 +118,19 @@
 .cozinha-item.etapa-pronto { border-left-color:var(--k-roxo); }
 .cozinha-pronto-aviso { color:var(--k-suave); padding:12px; border:1px dashed var(--k-roxo); border-radius:8px; margin-bottom:0; font-size:.9rem; }
 .cozinha-item button { width:100%; }
-.cozinha-correcoes { border-left:4px solid var(--k-vermelho)!important; }
+.equipe-integrada .cozinha-correcoes { border-left:4px solid var(--k-vermelho); }
 .equipe-fluxo { display:flex; flex-wrap:wrap; gap:12px; margin:20px 0; color:var(--k-suave); font-size:.85rem; }
 .equipe-fluxo span { padding:10px 14px; border:1px solid var(--k-borda); border-radius:8px; }
 .equipe-recepcao-ferramentas { margin:24px 0; }
 .equipe-form-inline>div { min-width:180px; }
 .equipe-form-inline label { display:block; margin-bottom:6px; }
-.equipe-form-inline { align-items:flex-end; }
 .recepcao-grupos-colunas { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; margin:20px 0 32px; }
-.recepcao-coluna-titulo { display:flex; justify-content:space-between; gap:8px; font-size:1rem!important; margin-bottom:18px; }
+.equipe-integrada .recepcao-coluna-titulo { display:flex; justify-content:space-between; gap:8px; font-size:1rem; margin-bottom:18px; }
 .recepcao-coluna-titulo span { color:var(--k-dourado); }
 .recepcao-grupo h3 { font-size:1.2rem; }
 .recepcao-grupo p { font-size:.9rem; }
 .recepcao-grupo button { width:100%; }
 .recepcao-grupo details summary { font-size:.8rem; color:var(--k-suave); margin-top:8px; }
 .recepcao-mesas article>div { display:flex; flex-wrap:wrap; align-items:center; gap:12px; }
-@media(max-width:1199.98px){.comanda-workspace{grid-template-columns:minmax(0,1fr)}.comanda-resumo{position:static}.comanda-resumo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start}.equipe-config-grid{grid-template-columns:minmax(0,1fr)}.recepcao-grupos-colunas{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:1199.98px){.comanda-workspace{grid-template-columns:minmax(0,1fr)}.comanda-resumo{position:static;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start}.equipe-config-grid{grid-template-columns:minmax(0,1fr)}.recepcao-grupos-colunas{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:575.98px){.equipe-integrada .equipe-box{padding:16px}.equipe-indicadores{grid-template-columns:repeat(2,minmax(0,1fr))}.comanda-resumo{grid-template-columns:minmax(0,1fr);gap:0}.comanda-item-topo{flex-wrap:wrap}.comanda-subtotal{margin-left:78px}.equipe-permissoes>div{grid-template-columns:minmax(0,1fr);gap:6px}.equipe-integrada h1 .equipe-status{display:flex;margin-top:12px}.equipe-fluxo{display:grid}.cozinha-origens{grid-template-columns:minmax(0,1fr)}}

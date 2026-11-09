@@ -1,4 +1,4 @@
-﻿/* =========================================================
+/* =========================================================
    GALERIA - KIORA
    ========================================================= */
 
@@ -45,6 +45,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const fundoLightbox =
         document.querySelector(".lightbox-fundo");
 
+
+    if (!lightbox || !lightboxImagem || !lightboxTitulo || !lightboxCategoria ||
+        !botaoFechar || !botaoAnterior || !botaoProximo || !fundoLightbox) return;
 
     /* =====================================================
        CONTROLE DAS IMAGENS

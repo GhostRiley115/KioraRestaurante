@@ -3,15 +3,14 @@
 .admin-sobretitulo { color: var(--k-dourado); letter-spacing: 2px; font-size: 0.875rem; }
 .admin-pagina h1 { font-size: clamp(1.9rem, 5vw, 2.6rem); margin: 24px 0 12px; }
 .admin-pagina h2 { color: var(--k-dourado); font-size: 1.35rem; }
-.admin-nav, .admin-acoes, .admin-paginacao { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
-.admin-nav { padding: 18px 0; border-bottom: 1px solid #D9B27A50; }
+.admin-acoes, .admin-paginacao { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
 .admin-pagina a { color: var(--k-dourado); text-underline-offset: 4px; }
-.admin-pagina a:focus-visible, .admin-pagina button:focus-visible { outline: 2px solid #D9B27A; outline-offset: 3px; }
+.admin-pagina a:focus-visible, .admin-pagina button:focus-visible { outline: 2px solid var(--k-dourado); outline-offset: 3px; }
 .admin-suave, .admin-texto-bloco { color: var(--k-suave); }
 .admin-texto-bloco { display: block; font-size: 0.88rem; margin: 5px 0; }
 .admin-resumo { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
-.admin-card, .admin-box { padding: 22px; background: var(--k-superficie); border: 1px solid #D9B27A40; border-radius: 10px; }
-.admin-card { text-decoration: none; display: flex; flex-direction: column; gap: 12px; }
+.admin-card, .admin-box { padding: 22px; background: var(--k-superficie); border: 1px solid var(--k-borda); }
+.admin-card { text-decoration: none; display: flex; flex-direction: column; gap: 12px; border-radius:10px; }
 .admin-card strong { font-size: 2rem; color: var(--k-texto); }
 .admin-card small { color: var(--k-suave); }
 .admin-filtros { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; padding: 22px; margin: 22px 0; background: var(--k-superficie); border-radius: 10px; }
@@ -19,8 +18,9 @@
 .admin-filtros label { display: block; margin-bottom: 7px; }
 .admin-filtros input, .admin-filtros select { width: 100%; min-width: 0; min-height: 44px; background: var(--k-campo); color: var(--k-texto); border: 1px solid var(--k-borda); border-radius: 5px; padding: 8px; color-scheme:var(--k-esquema); }
 .admin-acoes { align-self: end; }
-.admin-pagina button { min-height: 44px; padding: 9px 16px; color: var(--k-texto); background: #7D1F1F; border: 1px solid #D9B27A; border-radius: 5px; }
-.admin-pagina button:disabled { opacity: .6; }
+.admin-pagina button { min-height: 44px; padding: 9px 16px; color: #fff; background: #7D1F1F; border: 1px solid #D9B27A; border-radius: 5px; }
+.admin-pagina button:disabled { opacity: .6; cursor:not-allowed; }
+.admin-pagina button.admin-perigo { background:var(--k-erro-fundo); color:var(--k-vermelho); border-color:var(--k-vermelho); }
 .admin-aviso, .admin-erro, .admin-vazio { padding: 14px; border-radius: 6px; }
 .admin-aviso { background: var(--k-sucesso-fundo); color: var(--k-verde); }
 .admin-erro:not(:empty) { background: var(--k-erro-fundo); color: var(--k-vermelho); }
@@ -34,14 +34,10 @@
 .admin-pagamento .admin-texto-bloco {margin: 0; padding-left: 11px;}
 .admin-valor { white-space: nowrap; }
 .admin-paginacao { justify-content: center; margin-top: 24px; }
-.admin-detalhes { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 20px; }
-.admin-box { overflow-wrap: anywhere; }
-.admin-item, .admin-total { display: flex; justify-content: space-between; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--k-borda); }
-.admin-item > div { min-width: 0; }
-.admin-total { color: var(--k-dourado); font-size: 1.2rem; }
+.admin-box { overflow-wrap: anywhere; border-radius:16px; }
 /* A rolagem horizontal pertence à tabela, sem empurrar a página inteira. */
-@media(max-width: 991.98px) { .admin-resumo { grid-template-columns: repeat(2, minmax(0, 1fr)); } .admin-filtros { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media(max-width: 575.98px) { .admin-filtros, .admin-detalhes { grid-template-columns: minmax(0, 1fr); } .admin-filtros { padding: 16px; } .admin-nav { gap: 12px; } .admin-card { padding: 16px; } }
+@media(max-width: 991.98px) { .admin-filtros { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media(max-width: 575.98px) { .admin-filtros { grid-template-columns: minmax(0, 1fr); padding: 16px; } .admin-card { padding: 16px; } }
 
 /* ================================================================
    PRODUTOS: cartões administrativos adaptáveis à largura da tela.
@@ -49,11 +45,13 @@
 
 .admin-produtos-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 20px;
 }
 
 .admin-produto-card {
+    display: flex;
+    flex-direction: column;
     min-width: 0;
     overflow: hidden;
     background: var(--k-superficie);
@@ -69,6 +67,9 @@
 }
 
 .admin-produto-conteudo {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
     padding: 20px;
     overflow-wrap: anywhere;
 }
@@ -91,15 +92,15 @@
 }
 
 .admin-produto-acoes {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 12px;
-    margin-top: 20px;
+    margin-top: auto;
+    padding-top: 16px;
 }
 
 .admin-produto-acoes > a {
-    padding: 10px 0;
+    padding: 12px;
 }
 
 .admin-produto-acoes form,
@@ -107,28 +108,17 @@
     width: 100%;
 }
 
-@media (max-width: 991.98px) {
-    .admin-produtos-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-}
-
-@media (max-width: 575.98px) {
-    .admin-produtos-grid {
-        grid-template-columns: minmax(0, 1fr);
-    }
-}
 /* Ações novas de pedido e campanhas mantêm contraste também no tema claro. */
-.admin-pagina button, .admin-pagina a.pedido-botao { color: #fff; }
+.admin-pagina a.pedido-botao { color: #fff; }
 
 /* Gerenciamento: navegação por tarefas, sem alterar as telas de compra dos clientes. */
 .admin-pagina.container { max-width: 1540px; padding-inline: clamp(16px,3vw,40px); }
 .admin-shell { display:grid; grid-template-columns:220px minmax(0,1fr); gap:32px; margin-top:18px; align-items:start; }
 .admin-conteudo { min-width:0; }
-.admin-lateral { position:sticky; top:100px; background:var(--k-superficie); border:1px solid var(--k-borda); border-radius:16px; padding:16px; }
+.admin-lateral { position:sticky; top:100px; background:var(--k-superficie); border:1px solid var(--k-borda); border-radius:16px; padding:16px; max-height:calc(100vh - 116px); max-height:calc(100dvh - 116px); overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--k-borda) transparent; }
 .admin-menu>summary { font-weight:700; cursor:pointer; padding:8px; }
 .admin-nav { display:flex; flex-direction:column; align-items:stretch; gap:4px; border:0; padding:0; }
-.admin-nav a { padding:10px 12px; border-radius:8px; text-decoration:none; line-height:1.4; color:var(--k-texto); }
+.admin-nav a { min-height:44px; display:flex; align-items:center; padding:10px 12px; border-radius:8px; text-decoration:none; line-height:1.4; color:var(--k-texto); }
 .admin-nav a:hover,.admin-nav a[aria-current="page"] { background:var(--k-elevado); color:var(--k-dourado); box-shadow:inset 3px 0 var(--k-dourado); }
 .admin-nav-grupo { color:var(--k-suave); font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.1em; margin:20px 12px 8px; }
 .admin-cabecalho { display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap; margin-bottom:24px; }
@@ -141,7 +131,6 @@
 .admin-secao-topo { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:16px; }
 .admin-secao-topo h2 { margin:0; }
 .admin-conteudo>.admin-box,.admin-relatorio-duas,.admin-conteudo>.admin-resumo { margin-bottom:24px; }
-.admin-box { border-radius:16px; }
 .admin-operacao-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
 .admin-operacao-grid a { display:flex; flex-direction:column; gap:6px; padding:16px; border:1px solid var(--k-borda); border-radius:10px; text-decoration:none; color:var(--k-texto); }
 .admin-operacao-grid a:hover { background:var(--k-elevado); border-color:var(--k-dourado); }
@@ -173,14 +162,14 @@
 .admin-grafico-dias,.admin-grafico-horas { display:grid; gap:8px; grid-template-columns:repeat(var(--dias,24),minmax(32px,1fr)); min-width:600px; align-items:end; }
 .admin-grafico-dias { min-width:max(500px,calc(var(--dias)*40px)); }
 .admin-grafico-horas { min-width:1000px; }
-.admin-pagina button.admin-barra-dia { padding:0; min-height:0; background:transparent; border:0; color:var(--k-suave); border-radius:3px; font:inherit; }
+.admin-pagina button.admin-barra-dia { padding:0; min-height:0; background:transparent; border:0; color:var(--k-texto); border-radius:3px; font:inherit; }
 .admin-barra-area { height:190px; display:flex; flex-direction:column; justify-content:flex-end; border-bottom:1px solid var(--k-borda); background:repeating-linear-gradient(to top,transparent 0,transparent 46px,var(--k-borda) 47px,transparent 48px); }
 .admin-barra-area>span { display:block; flex-shrink:0; }
 .admin-barra-dia:hover .admin-barra-area,.admin-barra-dia:focus-visible .admin-barra-area { filter:brightness(1.2); box-shadow:0 0 0 1px var(--k-dourado); }
-.admin-dia-label { display:block; font-size:.72rem; padding-top:8px; white-space:nowrap; }
+.admin-dia-label { display:block; color:var(--k-texto); font-size:.8rem; padding-top:8px; white-space:nowrap; }
 .admin-barras-lado { flex-direction:row; align-items:flex-end; gap:3px; }
 .admin-barras-lado>span { width:calc(50% - 1.5px); }
-.admin-barras-vendas { height:100%; display:flex!important; flex-direction:column; justify-content:flex-end; }
+.admin-barra-area > .admin-barras-vendas { height:100%; display:flex; flex-direction:column; justify-content:flex-end; }
 .admin-barras-vendas>span { display:block; }
 .admin-dados-grafico { margin-top:16px; }
 .admin-pagina summary { cursor:pointer; padding:10px 0; }
@@ -199,16 +188,10 @@
 .admin-abas a { padding:11px 16px; border-radius:8px; text-decoration:none; }
 .admin-abas a[aria-current="page"] { background:var(--k-elevado); color:var(--k-texto); box-shadow:inset 0 -3px var(--k-dourado); }
 .admin-busca-pedidos { margin-bottom:20px; }
-.admin-produto-acoes>a { padding:12px; }
-.admin-produto-acoes { display:grid; grid-template-columns:1fr 1fr; }
 .admin-produto-situacao { grid-column:1/-1; border-top:1px solid var(--k-borda); padding-top:4px; }
 .admin-produto-situacao summary { color:var(--k-suave); font-size:.9rem; }
 .admin-produto-situacao form { margin-top:12px; }
 .admin-produto-situacao button { background:var(--k-campo); color:var(--k-texto); border-color:var(--k-borda); }
-.admin-produto-card { display:flex; flex-direction:column; }
-.admin-produto-conteudo { display:flex; flex:1; flex-direction:column; }
-.admin-produto-acoes { margin-top:auto; padding-top:16px; }
-.admin-produtos-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
 .admin-conteudo .produto-admin { max-width:none; padding:0; }
 .admin-desconto-preview { display:flex; flex-direction:column; gap:8px; padding:20px; margin-top:20px; background:var(--k-elevado); border:1px solid var(--k-borda); border-radius:10px; }
 .admin-desconto-preview output { font-weight:700; font-size:1.7rem; color:var(--k-dourado); }
@@ -222,12 +205,8 @@
 .admin-etapas a { display:inline-flex; align-items:center; min-height:44px; padding:8px 12px; border:1px solid var(--k-borda); border-radius:8px; text-decoration:none; }
 .admin-etapas a:hover,.admin-etapas a[aria-current="page"] { background:var(--k-elevado); border-color:var(--k-dourado); color:var(--k-texto); }
 /* O tema global força branco nos botões vinho; estas ações usam fundo claro/transparente. */
-.admin-pagina button.admin-barra-dia,
-.admin-pagina .admin-produto-situacao button { color:var(--k-texto)!important; }
-.admin-dia-label { color:var(--k-texto); }
+/* As cores das ações transparentes estão definidas nos respectivos componentes, sem forçar a cor de todos os botões. */
 /* Menus longos continuam acessíveis em notebooks e com ampliação da fonte. */
-.admin-lateral { max-height:calc(100vh - 116px); max-height:calc(100dvh - 116px); overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--k-borda) transparent; }
-.admin-nav a { min-height:44px; display:flex; align-items:center; }
 @media(max-width:991.98px){.admin-lateral{max-height:none;overflow:visible;}}
 @media(max-width:380px){.admin-campos-data{grid-template-columns:minmax(0,1fr);}}
 
@@ -293,3 +272,8 @@
 
 .pedido-admin-proxima .pedido-admin-cancelar-link { display:block; padding:12px 0 0; text-align:center; color:var(--k-vermelho); }
 #cancelamentoPedido { scroll-margin-top:110px; }
+
+/* Os formulários administrativos compartilham largura e espaçamento, sem depender do CSS do checkout. */
+.cupom-form { max-width:56rem; }
+.cupom-form > label { display:block; margin-top:1rem; }
+.cupom-form .row { margin-top:.2rem; }

@@ -13,12 +13,12 @@
     {
         <form asp-action="Pagar" method="post">
             <input type="hidden" name="id" value="@Model.Id" />
-            <button type="submit" class="btn btn-primary">Pagar com Mercado Pago</button>
+            <button type="submit" class="pedido-botao">Pagar com Mercado Pago</button>
         </form>
     }
     <form asp-action="Consultar" method="post" class="mt-3">
         <input type="hidden" name="id" value="@Model.Id" />
-        <button type="submit" class="btn btn-outline-secondary">Atualizar pagamento</button>
+        <button type="submit" class="pedido-botao pedido-botao-secundario">Atualizar pagamento</button>
     </form>
     <a asp-controller="Pedido" asp-action="Detalhes" asp-route-id="@Model.Id">Ver detalhes do pedido</a>
     <partial name="_AjudaPedido" model="@((int?)Model.Id)" />

@@ -1,20 +1,10 @@
+/* Paleta kc compartilhada em tema.css; aparência dos atalhos da navbar em navbar-acoes.css. */
 /* Cores da identidade visual do Kiora. */
 :root {
-    --kc-fundo: #0e0e0e;
-    --kc-superficie: #171717;
-    --kc-dourado: #d9b27a;
     --kc-vinho: #7d1f1f;
-    --kc-texto: #ffffff;
-    --kc-suave: #bbbbbb;
-    --kc-borda: #383838;
 }
-
 /* Estilo do botão que abre o carrinho. */
-button.carrinho-kiora {
-    border: 0;
-    background: transparent;
-    padding: 6px;
-}
+
 
 /* Garante que elementos com hidden continuem escondidos. */
 #painelCarrinho [hidden],
@@ -50,8 +40,7 @@ button.carrinho-kiora {
 /* Define a fonte dos títulos. */
 .kc-cabecalho h2,
 .kc-vazio h3,
-.kc-mesclagem h3,
-.kc-cardapio h1 {
+.kc-mesclagem h3 {
     font-family: "Playfair Display", serif;
 }
 
@@ -171,17 +160,8 @@ button.carrinho-kiora {
     min-width: 36px;
     text-align: center;
 }
-
 /* Campo de quantidade, caso seja utilizado. */
-.kc-quantidade input {
-    width: 52px;
-    height: 40px;
-    padding: 0 4px;
-    border: 0;
-    background: var(--kc-fundo);
-    color: var(--kc-texto);
-    text-align: center;
-}
+
 
 /* Destaque do subtotal. */
 .kc-item-subtotal {
@@ -263,7 +243,7 @@ button.carrinho-kiora {
     border: 1px solid var(--kc-dourado);
     border-radius: 3px;
     background: var(--kc-vinho);
-    color: var(--kc-texto);
+    color: #fff;
     font-family: "Lato", sans-serif;
     font-weight: 700;
 }
@@ -310,8 +290,7 @@ button.carrinho-kiora {
 
 /* Destaque visual ao navegar pelo teclado. */
 .kc-painel :focus-visible,
-.kc-compra :focus-visible,
-#abrirCarrinho:focus-visible {
+.kc-compra :focus-visible {
     outline: 2px solid var(--kc-dourado);
     outline-offset: 3px;
 }
@@ -367,40 +346,16 @@ button.carrinho-kiora {
 .kc-notificacao[data-erro="true"] {
     border-color: #ef9696;
 }
-
 /* Espaçamento da página de cardápio. */
-.kc-cardapio {
-    padding-top: 40px;
-    padding-bottom: 60px;
-}
 
 /* Card visual de cada produto. */
-.kc-produto {
-    height: 100%;
-    padding: 20px;
-    border: 1px solid var(--kc-borda);
-    border-radius: 4px;
-    background: var(--kc-superficie);
-}
 
 /* Nome do produto no cardápio. */
-.kc-produto h2 {
-    margin: 0 0 10px;
-    font-size: 1.3125rem;
-    font-family: "Playfair Display", serif;
-}
 
 /* Descrição do produto. */
-.kc-produto p {
-    color: var(--kc-suave);
-}
 
 /* Preço do produto no cardápio. */
-.kc-produto > strong {
-    display: block;
-    color: var(--kc-dourado);
-    margin-bottom: 16px;
-}
+
 
 /* Área dos controles de compra do produto. */
 .kc-compra {
@@ -434,7 +389,7 @@ button.carrinho-kiora {
     border: 1px solid #D9B27A;
     border-radius: 50%;
     background: #7D1F1F;
-    color: var(--k-texto);
+    color: #fff;
     font-weight: 700;
     pointer-events: none;
     box-shadow: 0 4px 18px #0006;

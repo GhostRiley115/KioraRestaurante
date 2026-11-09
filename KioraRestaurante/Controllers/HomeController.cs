@@ -103,7 +103,7 @@ namespace KioraRestaurante.Controllers
 
         public IActionResult Privacy()
         {
-            return View();
+            return RedirectToAction(nameof(PoliticaPrivacidade));
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

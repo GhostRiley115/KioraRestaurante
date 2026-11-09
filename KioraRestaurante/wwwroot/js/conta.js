@@ -1,5 +1,7 @@
 // CONTA: cadastro, login, perfil, senhas e recuperação.
 // Os comentários de cada funcionalidade foram preservados na extração.
+// As anotações de depuração antigas foram mantidas; as respostas completas não são mais registradas no console.
+// As mensagens de perfil e senha usam as cores semânticas definidas pelo tema.
 (() => {
 "use strict";
 
@@ -324,25 +326,21 @@ if (formLogin) {
             });
 
             // Mostra o status no console.
-            console.log("Status do login:", resposta.status);
 
             // Lê a resposta como texto.
             const textoResposta = await resposta.text();
 
             // Mostra a resposta no console.
-            console.log("Resposta do login:", textoResposta);
 
             // Converte a resposta para JSON.
             const resultado = JSON.parse(textoResposta);
 
             // Mostra o resultado no console.
-            console.log("Login OK:", resultado.sucesso);
 
             // Verifica se o login foi realizado com sucesso.
             if (resposta.ok && resultado.sucesso) {
 
                 // Mostra a mensagem no console.
-                console.log("Login realizado:", resultado.mensagem);
 
                 // Obtém o modal de login.
                 const modalLogin =
@@ -614,10 +612,9 @@ if (formEditarPerfil) {
 
                 // Define uma cor verde para indicar
                 // que a operação foi concluída.
-                mensagemEditarPerfil.style.color = "#FFFFFF";
+                mensagemEditarPerfil.className = "mensagem-kiora";
 
-                mensagemEditarPerfil.style.backgroundColor =
-                    "#198754";
+                mensagemEditarPerfil.classList.add("mensagem-kiora-sucesso");
 
 
                 // ====================================================
@@ -626,19 +623,14 @@ if (formEditarPerfil) {
 
                 // Procura o elemento que exibe o nome
                 // do usuário no menu superior.
-                const nomeUsuarioMenu =
-                    document.querySelector(".nome-usuario-menu");
 
 
                 // Verifica se o elemento foi encontrado
                 // e se o Controller enviou um novo nome.
-                if (nomeUsuarioMenu && resultado.nome) {
 
                     // Atualiza o nome exibido no menu
                     // sem precisar recarregar a página.
-                    nomeUsuarioMenu.textContent =
-                        resultado.nome;
-                }
+                // O menu atual é atualizado junto com o perfil no recarregamento abaixo.
 
 
                 // ====================================================
@@ -708,11 +700,9 @@ if (formEditarPerfil) {
 
 
                 // Define uma aparência de erro.
-                mensagemEditarPerfil.style.color =
-                    "#FFFFFF";
+                mensagemEditarPerfil.className = "mensagem-kiora";
 
-                mensagemEditarPerfil.style.backgroundColor =
-                    "#7D1F1F";
+                mensagemEditarPerfil.classList.add("mensagem-kiora-erro");
             }
 
 
@@ -734,11 +724,9 @@ if (formEditarPerfil) {
 
 
             // Define a aparência de erro.
-            mensagemEditarPerfil.style.color =
-                "#FFFFFF";
+            mensagemEditarPerfil.className = "mensagem-kiora";
 
-            mensagemEditarPerfil.style.backgroundColor =
-                "#7D1F1F";
+            mensagemEditarPerfil.classList.add("mensagem-kiora-erro");
 
 
             // Registra o erro no console
@@ -817,12 +805,10 @@ if (formAlterarSenha) {
                         "block";
 
                     // Define a cor do texto.
-                    mensagemAlterarSenha.style.color =
-                        "#FFFFFF";
+                    mensagemAlterarSenha.className = "mensagem-kiora";
 
                     // Define o fundo verde de sucesso.
-                    mensagemAlterarSenha.style.backgroundColor =
-                        "#198754";
+                    mensagemAlterarSenha.classList.add("mensagem-kiora-sucesso");
 
                     // Limpa os campos do formulário.
                     formAlterarSenha.reset();
@@ -867,12 +853,10 @@ if (formAlterarSenha) {
                         "block";
 
                     // Define a cor do texto.
-                    mensagemAlterarSenha.style.color =
-                        "#FFFFFF";
+                    mensagemAlterarSenha.className = "mensagem-kiora";
 
                     // Define o fundo vinho de erro.
-                    mensagemAlterarSenha.style.backgroundColor =
-                        "#7D1F1F";
+                    mensagemAlterarSenha.classList.add("mensagem-kiora-erro");
                 }
 
             }
@@ -892,12 +876,10 @@ if (formAlterarSenha) {
                     "block";
 
                 // Define a cor do texto.
-                mensagemAlterarSenha.style.color =
-                    "#FFFFFF";
+                mensagemAlterarSenha.className = "mensagem-kiora";
 
                 // Define o fundo vinho de erro.
-                mensagemAlterarSenha.style.backgroundColor =
-                    "#7D1F1F";
+                mensagemAlterarSenha.classList.add("mensagem-kiora-erro");
 
                 // Exibe o erro no console
                 // para facilitar a identificação do problema.
@@ -1852,10 +1834,6 @@ if (painelConta) {
 
                     // Mantém a resposta no console para facilitar
                     // o acompanhamento durante os testes.
-                    console.log(
-                        "Resposta da desativação:",
-                        resultado
-                    );
 
                     // A nova página passa a refletir a sessão já encerrada pelo servidor.
                     if (resposta.ok && resultado.sucesso) {

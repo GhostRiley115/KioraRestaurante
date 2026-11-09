@@ -1,7 +1,9 @@
 @{ ViewData["Title"] = "Acesso não permitido"; }
 <!-- Página compartilhada para tentativas de acesso sem a permissão necessária. -->
-<section class="container py-5">
+@section Styles { <link rel="stylesheet" href="~/css/estados.css" asp-append-version="true" /> }
+<section class="container pagina-estado"><div class="pagina-estado-card">
+    <i class="bi bi-shield-lock pagina-estado-icone" aria-hidden="true"></i>
     <h1>Acesso não permitido</h1>
     <p>Sua conta não tem permissão para acessar esta página.</p>
-    <a asp-controller="Home" asp-action="Index" class="btn btn-reserva">Voltar ao início</a>
-</section>
+    <a asp-controller="Home" asp-action="Index" class="pedido-botao">Voltar ao início</a>
+</div></section>

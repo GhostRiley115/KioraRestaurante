@@ -8,14 +8,18 @@
         const aviso = document.getElementById("avisoHorarios");
         let consulta;
         async function atualizar() {
-            consulta?.abort(); consulta = new AbortController();
+            consulta?.abort();
+            const atual = new AbortController();
+            consulta = atual;
             horario.replaceChildren(new Option("Consultando horários…", ""));
             horario.disabled = true;
             try {
                 const url = new URL(form.dataset.horariosUrl, location.origin);
                 url.searchParams.set("data", data.value); url.searchParams.set("pessoas", pessoas.value);
-                const resposta = await fetch(url, {signal: consulta.signal, credentials: "same-origin"});
+                const resposta = await fetch(url, {signal: atual.signal, credentials: "same-origin"});
                 const corpo = await resposta.json();
+                // Uma consulta antiga pode terminar de ler o JSON depois da troca de data/pessoas.
+                if (consulta !== atual) return;
                 if (!resposta.ok) throw new Error(corpo.mensagem || "Não foi possível consultar os horários.");
                 horario.replaceChildren(new Option("Selecione um horário", ""));
                 for (const h of corpo) {
@@ -25,7 +29,7 @@
                 horario.disabled = false;
                 aviso.textContent = corpo.some(h => h.disponivel) ? "A solicitação não garante mesa no horário. Registre a chegada na portaria." : "Sem horários disponíveis. Escolha outro dia ou entre na fila de hoje.";
             } catch (erro) {
-                if (erro.name === "AbortError") return;
+                if (erro.name === "AbortError" || consulta !== atual) return;
                 horario.replaceChildren(new Option("Não foi possível consultar", ""));
                 aviso.textContent = erro.message;
             }
@@ -60,7 +64,7 @@
             document.getElementById("posicaoFila").textContent = r.posicaoFila ? `Posição geral na fila: ${r.posicaoFila}. A chamada depende do tamanho do grupo e da mesa.` : "";
             document.getElementById("horarioReserva").textContent = r.inicioUtc ? `Chegada: ${formatar(r.inicioUtc)}` : "Fila presencial de hoje";
             document.getElementById("mesaReserva").textContent = r.mesa ? `Sua mesa: ${r.mesa}` : "";
-            document.getElementById("prazoReserva").hidden = [3,4].includes(r.situacao);
+            document.getElementById("prazoReserva").hidden = [3,4,5,6].includes(r.situacao);
             document.getElementById("prazoReserva").textContent = `Prazo para chegada/chamada: ${formatar(r.expiraEmUtc)}.`;
             document.getElementById("avisoChamada").hidden = r.situacao !== 2;
             cancelar.hidden = !r.podeCancelar; cancelar.querySelector('[name="Versao"]').value = r.versao;
