@@ -34,11 +34,43 @@ public class ReservasApiController(ReservaService service,IdentidadeReserva iden
     [HttpGet("{codigo:guid}")]
     public Task<IActionResult> Consultar(Guid codigo,CancellationToken ct)=>Executar(async()=>await service.Consultar(identidade.Obter(HttpContext),codigo,ct));
     [HttpPost]
-    public Task<IActionResult> Criar(CriarReservaDTO dto,CancellationToken ct)=>Executar(async()=>await service.Criar(identidade.Obter(HttpContext),dto,false,ct));
+    public Task<IActionResult> Criar(
+    CriarReservaDTO dto,
+    [FromHeader(Name = "X-CSRF-TOKEN")] string? csrfToken,
+    [FromHeader(Name = "X-Reserva-Chave")] string? reservaChave,
+    CancellationToken ct)
+    => Executar(async () =>
+        await service.Criar(identidade.Obter(HttpContext), dto, false, ct));
+
     [HttpPost("fila")]
-    public Task<IActionResult> Fila(CriarReservaDTO dto,CancellationToken ct)=>Executar(async()=>await service.Criar(identidade.Obter(HttpContext),dto,true,ct));
+    public Task<IActionResult> Fila(
+    CriarReservaDTO dto,
+    [FromHeader(Name = "X-CSRF-TOKEN")] string? csrfToken,
+    [FromHeader(Name = "X-Reserva-Chave")] string? reservaChave,
+    CancellationToken ct)
+    => Executar(async () =>
+        await service.Criar(
+            identidade.Obter(HttpContext),
+            dto,
+            true,
+            ct));
+
     [HttpPost("cancelar")]
-    public Task<IActionResult> Cancelar(CancelarReservaDTO dto,CancellationToken ct)=>Executar(async()=>{await service.Cancelar(identidade.Obter(HttpContext),dto,ct);return new{sucesso=true};});
+    public Task<IActionResult> Cancelar(
+    CancelarReservaDTO dto,
+    [FromHeader(Name = "X-CSRF-TOKEN")] string? csrfToken,
+    [FromHeader(Name = "X-Reserva-Chave")] string? reservaChave,
+    CancellationToken ct)
+    => Executar(async () =>
+    {
+        await service.Cancelar(
+            identidade.Obter(HttpContext),
+            dto,
+            ct);
+
+        return new { sucesso = true };
+    });
+
     [Authorize(Roles=nameof(TipoUsuario.Administrador)),HttpGet("admin")]
     public Task<IActionResult> Painel(DateOnly? data,CancellationToken ct)=>Executar(async()=>
     {
@@ -55,4 +87,16 @@ public class ReservasApiController(ReservaService service,IdentidadeReserva iden
     public Task<IActionResult> Operar(OperarReservaDTO dto,CancellationToken ct)=>Executar(async()=>{await service.Operar(Admin,dto,ct);return new{sucesso=true};});
     [Authorize(Roles=nameof(TipoUsuario.Administrador)),HttpPost("admin/chamar/{mesaId:int}")]
     public Task<IActionResult> Chamar(int mesaId,CancellationToken ct)=>Executar(async()=>{await service.Chamar(Admin,mesaId,ct);return new{sucesso=true};});
+
+    [Authorize(Roles = nameof(TipoUsuario.Administrador))]
+    [HttpPatch("admin/mesas/{mesaId:int}/ativa")]
+    public Task<IActionResult> AlterarMesa(
+    int mesaId,
+    [FromBody] AlterarMesaReservaDTO dto,
+    CancellationToken ct)
+    => Executar(async () =>
+    {
+        await service.AlterarMesa(Admin, mesaId, dto.Ativa, ct);
+        return new { sucesso = true };
+    });
 }

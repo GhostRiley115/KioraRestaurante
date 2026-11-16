@@ -3,6 +3,7 @@ using KioraRestaurante.DTOs.Usuario;
 using KioraRestaurante.Services.Interfaces;
 using KioraRestaurante.Services;
 using KioraRestaurante.ViewModels;
+using System.ComponentModel.DataAnnotations;
 
 /* Permite utilizar Controller, IActionResult, HttpGet, HttpPost
    e outros recursos do ASP.NET Core MVC. */
@@ -566,16 +567,19 @@ namespace KioraRestaurante.Controllers
             }
 
             // Solicita ao Service a desativação da conta.
-            var desativado = _usuarioService.DesativarConta(
-                usuarioId.Value);
+            bool desativado;
 
-            // Caso o usuário não seja encontrado ou já esteja desativado.
-            if (!desativado)
+            try
+            {
+                desativado = _usuarioService.DesativarConta(
+                    usuarioId.Value);
+            }
+            catch (ValidationException ex)
             {
                 return BadRequest(new
                 {
                     sucesso = false,
-                    mensagem = "Não foi possível desativar a conta."
+                    mensagem = ex.Message
                 });
             }
 

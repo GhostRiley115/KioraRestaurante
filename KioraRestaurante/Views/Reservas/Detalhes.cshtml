@@ -21,6 +21,51 @@
             <input name="Codigo" type="hidden" value="@Model.Codigo" /><input name="Versao" type="hidden" value="@Model.Versao" />
             <button class="pedido-botao" type="submit">Cancelar solicitação</button>
         </form>
+
+        <!-- Modal de confirmação do cancelamento -->
+<div class="modal fade"
+     id="modalCancelarReserva"
+     tabindex="-1"
+     aria-labelledby="tituloModalCancelarReserva"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered modal-cancelar-reserva-dialog">
+        <div class="modal-content modal-cancelar-reserva">
+
+            <div class="modal-header modal-cancelar-reserva-header">
+                <h5 class="modal-title" id="tituloModalCancelarReserva">
+                    Cancelar reserva?
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Fechar">
+                </button>
+            </div>
+
+            <div class="modal-body modal-cancelar-reserva-body">
+                <p>Tem certeza de que deseja cancelar esta solicitação?</p>
+                <p>Ao confirmar, o espaço será liberado e sua solicitação será cancelada.</p>
+            </div>
+
+            <div class="modal-footer modal-cancelar-reserva-footer">
+                <button type="button"
+                        class="btn-modal-cancelar-kiora"
+                        data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+
+                <button type="button"
+                        id="confirmarCancelamentoReserva"
+                        class="btn-modal-confirmar-kiora">
+                    Confirmar cancelamento
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
         <a asp-action="Minhas" class="pedido-link">Minhas reservas e fila</a>
         <a asp-action="Index" class="pedido-link">Nova reserva</a>
     </div>

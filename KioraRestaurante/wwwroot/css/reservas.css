@@ -20,3 +20,18 @@
 @media(max-width:767.98px) { .reservas-grade {grid-template-columns: minmax(0,1fr);} .reservas-card {padding: 20px;} .reservas-pagina {padding-block:32px;} }
 @media(hover:hover) and (pointer:fine) { .reservas-card {transition: border-color .2s;} .reservas-card:hover {border-color:var(--k-dourado);} }
 @media(prefers-reduced-motion:reduce) { .reservas-card {transition:none;} }
+
+/* MODAL DE CONFIRMAÇÃO DE CANCELAMENTO */
+.modal-cancelar-reserva-dialog {max-width: 500px;}
+.modal-cancelar-reserva {background-color: var(--k-fundo); border: 1px solid #D9B27A; border-radius: 12px; color: var(--k-texto);}
+.modal-cancelar-reserva-header {border-bottom: 1px solid #D9B27A; padding: 20px 24px;}
+.modal-cancelar-reserva-header .modal-title {font-family: 'Playfair Display', serif; font-size: 1.5625rem; font-weight: 600; color: var(--k-dourado);}
+.modal-cancelar-reserva-header .btn-close {filter: invert(1); opacity: 1;}
+.modal-cancelar-reserva-header .btn-close:hover {opacity: 0.7;}
+.modal-cancelar-reserva-body {padding: 24px; font-family: 'Lato', sans-serif;}
+.modal-cancelar-reserva-footer {border-top: 1px solid #D9B27A; padding: 16px 24px;}
+.btn-modal-cancelar-kiora, .btn-modal-confirmar-kiora {padding: 12px 20px; border: 1px solid #D9B27A; border-radius: 6px; font-family: 'Lato', sans-serif; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;}
+.btn-modal-cancelar-kiora {background-color: transparent; color: var(--k-dourado);}
+.btn-modal-cancelar-kiora:hover {background-color: var(--k-dourado); color: var(--k-sobre-dourado);}
+.btn-modal-confirmar-kiora {background-color: #7D1F1F; color: var(--k-texto);}
+.btn-modal-confirmar-kiora:hover {background-color: var(--k-dourado-fundo); color: var(--k-sobre-dourado);}

@@ -46,6 +46,55 @@ public class ReservaService(AppDbContext db,HorariosReserva horarios)
         catch {await transaction.RollbackAsync(ct);db.ChangeTracker.Clear();throw;}
     }
     public Task Manutencao(CancellationToken ct)=>ComSala(()=>Task.FromResult(true),ct);
+
+    /// <summary>
+    /// Vincula ao usuário todas as reservas realizadas anteriormente
+    /// utilizando a mesma chave de visitante.
+    /// </summary>
+    public async Task<int> VincularReservasVisitante(
+        int usuarioId,
+        string visitanteHash,
+        CancellationToken ct)
+    {
+        // Valida os dados recebidos antes de iniciar a operação.
+        if (usuarioId <= 0)
+            throw new ArgumentException("Usuário inválido.", nameof(usuarioId));
+
+        if (string.IsNullOrWhiteSpace(visitanteHash)
+            || visitanteHash.Length != 64
+            || !visitanteHash.All(char.IsAsciiHexDigit))
+        {
+            throw new ArgumentException(
+                "Chave de visitante inválida.",
+                nameof(visitanteHash));
+        }
+
+        return await ComSala(async () =>
+        {
+            // Confirma que a conta existe e está ativa.
+            var usuarioAtivo = await db.Usuarios.AnyAsync(
+                u => u.Id == usuarioId && u.Ativo,
+                ct);
+
+            if (!usuarioAtivo)
+                throw new UnauthorizedAccessException();
+
+            // Localiza as reservas que ainda pertencem ao visitante.
+            var reservas = await db.Reservas
+                .Where(r => r.UsuarioId == null
+                    && r.VisitanteHash == visitanteHash)
+                .ToListAsync(ct);
+
+            // Transfere as reservas para a conta cadastrada.
+            foreach (var reserva in reservas)
+            {
+                reserva.UsuarioId = usuarioId;
+                reserva.VisitanteHash = null;
+            }
+
+            return reservas.Count;
+        }, ct);
+    }
     public async Task<List<HorarioReservaDTO>> Horarios(DateOnly data,int pessoas,CancellationToken ct)
     {
         horarios.ValidarData(data);if(pessoas is <1 or >6)throw new RegraReservaException("Escolha de 1 a 6 pessoas.");

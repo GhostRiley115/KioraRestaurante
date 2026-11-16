@@ -27,10 +27,9 @@ namespace KioraRestaurante.DTOs.Usuario
         [Compare(nameof(Senha), ErrorMessage = "As senhas não coincidem.")]
         public string ConfirmarSenha { get; set; } = string.Empty;
 
-        // ACEITE DOS TERMOS
-
-        // Recebe a confirmação de aceite dos Termos de Uso
-        // e da Política de Privacidade enviada pelo cadastro.
+        // Exige que o usuário aceite os termos e a política de privacidade.
+        [Range(typeof(bool), "true", "true",
+            ErrorMessage = "É necessário aceitar os Termos de Uso e a Política de Privacidade.")]
         public bool AceiteTermos { get; set; }
     }
 }
