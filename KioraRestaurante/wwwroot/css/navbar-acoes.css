@@ -1,17 +1,17 @@
 /* Ícones fixos: a área de toque não muda de tamanho ao interagir. */
 .navbar-kiora .navbar-acoes-fixas { gap:6px; }
-.navbar-kiora .navbar-acoes-fixas .navbar-icone { position:relative; display:inline-flex; align-items:center; justify-content:center; flex:0 0 44px; width:44px; min-width:44px; height:44px; min-height:44px; padding:0; margin:0; border:1px solid transparent; border-radius:12px; background:transparent; color:var(--k-texto)!important; font-size:1.55rem; line-height:1; transform:none; transition:color .18s ease,background-color .18s ease,border-color .18s ease; }
+.navbar-kiora .navbar-acoes-fixas .navbar-icone { position:relative; display:inline-flex; align-items:center; justify-content:center; flex:0 0 44px; width:44px; min-width:44px; height:44px; min-height:44px; padding:0; margin:0; border:1px solid transparent; border-radius:12px; background:transparent; color:var(--k-texto); font-size:1.55rem; line-height:1; transform:none; transition:color .18s ease,background-color .18s ease,border-color .18s ease; }
 .navbar-kiora .navbar-icone>i { display:block; font-size:inherit; line-height:1; transition:transform .18s ease; }
-.navbar-kiora .navbar-icone:focus-visible,.navbar-kiora .navbar-icone[aria-expanded="true"] { color:var(--k-dourado)!important; background:var(--k-elevado); border-color:var(--k-borda); outline-offset:3px; }
+.navbar-kiora .navbar-icone:focus-visible,.navbar-kiora .navbar-icone[aria-expanded="true"] { color:var(--k-dourado); background:var(--k-elevado); border-color:var(--k-borda); outline-offset:3px; }
 @media(hover:hover) and (pointer:fine){
- .navbar-kiora .navbar-acoes-fixas .navbar-icone:hover { color:var(--k-dourado)!important; background:var(--k-elevado); border-color:var(--k-borda); transform:none; }
+ .navbar-kiora .navbar-acoes-fixas .navbar-icone:hover { color:var(--k-dourado); background:var(--k-elevado); border-color:var(--k-borda); transform:none; }
  .navbar-kiora .navbar-icone:hover>i { transform:scale(1.08); }
 }
 .navbar-kiora .navbar-icone:active>i { transform:scale(.96); }
 /* A cor branca dos contadores independe do tema e do hover do ícone. */
-.navbar-kiora .navbar-icone .contador-carrinho,.navbar-kiora .navbar-icone .sino-contador { position:absolute; top:0!important; right:0; left:auto!important; transform:none!important; display:inline-flex; align-items:center; justify-content:center; min-width:18px; width:auto; height:18px; padding:1px 4px; border:1px solid var(--k-fundo); border-radius:20px; background:#7d1f1f!important; color:#fff!important; font-size:.65rem; line-height:1; font-weight:700; }
+.navbar-kiora .navbar-icone .contador-carrinho,.navbar-kiora .navbar-icone .sino-contador { position:absolute; top:0; right:0; left:auto; transform:none; display:inline-flex; align-items:center; justify-content:center; min-width:18px; width:auto; height:18px; padding:1px 4px; border:1px solid var(--k-fundo); border-radius:20px; background:#7d1f1f; color:#fff; font-size:.65rem; line-height:1; font-weight:700; }
 .navbar-kiora .navbar-icone [hidden] { display:none; }
 @media(max-width:380px){.navbar-kiora .navbar-acoes-fixas{gap:0}.navbar-kiora .logo-navbar{width:100px}}
 @media(prefers-reduced-motion:reduce){.navbar-kiora .navbar-icone,.navbar-kiora .navbar-icone>i{transition:none!important;transform:none!important}}
 /* Sobrescreve o foco específico antigo do carrinho para manter o mesmo contorno nos três atalhos. */
-.navbar-kiora .navbar-icone:focus-visible { outline:3px solid var(--k-dourado)!important; outline-offset:3px!important; }
+.navbar-kiora .navbar-icone:focus-visible { outline:3px solid var(--k-dourado); outline-offset:3px; }

@@ -9,9 +9,6 @@
 .reservas-card label { display: block; margin: 16px 0 6px; }
 .reservas-card .form-control,.reservas-card .form-select { background-color: var(--k-campo); color: var(--k-texto); border-color: var(--k-borda); min-height: 44px; color-scheme: var(--k-esquema); }
 .reservas-card :focus-visible { outline: 2px solid var(--k-dourado); outline-offset: 3px; }
-.reservas-aceite { display: flex; align-items: flex-start; gap: 12px; margin: 20px 0; }
-.reservas-aceite input { margin-top: 5px; flex-shrink: 0; width: 18px; height: 18px; accent-color: #7D1F1F; }
-.reservas-aceite label { margin: 0; }
 .reservas-suave { color: var(--k-suave); font-size: .9rem; margin-top: 14px; }
 .reservas-regras li { margin-bottom: 14px; line-height: 1.6; }
 .reservas-fila { margin-top: 24px; border-top: 1px solid var(--k-borda); padding-top: 20px; }

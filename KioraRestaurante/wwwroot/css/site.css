@@ -260,321 +260,148 @@ button,
         /* Mantém a borda dourada */
         border-color: #D9B27A;
     }
-
-
 /* =========================================================
    BOTÃO DO USUÁRIO
    ========================================================= */
-
 /* Configura o ícone do usuário */
-.login-icon {
-    /* Define a cor branca */
-    color: var(--k-texto) !important;
-    /* Define o tamanho do ícone */
-    font-size: 1.75rem;
-    /* Remove o sublinhado */
-    text-decoration: none;
-    /* Cria uma transição suave */
-    transition: color 0.3s ease, transform 0.3s ease;
-    /* Permite controlar o alinhamento do ícone */
-    display: inline-flex;
-    /* Centraliza verticalmente */
-    align-items: center;
-    /* Centraliza horizontalmente */
-    justify-content: center;
-}
-
-    /* Efeito hover do ícone do usuário */
-    .login-icon:hover {
-        /* Muda a cor para dourado */
-        color: var(--k-dourado) !important;
-        /* Aumenta levemente o ícone */
-        transform: scale(1.08);
-    }
-
-    /* Efeito durante o clique */
-    .login-icon:active {
-        /* Reduz levemente o tamanho */
-        transform: scale(0.95);
-    }
-
-
+/* Define a cor branca */
+/* Define o tamanho do ícone */
+/* Remove o sublinhado */
+/* Cria uma transição suave */
+/* Permite controlar o alinhamento do ícone */
+/* Centraliza verticalmente */
+/* Centraliza horizontalmente */
+/* Efeito hover do ícone do usuário */
+/* Muda a cor para dourado */
+/* Aumenta levemente o ícone */
+/* Efeito durante o clique */
+/* Reduz levemente o tamanho */
 /* =========================================================
    MENU SUSPENSO DO USUÁRIO
    ========================================================= */
-
 /* Configura o menu suspenso */
-.menu-usuario {
-    /* Define o fundo escuro */
-    background-color: var(--k-superficie);
-    /* Define a borda dourada */
-    border: 1px solid #D9B27A;
-    /* Arredonda os cantos */
-    border-radius: 6px;
-    /* Define a largura mínima */
-    min-width: 190px;
-    /* Define o espaçamento interno */
-    padding: 8px 0;
-    /* Cria espaço entre o botão e o menu */
-    margin-top: 12px !important;
-    /* Cria uma sombra ao redor do menu */
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    /* Mantém o menu acima de outros elementos */
-    z-index: 1050;
-    /* Define a origem da animação */
-    transform-origin: top right;
-}
-
-
-    /* =========================================================
+/* Define o fundo escuro */
+/* Define a borda dourada */
+/* Arredonda os cantos */
+/* Define a largura mínima */
+/* Define o espaçamento interno */
+/* Cria espaço entre o botão e o menu */
+/* Cria uma sombra ao redor do menu */
+/* Mantém o menu acima de outros elementos */
+/* Define a origem da animação */
+/* =========================================================
    ANIMAÇÃO DE ABERTURA DO MENU
    ========================================================= */
-
-    /* Aplica a animação quando o Bootstrap adiciona a classe show */
-    .menu-usuario.show {
-        /* Executa a animação de abertura */
-        animation: menuUsuarioAbrir 0.25s ease forwards;
-    }
-
+/* Aplica a animação quando o Bootstrap adiciona a classe show */
+/* Executa a animação de abertura */
 /* Define a animação do menu */
-@keyframes menuUsuarioAbrir {
-    /* Estado inicial */
-    from {
-        /* Começa deslocado para cima */
-        transform: translateY(-8px);
-        /* Começa transparente */
-        opacity: 0;
-    }
-    /* Estado final */
-    to {
-        /* Retorna para a posição original */
-        transform: translateY(0);
-        /* Torna-se totalmente visível */
-        opacity: 1;
-    }
-}
-
-
+/* Estado inicial */
+/* Começa deslocado para cima */
+/* Começa transparente */
+/* Estado final */
+/* Retorna para a posição original */
+/* Torna-se totalmente visível */
 /* =========================================================
    ITENS DO MENU
    ========================================================= */
-
 /* Configura cada item do menu */
-.menu-usuario .dropdown-item {
-    /* Define o texto branco */
-    color: var(--k-texto);
-    /* Define a fonte */
-    font-family: 'Lato', sans-serif;
-    /* Define o tamanho */
-    font-size: 0.875rem;
-    /* Define o peso */
-    font-weight: 500;
-    /* Define o espaçamento interno */
-    padding: 11px 18px;
-    /* Cria transições suaves */
-    transition: background-color 0.25s ease, color 0.25s ease, padding-left 0.25s ease;
-}
-
-
-    /* =========================================================
+/* Define o texto branco */
+/* Define a fonte */
+/* Define o tamanho */
+/* Define o peso */
+/* Define o espaçamento interno */
+/* Cria transições suaves */
+/* =========================================================
    ÍCONES DOS ITENS DO MENU
    ========================================================= */
-
-    /* Configura os ícones dentro dos itens */
-    .menu-usuario .dropdown-item i {
-        /* Define a cor dourada */
-        color: var(--k-dourado);
-        /* Define o tamanho */
-        font-size: 1rem;
-        /* Cria espaço entre ícone e texto */
-        margin-right: 10px;
-        /* Cria transição suave */
-        transition: color 0.25s ease, transform 0.25s ease;
-    }
-
-
-    /* =========================================================
+/* Configura os ícones dentro dos itens */
+/* Define a cor dourada */
+/* Define o tamanho */
+/* Cria espaço entre ícone e texto */
+/* Cria transição suave */
+/* =========================================================
    HOVER DOS ITENS
    ========================================================= */
-
-    /* Aplica o efeito ao passar o mouse ou receber foco */
-    .menu-usuario .dropdown-item:hover,
-    .menu-usuario .dropdown-item:focus {
-        /* Define o fundo vinho */
-        background-color: #7D1F1F;
-        /* Mantém o texto branco */
-        color: var(--k-texto);
-        /* Move o texto levemente para a direita */
-        padding-left: 22px;
-    }
-
-
-        /* =========================================================
+/* Aplica o efeito ao passar o mouse ou receber foco */
+/* Define o fundo vinho */
+/* Mantém o texto branco */
+/* Move o texto levemente para a direita */
+/* =========================================================
    ÍCONE DURANTE O HOVER
    ========================================================= */
-
-        /* Altera o ícone durante hover ou foco */
-        .menu-usuario .dropdown-item:hover i,
-        .menu-usuario .dropdown-item:focus i {
-            /* Muda o ícone para branco */
-            color: var(--k-texto);
-            /* Move o ícone levemente para a direita */
-            transform: translateX(2px);
-        }
-
-
+/* Altera o ícone durante hover ou foco */
+/* Muda o ícone para branco */
+/* Move o ícone levemente para a direita */
 /* =========================================================
    DIVISOR DO MENU
    ========================================================= */
-
 /* Configura a linha divisória */
-.menu-usuario .dropdown-divider {
-    /* Define a cor da linha */
-    border-top: none;
-    /* Define o espaçamento */
-    margin: 6px 12px;
-}
-
-
+/* Define a cor da linha */
+/* Define o espaçamento */
 /* =========================================================
    REMOVE A SETA DO BOOTSTRAP
    ========================================================= */
-
 /* Remove a seta padrão do dropdown */
-.login-icon.dropdown-toggle::after {
-    /* Esconde a seta */
-    display: none;
-}
-
-
+/* Esconde a seta */
 /* =========================================================
    RESPONSIVIDADE DO MENU - CELULARES
    ========================================================= */
-
 /* Aplica regras em telas de até 767px */
-@media (max-width: 767px) {
-
-    /* Ajusta o menu do usuário */
-    .menu-usuario {
-        /* Reduz a largura mínima */
-        min-width: 175px;
-        /* Impede que ultrapasse a largura da tela */
-        max-width: calc(100vw - 30px);
-        /* Reduz o espaçamento interno */
-        padding: 6px 0;
-        /* Reduz o espaço superior */
-        margin-top: 8px !important;
-        /* Mantém a origem da animação */
-        transform-origin: top right;
-    }
-
-        /* Ajusta os itens do menu */
-        .menu-usuario .dropdown-item {
-            /* Reduz o tamanho da fonte */
-            font-size: 0.875rem;
-            /* Reduz o espaçamento interno */
-            padding: 10px 15px;
-        }
-
-            /* Ajusta os ícones */
-            .menu-usuario .dropdown-item i {
-                /* Define o tamanho do ícone */
-                font-size: 0.9375rem;
-                /* Reduz o espaço entre ícone e texto */
-                margin-right: 8px;
-            }
-
-            /* Ajusta o hover e foco */
-            .menu-usuario .dropdown-item:hover,
-            .menu-usuario .dropdown-item:focus {
-                /* Reduz o deslocamento */
-                padding-left: 18px;
-            }
-
-    /* Reduz o tamanho do ícone principal */
-    .login-icon {
-        /* Define tamanho menor */
-        font-size: 1.5625rem;
-    }
-}
-
+/* Ajusta o menu do usuário */
+/* Reduz a largura mínima */
+/* Impede que ultrapasse a largura da tela */
+/* Reduz o espaçamento interno */
+/* Reduz o espaço superior */
+/* Mantém a origem da animação */
+/* Ajusta os itens do menu */
+/* Reduz o tamanho da fonte */
+/* Reduz o espaçamento interno */
+/* Ajusta os ícones */
+/* Define o tamanho do ícone */
+/* Reduz o espaço entre ícone e texto */
+/* Ajusta o hover e foco */
+/* Reduz o deslocamento */
+/* Reduz o tamanho do ícone principal */
+/* Define tamanho menor */
 
 /* =========================================================
    RESPONSIVIDADE - CELULARES MUITO PEQUENOS
    ========================================================= */
-
 /* Aplica regras em telas de até 400px */
-@media (max-width: 400px) {
-
-    /* Ajusta a largura do menu */
-    .menu-usuario {
-        /* Define largura mínima */
-        min-width: 165px;
-        /* Impede que ultrapasse a tela */
-        max-width: calc(100vw - 20px);
-        /* Reduz o espaço superior */
-        margin-top: 6px !important;
-    }
-
-        /* Ajusta os itens */
-        .menu-usuario .dropdown-item {
-            /* Mantém fonte pequena */
-            font-size: 0.875rem;
-            /* Reduz espaçamento */
-            padding: 9px 13px;
-        }
-}
-
+/* Ajusta a largura do menu */
+/* Define largura mínima */
+/* Impede que ultrapasse a tela */
+/* Reduz o espaço superior */
+/* Ajusta os itens */
+/* Mantém fonte pequena */
+/* Reduz espaçamento */
 
 /* =========================================================
    CARRINHO
    ========================================================= */
-
 /* Configura o ícone do carrinho */
-.navbar-kiora .carrinho-kiora {
-    /* Define a cor dourada */
-    color: var(--k-dourado) !important;
-    /* Define o tamanho */
-    font-size: 1.5625rem;
-    /* Remove o sublinhado */
-    text-decoration: none;
-    /* Ativa Flexbox */
-    display: flex;
-    /* Centraliza verticalmente */
-    align-items: center;
-    /* Cria transição */
-    transition: all 0.3s ease;
-}
+/* Define a cor dourada */
+/* Define o tamanho */
+/* Remove o sublinhado */
+/* Ativa Flexbox */
+/* Centraliza verticalmente */
+/* Cria transição */
 
-    /* Efeito hover do carrinho */
-    .navbar-kiora .carrinho-kiora:hover {
-        /* Muda para branco */
-        color: var(--k-texto) !important;
-        /* Aumenta levemente */
-        transform: scale(1.1);
-    }
+/* Efeito hover do carrinho */
+/* Muda para branco */
+/* Aumenta levemente */
 
 /* Configura o contador do carrinho */
-.navbar-kiora .contador-carrinho {
-    /* Define o fundo vermelho */
-    background-color: #7D1F1F !important;
-    /* Define o texto branco */
-    color: var(--k-texto) !important;
-    /* Define o tamanho do número */
-    font-size: 0.875rem;
-    /* Define a largura mínima */
-    min-width: 18px;
-    /* Define a altura */
-    height: 18px;
-    /* Ativa Flexbox */
-    display: flex;
-    /* Centraliza verticalmente */
-    align-items: center;
-    /* Centraliza horizontalmente */
-    justify-content: center;
-    /* Remove espaçamento interno */
-    padding: 0;
-}
+/* Define o fundo vermelho */
+/* Define o texto branco */
+/* Define o tamanho do número */
+/* Define a largura mínima */
+/* Define a altura */
+/* Ativa Flexbox */
+/* Centraliza verticalmente */
+/* Centraliza horizontalmente */
+/* Remove espaçamento interno */
+
 
 
 /* =========================================================
@@ -638,19 +465,13 @@ button,
         /* Permite que os cliques atravessem a camada */
         pointer-events: none;
     }
-
-
 /* =========================================================
    CONTEÚDO DA HERO
    ========================================================= */
-
 /* Configura o conteúdo da Hero */
-.hero-content {
-    /* Permite posicionamento */
-    position: relative;
-    /* Mantém o conteúdo acima do overlay */
-    z-index: 2;
-}
+/* Permite posicionamento */
+/* Mantém o conteúdo acima do overlay */
+
 
 
 /* =========================================================
@@ -2190,18 +2011,8 @@ HOVER DO BOTÃO ALTERAR SENHA
 .navbar-kiora .navbar-collapse { order: 1; }
 .navbar-acoes-fixas { order: 2; display: flex; align-items: center; gap: 8px; margin-left: 16px; }
 .navbar-kiora .navbar-toggler { order: 3; }
-.navbar-acoes-fixas .login-icon,
-.navbar-acoes-fixas .carrinho-kiora {
-    width: 44px;
-    min-height: 44px;
-    justify-content: center;
-    padding: 0;
-    border: 0;
-    border-radius: 6px;
-    background: transparent;
-    flex-shrink: 0;
-}
-.navbar-acoes-fixas button:focus-visible { outline: 2px solid #D9B27A; outline-offset: 2px; }
+
+
 
 @media (max-width: 1199.98px) {
     .navbar-kiora .container { gap: 8px; }

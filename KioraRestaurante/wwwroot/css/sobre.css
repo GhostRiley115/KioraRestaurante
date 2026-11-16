@@ -203,7 +203,7 @@
     /* Define espaçamento vertical */
     padding: 100px 0;
     /* Cria linha superior */
-    border-top: 1px solid #1F1F1F;
+    border-top: 1px solid var(--k-borda);
 }
 
 
@@ -424,7 +424,7 @@
     /* Define fundo */
     background-color: var(--k-fundo);
     /* Cria linha superior */
-    border-top: 1px solid #1F1F1F;
+    border-top: 1px solid var(--k-borda);
 }
 
 
@@ -439,7 +439,7 @@
     /* Define espaçamento */
     padding: 100px 0;
     /* Cria linha superior */
-    border-top: 1px solid #1F1F1F;
+    border-top: 1px solid var(--k-borda);
 }
 
 
@@ -524,7 +524,7 @@
     /* Define espaçamento */
     padding: 100px 0;
     /* Cria linha superior */
-    border-top: 1px solid #1F1F1F;
+    border-top: 1px solid var(--k-borda);
 }
 
 
@@ -606,6 +606,8 @@
             background-color: #7D1F1F;
             /* Muda borda para dourada */
             border-color: #D9B27A;
+            /* O fundo vinho dos valores também mantém contraste ao passar o mouse. */
+            color: #fff;
         }
 
 
@@ -671,6 +673,10 @@
 
 /* Configura o botão */
 .btn-reserva-sobre {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
     /* Fundo claro do botão requer texto escuro, independentemente do tema da página. */
     --k-fundo: #faf7f2;
     --k-texto: #27221e;
@@ -869,6 +875,3 @@
 
 
 }
-
-/* O fundo vinho dos valores também mantém contraste ao passar o mouse. */
-.valores-lista span:hover { color: #fff; }

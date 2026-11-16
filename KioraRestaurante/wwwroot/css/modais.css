@@ -641,31 +641,18 @@
     border: 1px solid rgba(180, 70, 70, 0.45);
     color: var(--k-vermelho);
 }
-
 /* =========================================================
    MENSAGEM DE AVISO
    ========================================================= */
-.mensagem-kiora-aviso {
-    background-color: rgba(217, 178, 122, 0.12);
-    border: 1px solid rgba(217, 178, 122, 0.40);
-    color: var(--k-dourado);
-}
 
 /* =========================================================
    MENSAGEM INFORMATIVA
    ========================================================= */
-.mensagem-kiora-info {
-    background-color: rgba(80, 130, 180, 0.12);
-    border: 1px solid rgba(100, 160, 210, 0.40);
-    color: var(--k-azul);
-}
 
 /* =========================================================
    MENSAGEM OCULTA
    ========================================================= */
-.mensagem-kiora.d-none {
-    display: none !important;
-}
+
 
 
 /* =========================================================
@@ -2470,8 +2457,9 @@
    
    O filtro transforma o ícone padrão em branco.
 */
+    /* A inversão só ocorre no tema escuro; no claro, o X mantém contraste. */
     .modal-editar-perfil-header .btn-close {
-        filter: invert(1);
+        filter: var(--k-filtro-fechar);
         opacity: 1;
     }
 
@@ -2516,10 +2504,10 @@
    Define a aparência dos campos de texto.
 */
     .modal-editar-perfil-body .form-control {
-        background-color: #FFFFFF;
+        background-color: var(--k-campo);
         border: 1px solid #D9B27A;
         border-radius: 6px;
-        color: var(--k-sobre-dourado);
+        color: var(--k-texto);
         font-family: 'Lato', sans-serif;
         padding: 11px 13px;
     }
@@ -2617,7 +2605,7 @@
     }
 
     .modal-alterar-senha-header .btn-close {
-        filter: invert(1);
+        filter: var(--k-filtro-fechar);
         opacity: 1;
     }
 
@@ -2637,10 +2625,10 @@
     }
 
     .modal-alterar-senha-body .form-control {
-        background-color: #FFFFFF;
+        background-color: var(--k-campo);
         border: 1px solid #D9B27A;
         border-radius: 6px;
-        color: var(--k-sobre-dourado);
+        color: var(--k-texto);
         font-family: 'Lato', sans-serif;
         padding: 11px 13px;
     }
@@ -2701,7 +2689,7 @@
     transform: translateY(-50%);
     background: transparent;
     border: none;
-    color: var(--k-sobre-dourado);
+    color: var(--k-suave);
     font-size: 1.25rem;
     cursor: pointer;
     padding: 4px;
@@ -2709,7 +2697,7 @@
 
     /* Efeito ao passar o mouse sobre o olho. */
     .btn-mostrar-senha-kiora:hover {
-        color: #7D1F1F;
+        color: var(--k-dourado);
     }
 
 
@@ -2738,7 +2726,7 @@
     white-space: normal; overflow-wrap: anywhere;
 }
 .conta-opcao i { color: var(--k-dourado); }
-.conta-opcao:hover, .conta-opcao:focus-visible { background: #7D1F1F; color: var(--k-texto); border-color: #D9B27A; }
+.conta-opcao:hover, .conta-opcao:focus-visible { background: var(--k-superficie); color: var(--k-dourado); border-color: var(--k-dourado); }
 .painel-conta .usuario-logado { color: var(--k-dourado); white-space: normal; overflow-wrap: anywhere; }
 
 /* A conta da equipe organiza atalhos por finalidade e mantém todos acessíveis com rolagem. */
@@ -2746,3 +2734,5 @@
 .painel-conta-gestao .conta-opcao { min-height:44px; padding:10px 14px; border-color:var(--k-borda); background:var(--k-campo); }
 .painel-conta-gestao .conta-opcao:hover,.painel-conta-gestao .conta-opcao:focus-visible { background:var(--k-elevado); color:var(--k-dourado); border-color:var(--k-dourado); }
 .painel-conta-gestao .conta-grupo { margin-top:12px; color:var(--k-suave); font-size:.8rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; }
+
+/* Campos de perfil e senha compartilham a paleta; os comentários acima descrevem o estilo original. */

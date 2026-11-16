@@ -55,6 +55,7 @@
 }
 
 .categoria-galeria {
+    min-height: 44px;
     padding: 10px 22px;
     border: 1px solid rgba(217, 178, 122, 0.35);
     border-radius: 30px;
@@ -248,6 +249,7 @@
     position: relative;
     overflow: hidden;
     min-height: 280px;
+    min-width: 0;
     background-color: var(--k-superficie);
     cursor: pointer;
     border-radius: 4px;
@@ -347,16 +349,16 @@
         position: absolute;
         top: 24px;
         right: 24px;
-        width: 42px;
-        height: 42px;
+        width: 44px;
+        height: 44px;
         display: flex;
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
-        border: 1px solid rgba(217, 178, 122, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.75);
         border-radius: 50%;
-        background-color: transparent;
-        color: var(--k-dourado);
+        background-color: rgba(14, 14, 14, 0.78);
+        color: #fff;
         font-size: 1rem;
         transform: scale(0.7);
         opacity: 0;
@@ -438,29 +440,36 @@
  * quando uma imagem é selecionada.
  */
 
-.lightbox-galeria {
+/* O lightbox usa dialog nativo: teclado, isolamento do fundo e retorno de foco. */
+dialog.lightbox-galeria {
     position: fixed;
     inset: 0;
     z-index: 9999;
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
-    padding: 40px;
-    background-color: rgba(0, 0, 0, 0.94);
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.35s ease, visibility 0.35s ease;
+    margin: 0;
+    border: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    max-width: none;
+    max-height: none;
+    background: rgba(0, 0, 0, 0.94);
+    color: #fff;
 }
+
+dialog.lightbox-galeria::backdrop { background: rgba(0, 0, 0, .8); }
 
 
     /* =========================================================
    LIGHTBOX ATIVO
    ========================================================= */
 
-    .lightbox-galeria.ativo {
-        opacity: 1;
-        visibility: visible;
-    }
+    /* O dialog deve estar visível imediatamente para receber foco na abertura. */
+    dialog.lightbox-galeria[open] { display: flex; }
+    dialog.lightbox-galeria:not([open]) { display: none; }
 
 
 /* =========================================================
@@ -724,10 +733,6 @@
             opacity: 1;
         }
 
-    .lightbox-galeria {
-        padding: 20px;
-    }
-
     #lightboxImagem {
         max-width: 90vw;
         max-height: 70vh;
@@ -736,13 +741,13 @@
     .lightbox-fechar {
         top: 15px;
         right: 15px;
-        width: 42px;
-        height: 42px;
+        width: 44px;
+        height: 44px;
     }
 
     .lightbox-controle {
-        width: 42px;
-        height: 42px;
+        width: 44px;
+        height: 44px;
     }
 
     .lightbox-anterior {
@@ -772,4 +777,15 @@
     .galeria-fotos-header {
         margin-bottom: 30px;
     }
+}
+
+/* O foco e o toque revelam as mesmas informações disponíveis ao passar o mouse. */
+:root[data-tema] .galeria-item:focus-visible { outline: 3px solid var(--k-dourado); outline-offset: 4px; }
+.galeria-item:focus-visible .galeria-overlay { opacity: 1; }
+.galeria-item:focus-visible .galeria-overlay :is(span, h3, i) { opacity: 1; transform: none; }
+@media (hover: none), (pointer: coarse) {
+    .galeria-overlay { opacity: 1; }
+    .galeria-overlay :is(span, h3, i) { opacity: 1; transform: none; }
+    .galeria-item:hover, .galeria-item:hover img,
+    .galeria-item:hover .galeria-overlay i, .galeria-overlay i:hover { transform: none; }
 }

@@ -110,7 +110,18 @@
     formularioCheckout.addEventListener("submit", function (event) {
         if (["calcular", "aplicar-cupom", "remover-cupom"].includes(event.submitter?.value)) return;
         // A validação jQuery pode impedir o envio.
-        if (window.jQuery && !window.jQuery(formularioCheckout).valid()) return;
+        if (window.jQuery && !window.jQuery(formularioCheckout).valid()) {
+            event.preventDefault();
+            return;
+        }
+        const validade = Date.parse(formularioCheckout.dataset.validadeEntrega);
+        if (token.value && (!Number.isFinite(validade) || validade <= Date.now())) {
+            event.preventDefault();
+            invalidarEntrega();
+            mensagem.textContent = "A cotação expirou. Calcule a entrega novamente antes de confirmar.";
+            calcular.focus();
+            return;
+        }
         if (!token.value) {
             event.preventDefault();
             mensagem.textContent = "Calcule a entrega antes de confirmar.";

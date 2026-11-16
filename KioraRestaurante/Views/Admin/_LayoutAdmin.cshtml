@@ -3,6 +3,7 @@
 }
 @section Styles {
     <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+    @if (string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), "ProdutosAdmin", StringComparison.OrdinalIgnoreCase)) { <link rel="stylesheet" href="~/css/produto-admin.css" asp-append-version="true" /> }
     @await RenderSectionAsync("Styles", required: false)
 }
 <div class="container admin-pagina">

@@ -88,6 +88,9 @@ html {
 
 .categorias-titulo {
     margin: 0 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
     color: var(--k-dourado);
     font-family: "Lato", sans-serif;
     font-size: 0.875rem;
@@ -107,7 +110,7 @@ html {
     align-items: center;
     gap: 14px;
     width: 100%;
-    padding: 10px 22px;
+    padding: 10px 14px;
     background-color: #7D1F1F;
     color: #fff !important;
     border: 1px solid #D9B27A;
@@ -116,7 +119,8 @@ html {
     font-size: 0.95rem;
     font-weight: 600;
     text-decoration: none;
-    white-space: nowrap;
+    white-space: normal;
+    overflow-wrap: anywhere;
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
@@ -325,6 +329,7 @@ GRADIENTE SOBRE A IMAGEM
     flex-direction: column;
     flex: 1;
     padding: 26px 25px 23px;
+    overflow-wrap: anywhere;
 }
 
 
@@ -602,7 +607,7 @@ PREÇO
     color: var(--k-dourado);
 }
 /* ÍCONES LOCAIS DAS CATEGORIAS: herdam a cor normal, ativa e de hover. */
-.categorias-menu .categoria-icone { width: 24px; height: 24px; flex-shrink: 0; }
+.categorias-menu .categoria-icone { width: 24px; height: 24px; flex-shrink: 0; color: currentColor; border: 0; border-radius: 0; }
 
 /* ================================================================
    CARDÁPIO RESPONSIVO
@@ -611,16 +616,9 @@ PREÇO
 .cardapio-categorias,
 .produto-card { min-width: 0; }
 
-.categoria-item {
-    white-space: normal;
-    overflow-wrap: anywhere;
-    padding-inline: 14px;
-}
-
-.produto-informacoes { overflow-wrap: anywhere; }
 
 /* O ícone vetorial usa a cor do link, inclusive na categoria selecionada. */
-.categorias-menu .categoria-icone { color: currentColor; border: 0; border-radius: 0; }
+
 
 @media (max-width: 1199.98px) {
     .cardapio-conteudo { grid-template-columns: 220px minmax(0, 1fr); gap: 24px; }
@@ -632,8 +630,7 @@ PREÇO
     .cardapio-cabecalho { margin-bottom: 32px; }
     .cardapio-conteudo { grid-template-columns: minmax(0, 1fr); }
     .categorias-card { position: static; padding: 18px; }
-    .categorias-titulo { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-    .categorias-titulo h2 { margin: 0; font-size: 1.1rem; }
+    .categorias-titulo { margin-bottom: 14px; }
     /* Os filtros quebram para a próxima linha, sem rolagem horizontal na página. */
     .categorias-menu { flex-direction: row; flex-wrap: wrap; gap: 8px; }
     .categoria-item { width: auto; max-width: 100%; min-height: 44px; gap: 8px; font-size: 0.9rem; }
@@ -675,7 +672,7 @@ PREÇO
     padding: 0.25rem 0.65rem;
     border-radius: 999px;
     background: #7d1f1f;
-    color: var(--k-texto);
+    color: #fff;
     font-size: 0.875rem;
     font-weight: 700;
     line-height: 1.4;
@@ -691,8 +688,9 @@ PREÇO
 }
 
 .cardapio-kiora .produto-desconto del {
-    color: var(--k-texto-suave, var(--k-suave));
+    color: var(--k-suave);
     font-size: 0.9rem;
+    white-space: nowrap;
 }
 
 /* ORGANIZAÇÃO DO PREÇO: a descrição não encosta na área de compra.
@@ -705,10 +703,9 @@ PREÇO
 .cardapio-kiora .produto-rodape > div { width: 100%; min-width: 0; }
 .cardapio-kiora .produto-informacoes > p { margin-bottom: 20px; }
 .cardapio-kiora .produto-informacoes > .produto-etiqueta { margin-bottom: 10px; }
-.cardapio-kiora .produto-desconto del { white-space: nowrap; }
+
 
 /* O título das categorias tem a mesma organização no desktop e no celular. */
-.categorias-titulo { display: flex; align-items: center; gap: 10px; }
 .categorias-titulo h2 { margin: 0; font-size: 1.1rem; }
 
 /* Respeita quem prefere menos movimento, mantendo os indicadores visuais. */

@@ -64,9 +64,10 @@ CARTÃO DO DOCUMENTO
 ========================================================= */
 
 .documento-card {
-    background-color: #FFFFFF;
-    border: 8px solid #D9B27A;
-    border-radius: 6px;
+    background-color: var(--k-superficie);
+    border: 1px solid var(--k-borda);
+    border-top: 3px solid var(--k-dourado);
+    border-radius: 14px;
     padding: 50px 60px;
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
 }
@@ -78,7 +79,7 @@ TÍTULOS
     .documento-card h2 {
         margin-top: 35px;
         margin-bottom: 15px;
-        color: var(--k-sobre-dourado);
+        color: var(--k-dourado);
         font-family: 'Playfair Display', serif;
         font-size: 1.55rem;
         font-weight: 600;
@@ -91,7 +92,7 @@ TÍTULOS
     .documento-card h3 {
         margin-top: 25px;
         margin-bottom: 12px;
-        color: #7D1F1F;
+        color: var(--k-dourado);
         font-family: 'Lato', sans-serif;
         font-size: 1.1rem;
         font-weight: 700;
@@ -103,14 +104,14 @@ TEXTOS
 
     .documento-card p {
         margin-bottom: 15px;
-        color: #333333;
+        color: var(--k-texto);
         font-family: 'Lato', sans-serif;
         font-size: 1rem;
         line-height: 1.8;
     }
 
     .documento-card strong {
-        color: var(--k-sobre-dourado);
+        color: var(--k-texto);
     }
 
     /* =========================================================
@@ -124,7 +125,7 @@ LISTAS
 
     .documento-card li {
         margin-bottom: 8px;
-        color: #333333;
+        color: var(--k-texto);
         font-family: 'Lato', sans-serif;
         line-height: 1.7;
     }
@@ -134,28 +135,22 @@ LINKS
 ========================================================= */
 
     .documento-card a {
-        color: #7D1F1F;
+        color: var(--k-dourado);
         font-weight: 700;
         text-decoration: underline;
-        text-decoration-color: rgba(125, 31, 31, 0.35);
+        text-decoration-color: currentColor;
         text-underline-offset: 3px;
         transition: color 0.2s ease;
     }
 
         .documento-card a:hover {
-            color: var(--k-dourado);
+            color: var(--k-texto);
         }
 
 /* =========================================================
 DIVISÓRIAS
 ========================================================= */
 
-.documento-divider {
-    width: 70px;
-    height: 2px;
-    margin: 25px 0;
-    background-color: var(--k-dourado-fundo);
-}
 
 /* =========================================================
 RODAPÉ DO DOCUMENTO
@@ -164,7 +159,7 @@ RODAPÉ DO DOCUMENTO
 .documento-footer {
     margin-top: 40px;
     padding-top: 25px;
-    border-top: 1px solid #DDDDDD;
+    border-top: 1px solid var(--k-borda);
     text-align: center;
 }
 
@@ -184,20 +179,21 @@ BOTÃO VOLTAR
     gap: 8px;
     margin-top: 30px;
     padding: 11px 22px;
-    border: 1px solid #D9B27A;
+    min-height: 44px;
+    border: 1px solid var(--k-dourado);
     border-radius: 3px;
     background-color: transparent;
     color: var(--k-dourado);
     font-family: 'Lato', sans-serif;
     font-size: 0.9rem;
     font-weight: 700;
-    text-decoration: none !important;
-    transition: all 0.25s ease;
+    text-decoration: none;
+    transition: background-color .2s ease, color .2s ease;
 }
 
     .documento-voltar:hover {
         background-color: var(--k-dourado-fundo);
-        color: var(--k-sobre-dourado) !important;
+        color: var(--k-sobre-dourado);
     }
 
 /* =========================================================
@@ -228,7 +224,7 @@ RESPONSIVIDADE
 
     .documento-card p,
     .documento-card li {
-        font-size: 0.95rem;
+        font-size: 1rem;
     }
 
 }

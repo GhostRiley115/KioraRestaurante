@@ -1,0 +1,9 @@
+/* Estados de erro e acesso usam a mesma identidade e oferecem um caminho de retorno. */
+.pagina-estado { padding-block:clamp(36px,7vw,80px); }
+.pagina-estado-card { max-width:760px; margin-inline:auto; padding:clamp(24px,5vw,48px); background:var(--k-superficie); border:1px solid var(--k-borda); border-radius:16px; }
+.pagina-estado-icone { display:block; color:var(--k-dourado); font-size:2.5rem; margin-bottom:18px; }
+.pagina-estado h1 { font-family:'Playfair Display',serif; font-size:clamp(1.8rem,4vw,2.6rem); margin:12px 0 20px; }
+.pagina-estado p { color:var(--k-suave); line-height:1.7; }
+.pagina-estado-acoes { display:flex; align-items:center; flex-wrap:wrap; gap:16px; margin-top:24px; }
+.pagina-estado-codigo { margin-top:28px; margin-bottom:0; font-size:.875rem; }
+.pagina-estado-codigo code { color:var(--k-texto); overflow-wrap:anywhere; }
