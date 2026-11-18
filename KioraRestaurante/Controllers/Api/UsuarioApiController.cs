@@ -1,6 +1,5 @@
 ﻿
 using KioraRestaurante.DTOs.Usuario;
-using KioraRestaurante.Services.Interfaces;
 using KioraRestaurante.Services.Reservas;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -10,6 +9,8 @@ using System.ComponentModel.DataAnnotations;
 using KioraRestaurante.Filters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.RateLimiting;
+using KioraRestaurante.Services.Autenticacao;
+using KioraRestaurante.Services.Usuarios;
 
 namespace KioraRestaurante.Controllers.Api
 {

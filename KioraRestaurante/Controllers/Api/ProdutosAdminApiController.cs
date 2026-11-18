@@ -3,12 +3,11 @@ using System.Security.Claims;
 using KioraRestaurante.DTOs.Admin;
 using KioraRestaurante.DTOs.Produto;
 using KioraRestaurante.Models.Enums;
-using KioraRestaurante.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using KioraRestaurante.Services.Exceptions;
 using Microsoft.EntityFrameworkCore;
+using KioraRestaurante.Services.Produtos;
 
 namespace KioraRestaurante.Controllers.Api
 {

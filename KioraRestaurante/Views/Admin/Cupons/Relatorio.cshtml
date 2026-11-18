@@ -1,5 +1,5 @@
 @model KioraRestaurante.DTOs.Cupons.RelatorioCupomDTO
-@using KioraRestaurante.Services
+@using KioraRestaurante.Helpers
 @{ ViewData["Title"] = "Desempenho do cupom"; var cultura = System.Globalization.CultureInfo.GetCultureInfo("pt-BR"); }
 <a asp-action="Index">← Cupons</a><h1>Desempenho · @Model.Cupom.Codigo</h1><p>@Model.Cupom.Descricao · Parceiro: @(Model.Cupom.Parceiro ?? "Sem parceiro")</p>
 <p><a asp-action="Editar" asp-route-id="@Model.Cupom.Id">Editar regras</a> · <a asp-controller="NotificacoesAdmin" asp-action="Criar" asp-route-cupomId="@Model.Cupom.Id">Preparar divulgação</a></p>

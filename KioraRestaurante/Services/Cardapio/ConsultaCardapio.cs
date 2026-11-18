@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using KioraRestaurante.DTOs.Categoria;
 using KioraRestaurante.DTOs.Produto;
 using KioraRestaurante.ViewModels;
+using KioraRestaurante.ViewModels.Cardapio;
 
 namespace KioraRestaurante.Services.Cardapio;
 

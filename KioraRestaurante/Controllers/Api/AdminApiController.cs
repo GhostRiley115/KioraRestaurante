@@ -2,12 +2,12 @@
 using System.Security.Claims;
 using KioraRestaurante.DTOs.Admin;
 using KioraRestaurante.Models.Enums;
-using KioraRestaurante.Services.Interfaces;
 using KioraRestaurante.ViewModels.Admin;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using KioraRestaurante.Services.Admin;
 
 namespace KioraRestaurante.Controllers.Api;
 

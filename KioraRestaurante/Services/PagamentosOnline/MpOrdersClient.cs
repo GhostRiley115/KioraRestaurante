@@ -38,7 +38,13 @@ public class MpOrdersClient(HttpClient http, IOptions<MercadoPagoConfig> options
             using var response = await http.SendAsync(req, ct);
             if (!response.IsSuccessStatusCode)
                 throw new FalhaPagamento($"Mercado Pago respondeu HTTP {(int)response.StatusCode}. Tente consultar novamente; se persistir, avise o restaurante.");
-            return JsonDocument.Parse(await response.Content.ReadAsStringAsync(ct));
+            var documento = JsonDocument.Parse(await response.Content.ReadAsStringAsync(ct));
+            if (documento.RootElement.ValueKind != JsonValueKind.Object)
+            {
+                documento.Dispose();
+                throw new FalhaPagamento("Resposta inválida do provedor. Consulte novamente o pagamento.");
+            }
+            return documento;
         }
         catch (HttpRequestException) { throw new FalhaPagamento("Não foi possível comunicar com o Mercado Pago. Tente novamente."); }
         catch (OperationCanceledException) when (!ct.IsCancellationRequested)

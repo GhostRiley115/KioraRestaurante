@@ -1,10 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using KioraRestaurante.DTOs.Endereco;
-using KioraRestaurante.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using KioraRestaurante.Services.Enderecos;
 
 namespace KioraRestaurante.Controllers;
 

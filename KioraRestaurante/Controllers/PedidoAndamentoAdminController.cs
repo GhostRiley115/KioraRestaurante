@@ -29,7 +29,7 @@ public class PedidoAndamentoAdminController(AndamentoPedidoService service) : Co
         return RedirectToAction("DetalhesPedido", "Admin", new { id });
     }
     [HttpPost,Microsoft.AspNetCore.RateLimiting.EnableRateLimiting("alteracoes-pedido")]
-    public async Task<IActionResult> Cancelar(KioraRestaurante.DTOs.Admin.CancelarPedidoAdminRequestDTO dto,[FromServices] KioraRestaurante.Services.GerenciarPedidoService cancelamentos,CancellationToken ct)
+    public async Task<IActionResult> Cancelar(KioraRestaurante.DTOs.Admin.CancelarPedidoAdminRequestDTO dto,[FromServices] KioraRestaurante.Services.Pedidos.GerenciarPedidoService cancelamentos,CancellationToken ct)
     {
         if(!ModelState.IsValid)TempData["AdminErro"]="Informe um motivo válido, com até 300 caracteres, e atualize os detalhes.";
         else try

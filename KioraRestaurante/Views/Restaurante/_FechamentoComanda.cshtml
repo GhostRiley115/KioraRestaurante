@@ -1,3 +1,4 @@
+@using KioraRestaurante.ViewModels.Salao
 @model ComandaDetalhesDTO
 @{var pendentes=Model.Itens.Any(i=>i.Situacao is SituacaoPreparo.NaFila or SituacaoPreparo.EmPreparo or SituacaoPreparo.Pronto);var c=CultureInfo.GetCultureInfo("pt-BR");}
 <details class="equipe-box comanda-fechamento"><summary>Fechar conta da mesa</summary>

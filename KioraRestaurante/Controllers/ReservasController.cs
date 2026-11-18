@@ -5,6 +5,7 @@ using KioraRestaurante.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.RateLimiting;
+using KioraRestaurante.ViewModels.Reservas;
 namespace KioraRestaurante.Controllers;
 
 [AutoValidateAntiforgeryToken]

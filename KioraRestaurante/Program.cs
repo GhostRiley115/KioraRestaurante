@@ -2,8 +2,6 @@
 using KioraRestaurante.Data;
 using KioraRestaurante.Filters;
 using Microsoft.EntityFrameworkCore;
-using KioraRestaurante.Services;
-using KioraRestaurante.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -12,6 +10,16 @@ using System.Threading.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Claims;
+using KioraRestaurante.Configuracao;
+using KioraRestaurante.Services.Admin;
+using KioraRestaurante.Services.Autenticacao;
+using KioraRestaurante.Services.Carrinhos;
+using KioraRestaurante.Services.Email;
+using KioraRestaurante.Services.Enderecos;
+using KioraRestaurante.Services.Imagens;
+using KioraRestaurante.Services.Pedidos;
+using KioraRestaurante.Services.Produtos;
+using KioraRestaurante.Services.Usuarios;
 
 var builder = WebApplication.CreateBuilder(args);
 

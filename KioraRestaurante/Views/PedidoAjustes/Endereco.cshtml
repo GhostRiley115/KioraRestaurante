@@ -1,4 +1,5 @@
-@model KioraRestaurante.ViewModels.AlterarEnderecoPedidoViewModel
+@using KioraRestaurante.ViewModels.Enderecos
+@model KioraRestaurante.ViewModels.Enderecos.AlterarEnderecoPedidoViewModel
 @using System.Globalization
 @{ ViewData["Title"] = "Corrigir endereço"; var cultura = CultureInfo.GetCultureInfo("pt-BR"); var produtos = (Model.Pedido.ItensPedido.Sum(i => i.Subtotal) - Model.Pedido.DescontoCupom); }
 <section class="container pedido-pagina">
@@ -12,7 +13,7 @@
           data-pode-prosseguir="true" data-validade-entrega="@Model.Entrega?.ExpiraEmUtc.ToString("O")" data-texto-confirmar="Confirmar alteração de endereço">
         <input asp-for="Dados.PedidoId" type="hidden" /><input asp-for="Dados.VersaoPedido" type="hidden" /><input asp-for="Dados.TokenEntrega" type="hidden" />
         <div class="row g-4">
-            <div class="col-12 col-lg-7"><partial name="~/Views/Pedido/_EnderecoCheckout.cshtml" model="@(new KioraRestaurante.ViewModels.EnderecoFormularioViewModel { Dados = Model.Dados, Enderecos = Model.Enderecos, Entrega = Model.Entrega })" /></div>
+            <div class="col-12 col-lg-7"><partial name="~/Views/Pedido/_EnderecoCheckout.cshtml" model="@(new KioraRestaurante.ViewModels.Enderecos.EnderecoFormularioViewModel { Dados = Model.Dados, Enderecos = Model.Enderecos, Entrega = Model.Entrega })" /></div>
             <div class="col-12 col-lg-5"><section class="pedido-box checkout-resumo">
                 <h2>Confira o ajuste</h2>
                 <dl class="checkout-resumo-valores">

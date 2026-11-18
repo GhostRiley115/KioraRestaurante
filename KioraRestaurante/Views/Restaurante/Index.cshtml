@@ -1,3 +1,5 @@
+@using KioraRestaurante.Helpers
+@using KioraRestaurante.ViewModels.Salao
 @model PainelSalaoViewModel
 @using KioraRestaurante.Services.Salao
 @{ViewData["Title"]="Salão e mesas";var gestor=User.IsInRole("Administrador")||User.IsInRole("Gerente");var meuId=User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;}

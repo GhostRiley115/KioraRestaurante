@@ -16,19 +16,21 @@
 
 O Kiora é um restaurante fictício criado para um Trabalho de Conclusão de Curso em Desenvolvimento de Sistemas. A proposta é construir uma experiência que começa no cardápio online e evolui para a operação do restaurante, aproximando clientes e funcionários por meio da tecnologia.
 
-Este repositório reúne o **sistema web de delivery**, com navegação pelo cardápio, carrinho, pedidos e área administrativa. O aplicativo mobile faz parte da visão de evolução do projeto e **ainda não está implementado neste repositório**.
+Este repositório reúne o **sistema web de delivery**, a **gestão do restaurante físico** e a **API para integração mobile**. O aplicativo Android é desenvolvido separadamente e **não está incluído neste repositório**.
 
 ## Da escolha ao pedido
 
-| Para quem pede | Para quem administra |
+| Para quem pede | Para quem administra e opera |
 | :--- | :--- |
 | Cardápio com categorias e produtos | Cadastro e edição de produtos |
 | Carrinho com inclusão, alteração e remoção de itens | Controle de disponibilidade e ativação de produtos |
 | Cadastro, login e edição de perfil | Painel e consulta de pedidos |
 | Endereços de entrega e consulta de CEP | Consulta de usuários e alteração de situação |
-| Checkout, detalhes e histórico de pedidos | Acesso restrito ao perfil de administrador |
+| Checkout, pagamento online e histórico de pedidos | Relatórios de delivery e vendas presenciais |
+| Reservas com ou sem conta | Mesas, comandas, cozinha, portaria e equipe |
+| Cupons e notificações | Acesso por cargo para administrador, gerente, garçom, portaria e cozinha |
 
-A implementação também inclui carrinho associado a cookies, mesclagem de carrinho, limpeza de carrinhos e integração com Cloudinary para imagens de produtos. O registro de formas e estados de pagamento faz parte do domínio; isso **não representa uma integração com um gateway de pagamentos**.
+A implementação também inclui carrinho associado a cookies, mesclagem e limpeza de carrinhos, Cloudinary para imagens e **Mercado Pago via Orders API** para o checkout online. O pagamento do atendimento presencial é recebido fora do sistema; a comanda registra os valores e as formas de recebimento.
 
 ## Identidade do restaurante
 
@@ -43,14 +45,22 @@ A implementação também inclui carrinho associado a cookies, mesclagem de carr
 
 ## Como o sistema está organizado
 
+Consulte a [arquitetura e organização do projeto](docs/ARQUITETURA-E-ORGANIZACAO.md) para entender as pastas, as responsabilidades e onde acrescentar serviços, contratos e testes.
+
+A [revisão de organização e testes de 18/11/2026](docs/REVISAO-ORGANIZACAO-E-TESTES-2026-11-18.md) registra as correções, os resultados e os limites da validação.
+
 ```mermaid
 flowchart LR
-    Cliente[Cliente / Administrador] --> MVC[Controllers e Views]
+    Navegador[Clientes e equipe no navegador] --> MVC[Controllers e Views]
+    Android[Aplicativo Android externo] --> API[Controllers de API]
     MVC --> Servicos[Serviços e regras de negócio]
+    API --> Servicos
     Servicos --> EF[Entity Framework Core]
     EF --> DB[(MySQL)]
-    Servicos --> CEP[ViaCEP]
+    Servicos --> Enderecos[ViaCEP / Geoapify / HeiGIT]
     Servicos --> Imagens[Cloudinary]
+    Servicos --> Pagamentos[Mercado Pago Orders]
+    Servicos --> Email[Brevo]
 ```
 
 | Camada | Responsabilidade |
@@ -61,26 +71,27 @@ flowchart LR
 | `Migrations` | Evolução do esquema do banco |
 | `wwwroot` | Estilos, scripts e identidade visual |
 
-A autenticação usa cookies e autorização por perfil. O projeto utiliza proteção antifalsificação nas operações configuradas e integração de consulta de endereços com ViaCEP.
+A autenticação do site usa cookies; a API também aceita JWT. As permissões são conferidas pelo servidor conforme o cargo e a operação. As gravações autenticadas por cookie usam proteção antifalsificação nos fluxos configurados; chamadas com JWT válido seguem o contrato da API. Endereços e rotas de entrega utilizam ViaCEP, Geoapify e openrouteservice/HeiGIT.
 
 ## Visão de evolução
 
-O objetivo futuro é conectar o delivery à experiência presencial do restaurante.
+A aplicação já atende ao delivery e à operação presencial, mantendo os fluxos e registros de venda separados. A integração do aplicativo Android utiliza os contratos disponíveis na API.
 
 | Etapa | Situação neste repositório |
 | :--- | :--- |
 | Sistema web de delivery e área administrativa | Implementado, em evolução |
-| Aplicativo mobile para a equipe | Planejado · não implementado |
-| Reservas pelo aplicativo | Planejado · não implementado |
-| Criação de pedidos no atendimento presencial | Planejado · não implementado |
-| Gerenciamento de mesas pelos funcionários | Planejado · não implementado |
-| Integração entre operação mobile e sistema web | Planejada · arquitetura a definir |
+| Aplicativo Android | Desenvolvido separadamente · fora deste repositório |
+| API de cadastro, login e reservas para o aplicativo | Implementada, com JWT e reserva sem conta |
+| Criação de pedidos no atendimento presencial | Implementada em comandas abertas |
+| Gerenciamento de mesas pelos funcionários | Implementado, com permissões por cargo |
+| API para operação mobile de salão e equipe | Implementada · integração Android descrita nos contratos |
+| Pagamento online de delivery | Implementado com Mercado Pago Orders |
 
-As funcionalidades planejadas descrevem a direção do TCC, sem representar recursos já disponíveis ou um cronograma de entrega.
+As telas nativas e a integração no Android precisam ser desenvolvidas e validadas no projeto do aplicativo. A disponibilidade de um endpoint no backend não significa que uma tela mobile já esteja pronta.
 
 ## Executar localmente
 
-**Pré-requisitos:** SDK .NET 10, instância MySQL acessível e credenciais próprias do Cloudinary para os fluxos de upload de imagens.
+**Pré-requisitos:** SDK .NET 10, instância MySQL acessível e uma chave de assinatura JWT própria e forte. Os fluxos de imagens, e-mail, entrega e pagamento também dependem das credenciais dos respectivos serviços.
 
 ```bash
 git clone https://github.com/GhostRiley115/KioraRestaurante.git
@@ -92,6 +103,10 @@ dotnet user-secrets set "Cloudinary:ApiKey" "SUA_API_KEY"
 dotnet user-secrets set "Cloudinary:ApiSecret" "SEU_API_SECRET"
 ```
 
+Antes de iniciar, configure também `Jwt:ChaveSecreta` nos User Secrets, usando uma chave aleatória com pelo menos 32 bytes. No Render, use `Jwt__ChaveSecreta`. A chave fica somente no servidor; não a coloque no Git, no aplicativo Android ou em exemplos públicos. Emissor, público, validade e autenticação estão descritos na [documentação da API mobile](docs/API-MOBILE.md).
+
+Configure as integrações conforme os fluxos que deseja usar: [endereços e entrega](docs/CHECKOUT-ENDERECOS-E-ENTREGA.md), [pagamento Mercado Pago Orders](docs/pagamento-comprador-checkout-orders.md), [complementos do checkout](docs/COMPLEMENTOS-CHECKOUT-E-PEDIDOS.md) e a seção de recuperação por e-mail abaixo. Use o ambiente de teste do provedor para pagamentos fictícios.
+
 Com a ferramenta `dotnet-ef` da série 9 instalada, aplique as migrations e inicie o projeto em desenvolvimento:
 
 ```bash
@@ -99,7 +114,7 @@ dotnet ef database update -- --environment Development
 dotnet run -- --environment Development
 ```
 
-Abra o endereço exibido no terminal. A conexão MySQL precisa funcionar já na inicialização, pois a aplicação detecta a versão do servidor. A configuração `Entrega:MunicipiosIbge` define os municípios atendidos e deve corresponder ao cenário de teste. Use dados fictícios para explorar os fluxos.
+Abra o endereço exibido no terminal. A conexão MySQL precisa funcionar já na inicialização, pois a aplicação detecta a versão do servidor. Confira a origem do restaurante, a área e as faixas de entrega na configuração e na documentação de entrega. Use dados fictícios para explorar os fluxos.
 
 ## Testes e atualização de sessões
 
@@ -124,7 +139,7 @@ O login retoma somente destinos locais validados. Ao entrar pelo checkout, a reu
 Além de `dotnet test KioraRestaurante.slnx`, os testes dos scripts podem ser executados com Node.js, sem instalar pacotes:
 
 ```bash
-node --test KioraRestaurante.Tests/JavaScript/interface.test.cjs
+node --test KioraRestaurante.Tests/JavaScript/*.test.cjs
 ```
 
 ## Recuperação de senha por e-mail

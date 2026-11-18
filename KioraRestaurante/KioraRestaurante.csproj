@@ -33,20 +33,4 @@
     <Folder Include="wwwroot\imagens\sobre\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="Services\Interface\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Remove="Services\Interface\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Remove="Services\Interface\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Services\Interface\**" />
-  </ItemGroup>
-
 </Project>

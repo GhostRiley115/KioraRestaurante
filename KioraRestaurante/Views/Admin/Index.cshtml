@@ -1,3 +1,4 @@
+@using KioraRestaurante.Helpers
 @model PainelAdminDTO
 @{ ViewData["Title"] = "Visão geral"; var r=Model.Relatorio;
 var rotas=new Dictionary<string,string>{["Inicio"]=r.Filtros.Inicio?.ToString("yyyy-MM-dd")??"",["Fim"]=r.Filtros.Fim?.ToString("yyyy-MM-dd")??"",["CompararInicio"]=r.Filtros.CompararInicio?.ToString("yyyy-MM-dd")??"",["CompararFim"]=r.Filtros.CompararFim?.ToString("yyyy-MM-dd")??"",["Canal"]=r.Filtros.Canal};

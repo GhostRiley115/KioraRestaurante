@@ -8,6 +8,7 @@ using KioraRestaurante.Models.Enums;
 using KioraRestaurante.Models.Salao;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using KioraRestaurante.Services.Email;
 namespace KioraRestaurante.Services.Salao;
 
 public class FuncionarioService(AppDbContext db,AcessoSalaoService acesso,EmailService email,IConfiguration config,TimeProvider relogio)

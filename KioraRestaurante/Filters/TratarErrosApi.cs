@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
-using KioraRestaurante.Services.Exceptions;
 using KioraRestaurante.Services.Reservas;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using KioraRestaurante.Services.Produtos;
 
 namespace KioraRestaurante.Filters;
 

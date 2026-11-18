@@ -1,3 +1,5 @@
+@using KioraRestaurante.Helpers
+@using KioraRestaurante.ViewModels.Salao
 @model ComandaSalaoViewModel
 @using KioraRestaurante.Services.Salao
 @{var a=Model.Comanda;ViewData["Title"]=$"Comanda · {a.Mesa}";var c=CultureInfo.GetCultureInfo("pt-BR");var gestor=User.IsInRole("Administrador")||User.IsInRole("Gerente");var aberta=a.Situacao==SituacaoAtendimento.Aberto;var consumo=a.Itens.Where(i=>i.Situacao!=SituacaoPreparo.Cancelado).ToList();var pendentes=consumo.Where(i=>i.Situacao!=SituacaoPreparo.Entregue).ToList();}

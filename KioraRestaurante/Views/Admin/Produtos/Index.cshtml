@@ -1,3 +1,4 @@
+@using KioraRestaurante.Services.Produtos
 @model KioraRestaurante.ViewModels.Admin.ProdutosAdminViewModel
 
 @{
@@ -118,7 +119,7 @@ else
                     }
                     <p class="admin-produto-preco">
                         <span class="visually-hidden">Preço de venda:</span>
-                        @(KioraRestaurante.Services.PrecoProduto.Calcular(produto.Preco, produto.DescontoPercentual)
+                        @(KioraRestaurante.Services.Produtos.PrecoProduto.Calcular(produto.Preco, produto.DescontoPercentual)
                             .ToString("C", System.Globalization.CultureInfo.GetCultureInfo("pt-BR")))
                     </p>
 

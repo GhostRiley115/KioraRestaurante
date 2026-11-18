@@ -3,13 +3,13 @@ using System.Globalization;
 using System.Security.Claims;
 using KioraRestaurante.DTOs.Produto;
 using KioraRestaurante.Models.Enums;
-using KioraRestaurante.Services.Exceptions;
-using KioraRestaurante.Services.Interfaces;
 using KioraRestaurante.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using KioraRestaurante.ViewModels.Admin;
+using KioraRestaurante.Services.Produtos;
+using KioraRestaurante.ViewModels.Produtos;
 
 namespace KioraRestaurante.Controllers;
 

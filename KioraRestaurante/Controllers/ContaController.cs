@@ -1,7 +1,5 @@
 using KioraRestaurante.Filters;
 using KioraRestaurante.DTOs.Usuario;
-using KioraRestaurante.Services.Interfaces;
-using KioraRestaurante.Services;
 using KioraRestaurante.ViewModels;
 using System.ComponentModel.DataAnnotations;
 
@@ -19,6 +17,10 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 /* Permite criar as informações que serão armazenadas
    dentro do Cookie de autenticação. */
 using System.Security.Claims;
+using KioraRestaurante.Services.Autenticacao;
+using KioraRestaurante.Services.Email;
+using KioraRestaurante.Services.Usuarios;
+using KioraRestaurante.ViewModels.Conta;
 
 namespace KioraRestaurante.Controllers
 {

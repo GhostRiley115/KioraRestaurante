@@ -10,11 +10,12 @@ using Microsoft.Extensions.Options;
 namespace KioraRestaurante.Services.PagamentosOnline;
 public class CheckoutOnlineService(AppDbContext db, MpOrdersClient api, IOptions<MercadoPagoConfig> config)
 {
-    private static string Texto(JsonElement e, string nome) =>
-        e.TryGetProperty(nome, out var v) ? v.ToString() : "";
+    private static string Texto(JsonElement e, string nome) => DadosOrder.Texto(e, nome);
     private static decimal? Valor(JsonElement e, string nome)
     {
         // Ausente ou nulo significa valor não informado; não significa pagamento aprovado.
+        if (e.ValueKind != JsonValueKind.Object)
+            throw new FalhaPagamento("A estrutura recebida do provedor precisa de conferência.");
         if (!e.TryGetProperty(nome, out var campo)
             || campo.ValueKind is JsonValueKind.Null or JsonValueKind.Undefined)
         {
@@ -267,7 +268,10 @@ public class CheckoutOnlineService(AppDbContext db, MpOrdersClient api, IOptions
             Conferir(json, registro);
             if (registro.OrderId != null && registro.OrderId != orderId)
                 throw new FalhaPagamento("Order diferente da registrada para o pedido.");
-            var data = DateTimeOffset.Parse(Texto(json, "last_updated_date"), CultureInfo.InvariantCulture).UtcDateTime;
+            if (!DateTimeOffset.TryParse(Texto(json, "last_updated_date"), CultureInfo.InvariantCulture,
+                    DateTimeStyles.None, out var atualizacao))
+                throw new FalhaPagamento("A data de atualização recebida do provedor é inválida. Consulte novamente o pagamento.");
+            var data = atualizacao.UtcDateTime;
             if (registro.AtualizacaoExternaUtc.HasValue && data < registro.AtualizacaoExternaUtc.Value) return;
             var status = Texto(json, "status"); var detalhe = Texto(json, "status_detail");
             var pago = Valor(json, "total_paid_amount");
@@ -321,9 +325,13 @@ public class CheckoutOnlineService(AppDbContext db, MpOrdersClient api, IOptions
 
         ("refunded", _) => StatusPagamento.Reembolsado,
 
-        ("failed", _) => StatusPagamento.Recusado,
+        ("failed", _)
+            when !pago.HasValue || pago.Value == 0
+            => StatusPagamento.Recusado,
 
-        ("canceled", _) => StatusPagamento.Cancelado,
+        ("canceled", _)
+            when !pago.HasValue || pago.Value == 0
+            => StatusPagamento.Cancelado,
 
         ("created" or "processing" or "action_required", _)
             when !pago.HasValue || pago.Value == 0

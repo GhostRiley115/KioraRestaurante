@@ -1,15 +1,16 @@
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
-using KioraRestaurante.Services;
-using KioraRestaurante.Services.Interfaces;
 using KioraRestaurante.ViewModels;
-using KioraRestaurante.Services.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using KioraRestaurante.DTOs.Pedido;
 using KioraRestaurante.Services.Entrega;
 using Microsoft.AspNetCore.RateLimiting;
+using KioraRestaurante.Services.Carrinhos;
+using KioraRestaurante.Services.Enderecos;
+using KioraRestaurante.Services.Pedidos;
+using KioraRestaurante.ViewModels.Pedidos;
 
 namespace KioraRestaurante.Controllers;
 

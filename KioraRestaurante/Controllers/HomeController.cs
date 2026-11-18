@@ -1,9 +1,10 @@
 using KioraRestaurante.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using KioraRestaurante.Services.Interfaces;
 using KioraRestaurante.ViewModels;
 using KioraRestaurante.Services.Cardapio;
+using KioraRestaurante.Services.Produtos;
+using KioraRestaurante.ViewModels.Cardapio;
 
 namespace KioraRestaurante.Controllers
 {

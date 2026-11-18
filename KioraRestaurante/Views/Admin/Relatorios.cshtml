@@ -1,3 +1,4 @@
+@using KioraRestaurante.Helpers
 @model RelatorioAdminDTO
 @{ ViewData["Title"]="Relatórios de vendas"; var f=Model.Filtros; var c=CultureInfo.GetCultureInfo("pt-BR");
 var rotas=new Dictionary<string,string>{["Inicio"]=f.Inicio?.ToString("yyyy-MM-dd")??"",["Fim"]=f.Fim?.ToString("yyyy-MM-dd")??"",["CompararInicio"]=f.CompararInicio?.ToString("yyyy-MM-dd")??"",["CompararFim"]=f.CompararFim?.ToString("yyyy-MM-dd")??"",["Canal"]=f.Canal};

@@ -9,7 +9,14 @@ public static class DadosOrder
         && e.TryGetProperty(nome, out var v) && v.ValueKind is JsonValueKind.String or JsonValueKind.Number ? v.ToString() : "";
     public static decimal? Valor(JsonElement e, string nome)
     {
-        var s = Texto(e, nome);
+        if (e.ValueKind != JsonValueKind.Object)
+            throw new FalhaPagamento("A estrutura recebida do provedor precisa de conferência.");
+        if (!e.TryGetProperty(nome, out var campo)
+            || campo.ValueKind is JsonValueKind.Null or JsonValueKind.Undefined)
+            return null;
+        if (campo.ValueKind is not (JsonValueKind.String or JsonValueKind.Number))
+            throw new FalhaPagamento("O valor recebido do provedor precisa de conferência.");
+        var s = campo.ToString();
         if (s.Length == 0) return null;
         if (decimal.TryParse(s, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var v) && v >= 0) return v;
         throw new FalhaPagamento("O valor recebido do provedor precisa de conferência.");

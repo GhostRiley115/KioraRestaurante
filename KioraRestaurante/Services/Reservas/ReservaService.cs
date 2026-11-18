@@ -6,6 +6,7 @@ using KioraRestaurante.Models.Enums;
 using KioraRestaurante.Services.Salao;
 using KioraRestaurante.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using KioraRestaurante.ViewModels.Reservas;
 namespace KioraRestaurante.Services.Reservas;
 
 public class ReservaService(AppDbContext db,HorariosReserva horarios)
@@ -14,11 +15,11 @@ public class ReservaService(AppDbContext db,HorariosReserva horarios)
         ||(r.UsuarioId==null&&a.VisitanteHash!=null&&r.VisitanteHash==a.VisitanteHash);
     private async Task ValidarAcesso(AcessoReserva a,CancellationToken ct)
     {
-        if(a.UsuarioId.HasValue){if(!await db.Usuarios.AnyAsync(u=>u.Id==a.UsuarioId&&u.Ativo,ct))throw new UnauthorizedAccessException();}
+        if(a.UsuarioId.HasValue){if(!await db.Usuarios.AnyAsync(u=>u.Id==a.UsuarioId&&u.Ativo&&!u.ConvitePendente,ct))throw new UnauthorizedAccessException();}
         else if(a.VisitanteHash==null)throw new UnauthorizedAccessException();
     }
     private async Task ExigirAdmin(int id,CancellationToken ct)
-    {if(!await db.Usuarios.AnyAsync(u=>u.Id==id&&u.Ativo&&(u.Tipo==TipoUsuario.Administrador||u.Tipo==TipoUsuario.Gerente),ct))throw new UnauthorizedAccessException();}
+    {if(!await db.Usuarios.AnyAsync(u=>u.Id==id&&u.Ativo&&!u.ConvitePendente&&(u.Tipo==TipoUsuario.Administrador||u.Tipo==TipoUsuario.Gerente),ct))throw new UnauthorizedAccessException();}
     private void Evento(Reserva r,string texto,int? administrador=null)
     {r.Versao=Guid.NewGuid();r.Eventos.Add(new(){DataUtc=horarios.Agora,Descricao=texto,AdministradorId=administrador});}
     private async Task Expirar(CancellationToken ct)
@@ -73,7 +74,7 @@ public class ReservaService(AppDbContext db,HorariosReserva horarios)
         {
             // Confirma que a conta existe e está ativa.
             var usuarioAtivo = await db.Usuarios.AnyAsync(
-                u => u.Id == usuarioId && u.Ativo,
+                u => u.Id == usuarioId && u.Ativo && !u.ConvitePendente,
                 ct);
 
             if (!usuarioAtivo)
@@ -112,6 +113,8 @@ public class ReservaService(AppDbContext db,HorariosReserva horarios)
         if(telefone.Length is not (10 or 11))throw new RegraReservaException("Informe o telefone com DDD (10 ou 11 números).");
         return await ComSala(async()=>
         {
+            // A conta pode perder o acesso enquanto aguarda a trava compartilhada do salão.
+            await ValidarAcesso(acesso,ct);
             var anterior=await db.Reservas.SingleOrDefaultAsync(r=>r.ChaveSolicitacao==dto.ChaveSolicitacao,ct);
             if(anterior!=null){if(!Pertence(anterior,acesso))throw new KeyNotFoundException();return await Resposta(anterior,ct);}
             var ativas=await db.Reservas.Where(r=>r.Situacao==SituacaoReserva.AguardandoChegada||r.Situacao==SituacaoReserva.Confirmada||r.Situacao==SituacaoReserva.Aguardando
@@ -166,6 +169,7 @@ public class ReservaService(AppDbContext db,HorariosReserva horarios)
         await ValidarAcesso(acesso,ct);
         await ComSala(async()=>
         {
+            await ValidarAcesso(acesso,ct);
             var r=await db.Reservas.SingleOrDefaultAsync(r=>r.Codigo==dto.Codigo,ct);
             if(r==null||!Pertence(r,acesso))throw new KeyNotFoundException();if(r.Situacao==SituacaoReserva.Cancelada)return true;
             if(r.Versao!=dto.Versao)throw new RegraReservaException("A reserva mudou. Atualize a página.");
@@ -186,6 +190,7 @@ public class ReservaService(AppDbContext db,HorariosReserva horarios)
         if(string.IsNullOrWhiteSpace(dto.Motivo)||dto.Motivo.Length>400)throw new RegraReservaException("Informe o motivo do cancelamento (até 400 caracteres).");
         await ComSala(async()=>
         {
+            await ExigirAdmin(admin,ct);
             var r=await db.Reservas.SingleOrDefaultAsync(r=>r.Codigo==dto.Codigo,ct)??throw new KeyNotFoundException();
             if(r.Versao!=dto.Versao)throw new RegraReservaException("A solicitação mudou. Atualize a página antes de operar.");
             if(r.Situacao is SituacaoReserva.EmAtendimento or SituacaoReserva.Concluida or SituacaoReserva.Expirada or SituacaoReserva.Cancelada)throw new RegraReservaException("Esta solicitação não pode ser cancelada neste estado.");

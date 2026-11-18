@@ -1,5 +1,4 @@
 using KioraRestaurante.Data;
-using KioraRestaurante.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace KioraRestaurante.Services.Imagens;
@@ -33,8 +32,9 @@ public class LimpezaImagensService(
         catch (OperationCanceledException) when (ct.IsCancellationRequested) { }
     }
 
-    private async Task ProcessarLote(CancellationToken ct)
+    public async Task ProcessarLote(CancellationToken ct = default)
     {
+        if (!configuration.GetValue<bool>("LimpezaImagens:Ativada")) return;
         await using var consulta = scopes.CreateAsyncScope();
         var db = consulta.ServiceProvider.GetRequiredService<AppDbContext>();
         var agora = DateTime.UtcNow;
@@ -77,14 +77,30 @@ public class LimpezaImagensService(
         // Produtos inativos também precisam preservar suas imagens.
         // O trecho da URL cobre URLs Cloudinary com versão/transformação e extensão.
         var trechoUrl = "/" + item.PublicId + ".";
+        // URLs sem extensão também são válidas; exige o fim do identificador
+        // para não confundir outra imagem cujo nome apenas começa igual.
+        var semExtensao = "/" + item.PublicId;
+        var comConsulta = semExtensao + "?";
+        var comFragmento = semExtensao + "#";
         var emUso = await db.Produtos.IgnoreQueryFilters().AsNoTracking()
             .AnyAsync(p => p.ImagemPublicId == item.PublicId
                 || (item.Url != null && p.Imagem == item.Url)
-                || p.Imagem.Contains(trechoUrl), ct)
+                || p.Imagem.Contains(trechoUrl)
+                || p.Imagem.EndsWith(semExtensao)
+                || p.Imagem.Contains(comConsulta)
+                || p.Imagem.Contains(comFragmento), ct)
             || await db.ItensPedido.AsNoTracking().AnyAsync(i => i.ImagemPublicId == item.PublicId
                 || (item.Url != null && i.ImagemUrl == item.Url)
-                || (i.ImagemUrl != null && i.ImagemUrl.Contains(trechoUrl)), ct)
-            || await db.ItensComanda.AsNoTracking().AnyAsync(i=>i.ImagemPublicId==item.PublicId || item.Url!=null&&i.ImagemUrl==item.Url || i.ImagemUrl!=null&&i.ImagemUrl.Contains(trechoUrl),ct);
+                || (i.ImagemUrl != null && (i.ImagemUrl.Contains(trechoUrl)
+                    || i.ImagemUrl.EndsWith(semExtensao)
+                    || i.ImagemUrl.Contains(comConsulta)
+                    || i.ImagemUrl.Contains(comFragmento))), ct)
+            || await db.ItensComanda.AsNoTracking().AnyAsync(i => i.ImagemPublicId == item.PublicId
+                || (item.Url != null && i.ImagemUrl == item.Url)
+                || (i.ImagemUrl != null && (i.ImagemUrl.Contains(trechoUrl)
+                    || i.ImagemUrl.EndsWith(semExtensao)
+                    || i.ImagemUrl.Contains(comConsulta)
+                    || i.ImagemUrl.Contains(comFragmento))), ct);
 
         if (emUso)
         {

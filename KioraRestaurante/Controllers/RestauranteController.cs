@@ -5,12 +5,13 @@ using KioraRestaurante.DTOs.Reserva;
 using KioraRestaurante.Models.Enums;
 using KioraRestaurante.Services.Salao;
 using KioraRestaurante.Services.Reservas;
-using KioraRestaurante.Services.Interfaces;
 using KioraRestaurante.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
+using KioraRestaurante.Services.Produtos;
+using KioraRestaurante.ViewModels.Salao;
 namespace KioraRestaurante.Controllers;
 
 [Authorize(Roles="Administrador,Gerente,Garcom,Portaria,Cozinha"),AutoValidateAntiforgeryToken]

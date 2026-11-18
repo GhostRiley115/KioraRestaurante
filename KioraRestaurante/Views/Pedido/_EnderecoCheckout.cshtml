@@ -1,4 +1,5 @@
-@model KioraRestaurante.ViewModels.EnderecoFormularioViewModel
+@using KioraRestaurante.ViewModels.Enderecos
+@model KioraRestaurante.ViewModels.Enderecos.EnderecoFormularioViewModel
 @inject Microsoft.Extensions.Options.IOptions<KioraRestaurante.Options.EntregaOptions> EntregaConfig
 @{ var culturaEntrega = System.Globalization.CultureInfo.GetCultureInfo("pt-BR"); var limiteAnterior = 0; }
 

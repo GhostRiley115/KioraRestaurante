@@ -1,5 +1,5 @@
 @model KioraRestaurante.Models.Cupons.Cupom
-@using KioraRestaurante.Services
+@using KioraRestaurante.Helpers
 @using KioraRestaurante.Models.Cupons
 @{ ViewData["Title"] = "Cupom " + Model.Codigo; var cultura = System.Globalization.CultureInfo.GetCultureInfo("pt-BR"); }
 <section class="container pedido-pagina"><a asp-controller="Notificacoes" asp-action="Index" class="pedido-link">← Notificações</a>

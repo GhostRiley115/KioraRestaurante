@@ -6,12 +6,17 @@ using KioraRestaurante.Models.Enums;
 using KioraRestaurante.Models.Salao;
 using KioraRestaurante.Services.Reservas;
 using Microsoft.EntityFrameworkCore;
+using KioraRestaurante.Services.Produtos;
 namespace KioraRestaurante.Services.Salao;
 
 public partial class ComandaService(AppDbContext db,AcessoSalaoService acesso,ComandoSalaoService comandos,HorariosReserva horarios,TimeProvider relogio,AvisosSalaoService avisos)
 {
     private DateTime Agora=>relogio.GetUtcNow().UtcDateTime;
-    private static void Validar(object dto)=>Validator.ValidateObject(dto,new(dto),true);
+    private static void Validar(object? dto)
+    {
+        if(dto==null)throw new ValidationException("Confira os itens e os recebimentos enviados; a lista não pode conter dados vazios.");
+        Validator.ValidateObject(dto,new(dto),true);
+    }
     private static void ConferirVersao(Guid atual,Guid enviada)
     { if(atual!=enviada)throw new ValidationException("Os dados mudaram em outro dispositivo. Atualize a tela antes de continuar."); }
     private static void SomenteAberta(AtendimentoMesa a)
@@ -64,7 +69,7 @@ public partial class ComandaService(AppDbContext db,AcessoSalaoService acesso,Co
                 reserva=await db.Reservas.SingleOrDefaultAsync(r=>r.Codigo==dto.ReservaCodigo,ct)??throw new KeyNotFoundException();
                 if(reserva.Situacao is not (SituacaoReserva.Aguardando or SituacaoReserva.Chamada)||reserva.ChegadaEmUtc==null)
                     throw new ValidationException("A portaria precisa registrar a chegada antes de acomodar o grupo.");
-                if(reserva.Situacao==SituacaoReserva.Chamada&&reserva.ExpiraEmUtc<=Agora)throw new ValidationException("A chamada expirou. A portaria precisa chamar novamente.");
+                if(reserva.ExpiraEmUtc<=Agora)throw new ValidationException("O prazo de espera ou da chamada expirou. Atualize a fila antes de acomodar o grupo.");
                 if(reserva.Situacao==SituacaoReserva.Chamada&&reserva.MesaId!=mesa.Id)throw new ValidationException("O grupo foi chamado para outra mesa.");
             }
             var ignorarReservaId=reserva?.Id??0;

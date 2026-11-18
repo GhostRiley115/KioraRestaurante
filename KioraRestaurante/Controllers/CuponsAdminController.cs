@@ -2,11 +2,11 @@ using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using KioraRestaurante.DTOs.Cupons;
 using KioraRestaurante.Models.Enums;
-using KioraRestaurante.Services;
 using KioraRestaurante.Services.Cupons;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using KioraRestaurante.Helpers;
 
 namespace KioraRestaurante.Controllers;
 

@@ -1,10 +1,11 @@
 ﻿using KioraRestaurante.DTOs.Categoria;
 using KioraRestaurante.DTOs.Produto;
-using KioraRestaurante.Services.Interfaces;
 using KioraRestaurante.Services.Cardapio;
 using KioraRestaurante.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using KioraRestaurante.Services.Produtos;
+using KioraRestaurante.ViewModels.Cardapio;
 
 namespace KioraRestaurante.Controllers.Api
 {

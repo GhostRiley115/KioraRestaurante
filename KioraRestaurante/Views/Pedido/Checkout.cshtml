@@ -1,4 +1,6 @@
-@model KioraRestaurante.ViewModels.CheckoutViewModel
+@using KioraRestaurante.ViewModels.Enderecos
+@using KioraRestaurante.ViewModels.Pedidos
+@model KioraRestaurante.ViewModels.Pedidos.CheckoutViewModel
 @using System.Globalization
 
 @{
@@ -52,7 +54,7 @@
 
         <div class="row g-4">
             <div class="col-12 col-lg-7">
-                <partial name="~/Views/Pedido/_EnderecoCheckout.cshtml" model="@(new KioraRestaurante.ViewModels.EnderecoFormularioViewModel { Dados = Model.Dados, Enderecos = Model.Enderecos, Entrega = Model.Entrega })" />
+                <partial name="~/Views/Pedido/_EnderecoCheckout.cshtml" model="@(new KioraRestaurante.ViewModels.Enderecos.EnderecoFormularioViewModel { Dados = Model.Dados, Enderecos = Model.Enderecos, Entrega = Model.Entrega })" />
 
                 <section class="pedido-box mt-4">
                     <span class="pedido-etapa">2 · SEUS PRODUTOS</span>

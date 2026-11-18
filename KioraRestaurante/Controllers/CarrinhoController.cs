@@ -1,11 +1,10 @@
 using System.Security.Claims;
 using KioraRestaurante.DTOs.Carrinho;
 using KioraRestaurante.DTOs.ItemCarrinho;
-using KioraRestaurante.Services;
-using KioraRestaurante.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using KioraRestaurante.Services.Carrinhos;
 
 namespace KioraRestaurante.Controllers;
 

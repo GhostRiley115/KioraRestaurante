@@ -1,12 +1,13 @@
 using System.Globalization;
 using System.Threading.RateLimiting;
 using KioraRestaurante.Data;
-using KioraRestaurante.Services;
 using Microsoft.EntityFrameworkCore;
 using KioraRestaurante.ViewModels;
 using KioraRestaurante.DTOs.Usuario;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using KioraRestaurante.Services.Autenticacao;
+using KioraRestaurante.ViewModels.Conta;
 
 namespace KioraRestaurante.Filters;
 

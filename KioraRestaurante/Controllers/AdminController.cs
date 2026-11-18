@@ -1,11 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using KioraRestaurante.Models.Enums;
-using KioraRestaurante.Services.Interfaces;
 using KioraRestaurante.ViewModels.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using KioraRestaurante.Services.Admin;
 namespace KioraRestaurante.Controllers;
 
 // A proteção vale também para acesso direto por URL e envio manual de requisições.
@@ -15,10 +15,10 @@ namespace KioraRestaurante.Controllers;
 public class AdminController : Controller
 {
     private readonly IAdminService _service;
-    private readonly KioraRestaurante.Services.RelatoriosAdminService _relatorios;
+    private readonly KioraRestaurante.Services.Admin.RelatoriosAdminService _relatorios;
     private readonly ILogger<AdminController> _logger;
 
-    public AdminController(IAdminService service, ILogger<AdminController> logger, KioraRestaurante.Services.RelatoriosAdminService relatorios) { _service = service; _logger = logger; _relatorios = relatorios; }
+    public AdminController(IAdminService service, ILogger<AdminController> logger, KioraRestaurante.Services.Admin.RelatoriosAdminService relatorios) { _service = service; _logger = logger; _relatorios = relatorios; }
     private int AdministradorId => int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var id) ? id : 0;
 
     // Centraliza a resposta de acesso negado sem expor erros internos.
@@ -53,7 +53,7 @@ public class AdminController : Controller
         KioraRestaurante.DTOs.Admin.RelatorioAdminDTO relatorio;
         try { relatorio=await _relatorios.Obter(AdministradorId,filtro); }
         catch (ValidationException) { return BadRequest("Confira os filtros do relatório."); }
-        var csv=KioraRestaurante.Services.CsvVendasAdmin.Gerar(relatorio.Vendas);
+        var csv=KioraRestaurante.Services.Admin.CsvVendasAdmin.Gerar(relatorio.Vendas);
         return File(csv,"text/csv; charset=utf-8",$"vendas-kiora-{filtro.Inicio:yyyyMMdd}-{filtro.Fim:yyyyMMdd}.csv");
     });
 

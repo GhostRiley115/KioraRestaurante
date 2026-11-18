@@ -1,3 +1,4 @@
+@using KioraRestaurante.ViewModels.Salao
 @model ProdutoComandaViewModel
 @{var p=Model.Produto;var c=CultureInfo.GetCultureInfo("pt-BR");}
 <article class="equipe-box comanda-produto" data-produto-salao="@p.Nome"><div class="comanda-produto-info"><img class="comanda-foto" src="@(string.IsNullOrWhiteSpace(p.ImagemUrl)?Url.Content("~/imagens/produto-sem-foto.svg"):p.ImagemUrl)" alt="" width="64" height="64" loading="lazy" data-foto-produto data-foto-alternativa="@Url.Content("~/imagens/produto-sem-foto.svg")"/><div><h4>@p.Nome</h4><strong>@p.Preco.ToString("C",c)</strong></div></div><p class="admin-suave">@p.Descricao</p>

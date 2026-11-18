@@ -26,7 +26,7 @@ public class ConsultaSalaoService(AppDbContext db,AcessoSalaoService acesso,Time
     public async Task<List<FuncionarioOpcaoDTO>> Garcons(int usuarioId,CancellationToken ct=default)
     {
         await acesso.Exigir(usuarioId,ct,TipoUsuario.Garcom,TipoUsuario.Gerente,TipoUsuario.Portaria);
-        return await db.Usuarios.AsNoTracking().Where(u=>u.Ativo&&(u.Tipo==TipoUsuario.Garcom||u.Tipo==TipoUsuario.Gerente||u.Tipo==TipoUsuario.Administrador))
+        return await db.Usuarios.AsNoTracking().Where(u=>u.Ativo&&!u.ConvitePendente&&(u.Tipo==TipoUsuario.Garcom||u.Tipo==TipoUsuario.Gerente||u.Tipo==TipoUsuario.Administrador))
             .OrderBy(u=>u.Nome).Select(u=>new FuncionarioOpcaoDTO(u.Id,u.Nome,u.Tipo)).ToListAsync(ct);
     }
     public async Task<ComandaDetalhesDTO> Comanda(int usuarioId,Guid id,CancellationToken ct=default)
