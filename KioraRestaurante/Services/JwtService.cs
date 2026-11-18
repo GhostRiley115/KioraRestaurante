@@ -4,6 +4,8 @@ using System.Security.Claims;
 using System.Text;
 using KioraRestaurante.DTOs.Usuario;
 using KioraRestaurante.Services.Interfaces;
+using KioraRestaurante.Options;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace KioraRestaurante.Services
@@ -11,19 +13,19 @@ namespace KioraRestaurante.Services
     // Responsável por gerar tokens JWT para usuários autenticados.
     public class JwtService : IJwtService
     {
-        private readonly IConfiguration _configuration;
+        private readonly JwtOptions _configuration;
 
-        public JwtService(IConfiguration configuration)
+        public JwtService(IOptions<JwtOptions> configuration)
         {
-            _configuration = configuration;
+            _configuration = configuration.Value;
         }
 
         public string GerarToken(UsuarioResponseDTO usuario)
         {
             // Recupera a chave secreta do User Secrets.
-            var chaveSecreta = _configuration["Jwt:ChaveSecreta"];
+            var chaveSecreta = _configuration.ChaveSecreta;
 
-            if (string.IsNullOrWhiteSpace(chaveSecreta))
+            if (!_configuration.Valida)
             {
                 throw new InvalidOperationException(
                     "A chave secreta do JWT não foi configurada.");
@@ -50,10 +52,10 @@ namespace KioraRestaurante.Services
 
             // Monta o token com emissor, público e validade.
             var token = new JwtSecurityToken(
-                issuer: "KioraRestauranteAPI",
-                audience: "AppKiora",
+                issuer: _configuration.Emissor,
+                audience: _configuration.Publico,
                 claims: claims,
-                expires: DateTime.UtcNow.AddHours(2),
+                expires: DateTime.UtcNow.AddMinutes(_configuration.ValidadeMinutos),
                 signingCredentials: credenciais
             );
 

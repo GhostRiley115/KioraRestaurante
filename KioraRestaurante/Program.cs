@@ -15,26 +15,7 @@ using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddEndpointsApiExplorer();
-
-// Configura a documentação da API para aceitar autenticação JWT.
-builder.Services.AddSwaggerGen(options =>
-{
-    options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.OpenApiSecurityScheme
-    {
-        Name = "Authorization",
-        Type = Microsoft.OpenApi.SecuritySchemeType.Http,
-        Scheme = "bearer",
-        BearerFormat = "JWT",
-        In = Microsoft.OpenApi.ParameterLocation.Header,
-        Description = "Informe o token JWT para autenticar as requisições."
-    });
-
-    options.AddSecurityRequirement(document => new Microsoft.OpenApi.OpenApiSecurityRequirement
-    {
-        [new Microsoft.OpenApi.OpenApiSecuritySchemeReference("Bearer", document)] = new List<string>()
-    });
-});
+builder.Services.AddDocumentacaoApiKiora();
 
 // Pega a string de conexão do arquivo appsettings.json.
 var connectionString = builder.Configuration.GetConnectionString("ConexaoNuvem");
@@ -46,123 +27,15 @@ var versaoMySql = ServerVersion.AutoDetect(connectionString);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(connectionString, versaoMySql));
 
-// ======================================================
-// AUTENTICAÇÃO POR COOKIE E JWT
-// ======================================================
-
-builder.Services.AddAuthentication(options =>
-{
-    // Seleciona automaticamente Cookie ou JWT.
-    options.DefaultScheme = "CookieOuJwt";
-    options.DefaultAuthenticateScheme = "CookieOuJwt";
-    options.DefaultChallengeScheme = "CookieOuJwt";
-    options.DefaultForbidScheme = "CookieOuJwt";
-
-    // Login e logout do site continuam utilizando Cookies.
-    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultSignOutScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-})
-.AddPolicyScheme("CookieOuJwt", "Cookie ou JWT", options =>
-{
-    // Se houver Bearer no cabeçalho, utiliza JWT.
-    // Caso contrário, utiliza Cookie.
-    options.ForwardDefaultSelector = context =>
-    {
-        var authorization = context.Request.Headers.Authorization.ToString();
-
-        return authorization.StartsWith(
-            "Bearer ",
-            StringComparison.OrdinalIgnoreCase)
-            ? JwtBearerDefaults.AuthenticationScheme
-            : CookieAuthenticationDefaults.AuthenticationScheme;
-    };
-})
-.AddCookie(options =>
-{
-    options.LoginPath = "/Conta/Login";
-    options.LogoutPath = "/Conta/Logout";
-    options.AccessDeniedPath = "/Home/AcessoNegado";
-
-    options.ExpireTimeSpan = TimeSpan.FromHours(2);
-    options.SlidingExpiration = true;
-
-    // Verifica se a conta continua ativa.
-    options.EventsType = typeof(ValidarSessaoUsuario);
-})
-.AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
-{
-    // Recupera a chave secreta armazenada no User Secrets.
-    var chaveSecreta = builder.Configuration["Jwt:ChaveSecreta"];
-
-    if (string.IsNullOrWhiteSpace(chaveSecreta))
-    {
-        throw new InvalidOperationException(
-            "A chave secreta do JWT não foi configurada.");
-    }
-
-    // Define as regras de validação do JWT.
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(chaveSecreta)),
-
-        ValidateIssuer = true,
-        ValidIssuer = "KioraRestauranteAPI",
-
-        ValidateAudience = true,
-        ValidAudience = "AppKiora",
-
-        ValidateLifetime = true,
-        ClockSkew = TimeSpan.FromSeconds(30)
-    };
-
-    // Verifica se o usuário e a sessão continuam válidos.
-    options.Events = new JwtBearerEvents
-    {
-        OnTokenValidated = async context =>
-        {
-            var id = context.Principal?
-                .FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            var versao = context.Principal?
-                .FindFirst("VersaoSessao")?.Value;
-
-            // Verifica as informações obrigatórias do token.
-            if (!int.TryParse(id, out var usuarioId) ||
-                !Guid.TryParse(versao, out var versaoSessao) ||
-                versaoSessao == Guid.Empty)
-            {
-                context.Fail("Token inválido.");
-                return;
-            }
-
-            // Recupera o serviço de usuários.
-            var usuarioService = context.HttpContext.RequestServices
-                .GetRequiredService<IUsuarioService>();
-
-            // Busca o usuário ativo.
-            var usuario = usuarioService.BuscarPorId(usuarioId);
-
-            var tipoToken = context.Principal?
-                .FindFirst(ClaimTypes.Role)?.Value;
-
-            // Confere conta, sessão e perfil.
-            if (usuario == null ||
-                usuario.VersaoSessao != versaoSessao ||
-                usuario.Tipo.ToString() != tipoToken)
-            {
-                context.Fail("Sessão inválida ou expirada.");
-            }
-        }
-    };
-});
+// Autenticação e comentários de sua configuração estão reunidos na extensão compartilhada.
+builder.Services.AddAutenticacaoKiora(builder.Configuration);
 
 // ======================================================
 // CONTROLLERS E VIEWS
 // ======================================================
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddRespostasApiKiora();
 
 // ======================================================
 // INJEÇÃO DE DEPENDÊNCIAS
@@ -213,63 +86,8 @@ builder.Services.AddHttpClient<EmailService>(
 builder.Services.AddScoped<KioraRestaurante.Services.Pedidos.AndamentoPedidoService>();
 builder.Services.AddHostedService<OperacoesPedidoService>();
 
-// Limita a quantidade de requisições por usuário.
-builder.Services.AddRateLimiter(limites =>
-{
-    limites.AddPolicy("salao", contexto =>
-        RateLimitPartition.GetFixedWindowLimiter(
-            contexto.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
-                ?? contexto.Connection.RemoteIpAddress?.ToString()
-                ?? "anonimo",
-            _ => new FixedWindowRateLimiterOptions
-            {
-                PermitLimit = 120,
-                Window = TimeSpan.FromMinutes(1),
-                QueueLimit = 0
-            }));
-
-    limites.AddPolicy("convite-funcionario", contexto =>
-        RateLimitPartition.GetFixedWindowLimiter(
-            contexto.Connection.RemoteIpAddress?.ToString() ?? "anonimo",
-            _ => new FixedWindowRateLimiterOptions
-            {
-                PermitLimit = 10,
-                Window = TimeSpan.FromMinutes(1),
-                QueueLimit = 0
-            }));
-
-    limites.AddPolicy("cotacao-entrega", contexto =>
-        RateLimitPartition.GetFixedWindowLimiter(
-            contexto.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
-                ?? "sem-sessao",
-            _ => new FixedWindowRateLimiterOptions
-            {
-                PermitLimit = 12,
-                Window = TimeSpan.FromMinutes(1),
-                QueueLimit = 0
-            }));
-
-    limites.AddPolicy("alteracoes-pedido", contexto =>
-        RateLimitPartition.GetFixedWindowLimiter(
-            contexto.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
-                ?? "sem-sessao",
-            _ => new FixedWindowRateLimiterOptions
-            {
-                PermitLimit = 6,
-                Window = TimeSpan.FromMinutes(1),
-                QueueLimit = 0
-            }));
-
-    limites.OnRejected = async (contexto, ct) =>
-    {
-        contexto.HttpContext.Response.StatusCode =
-            StatusCodes.Status429TooManyRequests;
-
-        await contexto.HttpContext.Response.WriteAsJsonAsync(
-            new { mensagem = "Aguarde um minuto antes de tentar novamente." },
-            ct);
-    };
-});
+// As cotas são compartilhadas pelas APIs e pelos formulários que executam a mesma operação.
+builder.Services.AddLimitesKiora();
 
 // Configurações de entrega.
 builder.Services.AddOptions<KioraRestaurante.Options.EntregaOptions>()
@@ -415,6 +233,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseRespostasApiKiora();
 
 // Configurações de produção.
 if (!app.Environment.IsDevelopment())

@@ -8,6 +8,7 @@ namespace KioraRestaurante.Services.Interfaces
     {
         Task<int> Criar(int administradorId, CriarProdutoRequestDTO dto, IFormFile foto);
         Task<List<ProdutoResponseDTO>> ListarCardapio(int? categoriaId = null);
+        Task<ProdutoResponseDTO?> BuscarCardapio(int produtoId);
         Task<ResultadoPaginadoDTO<ProdutoAdminResponseDTO>> ListarAdmin(int administradorId, FiltroProdutosAdminDTO filtro);
         Task<ProdutoAdminResponseDTO?> BuscarAdmin(int administradorId, int produtoId);
         Task Editar(int administradorId, int produtoId, EditarProdutoRequestDTO dto, IFormFile? foto);

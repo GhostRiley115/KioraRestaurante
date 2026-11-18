@@ -7,13 +7,16 @@ using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using KioraRestaurante.Filters;
+using KioraRestaurante.Services.Salao;
+using Microsoft.AspNetCore.RateLimiting;
 namespace KioraRestaurante.Controllers;
 
 // Mesmas regras do MVC. Enquanto a autenticação é por cookie, o app deve manter cookies
 // e enviar X-CSRF-TOKEN obtido em sessao nas operações de escrita.
-[ApiController,Route("api/reservas"),AutoValidateAntiforgeryToken]
+[ApiController,Route("api/reservas"),ValidarAntifalsificacaoApi,EnableRateLimiting("reservas-consulta")]
 [ResponseCache(NoStore=true,Location=ResponseCacheLocation.None)]
-public class ReservasApiController(ReservaService service,IdentidadeReserva identidade,IAntiforgery antiforgery,HorariosReserva horarios):ControllerBase
+public class ReservasApiController(ReservaService service,IdentidadeReserva identidade,IAntiforgery antiforgery,HorariosReserva horarios,PortariaService portaria):ControllerBase
 {
     private int Admin=>int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier),out var id)?id:0;
     private async Task<IActionResult> Executar(Func<Task<object?>> acao)
@@ -33,20 +36,16 @@ public class ReservasApiController(ReservaService service,IdentidadeReserva iden
     public Task<IActionResult> Minhas(CancellationToken ct)=>Executar(async()=>await service.Minhas(identidade.Obter(HttpContext),ct));
     [HttpGet("{codigo:guid}")]
     public Task<IActionResult> Consultar(Guid codigo,CancellationToken ct)=>Executar(async()=>await service.Consultar(identidade.Obter(HttpContext),codigo,ct));
-    [HttpPost]
+    [HttpPost,EnableRateLimiting("reservas-escrita")]
     public Task<IActionResult> Criar(
     CriarReservaDTO dto,
-    [FromHeader(Name = "X-CSRF-TOKEN")] string? csrfToken,
-    [FromHeader(Name = "X-Reserva-Chave")] string? reservaChave,
     CancellationToken ct)
     => Executar(async () =>
         await service.Criar(identidade.Obter(HttpContext), dto, false, ct));
 
-    [HttpPost("fila")]
+    [HttpPost("fila"),EnableRateLimiting("reservas-escrita")]
     public Task<IActionResult> Fila(
     CriarReservaDTO dto,
-    [FromHeader(Name = "X-CSRF-TOKEN")] string? csrfToken,
-    [FromHeader(Name = "X-Reserva-Chave")] string? reservaChave,
     CancellationToken ct)
     => Executar(async () =>
         await service.Criar(
@@ -55,11 +54,9 @@ public class ReservasApiController(ReservaService service,IdentidadeReserva iden
             true,
             ct));
 
-    [HttpPost("cancelar")]
+    [HttpPost("cancelar"),EnableRateLimiting("reservas-escrita")]
     public Task<IActionResult> Cancelar(
     CancelarReservaDTO dto,
-    [FromHeader(Name = "X-CSRF-TOKEN")] string? csrfToken,
-    [FromHeader(Name = "X-Reserva-Chave")] string? reservaChave,
     CancellationToken ct)
     => Executar(async () =>
     {
@@ -83,20 +80,21 @@ public class ReservasApiController(ReservaService service,IdentidadeReserva iden
             ExpiraEmUtc=DateTime.SpecifyKind(r.ExpiraEmUtc,DateTimeKind.Utc),r.Versao,
             Eventos=r.Eventos.Select(e=>new{e.DataUtc,e.Descricao,e.AdministradorId})})};
     });
-    [Authorize(Roles=nameof(TipoUsuario.Administrador)),HttpPost("admin/operar")]
+    [Authorize(Roles=nameof(TipoUsuario.Administrador)),HttpPost("admin/operar"),EnableRateLimiting("reservas-escrita")]
     public Task<IActionResult> Operar(OperarReservaDTO dto,CancellationToken ct)=>Executar(async()=>{await service.Operar(Admin,dto,ct);return new{sucesso=true};});
-    [Authorize(Roles=nameof(TipoUsuario.Administrador)),HttpPost("admin/chamar/{mesaId:int}")]
+    [Authorize(Roles=nameof(TipoUsuario.Administrador)),HttpPost("admin/chamar/{mesaId:int}"),EnableRateLimiting("reservas-escrita")]
     public Task<IActionResult> Chamar(int mesaId,CancellationToken ct)=>Executar(async()=>{await service.Chamar(Admin,mesaId,ct);return new{sucesso=true};});
 
-    [Authorize(Roles = nameof(TipoUsuario.Administrador))]
-    [HttpPatch("admin/mesas/{mesaId:int}/ativa")]
+    [Authorize(Roles = "Administrador,Gerente")]
+    [HttpPatch("admin/mesas/{mesaId:int}/ativa"),EnableRateLimiting("reservas-escrita")]
     public Task<IActionResult> AlterarMesa(
     int mesaId,
     [FromBody] AlterarMesaReservaDTO dto,
     CancellationToken ct)
     => Executar(async () =>
     {
-        await service.AlterarMesa(Admin, mesaId, dto.Ativa, ct);
+        // Alias da operação do salão: habilitar não ocupa nem libera uma mesa em atendimento.
+        await portaria.AlterarHabilitacaoMesa(Admin, mesaId, dto, ct);
         return new { sucesso = true };
     });
 }

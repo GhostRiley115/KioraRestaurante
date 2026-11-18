@@ -1,7 +1,10 @@
-﻿namespace KioraRestaurante.DTOs.Produto
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace KioraRestaurante.DTOs.Produto
 {
     public class AlterarDisponibilidadeProdutoRequestDTO
     {
-        public bool Disponivel { get; set; }
+        [Required(ErrorMessage = "Informe se o produto está disponível.")]
+        public bool? Disponivel { get; set; }
     }
 }

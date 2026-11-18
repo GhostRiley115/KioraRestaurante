@@ -1,3 +1,4 @@
+using KioraRestaurante.Filters;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using KioraRestaurante.DTOs.Salao;
@@ -12,7 +13,7 @@ using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 namespace KioraRestaurante.Controllers;
 
-[ApiController,Route("api/salao"),Authorize,AutoValidateAntiforgeryToken,EnableRateLimiting("salao")]
+[ApiController,Route("api/salao"),Authorize,ValidarAntifalsificacaoApi,EnableRateLimiting("salao")]
 [ResponseCache(NoStore=true,Location=ResponseCacheLocation.None)]
 public class SalaoApiController(ConsultaSalaoService consulta,ComandaService comandas,PortariaService portaria,CozinhaService cozinha,
     AcessoSalaoService acesso,IProdutoService produtos):ControllerBase
@@ -44,7 +45,12 @@ public class SalaoApiController(ConsultaSalaoService consulta,ComandaService com
     [HttpPost("fila/chamar")] public Task<IActionResult> Chamar(ChamarGrupoDTO dto,CancellationToken ct)=>Alterar(()=>portaria.Chamar(Id,dto.MesaId,dto.ChaveSolicitacao,ct));
     [HttpPost("reservas/cancelar")] public Task<IActionResult> Cancelar(CancelarGrupoDTO dto,CancellationToken ct)=>Alterar(()=>portaria.Cancelar(Id,new OperarReservaDTO{Codigo=dto.Codigo,Versao=dto.Versao,Acao="cancelar",Motivo=dto.Motivo},dto.ChaveSolicitacao,ct));
     [HttpPost("mesas/configurar")] public Task<IActionResult> Configurar(ConfigurarMesaDTO dto,CancellationToken ct)=>Alterar(()=>portaria.ConfigurarMesa(Id,dto,ct));
-    [HttpGet("cozinha")] public Task<IActionResult> Cozinha(CancellationToken ct)=>Executar(async()=>await cozinha.Fila(Id,ct));
+    [HttpGet("cozinha")] public Task<IActionResult> Cozinha(CancellationToken ct,string? origem=null)=>Executar(async()=>
+    {
+        if(origem is not (null or "salao" or "delivery"))throw new ValidationException("Escolha a origem salão ou delivery.");
+        var fila=await cozinha.Fila(Id,ct);
+        return origem==null?fila:fila.Where(i=>i.Origem==origem).ToList();
+    });
     [HttpPost("cozinha/preparo")] public Task<IActionResult> Preparo(PreparoItemDTO dto,CancellationToken ct)=>Alterar(()=>cozinha.Atualizar(Id,dto,ct));
     [HttpGet("relatorio")] public Task<IActionResult> Relatorio(DateOnly dia,DateOnly comparar,CancellationToken ct)=>Executar(async()=>await consulta.Relatorio(Id,dia,comparar,ct));
 }

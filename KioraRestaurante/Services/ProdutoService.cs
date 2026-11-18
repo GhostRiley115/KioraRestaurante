@@ -522,7 +522,21 @@ namespace KioraRestaurante.Services
 
             // Agora os dados estão na memória e podemos chamar
             // nossos métodos C# de cálculo e disponibilidade.
-            return produtos.Select(produto => new ProdutoResponseDTO
+            return produtos.Select(MontarProdutoCardapio).ToList();
+        }
+
+        // O detalhe consulta apenas o produto escolhido, mantendo as mesmas regras do catálogo.
+        public async Task<ProdutoResponseDTO?> BuscarCardapio(int produtoId)
+        {
+            var produto = await _context.Produtos.AsNoTracking()
+                .Where(p => p.Id == produtoId && p.Ativo && p.Categoria.Ativa)
+                .Include(p => p.Categoria)
+                .Include(p => p.Componentes).ThenInclude(c => c.Produto).ThenInclude(p => p.Categoria)
+                .SingleOrDefaultAsync();
+            return produto == null ? null : MontarProdutoCardapio(produto);
+        }
+
+        private static ProdutoResponseDTO MontarProdutoCardapio(Produto produto) => new()
             {
                 Id = produto.Id,
                 Nome = produto.Nome,
@@ -539,10 +553,10 @@ namespace KioraRestaurante.Services
                     produto.DescontoPercentual),
 
                 EhCombo = produto.EhCombo,
+                Composicao = ProdutoVenda.DescreverComposicao(produto),
 
                 Disponivel = ProdutoVenda.EstaDisponivel(produto)
-            }).ToList();
-        }
+            };
 
         public async Task AlterarDesconto(int administradorId, int produtoId, AlterarDescontoRequestDTO dto)
         {

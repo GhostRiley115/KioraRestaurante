@@ -4,6 +4,7 @@ using KioraRestaurante.Data;
 using KioraRestaurante.Services;
 using Microsoft.EntityFrameworkCore;
 using KioraRestaurante.ViewModels;
+using KioraRestaurante.DTOs.Usuario;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -15,7 +16,9 @@ public sealed class LimitarTentativasLogin(LimitadorLogin limitador, AppDbContex
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
         var model = context.ActionArguments.Values.OfType<LoginViewModel>().FirstOrDefault();
-        var email = model?.Email?.Trim().ToLowerInvariant();
+        // Formulário web e JSON do aplicativo usam a mesma partição por conta.
+        var emailInformado = model?.Email ?? context.ActionArguments.Values.OfType<UsuarioLoginDTO>().FirstOrDefault()?.Email;
+        var email = emailInformado?.Trim().ToLowerInvariant();
         if (!string.IsNullOrEmpty(email) && email.Length <= LimitadorLogin.TamanhoMaximoEmail)
         {
             // A comparação usa a mesma collation do login: acentos e outras variantes
@@ -45,7 +48,7 @@ public sealed class LimitarTentativasLogin(LimitadorLogin limitador, AppDbContex
         }
 
         // O limite é o mesmo do e-mail armazenado no banco e impede chaves arbitrariamente grandes.
-        if (model?.Email.AsSpan().Trim().Length > LimitadorLogin.TamanhoMaximoEmail)
+        if (emailInformado.AsSpan().Trim().Length > LimitadorLogin.TamanhoMaximoEmail)
         {
             context.Result = new BadRequestObjectResult(new
             {

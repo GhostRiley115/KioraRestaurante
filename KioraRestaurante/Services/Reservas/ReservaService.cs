@@ -197,12 +197,8 @@ public class ReservaService(AppDbContext db,HorariosReserva horarios)
     public async Task AlterarMesa(int admin,int mesaId,bool ativa,CancellationToken ct)
     {
         await ExigirAdmin(admin,ct);
-        await ComSala(async()=>
-        {
-            var mesa=await db.MesasRestaurante.SingleOrDefaultAsync(m=>m.Id==mesaId,ct)??throw new KeyNotFoundException();
-            if(await db.AtendimentosMesa.AnyAsync(a=>a.MesaOcupadaId==mesaId,ct)||await db.Reservas.AnyAsync(r=>r.MesaId==mesaId&&r.Situacao==SituacaoReserva.Chamada&&r.ExpiraEmUtc>horarios.Agora,ct))throw new RegraReservaException("Libere o atendimento ou a chamada antes de configurar a mesa.");
-            mesa.Ativa=ativa;mesa.Versao=Guid.NewGuid();return true;
-        },ct);
+        // A rota MVC antiga não recebe versão nem chave; não pode sobrescrever alterações de outro dispositivo.
+        throw new RegraReservaException("Use Configurar mesas no painel do salão, com a versão atual e uma chave de solicitação.");
     }
 }
 

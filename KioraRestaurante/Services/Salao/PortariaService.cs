@@ -94,4 +94,17 @@ public class PortariaService(AppDbContext db,AcessoSalaoService acesso,ComandoSa
             await Task.CompletedTask;return new(null,null,$"Mesa configurada: {mesa.Nome}; capacidade {mesa.Capacidade}; habilitada {mesa.Ativa}.");
         },ct);
     }
+    public async Task AlterarHabilitacaoMesa(int usuarioId,int mesaId,AlterarMesaReservaDTO dto,CancellationToken ct=default)
+    {
+        await acesso.Exigir(usuarioId,ct,TipoUsuario.Gerente);Validator.ValidateObject(dto,new(dto),true);
+        if(mesaId<=0)throw new ValidationException("Informe uma mesa válida.");
+        await comandos.Executar(usuarioId,"habilitar-mesa",dto.ChaveSolicitacao,new{mesaId,dto.Ativa,dto.Versao},async()=>
+        {
+            var mesa=await db.MesasRestaurante.SingleOrDefaultAsync(m=>m.Id==mesaId,ct)??throw new KeyNotFoundException();
+            if(mesa.Versao!=dto.Versao)throw new ValidationException("A mesa mudou. Consulte a configuração atual antes de alterar.");
+            if(await db.AtendimentosMesa.AnyAsync(a=>a.MesaOcupadaId==mesaId,ct)||await db.Reservas.AnyAsync(r=>r.MesaId==mesaId&&r.Situacao==SituacaoReserva.Chamada&&r.ExpiraEmUtc>horarios.Agora,ct))throw new ValidationException("Libere o atendimento ou a chamada antes de alterar a configuração da mesa.");
+            mesa.Ativa=dto.Ativa!.Value;mesa.Versao=Guid.NewGuid();
+            return new(null,null,$"Mesa configurada: {mesa.Nome}; habilitada {mesa.Ativa}. Nome e capacidade preservados.");
+        },ct);
+    }
 }

@@ -571,8 +571,10 @@ namespace KioraRestaurante.Controllers
 
             try
             {
+                if (!Guid.TryParse(User.FindFirstValue(ValidarSessaoUsuario.ClaimVersaoSessao), out var versaoSessao))
+                    return Unauthorized(new { sucesso = false, mensagem = "Sua sessão expirou. Entre novamente." });
                 desativado = _usuarioService.DesativarConta(
-                    usuarioId.Value);
+                    usuarioId.Value, versaoSessao);
             }
             catch (ValidationException ex)
             {
@@ -582,6 +584,9 @@ namespace KioraRestaurante.Controllers
                     mensagem = ex.Message
                 });
             }
+
+            if (!desativado)
+                return Unauthorized(new { sucesso = false, mensagem = "Sua sessão expirou. Entre novamente." });
 
             // Remove o Cookie de autenticação e encerra a sessão.
             await HttpContext.SignOutAsync(

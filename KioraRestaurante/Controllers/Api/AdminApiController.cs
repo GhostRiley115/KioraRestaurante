@@ -13,6 +13,7 @@ namespace KioraRestaurante.Controllers.Api;
 
 // Disponibiliza ao mobile as operações administrativas já existentes no site.
 [ApiController]
+[ResponseCache(NoStore=true,Location=ResponseCacheLocation.None)]
 [Route("api/admin")]
 [Authorize(
     AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,

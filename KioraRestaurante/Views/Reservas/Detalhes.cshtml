@@ -12,7 +12,7 @@
         <p id="horarioReserva">@(Model.InicioUtc.HasValue ? $"Chegada: {HorariosReserva.Local(Model.InicioUtc.Value):dd/MM/yyyy HH:mm}" : "Fila presencial de hoje")</p>
         <p id="posicaoFila">@(Model.PosicaoFila.HasValue?$"Posição geral na fila: {Model.PosicaoFila}. A chamada depende de uma mesa que comporte seu grupo.":"")</p>
         <p id="mesaReserva">@(Model.Mesa!=null?$"Sua mesa: {Model.Mesa}":"")</p>
-        <p id="prazoReserva" hidden="@(Model.Situacao is KioraRestaurante.Models.SituacaoReserva.EmAtendimento or KioraRestaurante.Models.SituacaoReserva.Concluida)">Prazo para chegada/chamada: @HorariosReserva.Local(Model.ExpiraEmUtc).ToString("dd/MM/yyyy HH:mm").</p>
+        <p id="prazoReserva" hidden="@(Model.Situacao is KioraRestaurante.Models.SituacaoReserva.EmAtendimento or KioraRestaurante.Models.SituacaoReserva.Concluida or KioraRestaurante.Models.SituacaoReserva.Cancelada or KioraRestaurante.Models.SituacaoReserva.Expirada)">Prazo para chegada/chamada: @HorariosReserva.Local(Model.ExpiraEmUtc).ToString("dd/MM/yyyy HH:mm").</p>
         <p id="avisoChamada" class="reservas-chamada" role="alert" hidden="@(Model.Situacao!=KioraRestaurante.Models.SituacaoReserva.Chamada)">É a sua vez! Apresente-se à recepção antes do prazo informado.</p>
         <p id="estadoConsulta" class="reservas-suave" role="status">Esta página confere a situação a cada 15 segundos enquanto está aberta.</p>
         <button type="button" id="notificarReserva" class="pedido-link">Permitir aviso neste dispositivo</button>
@@ -46,14 +46,14 @@
 
             <div class="modal-body modal-cancelar-reserva-body">
                 <p>Tem certeza de que deseja cancelar esta solicitação?</p>
-                <p>Ao confirmar, o espaço será liberado e sua solicitação será cancelada.</p>
+                <p>Sua solicitação será cancelada. Se mudar de ideia, faça uma nova reserva.</p>
             </div>
 
             <div class="modal-footer modal-cancelar-reserva-footer">
                 <button type="button"
                         class="btn-modal-cancelar-kiora"
                         data-bs-dismiss="modal">
-                    Cancelar
+                    Manter reserva
                 </button>
 
                 <button type="button"

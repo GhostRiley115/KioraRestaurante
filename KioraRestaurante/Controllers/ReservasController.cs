@@ -4,9 +4,11 @@ using KioraRestaurante.Services.Reservas;
 using KioraRestaurante.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.RateLimiting;
 namespace KioraRestaurante.Controllers;
 
 [AutoValidateAntiforgeryToken]
+[EnableRateLimiting("reservas-consulta")]
 [ResponseCache(NoStore=true,Location=ResponseCacheLocation.None)]
 public class ReservasController(ReservaService service,IdentidadeReserva identidade,HorariosReserva horarios):Controller
 {
@@ -25,7 +27,8 @@ public class ReservasController(ReservaService service,IdentidadeReserva identid
         model.Dados.Nome=User.Identity?.IsAuthenticated==true?User.Identity.Name??"":"";
         await Preparar(model,ct);return View(model);
     }
-    [HttpPost]
+    // Compartilha a cota de escrita da API; trocar de cliente não contorna o limite por IP.
+    [HttpPost,EnableRateLimiting("reservas-escrita")]
     public async Task<IActionResult> Criar(ReservaFormViewModel model,string tipo,CancellationToken ct)
     {
         if(tipo is not ("reserva" or "fila")) return BadRequest();
@@ -67,7 +70,7 @@ public class ReservasController(ReservaService service,IdentidadeReserva identid
         try{return View(await service.Minhas(identidade.Obter(HttpContext,true),ct));}
         catch(UnauthorizedAccessException){return Forbid();}
     }
-    [HttpPost]
+    [HttpPost,EnableRateLimiting("reservas-escrita")]
     public async Task<IActionResult> Cancelar(CancelarReservaDTO dto,CancellationToken ct)
     {
         try{await service.Cancelar(identidade.Obter(HttpContext),dto,ct);TempData["ReservaAviso"]="Solicitação cancelada. O espaço foi liberado.";}

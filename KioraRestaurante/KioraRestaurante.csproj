@@ -21,6 +21,8 @@
     </PackageReference>
 
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
+    <!-- Versão corrigida do conector transitivo, compatível com Pomelo 9. -->
+    <PackageReference Include="MySqlConnector" Version="2.6.1" />
 
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.3.0" />
   </ItemGroup>

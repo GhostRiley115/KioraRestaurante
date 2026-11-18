@@ -47,22 +47,35 @@
     // Controla a confirmação do cancelamento pelo modal do Kiora.
     const modalElemento = document.getElementById("modalCancelarReserva");
     const botaoConfirmar = document.getElementById("confirmarCancelamentoReserva");
-    const modalCancelar = bootstrap.Modal.getOrCreateInstance(modalElemento);
+    const modalCancelar = modalElemento && window.bootstrap?.Modal
+        ? window.bootstrap.Modal.getOrCreateInstance(modalElemento) : null;
 
     let confirmarCancelamento = false;
 
     // Abre o modal antes de permitir o envio do formulário.
-    cancelar.addEventListener("submit", e => {
+    cancelar?.addEventListener("submit", e => {
+        if (cancelar.hidden) { e.preventDefault(); return; }
         if (!confirmarCancelamento) {
             e.preventDefault();
-            modalCancelar.show();
+            if (modalCancelar) modalCancelar.show();
+            // Se o componente visual não carregar, continua exigindo confirmação sem interromper a consulta.
+            else if (window.confirm?.("Deseja cancelar esta solicitação?")) {
+                confirmarCancelamento = true;
+                cancelar.requestSubmit();
+            }
         }
     });
 
     // Envia o formulário somente após a confirmação.
-    botaoConfirmar.addEventListener("click", () => {
+    botaoConfirmar?.addEventListener("click", () => {
+        if (!cancelar || cancelar.hidden || botaoConfirmar.disabled) return;
         confirmarCancelamento = true;
+        botaoConfirmar.disabled = true;
         cancelar.requestSubmit();
+    });
+    modalElemento?.addEventListener("hidden.bs.modal", () => {
+        confirmarCancelamento = false;
+        if (botaoConfirmar) botaoConfirmar.disabled = false;
     });
     const notificar = document.getElementById("notificarReserva");
     notificar.hidden = !("Notification" in window);
@@ -86,7 +99,10 @@
             document.getElementById("prazoReserva").hidden = [3,4,5,6].includes(r.situacao);
             document.getElementById("prazoReserva").textContent = `Prazo para chegada/chamada: ${formatar(r.expiraEmUtc)}.`;
             document.getElementById("avisoChamada").hidden = r.situacao !== 2;
-            cancelar.hidden = !r.podeCancelar; cancelar.querySelector('[name="Versao"]').value = r.versao;
+            if (cancelar) {
+                cancelar.hidden = !r.podeCancelar; cancelar.querySelector('[name="Versao"]').value = r.versao;
+                if (!r.podeCancelar) { confirmarCancelamento = false; modalCancelar?.hide(); }
+            }
             if (r.situacao === 2 && painel.dataset.situacao !== "2" && "Notification" in window && Notification.permission === "granted") {
                 try { new Notification("Kiora: é a sua vez!", {body:"Apresente-se à recepção. Confira o prazo na página.",tag:"kiora-reserva"}); } catch { /* O aviso na página continua funcionando. */ }
             }

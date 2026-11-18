@@ -13,4 +13,6 @@ public class ProdutoResponseDTO
     public decimal PrecoOriginal { get; set; }
     public decimal DescontoPercentual { get; set; }
     public bool EhCombo { get; set; }
+    // Texto de consulta, por unidade do combo; não representa itens de uma compra.
+    public string? Composicao { get; set; }
 }

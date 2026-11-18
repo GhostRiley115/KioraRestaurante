@@ -6,6 +6,7 @@ using KioraRestaurante.DTOs.Usuario;
 using KioraRestaurante.Models;
 using KioraRestaurante.Models.Enums;
 using KioraRestaurante.Services.Interfaces;
+using KioraRestaurante.Services.Salao;
 /*Permite utilizar o PasswordHasher,
 responsável por transformar e verificar senhas com hash.*/
 using Microsoft.AspNetCore.Identity;
@@ -338,47 +339,85 @@ namespace KioraRestaurante.Services
             return atualizados == 1 ? novaVersao : null;
         }
 
+        public bool RevogarSessoes(int usuarioId, Guid versaoSessao)
+        {
+            if (versaoSessao == Guid.Empty) return false;
+            var novaVersao = Guid.NewGuid();
+            // Uma requisição já revogada não pode encerrar uma sessão criada posteriormente.
+            return _context.Usuarios
+                .Where(u => u.Id == usuarioId && u.Ativo && !u.ConvitePendente && u.VersaoSessao == versaoSessao)
+                .ExecuteUpdate(set => set.SetProperty(u => u.VersaoSessao, novaVersao)) == 1;
+        }
+
         /* ---- DESATIVAR CONTA ---- */
         //Desativa a conta sem excluir o usuário do banco de dados.
 
         public bool DesativarConta(int usuarioId)
+            => DesativarContaInterna(usuarioId, null);
+
+        public bool DesativarConta(int usuarioId, Guid versaoSessao)
+            => versaoSessao != Guid.Empty && DesativarContaInterna(usuarioId, versaoSessao);
+
+        private bool DesativarContaInterna(int usuarioId, Guid? versaoSessao)
         {
-            // Localiza o usuário pelo Id e verifica se a conta está ativa.
-            var usuario = _context.Usuarios
-                .FirstOrDefault(u => u.Id == usuarioId && u.Ativo);
-
-            // Caso o usuário não seja encontrado ou já esteja desativado,
-            // a operação não será realizada.
-            if (usuario == null)
-                return false;
-
-            // Impede que o último administrador ativo desative a própria conta.
-            if (usuario.Tipo == TipoUsuario.Administrador)
+            // Serializa com acomodação, transferência e gestão da equipe, inclusive entre instâncias.
+            using var transacao = TransacaoSalao.Iniciar(_context, CancellationToken.None).GetAwaiter().GetResult();
+            try
             {
-                var existeOutroAdministradorAtivo = _context.Usuarios
-                    .Any(u =>
-                        u.Ativo &&
-                        u.Tipo == TipoUsuario.Administrador &&
-                        u.Id != usuarioId);
+                // Localiza o usuário pelo Id e verifica se a conta está ativa.
+                var usuario = _context.Usuarios.AsNoTracking()
+                    .FirstOrDefault(u => u.Id == usuarioId && u.Ativo);
 
-                if (!existeOutroAdministradorAtivo)
+                // Caso o usuário não seja encontrado ou já esteja desativado,
+                // a operação não será realizada.
+                if (usuario == null || versaoSessao.HasValue && usuario.VersaoSessao != versaoSessao.Value)
                 {
-                    throw new ValidationException(
-                        "Não é possível desativar a conta do último administrador ativo.");
+                    transacao.Commit();
+                    return false;
                 }
+
+                // Impede que o último administrador ativo desative a própria conta.
+                if (usuario.Tipo == TipoUsuario.Administrador)
+                {
+                    var existeOutroAdministradorAtivo = _context.Usuarios
+                        .Any(u =>
+                            u.Ativo &&
+                            u.Tipo == TipoUsuario.Administrador &&
+                            u.Id != usuarioId);
+
+                    if (!existeOutroAdministradorAtivo)
+                    {
+                        throw new ValidationException(
+                            "Não é possível desativar a conta do último administrador ativo.");
+                    }
+                }
+
+                if (usuario.Tipo != TipoUsuario.Cliente && _context.AtendimentosMesa
+                    .Any(a => a.GarcomId == usuario.Id && a.MesaOcupadaId != null))
+                {
+                    throw new ValidationException("Transfira e libere as mesas desse funcionário antes de desativá-lo.");
+                }
+
+                // Desativa a conta logicamente.
+                // O registro do usuário continuará existindo no banco.
+                // Salva a alteração no banco de dados.
+                var novaVersao = Guid.NewGuid();
+                var novaVersaoFuncionario = Guid.NewGuid();
+                var alterados = _context.Usuarios.Where(u => u.Id == usuario.Id && u.Ativo && u.VersaoSessao == usuario.VersaoSessao)
+                    .ExecuteUpdate(set => set.SetProperty(u => u.Ativo, false)
+                        .SetProperty(u => u.VersaoSessao, novaVersao)
+                        .SetProperty(u => u.VersaoFuncionario, novaVersaoFuncionario)
+                        .SetProperty(u => u.TokenRecuperacaoSenha, (string?)null)
+                        .SetProperty(u => u.ExpiracaoTokenRecuperacaoSenha, (DateTime?)null));
+                transacao.Commit();
+                return alterados == 1;
             }
-
-            // Desativa a conta logicamente.
-            // O registro do usuário continuará existindo no banco.
-            usuario.Ativo = false;
-            usuario.VersaoSessao = Guid.NewGuid();
-            usuario.TokenRecuperacaoSenha = null;
-            usuario.ExpiracaoTokenRecuperacaoSenha = null;
-
-            // Salva a alteração no banco de dados.
-            _context.SaveChanges();
-
-            return true;
+            catch
+            {
+                transacao.Rollback();
+                _context.ChangeTracker.Clear();
+                throw;
+            }
         }
 
     }

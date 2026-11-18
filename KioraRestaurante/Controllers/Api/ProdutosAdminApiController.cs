@@ -8,12 +8,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using KioraRestaurante.Services.Exceptions;
+using Microsoft.EntityFrameworkCore;
 
 namespace KioraRestaurante.Controllers.Api
 {
     // Controller responsável pelo gerenciamento administrativo de produtos.
     [ApiController]
     [Route("api/admin/produtos")]
+    [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
     [Authorize(
         AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
         Roles = nameof(TipoUsuario.Administrador))]
@@ -176,6 +178,14 @@ namespace KioraRestaurante.Controllers.Api
                     mensagem = ex.Message
                 });
             }
+            catch (RegraProdutoException ex)
+            {
+                return BadRequest(new { sucesso = false, mensagem = ex.Message });
+            }
+            catch (DbUpdateException)
+            {
+                return FalhaGravacao();
+            }
         }
 
         // PUT: api/admin/produtos/1
@@ -247,6 +257,10 @@ namespace KioraRestaurante.Controllers.Api
                     mensagem = ex.Message
                 });
             }
+            catch (DbUpdateException)
+            {
+                return FalhaGravacao();
+            }
         }
         // PATCH: api/admin/produtos/1/ativo
         // Ativa ou desativa um produto.
@@ -273,17 +287,20 @@ namespace KioraRestaurante.Controllers.Api
                 });
             }
 
+            if (!ModelState.IsValid || !dto.Ativo.HasValue)
+                return BadRequest(new { sucesso = false, mensagem = "Informe se o produto deve ficar ativo." });
+
             try
             {
                 await _produtoService.AlterarAtivo(
                     administradorId,
                     id,
-                    dto.Ativo);
+                    dto.Ativo.Value);
 
                 return Ok(new
                 {
                     sucesso = true,
-                    mensagem = dto.Ativo
+                    mensagem = dto.Ativo.Value
                         ? "Produto ativado com sucesso."
                         : "Produto desativado com sucesso."
                 });
@@ -307,6 +324,10 @@ namespace KioraRestaurante.Controllers.Api
                     sucesso = false,
                     mensagem = ex.Message
                 });
+            }
+            catch (DbUpdateException)
+            {
+                return FalhaGravacao();
             }
         }
         // PATCH: api/admin/produtos/1/disponibilidade
@@ -334,17 +355,20 @@ namespace KioraRestaurante.Controllers.Api
                 });
             }
 
+            if (!ModelState.IsValid || !dto.Disponivel.HasValue)
+                return BadRequest(new { sucesso = false, mensagem = "Informe se o produto está disponível." });
+
             try
             {
                 await _produtoService.AlterarDisponibilidade(
                     administradorId,
                     id,
-                    dto.Disponivel);
+                    dto.Disponivel.Value);
 
                 return Ok(new
                 {
                     sucesso = true,
-                    mensagem = dto.Disponivel
+                    mensagem = dto.Disponivel.Value
                         ? "Produto disponibilizado com sucesso."
                         : "Produto indisponibilizado com sucesso."
                 });
@@ -369,13 +393,17 @@ namespace KioraRestaurante.Controllers.Api
                     mensagem = ex.Message
                 });
             }
+            catch (DbUpdateException)
+            {
+                return FalhaGravacao();
+            }
         }
         // PATCH: api/admin/produtos/1/desconto
         // Aplica ou remove o desconto de um produto.
         [HttpPatch("{id:int}/desconto")]
         public async Task<IActionResult> AlterarDesconto(
             int id,
-            [FromBody] AlterarDescontoRequestDTO dto)
+            [FromBody] AlterarDescontoProdutoApiRequestDTO dto)
         {
             if (!TentarObterAdministradorId(out var administradorId))
             {
@@ -395,12 +423,15 @@ namespace KioraRestaurante.Controllers.Api
                 });
             }
 
+            if (!ModelState.IsValid || !dto.Percentual.HasValue)
+                return BadRequest(new { sucesso = false, mensagem = "Informe o percentual de desconto. Use zero para removê-lo." });
+
             try
             {
                 await _produtoService.AlterarDesconto(
                     administradorId,
                     id,
-                    dto);
+                    new AlterarDescontoRequestDTO { Percentual = dto.Percentual.Value });
 
                 var produto = await _produtoService.BuscarAdmin(
                     administradorId,
@@ -435,6 +466,10 @@ namespace KioraRestaurante.Controllers.Api
                     sucesso = false,
                     mensagem = ex.Message
                 });
+            }
+            catch (DbUpdateException)
+            {
+                return FalhaGravacao();
             }
         }
                 // GET: api/admin/produtos/opcoes-componentes
@@ -473,5 +508,11 @@ namespace KioraRestaurante.Controllers.Api
                 });
             }
         }
+        private ConflictObjectResult FalhaGravacao() => Conflict(new
+        {
+            sucesso = false,
+            mensagem = "Não foi possível confirmar a alteração. Consulte os dados antes de tentar novamente."
+        });
+
     }
 }

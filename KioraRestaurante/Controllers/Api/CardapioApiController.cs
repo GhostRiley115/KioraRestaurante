@@ -1,6 +1,8 @@
 ﻿using KioraRestaurante.DTOs.Categoria;
 using KioraRestaurante.DTOs.Produto;
 using KioraRestaurante.Services.Interfaces;
+using KioraRestaurante.Services.Cardapio;
+using KioraRestaurante.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,13 +17,16 @@ namespace KioraRestaurante.Controllers.Api
     {
         private readonly ICategoriaService _categoriaService;
         private readonly IProdutoService _produtoService;
+        private readonly MaisPedidosService _maisPedidosService;
 
         public CardapioApiController(
             ICategoriaService categoriaService,
-            IProdutoService produtoService)
+            IProdutoService produtoService,
+            MaisPedidosService maisPedidosService)
         {
             _categoriaService = categoriaService;
             _produtoService = produtoService;
+            _maisPedidosService = maisPedidosService;
         }
 
         // GET: api/cardapio/categorias
@@ -31,7 +36,9 @@ namespace KioraRestaurante.Controllers.Api
         {
             var categorias = await _categoriaService.ListarTodas();
 
-            return Ok(categorias);
+            return Ok(categorias.OrderBy(c => ConsultaCardapio.OrdemCategoria(c.Nome))
+                .ThenBy(c => c.Nome, StringComparer.Create(System.Globalization.CultureInfo.GetCultureInfo("pt-BR"), true))
+                .ToList());
         }
 
         // GET: api/cardapio/produtos
@@ -39,13 +46,15 @@ namespace KioraRestaurante.Controllers.Api
         // Retorna os produtos, permitindo filtrar por categoria.
         [HttpGet("produtos")]
         public async Task<ActionResult<List<ProdutoResponseDTO>>> ListarProdutos(
-            [FromQuery] int? categoriaId)
+            [FromQuery] int? categoriaId,
+            [FromQuery] FiltroCardapioViewModel? filtros = null,
+            CancellationToken ct = default)
         {
+            filtros ??= new FiltroCardapioViewModel();
+            var categorias = await _categoriaService.ListarTodas();
             // Verifica se a categoria informada existe.
             if (categoriaId.HasValue)
             {
-                var categorias = await _categoriaService.ListarTodas();
-
                 if (!categorias.Any(c => c.Id == categoriaId.Value))
                 {
                     return NotFound(new
@@ -56,10 +65,22 @@ namespace KioraRestaurante.Controllers.Api
                 }
             }
 
+            // A API compartilha filtros, limites e nomes de coleções com o cardápio web.
+            var validacao = ConsultaCardapio.Montar([], categorias, categoriaId, filtros);
+            if (validacao.ErrosFiltros.Count > 0)
+                return BadRequest(new { sucesso = false, mensagem = string.Join(" ", validacao.ErrosFiltros), erros = validacao.ErrosFiltros });
+
+            RankingMaisPedidos? ranking = null;
+            if (filtros.Colecao == ColecoesCardapio.MaisPedidos)
+                ranking = await _maisPedidosService.Consultar(ct);
+
             // Reutiliza o serviço responsável pelo cardápio do site.
             var produtos = await _produtoService.ListarCardapio(categoriaId);
-
-            return Ok(produtos);
+            var resultado = ConsultaCardapio.Montar(produtos, categorias, categoriaId, filtros, ranking?.Quantidades);
+            // Mantém a resposta como lista; a ordem padrão acompanha as seções exibidas no site.
+            return Ok(resultado.ExibirSeparadores
+                ? resultado.Secoes.SelectMany(s => s.Produtos).ToList()
+                : resultado.Produtos);
         }
 
         // GET: api/cardapio/produtos/1
@@ -68,9 +89,7 @@ namespace KioraRestaurante.Controllers.Api
         public async Task<ActionResult<ProdutoResponseDTO>> BuscarProduto(int id)
         {
             // Consulta os produtos disponíveis no cardápio.
-            var produtos = await _produtoService.ListarCardapio();
-
-            var produto = produtos.FirstOrDefault(p => p.Id == id);
+            var produto = await _produtoService.BuscarCardapio(id);
 
             if (produto == null)
             {

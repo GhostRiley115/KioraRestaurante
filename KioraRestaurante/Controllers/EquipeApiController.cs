@@ -1,19 +1,22 @@
+using KioraRestaurante.Filters;
 using System.Security.Claims;
 using KioraRestaurante.Models.Enums;
 using KioraRestaurante.Services.Salao;
 using KioraRestaurante.Services.Notificacoes;
 using KioraRestaurante.DTOs.Salao;
+using KioraRestaurante.Services.Interfaces;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 namespace KioraRestaurante.Controllers;
 
-[ApiController,Route("api/equipe"),AutoValidateAntiforgeryToken,EnableRateLimiting("salao")]
+[ApiController,Route("api/equipe"),ValidarAntifalsificacaoApi,EnableRateLimiting("salao")]
 [ResponseCache(NoStore=true,Location=ResponseCacheLocation.None)]
-public class EquipeApiController(IAntiforgery antiforgery,AcessoSalaoService acesso,NotificacaoService avisos):ControllerBase
+public class EquipeApiController(IAntiforgery antiforgery,AcessoSalaoService acesso,NotificacaoService avisos,IUsuarioService usuarios):ControllerBase
 {
     private int Id=>int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier),out var id)?id:0;
     [HttpGet("sessao")] public async Task<IActionResult> Sessao(CancellationToken ct)
@@ -27,7 +30,17 @@ public class EquipeApiController(IAntiforgery antiforgery,AcessoSalaoService ace
         }
         return Ok(new{csrfToken=antiforgery.GetAndStoreTokens(HttpContext).RequestToken,usuario=conta,fuso="America/Sao_Paulo"});
     }
-    [Authorize,HttpPost("logout")] public async Task<IActionResult> Logout(){await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);return Ok(new{sucesso=true});}
+    [Authorize,HttpPost("logout")] public async Task<IActionResult> Logout()
+    {
+        var bearer=await HttpContext.AuthenticateAsync(Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme);
+        if(bearer.Succeeded)
+        {
+            // A versão é compartilhada: sair pelo app revoga os acessos anteriores da conta.
+            if(!Guid.TryParse(User.FindFirstValue("VersaoSessao"),out var versao)||!usuarios.RevogarSessoes(Id,versao))return Unauthorized();
+            return Ok(new{sucesso=true,sessoesRevogadas=true});
+        }
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);return Ok(new{sucesso=true});
+    }
     [Authorize,HttpGet("notificacoes")] public async Task<IActionResult> Notificacoes(int pagina=1,CancellationToken ct=default)
     {try {return Ok(await avisos.Listar(Id,pagina,ct));}catch(UnauthorizedAccessException){return Forbid();}}
     [Authorize,HttpGet("notificacoes/{id:guid}")] public async Task<IActionResult> Detalhe(Guid id,CancellationToken ct)

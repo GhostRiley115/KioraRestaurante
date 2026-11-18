@@ -41,7 +41,11 @@ namespace KioraRestaurante.Services.Interfaces
 
         Guid? AlterarSenha(int usuarioId, UsuarioAlterarSenhaDTO dto, Guid versaoSessao);
 
+        // O logout mobile revoga todos os acessos emitidos com a versão atual da conta.
+        bool RevogarSessoes(int usuarioId, Guid versaoSessao);
+
         //Desativa a conta do usuário sem excluir seu registro do banco.
         bool DesativarConta(int usuarioId);
+        bool DesativarConta(int usuarioId, Guid versaoSessao);
     }
 }

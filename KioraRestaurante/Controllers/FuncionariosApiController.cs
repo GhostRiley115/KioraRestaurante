@@ -1,3 +1,4 @@
+using KioraRestaurante.Filters;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using KioraRestaurante.DTOs.Salao;
@@ -7,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 namespace KioraRestaurante.Controllers;
-[ApiController,Route("api/equipe/funcionarios"),Authorize(Roles="Administrador,Gerente"),AutoValidateAntiforgeryToken,EnableRateLimiting("salao")]
+[ApiController,Route("api/equipe/funcionarios"),Authorize(Roles="Administrador,Gerente"),ValidarAntifalsificacaoApi,EnableRateLimiting("salao")]
 [ResponseCache(NoStore=true,Location=ResponseCacheLocation.None)]
 public class FuncionariosApiController(FuncionarioService service):ControllerBase
 {
