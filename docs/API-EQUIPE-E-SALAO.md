@@ -1,16 +1,22 @@
 # API da equipe e do salão
 
-A API usa a autenticação por cookie existente. Não foi acrescentado JWT. O cliente Android deve manter os cookies numa `CookieJar`, usar HTTPS, obter o token CSRF e enviar o cabeçalho `X-CSRF-TOKEN` em operações de escrita. Não coloque chaves Brevo, Cloudinary, mapas ou Mercado Pago no aplicativo.
+A API aceita JWT para o aplicativo e preserva cookies para o site e para o fluxo legado. Use `POST /api/usuarios/login` com JSON para receber o token. Nas operações autenticadas da API, `Authorization: Bearer <token>` válido dispensa cookies e CSRF; um cabeçalho inválido nunca dispensa a proteção. Visitantes e chamadas autenticadas somente por cookie mantêm `CookieJar` e `X-CSRF-TOKEN`. Não coloque chaves JWT, Brevo, Cloudinary, mapas ou Mercado Pago no aplicativo.
+
+O guia [API mobile: autenticação, reservas e separação do delivery](API-MOBILE.md) descreve configuração, cadastro opcional, logout e exemplos. O aplicativo do cliente consulta o cardápio e reserva mesas; compras de delivery permanecem no site.
 
 ## Sessão e login
+
+Para o aplicativo novo, faça login por `POST /api/usuarios/login` (JSON). O token serve para os vários cargos; a API confere o cargo em cada operação. `GET /api/usuarios/perfil` retorna o perfil; para funcionários, `GET /api/equipe/sessao` também retorna os atalhos de sessão abaixo. O cliente usa `/api/reservas/sessao` para o fluxo de visitante.
+
+O fluxo legado por cookie continua disponível:
 
 1. `GET /api/equipe/sessao` antes do login: retorna `csrfToken`, `usuario: null` e o fuso.
 2. `POST /api/equipe/login`, com **formulário**, não JSON: `Email`, `Senha` e o cabeçalho CSRF obtido no passo anterior. Esse login usa o mesmo limite de tentativas do site.
 3. Após receber sucesso, consulte novamente `GET /api/equipe/sessao`. A identificação mudou e o aplicativo precisa usar o novo `csrfToken` retornado.
 4. A sessão retorna apenas `usuario.id`, `nome`, `cargo` e `gestor`, além do token CSRF e do fuso. Os cargos nesse retorno são strings: `Administrador`, `Gerente`, `Garcom`, `Portaria`, `Cozinha`.
-5. `POST /api/equipe/logout` encerra a sessão atual.
+5. `POST /api/equipe/logout`, usando somente cookie e CSRF, encerra esse acesso web. Usando Bearer, essa rota e `POST /api/usuarios/logout` revogam os acessos anteriores da conta. O aplicativo deve apagar o token local; outros tokens/cookies anteriores também deixam de valer.
 
-Cookies vencidos, revogados ou de contas desativadas não dão acesso à API. Uma resposta 401 pede novo login. Cargo sem autorização retorna 403. O site mantém seu redirecionamento normal para a tela de login.
+Cookies e JWTs vencidos, revogados ou de contas desativadas não dão acesso à API. Uma resposta 401 pede novo login. Cargo sem autorização retorna 403. O site mantém seu redirecionamento normal para a tela de login.
 
 ## Convenções dos comandos
 
@@ -31,7 +37,7 @@ Erros: 400 para formato inválido/CSRF; 401 sem sessão válida; 403 sem permiss
 | `GET /api/salao/garcons` | Responsáveis disponíveis para acomodação/transferência. |
 | `GET /api/salao/cardapio` | Produtos e preços atuais para o salão. Garçom e gestão. |
 | `GET /api/salao/comandas/{id}` | Consumo, subtotal, desconto, total, versão, recebimentos e histórico. Garçom responsável ou gestão. |
-| `GET /api/salao/cozinha` | Itens ativos de salão e delivery, etapas e versões. Cozinha e gestão. |
+| `GET /api/salao/cozinha?origem=salao` | Itens ativos, etapas e versões. `origem` pode ser `salao` ou `delivery`; sem o filtro, retorna ambas as origens para a cozinha compartilhada. Cozinha e gestão. |
 | `GET /api/salao/relatorio?dia=2026-11-07&comparar=2026-11-06` | Comparação de vendas físicas. Gerente e administrador. |
 | `GET /api/equipe/notificacoes?pagina=1` | Lista paginada da própria conta. |
 | `GET /api/equipe/notificacoes/{id}` | Mensagem completa da própria conta. Inclui, quando aplicável, `atendimentoId`, `pedidoId` e `reservaCodigo`. |
@@ -100,7 +106,7 @@ Estados de preparo retornados como número: 0 Na fila, 1 Em preparo, 2 Pronto pa
 
 Consulte a lista com a sessão do funcionário. A resposta traz somente os avisos aos quais aquela conta tem acesso. Para registrar leitura:
 
-`POST /api/equipe/notificacoes/ler` com `{ "id": "UUID-DO-AVISO" }` e CSRF.
+`POST /api/equipe/notificacoes/ler` com `{ "id": "UUID-DO-AVISO" }`. Use Bearer válido ou, no acesso por cookie, CSRF.
 
 Um item pronto identifica a mesa, quantidade, nome e observações, com `atendimentoId` para abrir a comanda. Transferir o atendimento gera aviso ao novo responsável. O aplicativo pode consultar periodicamente enquanto estiver em uso; esta versão não entrega push com o aplicativo fechado.
 
@@ -120,3 +126,20 @@ Cargos numéricos no cadastro: 2 gerente, 3 garçom, 4 portaria, 5 cozinha. O ge
 A mesa tem uma chave única para impedir duas comandas simultâneas. A trava de sala é compartilhada no banco, e versões impedem que uma aba antiga sobrescreva consumo, preparo ou fechamento. Uma mesma solicitação reenviada retorna o resultado anterior sem duplicar itens ou recebimentos. Correções, descontos, mudanças de responsável e fechamento ficam registrados com data e responsável.
 
 Nenhuma rota da API deve ser liberada por confiar apenas em botões escondidos. Os mesmos serviços usados pelo site verificam cargo, situação atual da conta, dono da comanda, etapa e valores. O aplicativo Android precisa tratar respostas de conflito e recarregar os dados.
+
+
+## Habilitação de mesa: compatibilidade
+
+`PATCH /api/reservas/admin/mesas/{mesaId}/ativa` é um alias seguro para alterar somente a habilitação, preservando nome/capacidade. Exige administrador ou gerente e o corpo:
+
+```json
+{
+  "ativa": false,
+  "versao": "UUID-DA-MESA-EXIBIDA",
+  "chaveSolicitacao": "UUID-NOVO-DA-ACAO"
+}
+```
+
+Campo ausente ou UUID vazio retorna 400. Revisão antiga retorna 409. O reenvio do mesmo comando não duplica o histórico. Para editar nome/capacidade, use `/api/salao/mesas/configurar`. Os comandos legados sem versão não alteram mais a mesa.
+
+`ativa`/`habilitada` descreve se a mesa participa da operação. Abrir uma comanda e liberar uma mesa após limpeza continuam sendo comandos distintos; não use este PATCH para simular chegada, fechamento ou liberação.

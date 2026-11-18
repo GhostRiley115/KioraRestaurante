@@ -144,3 +144,6 @@ Esta integração não exige uma nova migration. Códigos de recuperação emiti
 Projeto acadêmico apresentado no ecossistema **Jujuba’s Dev**. Kiora é uma marca fictícia; sua presença visual foi criada para dar contexto à solução de software.
 
 [**Conheça os outros projetos de Clayton Brito →**](https://github.com/GhostRiley115)
+
+
+Para integrar o aplicativo Android, consulte [API mobile](docs/API-MOBILE.md) e [operações da equipe e do salão](docs/API-EQUIPE-E-SALAO.md). Cadastro/login do cliente são opcionais para reservas; o delivery permanece no site.

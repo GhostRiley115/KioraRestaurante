@@ -71,6 +71,8 @@ public class NavegacaoTests
         public bool EmailExisteParaOutroUsuario(string email, int usuarioId) => throw new NotSupportedException();
         public bool AtualizarPerfil(int usuarioId, UsuarioAtualizarPerfilDTO dto) => throw new NotSupportedException();
         public Guid? AlterarSenha(int usuarioId, UsuarioAlterarSenhaDTO dto, Guid versaoSessao) => throw new NotSupportedException();
+        public bool RevogarSessoes(int usuarioId, Guid versaoSessao) => throw new NotSupportedException();
         public bool DesativarConta(int usuarioId) => throw new NotSupportedException();
+        public bool DesativarConta(int usuarioId, Guid versaoSessao) => throw new NotSupportedException();
     }
 }

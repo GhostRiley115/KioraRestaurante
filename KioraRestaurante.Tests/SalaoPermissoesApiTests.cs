@@ -13,7 +13,7 @@ public class SalaoPermissoesApiTests
     [InlineData(typeof(EquipeApiController))]
     public void ApiUsaProtecaoContraCsrfECachePrivado(Type controller)
     {
-        Assert.NotNull(controller.GetCustomAttribute<AutoValidateAntiforgeryTokenAttribute>());
+        Assert.NotNull(controller.GetCustomAttribute<KioraRestaurante.Filters.ValidarAntifalsificacaoApiAttribute>());
         Assert.True(controller.GetCustomAttribute<ResponseCacheAttribute>()!.NoStore);
     }
     [Fact] public void LoginDoAplicativoPreservaLimitacaoDeTentativasELeFormulario()

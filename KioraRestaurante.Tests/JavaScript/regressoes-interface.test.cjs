@@ -16,6 +16,11 @@ class Campo {
     replaceChildren(...filhos) { this.children=filhos; }
     add(filho) { this.children.push(filho); }
     focus() { this.focado=true; }
+    requestSubmit() {
+        const evento={defaultPrevented:false,preventDefault(){this.defaultPrevented=true;}};
+        this.ultimoEnvio=this.emitir('submit',evento);
+        if(!evento.defaultPrevented)this.enviosEfetivos=(this.enviosEfetivos??0)+1;
+    }
 }
 
 function checkout({validade,validacao=true}={}) {
@@ -65,12 +70,53 @@ test('Horário de uma data antiga não substitui a data nova após ler JSON atra
     assert.equal(e.Dados_Horario.disabled,false);assert.deepEqual(e.Dados_Horario.children.map(x=>x.value),['','20:00']);
 });
 
-for(const situacao of [5,6])test('Reserva encerrada não mantém aviso de prazo ativo: '+situacao,async()=>{
-    const nomes=['acompanharReserva','cancelarReserva','notificarReserva','situacaoReserva','posicaoFila','horarioReserva','mesaReserva','prazoReserva','avisoChamada','estadoConsulta'];
+function acompanhamento({situacao=7,podeCancelar=true,comBootstrap=true}={}) {
+    const nomes=['acompanharReserva','cancelarReserva','notificarReserva','situacaoReserva','posicaoFila','horarioReserva','mesaReserva','prazoReserva','avisoChamada','estadoConsulta','modalCancelarReserva','confirmarCancelamentoReserva'];
     const e=Object.fromEntries(nomes.map(n=>[n,new Campo()]));const versao=new Campo();e.cancelarReserva.querySelector=()=>versao;
-    const contexto={document:{getElementById:n=>e[n]??null,addEventListener(){},hidden:false},window:{},setInterval(){},confirm:()=>true,fetch:async()=>({ok:true,json:async()=>({situacao,situacaoTexto:'Encerrada',expiraEmUtc:'2026-11-08T12:00:00Z',podeCancelar:false,versao:'nova'})}),Intl,Date};
-    carregar('reservas.js',contexto);await proximoCiclo();
+    const eventos={};const modal={aberturas:0,fechamentos:0,show(){this.aberturas++;},hide(){this.fechamentos++;}};
+    const retorno={situacao,situacaoTexto:'Situação atual',expiraEmUtc:'2026-11-08T12:00:00Z',podeCancelar,versao:'nova'};
+    const janela={confirm:()=>false};if(comBootstrap)janela.bootstrap={Modal:{getOrCreateInstance:elemento=>{assert.equal(elemento,e.modalCancelarReserva);return modal;}}};
+    const contexto={document:{getElementById:n=>e[n]??null,addEventListener:(nome,fn)=>eventos[nome]=fn,hidden:false},window:janela,setInterval(){},fetch:async()=>({ok:true,json:async()=>({...retorno})}),Intl,Date};
+    carregar('reservas.js',contexto);
+    return {e,versao,modal,retorno,janela,consultar:()=>eventos.visibilitychange()};
+}
+
+for(const situacao of [5,6])test('Reserva encerrada não mantém aviso de prazo ativo: '+situacao,async()=>{
+    const {e,versao}=acompanhamento({situacao,podeCancelar:false});
+    await proximoCiclo();
     assert.equal(e.prazoReserva.hidden,true);assert.equal(e.cancelarReserva.hidden,true);assert.equal(versao.value,'nova');
+});
+
+test('Cancelar reserva abre modal e só envia uma vez após confirmação explícita',async()=>{
+    const {e,modal}=acompanhamento();await proximoCiclo();let bloqueou=false;
+    await e.cancelarReserva.emitir('submit',{preventDefault(){bloqueou=true;}});
+    assert.equal(bloqueou,true);assert.equal(modal.aberturas,1);assert.equal(e.cancelarReserva.enviosEfetivos??0,0);
+    await e.confirmarCancelamentoReserva.emitir('click');await e.cancelarReserva.ultimoEnvio;
+    await e.confirmarCancelamentoReserva.emitir('click');
+    assert.equal(e.cancelarReserva.enviosEfetivos,1);assert.equal(e.confirmarCancelamentoReserva.disabled,true);
+});
+
+test('Fechar o modal sem confirmar mantém a exigência de confirmação',async()=>{
+    const {e,modal}=acompanhamento();await proximoCiclo();
+    await e.cancelarReserva.emitir('submit',{preventDefault(){}});await e.modalCancelarReserva.emitir('hidden.bs.modal');
+    let bloqueou=false;await e.cancelarReserva.emitir('submit',{preventDefault(){bloqueou=true;}});
+    assert.equal(bloqueou,true);assert.equal(modal.aberturas,2);assert.equal(e.cancelarReserva.enviosEfetivos??0,0);
+});
+
+test('Reserva encerrada enquanto o modal está aberto não envia cancelamento',async()=>{
+    const {e,modal,retorno,consultar}=acompanhamento();await proximoCiclo();
+    await e.cancelarReserva.emitir('submit',{preventDefault(){}});
+    retorno.situacao=5;retorno.podeCancelar=false;await consultar();
+    assert.equal(e.cancelarReserva.hidden,true);assert.ok(modal.fechamentos>0);
+    await e.confirmarCancelamentoReserva.emitir('click');assert.equal(e.cancelarReserva.enviosEfetivos??0,0);
+});
+
+test('Ausência de Bootstrap não interrompe consulta e usa confirmação alternativa',async()=>{
+    const {e,janela}=acompanhamento({comBootstrap:false});await proximoCiclo();
+    assert.match(e.estadoConsulta.textContent,/Situação atualizada/);
+    await e.cancelarReserva.emitir('submit',{preventDefault(){}});assert.equal(e.cancelarReserva.enviosEfetivos??0,0);
+    janela.confirm=()=>true;await e.cancelarReserva.emitir('submit',{preventDefault(){}});await e.cancelarReserva.ultimoEnvio;
+    assert.equal(e.cancelarReserva.enviosEfetivos,1);
 });
 
 test('Scripts próprios não quebram uma página sem os respectivos componentes',()=>{
