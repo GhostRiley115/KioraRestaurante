@@ -34,7 +34,7 @@ namespace KioraRestaurante.Data
         public DbSet<KioraRestaurante.Models.Notificacoes.EventoNotificacao> EventosNotificacao { get; set; }
         public DbSet<KioraRestaurante.Models.Notificacoes.Notificacao> Notificacoes { get; set; }
         public DbSet<KioraRestaurante.Models.Notificacoes.NotificacaoUsuario> NotificacoesUsuarios { get; set; }
-
+        public DbSet<KioraRestaurante.Models.Notificacoes.DispositivoPush> DispositivosPush { get; set; }
         public DbSet<KioraRestaurante.Models.Salao.ConviteFuncionario> ConvitesFuncionarios { get; set; }
         public DbSet<KioraRestaurante.Models.Salao.AtendimentoMesa> AtendimentosMesa { get; set; }
         public DbSet<KioraRestaurante.Models.Salao.ItemComanda> ItensComanda { get; set; }
@@ -111,6 +111,25 @@ namespace KioraRestaurante.Data
                 .HasForeignKey(n => n.NotificacaoId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<KioraRestaurante.Models.Notificacoes.NotificacaoUsuario>().HasOne(n => n.Usuario).WithMany()
                 .HasForeignKey(n => n.UsuarioId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder
+                .Entity<KioraRestaurante.Models.Notificacoes.DispositivoPush>()
+                .HasIndex(d => d.TokenHash)
+                .IsUnique();
+
+            modelBuilder
+                .Entity<KioraRestaurante.Models.Notificacoes.DispositivoPush>()
+                .HasIndex(d => new { d.UsuarioId, d.Ativo });
+
+            modelBuilder
+                .Entity<KioraRestaurante.Models.Notificacoes.DispositivoPush>()
+                .HasIndex(d => new { d.VisitanteHash, d.Ativo });
+
+            modelBuilder
+                .Entity<KioraRestaurante.Models.Notificacoes.DispositivoPush>()
+                .HasOne(d => d.Usuario)
+                .WithMany()
+                .HasForeignKey(d => d.UsuarioId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<OperacaoPedido>().HasOne(o => o.Pedido).WithMany(p => p.Operacoes)
                 .HasForeignKey(o => o.PedidoId).OnDelete(DeleteBehavior.Restrict);

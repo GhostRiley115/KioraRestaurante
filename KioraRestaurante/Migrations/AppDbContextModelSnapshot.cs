@@ -735,6 +735,55 @@ namespace KioraRestaurante.Migrations
                     b.ToTable("MovimentosPedido");
                 });
 
+            modelBuilder.Entity("KioraRestaurante.Models.Notificacoes.DispositivoPush", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime>("AtualizadoEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("CriadoEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("DesativadoEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("TokenFcm")
+                        .IsRequired()
+                        .HasMaxLength(4096)
+                        .HasColumnType("varchar(4096)");
+
+                    b.Property<string>("TokenHash")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
+
+                    b.Property<int?>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("VisitanteHash")
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TokenHash")
+                        .IsUnique();
+
+                    b.HasIndex("UsuarioId", "Ativo");
+
+                    b.HasIndex("VisitanteHash", "Ativo");
+
+                    b.ToTable("DispositivosPush");
+                });
+
             modelBuilder.Entity("KioraRestaurante.Models.Notificacoes.EventoNotificacao", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1717,6 +1766,16 @@ namespace KioraRestaurante.Migrations
                         .IsRequired();
 
                     b.Navigation("Operacao");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.Notificacoes.DispositivoPush", b =>
+                {
+                    b.HasOne("KioraRestaurante.Models.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("KioraRestaurante.Models.Notificacoes.EventoNotificacao", b =>
