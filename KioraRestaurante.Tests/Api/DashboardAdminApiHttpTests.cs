@@ -644,7 +644,7 @@ public sealed class DashboardAdminApiHttpTests
     // DADOS FICTÍCIOS EXCLUSIVOS DOS TESTES
     // ==================================================
 
-    private static async Task InserirDadosDeTeste(
+    internal static async Task InserirDadosDeTeste(
         HostMobile host)
     {
         await using var scope =
