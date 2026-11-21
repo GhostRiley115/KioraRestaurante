@@ -34,6 +34,11 @@ using KioraRestaurante.Services.Imagens;
 using KioraRestaurante.Services.Produtos;
 using KioraRestaurante.Services.Usuarios;
 using KioraRestaurante.Services.Admin;
+using KioraRestaurante.Options;
+using KioraRestaurante.Services.Pedidos;
+using KioraRestaurante.Services.Enderecos;
+using KioraRestaurante.Services.Entrega;
+using KioraRestaurante.Services.PagamentosOnline;
 
 namespace KioraRestaurante.Tests;
 
@@ -189,7 +194,7 @@ internal sealed class HostMobile : IAsyncDisposable
     public object Reserva(string horario = "14:00") => new { nome = "Grupo fictício", telefone = "11900000000", pessoas = 2, data = "2026-11-17", horario, chaveSolicitacao = Guid.NewGuid() };
     public string Token(TipoUsuario cargo, bool outroCliente = false)
     { using var scope = App.Services.CreateScope(); return scope.ServiceProvider.GetRequiredService<IJwtService>().GerarToken(scope.ServiceProvider.GetRequiredService<IUsuarioService>().BuscarPorId(outroCliente ? _outroCliente : _ids[cargo])!); }
-    public static async Task<HostMobile> Criar(IEmailService? emailService = null)
+    public static async Task<HostMobile> Criar(IEmailService? emailService = null, HttpMessageHandler? provedorPagamento = null)
     {
         var conexao = $"Data Source=mobile-{Guid.NewGuid():N};Mode=Memory;Cache=Shared;Default Timeout=10"; var keeper = new SqliteConnection(conexao); await keeper.OpenAsync();
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions { EnvironmentName = "Testing" }); builder.Configuration.Sources.Clear(); builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?> { ["Jwt:ChaveSecreta"] = "CHAVE-EXCLUSIVA-DE-TESTE-SEM-VALOR-REAL-MOBILE-20261117" }); builder.Logging.ClearProviders(); builder.WebHost.UseUrls("http://127.0.0.1:0");
@@ -210,6 +215,47 @@ internal sealed class HostMobile : IAsyncDisposable
         // Serviços administrativos utilizados pelo dashboard.
         builder.Services.AddScoped<IAdminService, AdminService>();
         builder.Services.AddScoped<RelatoriosAdminService>();
+        // Serviços administrativos dos pedidos.
+        builder.Services.AddScoped<AndamentoPedidoService>();
+        builder.Services.AddScoped<GerenciarPedidoService>();
+        // Serviços auxiliares.
+        builder.Services.AddMemoryCache();
+        builder.Services.AddOptions<EntregaOptions>();
+        builder.Services.AddScoped<IRotasEntrega,RotasEntregaSimuladas>();
+        builder.Services.AddScoped<CotacaoEntregaService>();
+        builder.Services.AddScoped<EnderecoUsuarioService>();
+        // Bloqueia consultas externas de CEP.
+        builder.Services.AddHttpClient<CepService>(http =>
+        {
+            http.BaseAddress =
+                new Uri("https://viacep.com.br/ws/");
+        })
+        .ConfigurePrimaryHttpMessageHandler(
+            () => new SemRede());
+        // Configuração financeira exclusivamente fictícia.
+        builder.Services.Configure<MercadoPagoConfig>(
+            config =>
+            {
+                config.Ativado = true;
+                config.ModoTeste = true;
+                config.AccessToken = "token-ficticio";
+                config.ApplicationId = "456";
+                config.VendedorId = "123";
+
+                config.UrlPublica =
+                    "https://kiora.example.com";
+            });
+        // Utiliza o simulador fornecido pelo teste.
+        // Caso nenhum seja fornecido, bloqueia a rede.
+        builder.Services.AddHttpClient<MpOrdersClient>(
+            http =>
+            {
+                http.BaseAddress =
+                    new Uri("https://api.mercadopago.com/");
+            })
+        .ConfigurePrimaryHttpMessageHandler(
+            () => provedorPagamento ?? new SemRede());
+        builder.Services.AddScoped<CheckoutOnlineService>();
         var app = builder.Build(); var host = new HostMobile(app, keeper);
         await using (var scope = app.Services.CreateAsyncScope())
         {
