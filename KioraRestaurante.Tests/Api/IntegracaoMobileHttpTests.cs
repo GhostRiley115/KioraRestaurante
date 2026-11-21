@@ -33,70 +33,68 @@ using KioraRestaurante.Services.Email;
 using KioraRestaurante.Services.Imagens;
 using KioraRestaurante.Services.Produtos;
 using KioraRestaurante.Services.Usuarios;
+using KioraRestaurante.Services.Admin;
 
 namespace KioraRestaurante.Tests;
 
 // Usa o pipeline de autenticação/CSRF real, banco temporário e nenhuma integração externa.
 public class IntegracaoMobileHttpTests
 {
-    [Fact]
-    public async Task TokenSoAcessaApisECargosSaoConferidosNoServidor()
+    [Fact] public async Task TokenSoAcessaApisECargosSaoConferidosNoServidor()
     {
-        await using var b = await HostMobile.Criar(); using var http = b.Cliente();
-        Assert.Equal(HttpStatusCode.OK, (await http.GetAsync("/api/cardapio/produtos")).StatusCode);
-        var semSessao = await http.GetAsync("/api/usuarios/perfil"); Assert.Equal(HttpStatusCode.Unauthorized, semSessao.StatusCode); Assert.Contains("json", semSessao.Content.Headers.ContentType!.MediaType);
-        foreach (var cargo in Enum.GetValues<TipoUsuario>())
+        await using var b=await HostMobile.Criar();using var http=b.Cliente();
+        Assert.Equal(HttpStatusCode.OK,(await http.GetAsync("/api/cardapio/produtos")).StatusCode);
+        var semSessao=await http.GetAsync("/api/usuarios/perfil");Assert.Equal(HttpStatusCode.Unauthorized,semSessao.StatusCode);Assert.Contains("json",semSessao.Content.Headers.ContentType!.MediaType);
+        foreach(var cargo in Enum.GetValues<TipoUsuario>())
         {
-            http.DefaultRequestHeaders.Authorization = new("Bearer", b.Token(cargo));
-            var esperado = cargo is TipoUsuario.Cliente or TipoUsuario.Cozinha ? HttpStatusCode.Forbidden : HttpStatusCode.OK;
-            Assert.Equal(esperado, (await http.GetAsync("/api/salao/mesas")).StatusCode);
+            http.DefaultRequestHeaders.Authorization=new("Bearer",b.Token(cargo));
+            var esperado=cargo is TipoUsuario.Cliente or TipoUsuario.Cozinha?HttpStatusCode.Forbidden:HttpStatusCode.OK;
+            Assert.Equal(esperado,(await http.GetAsync("/api/salao/mesas")).StatusCode);
         }
-        http.DefaultRequestHeaders.Authorization = new("Bearer", b.Token(TipoUsuario.Cliente));
-        Assert.Equal(HttpStatusCode.Forbidden, (await http.GetAsync("/api/admin/produtos")).StatusCode);
-        var web = await http.GetAsync("/Pedido/MeusPedidos"); Assert.Equal(HttpStatusCode.Redirect, web.StatusCode); Assert.Contains("/Conta/Login", web.Headers.Location!.OriginalString);
-        http.DefaultRequestHeaders.Authorization = new("Bearer", "token-invalido");
-        Assert.Equal(HttpStatusCode.Unauthorized, (await http.GetAsync("/api/usuarios/perfil")).StatusCode);
+        http.DefaultRequestHeaders.Authorization=new("Bearer",b.Token(TipoUsuario.Cliente));
+        Assert.Equal(HttpStatusCode.Forbidden,(await http.GetAsync("/api/admin/produtos")).StatusCode);
+        var web=await http.GetAsync("/Pedido/MeusPedidos");Assert.Equal(HttpStatusCode.Redirect,web.StatusCode);Assert.Contains("/Conta/Login",web.Headers.Location!.OriginalString);
+        http.DefaultRequestHeaders.Authorization=new("Bearer","token-invalido");
+        Assert.Equal(HttpStatusCode.Unauthorized,(await http.GetAsync("/api/usuarios/perfil")).StatusCode);
     }
 
-    [Fact]
-    public async Task VisitantePrecisaCsrfMasBearerValidoGravaSemCookies()
+    [Fact] public async Task VisitantePrecisaCsrfMasBearerValidoGravaSemCookies()
     {
-        await using var b = await HostMobile.Criar(); using var visitante = b.Cliente();
-        var sessao = await visitante.GetFromJsonAsync<JsonElement>("/api/reservas/sessao");
-        visitante.DefaultRequestHeaders.Add("X-Reserva-Chave", sessao.GetProperty("chaveVisitante").GetString());
-        var dto = b.Reserva();
-        Assert.Equal(HttpStatusCode.BadRequest, (await visitante.PostAsJsonAsync("/api/reservas", dto)).StatusCode);
-        visitante.DefaultRequestHeaders.Add("X-CSRF-TOKEN", sessao.GetProperty("csrfToken").GetString());
-        var criada = await visitante.PostAsJsonAsync("/api/reservas", dto); Assert.Equal(HttpStatusCode.OK, criada.StatusCode);
-        var reserva = await criada.Content.ReadFromJsonAsync<JsonElement>();
-        var login = await visitante.PostAsJsonAsync("/api/usuarios/login", new { email = "cliente@mobile.test", senha = HostMobile.Senha });
-        Assert.Equal(HttpStatusCode.OK, login.StatusCode); var token = (await login.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("token").GetString();
-        using var app = b.Cliente(cookies: false); app.DefaultRequestHeaders.Authorization = new("Bearer", token);
-        var historico = await app.GetFromJsonAsync<JsonElement>("/api/reservas/minhas"); Assert.Single(historico.EnumerateArray());
-        Assert.Equal(HttpStatusCode.OK, (await app.PostAsJsonAsync("/api/reservas", b.Reserva("15:00"))).StatusCode);
-        Assert.Equal(HttpStatusCode.OK, (await app.PostAsJsonAsync("/api/reservas/cancelar", new { codigo = reserva.GetProperty("codigo").GetGuid(), versao = reserva.GetProperty("versao").GetGuid() })).StatusCode);
-        app.DefaultRequestHeaders.Authorization = new("Bearer", b.Token(TipoUsuario.Cliente, outroCliente: true));
-        Assert.Equal(HttpStatusCode.NotFound, (await app.GetAsync("/api/reservas/" + reserva.GetProperty("codigo").GetGuid())).StatusCode);
+        await using var b=await HostMobile.Criar();using var visitante=b.Cliente();
+        var sessao=await visitante.GetFromJsonAsync<JsonElement>("/api/reservas/sessao");
+        visitante.DefaultRequestHeaders.Add("X-Reserva-Chave",sessao.GetProperty("chaveVisitante").GetString());
+        var dto=b.Reserva();
+        Assert.Equal(HttpStatusCode.BadRequest,(await visitante.PostAsJsonAsync("/api/reservas",dto)).StatusCode);
+        visitante.DefaultRequestHeaders.Add("X-CSRF-TOKEN",sessao.GetProperty("csrfToken").GetString());
+        var criada=await visitante.PostAsJsonAsync("/api/reservas",dto);Assert.Equal(HttpStatusCode.OK,criada.StatusCode);
+        var reserva=await criada.Content.ReadFromJsonAsync<JsonElement>();
+        var login=await visitante.PostAsJsonAsync("/api/usuarios/login",new{email="cliente@mobile.test",senha=HostMobile.Senha});
+        Assert.Equal(HttpStatusCode.OK,login.StatusCode);var token=(await login.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("token").GetString();
+        using var app=b.Cliente(cookies:false);app.DefaultRequestHeaders.Authorization=new("Bearer",token);
+        var historico=await app.GetFromJsonAsync<JsonElement>("/api/reservas/minhas");Assert.Single(historico.EnumerateArray());
+        Assert.Equal(HttpStatusCode.OK,(await app.PostAsJsonAsync("/api/reservas",b.Reserva("15:00"))).StatusCode);
+        Assert.Equal(HttpStatusCode.OK,(await app.PostAsJsonAsync("/api/reservas/cancelar",new{codigo=reserva.GetProperty("codigo").GetGuid(),versao=reserva.GetProperty("versao").GetGuid()})).StatusCode);
+        app.DefaultRequestHeaders.Authorization=new("Bearer",b.Token(TipoUsuario.Cliente,outroCliente:true));
+        Assert.Equal(HttpStatusCode.NotFound,(await app.GetAsync("/api/reservas/"+reserva.GetProperty("codigo").GetGuid())).StatusCode);
     }
 
-    [Fact]
-    public async Task CookieDaEquipeMantemCsrfEHeaderBearerFalsoNaoDispensaProtecao()
+    [Fact] public async Task CookieDaEquipeMantemCsrfEHeaderBearerFalsoNaoDispensaProtecao()
     {
-        await using var b = await HostMobile.Criar(); using var web = b.Cliente();
-        var anon = await web.GetFromJsonAsync<JsonElement>("/api/equipe/sessao"); web.DefaultRequestHeaders.Add("X-CSRF-TOKEN", anon.GetProperty("csrfToken").GetString());
-        var login = await web.PostAsync("/api/equipe/login", new FormUrlEncodedContent(new Dictionary<string, string> { { "Email", "garcom@mobile.test" }, { "Senha", HostMobile.Senha } })); Assert.Equal(HttpStatusCode.OK, login.StatusCode);
-        var mesa = (await web.GetFromJsonAsync<JsonElement>("/api/salao/mesas")).EnumerateArray().First();
-        var comando = new { mesaId = mesa.GetProperty("id").GetInt32(), versao = mesa.GetProperty("versao").GetGuid(), pessoas = 2, chaveSolicitacao = Guid.NewGuid() };
-        Assert.Equal(HttpStatusCode.BadRequest, (await web.PostAsJsonAsync("/api/salao/acomodar", comando)).StatusCode);
-        web.DefaultRequestHeaders.Authorization = new("Bearer", "falso");
-        Assert.Equal(HttpStatusCode.Unauthorized, (await web.PostAsJsonAsync("/api/salao/acomodar", comando)).StatusCode);
-        web.DefaultRequestHeaders.Authorization = null;
-        var sessao = await web.GetFromJsonAsync<JsonElement>("/api/equipe/sessao"); web.DefaultRequestHeaders.Remove("X-CSRF-TOKEN"); web.DefaultRequestHeaders.Add("X-CSRF-TOKEN", sessao.GetProperty("csrfToken").GetString());
-        Assert.Equal(HttpStatusCode.OK, (await web.PostAsJsonAsync("/api/salao/acomodar", comando)).StatusCode);
-        await using var scope = b.App.Services.CreateAsyncScope(); var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        Assert.Single(await db.AtendimentosMesa.ToListAsync()); Assert.Empty(await db.Pedidos.ToListAsync()); Assert.Empty(await db.PagamentosOnline.ToListAsync());
+        await using var b=await HostMobile.Criar();using var web=b.Cliente();
+        var anon=await web.GetFromJsonAsync<JsonElement>("/api/equipe/sessao");web.DefaultRequestHeaders.Add("X-CSRF-TOKEN",anon.GetProperty("csrfToken").GetString());
+        var login=await web.PostAsync("/api/equipe/login",new FormUrlEncodedContent(new Dictionary<string,string>{{"Email","garcom@mobile.test"},{"Senha",HostMobile.Senha}}));Assert.Equal(HttpStatusCode.OK,login.StatusCode);
+        var mesa=(await web.GetFromJsonAsync<JsonElement>("/api/salao/mesas")).EnumerateArray().First();
+        var comando=new{mesaId=mesa.GetProperty("id").GetInt32(),versao=mesa.GetProperty("versao").GetGuid(),pessoas=2,chaveSolicitacao=Guid.NewGuid()};
+        Assert.Equal(HttpStatusCode.BadRequest,(await web.PostAsJsonAsync("/api/salao/acomodar",comando)).StatusCode);
+        web.DefaultRequestHeaders.Authorization=new("Bearer","falso");
+        Assert.Equal(HttpStatusCode.Unauthorized,(await web.PostAsJsonAsync("/api/salao/acomodar",comando)).StatusCode);
+        web.DefaultRequestHeaders.Authorization=null;
+        var sessao=await web.GetFromJsonAsync<JsonElement>("/api/equipe/sessao");web.DefaultRequestHeaders.Remove("X-CSRF-TOKEN");web.DefaultRequestHeaders.Add("X-CSRF-TOKEN",sessao.GetProperty("csrfToken").GetString());
+        Assert.Equal(HttpStatusCode.OK,(await web.PostAsJsonAsync("/api/salao/acomodar",comando)).StatusCode);
+        await using var scope=b.App.Services.CreateAsyncScope();var db=scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        Assert.Single(await db.AtendimentosMesa.ToListAsync());Assert.Empty(await db.Pedidos.ToListAsync());Assert.Empty(await db.PagamentosOnline.ToListAsync());
     }
-    [Fact] public async Task LoginJsonNaoContornaCotaConsumidaPeloFormulario()
+[Fact] public async Task LoginJsonNaoContornaCotaConsumidaPeloFormulario()
 {
     await using var b = await HostMobile.Criar(); using var web = b.Cliente();
     var sessao = await web.GetFromJsonAsync<JsonElement>("/api/equipe/sessao"); web.DefaultRequestHeaders.Add("X-CSRF-TOKEN", sessao.GetProperty("csrfToken").GetString());
@@ -196,7 +194,12 @@ internal sealed class HostMobile : IAsyncDisposable
         var conexao = $"Data Source=mobile-{Guid.NewGuid():N};Mode=Memory;Cache=Shared;Default Timeout=10"; var keeper = new SqliteConnection(conexao); await keeper.OpenAsync();
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions { EnvironmentName = "Testing" }); builder.Configuration.Sources.Clear(); builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?> { ["Jwt:ChaveSecreta"] = "CHAVE-EXCLUSIVA-DE-TESTE-SEM-VALOR-REAL-MOBILE-20261117" }); builder.Logging.ClearProviders(); builder.WebHost.UseUrls("http://127.0.0.1:0");
         builder.Services.AddDbContext<AppDbContext>(o => o.UseSqlite(conexao)); builder.Services.AddSingleton<TimeProvider>(new RelogioMobile()); builder.Services.AddDataProtection().UseEphemeralDataProtectionProvider();
-        builder.Services.AddAutenticacaoKiora(builder.Configuration); builder.Services.AddLimitesKiora(); builder.Services.AddDocumentacaoApiKiora(); builder.Services.AddRespostasApiKiora(); builder.Services.AddControllersWithViews().AddApplicationPart(typeof(UsuarioApiController).Assembly);
+        builder.Services.AddAutenticacaoKiora(builder.Configuration);
+        builder.Services.AddLimitesKiora();
+        builder.Services.AddDocumentacaoApiKiora();
+        builder.Services.AddControllersWithViews().AddApplicationPart(typeof(UsuarioApiController).Assembly);
+        // Aplica o padrão JSON do Kiora após registrar os serviços MVC. Mantém a mesma ordem do Program.cs.
+        builder.Services.AddRespostasApiKiora();
         builder.Services.AddAntiforgery(o => o.HeaderName = "X-CSRF-TOKEN"); builder.Services.AddScoped<ValidarSessaoUsuario>(); builder.Services.AddScoped<IUsuarioService, UsuarioService>(); builder.Services.AddScoped<IJwtService, JwtService>(); builder.Services.AddSingleton(new LimitadorLogin()); builder.Services.AddScoped<LimitarTentativasLogin>();
         builder.Services.AddOptions<ReservaOptions>(); builder.Services.AddScoped<HorariosReserva>(); builder.Services.AddScoped<ReservaService>(); builder.Services.AddScoped<IdentidadeReserva>(); builder.Services.AddScoped<PortariaService>(); builder.Services.AddScoped<AcessoSalaoService>(); builder.Services.AddScoped<ComandoSalaoService>(); builder.Services.AddScoped<ComandaService>(); builder.Services.AddScoped<ConsultaSalaoService>(); builder.Services.AddScoped<AvisosSalaoService>(); builder.Services.AddScoped<CozinhaService>(); builder.Services.AddScoped<NotificacaoService>(); builder.Services.AddScoped<MaisPedidosService>();
         builder.Services.AddScoped<IProdutoService, ProdutoService>(); builder.Services.AddScoped<ICategoriaService, CategoriaService>(); builder.Services.AddSingleton<IImagemProdutoService, ImagensProibidas>();
@@ -204,6 +207,9 @@ internal sealed class HostMobile : IAsyncDisposable
         builder.Services.AddSingleton(_ => new LimitadorRecuperacaoSenha());
         builder.Services.AddScoped<LimitarRecuperacaoSenha>();
         builder.Services.AddSingleton<IEmailService>(emailService ?? new EmailService(new HttpClient(new SemRede()), builder.Configuration, NullLogger<EmailService>.Instance));
+        // Serviços administrativos utilizados pelo dashboard.
+        builder.Services.AddScoped<IAdminService, AdminService>();
+        builder.Services.AddScoped<RelatoriosAdminService>();
         var app = builder.Build(); var host = new HostMobile(app, keeper);
         await using (var scope = app.Services.CreateAsyncScope())
         {
