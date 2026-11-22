@@ -1,0 +1,14 @@
+
+**/bin/
+**/obj/
+**/.git/
+**/.vs/
+
+# Arquivos de ambiente
+**/.env
+**/.env.*
+
+# Credenciais privadas
+**/secrets.json
+**/firebase-service-account.json
+**/*firebase-adminsdk*.json

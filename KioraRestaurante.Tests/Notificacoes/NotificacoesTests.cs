@@ -14,9 +14,28 @@ namespace KioraRestaurante.Tests;
 
 public class NotificacoesTests
 {
-    private static NotificacaoService Service(Banco b) => new(b.Db, new EphemeralDataProtectionProvider(), b.Relogio);
-    private static NotificacaoDispatcher Dispatcher(Banco b) => new(b.Db, b.Cupons, b.Relogio);
+    private static FilaPushService Fila(Banco b)
+    {
+        var options =
+            Microsoft.Extensions.Options.Options.Create(
+                new KioraRestaurante.Options.FirebaseOptions
+                {
+                    Ativado = false
+                });
 
+        return new FilaPushService(
+            b.Db, b.Relogio, options);
+    }
+    private static NotificacaoService Service(Banco b)
+    {
+        return new NotificacaoService(
+            b.Db, new EphemeralDataProtectionProvider(), b.Relogio, Fila(b));
+    }
+    private static NotificacaoDispatcher Dispatcher(Banco b)
+    {
+        return new NotificacaoDispatcher(
+            b.Db, b.Cupons, b.Relogio, Fila(b));
+    }
     [Fact] public async Task NovoPedidoAvisaSomenteDonoEAdministradoresSemDuplicarNaRetentativa()
     {
         using var b = new Banco(); var admin = await CuponsTests.Administrador(b);

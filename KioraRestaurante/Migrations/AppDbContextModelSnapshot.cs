@@ -768,6 +768,13 @@ namespace KioraRestaurante.Migrations
                     b.Property<int?>("UsuarioId")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("Versao")
+                        .IsConcurrencyToken()
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid?>("VersaoSessaoUsuario")
+                        .HasColumnType("char(36)");
+
                     b.Property<string>("VisitanteHash")
                         .HasMaxLength(64)
                         .HasColumnType("varchar(64)");
@@ -782,6 +789,87 @@ namespace KioraRestaurante.Migrations
                     b.HasIndex("VisitanteHash", "Ativo");
 
                     b.ToTable("DispositivosPush");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.Notificacoes.EnvioPush", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid?>("Concessao")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("CriadoEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<long>("DispositivoId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("ExpiraEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("FinalizadoEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("MensagemFirebaseId")
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<Guid>("NotificacaoId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime?>("ProcessandoAteUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("ProximaTentativaEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("Situacao")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Tentativas")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UltimaTentativaEmUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("UltimoCodigoErro")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<int?>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("Versao")
+                        .IsConcurrencyToken()
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("VersaoDispositivo")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid?>("VersaoSessaoUsuario")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("VisitanteHash")
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DispositivoId");
+
+                    b.HasIndex("ProcessandoAteUtc");
+
+                    b.HasIndex("NotificacaoId", "DispositivoId")
+                        .IsUnique();
+
+                    b.HasIndex("Situacao", "ExpiraEmUtc");
+
+                    b.HasIndex("Situacao", "ProximaTentativaEmUtc");
+
+                    b.HasIndex("UsuarioId", "CriadoEmUtc");
+
+                    b.ToTable("EnviosPush", (string)null);
                 });
 
             modelBuilder.Entity("KioraRestaurante.Models.Notificacoes.EventoNotificacao", b =>
@@ -1774,6 +1862,32 @@ namespace KioraRestaurante.Migrations
                         .WithMany()
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("KioraRestaurante.Models.Notificacoes.EnvioPush", b =>
+                {
+                    b.HasOne("KioraRestaurante.Models.Notificacoes.DispositivoPush", "Dispositivo")
+                        .WithMany()
+                        .HasForeignKey("DispositivoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("KioraRestaurante.Models.Notificacoes.Notificacao", "Notificacao")
+                        .WithMany()
+                        .HasForeignKey("NotificacaoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("KioraRestaurante.Models.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Dispositivo");
+
+                    b.Navigation("Notificacao");
 
                     b.Navigation("Usuario");
                 });

@@ -1,4 +1,3 @@
-
 using KioraRestaurante.Data;
 using KioraRestaurante.Filters;
 using Microsoft.EntityFrameworkCore;
@@ -56,12 +55,14 @@ builder.Services.AddHttpClient<IEmailService, EmailService>(
     http => http.Timeout = TimeSpan.FromSeconds(15));
 
 builder.Services.AddDataProtection();
+builder.Services.AddFirebaseKiora(builder.Configuration);
 builder.Services.AddScoped<CarrinhoCookie>();
 builder.Services.AddHostedService<LimpezaCarrinhosService>();
 
 builder.Services.AddScoped<IPedidoService, PedidoService>();
 builder.Services.AddScoped<IProdutoService, ProdutoService>();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
+builder.Services.AddScoped<CategoriaAdminService>();
 builder.Services.AddScoped<IImagemProdutoService, ImagemProdutoService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
 

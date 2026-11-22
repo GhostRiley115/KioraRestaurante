@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KioraRestaurante.Services.Notificacoes;
 
-public class NotificacaoDispatcher(AppDbContext db, CupomService cupons, TimeProvider relogio, ILogger<NotificacaoDispatcher>? logger = null)
+public class NotificacaoDispatcher(AppDbContext db, CupomService cupons, TimeProvider relogio, FilaPushService filaPush, ILogger<NotificacaoDispatcher>? logger = null)
 {
     public async Task<int> Processar(CancellationToken ct = default)
     {
@@ -50,9 +50,23 @@ public class NotificacaoDispatcher(AppDbContext db, CupomService cupons, TimePro
                 var aviso = new Notificacao { Id = id, Tipo = evento.Tipo, PedidoId = evento.PedidoId, ReservaId = evento.ReservaId,
                     Publico = admin ? PublicoNotificacao.Administrador : PublicoNotificacao.Cliente,
                     Titulo = titulo, Mensagem = mensagem!, CriadaEmUtc = evento.CriadoEmUtc };
+
                 db.Notificacoes.Add(aviso);
-                db.NotificacoesUsuarios.AddRange(usuarios.Select(u => new NotificacaoUsuario { Notificacao = aviso, UsuarioId = u }));
+
+                db.NotificacoesUsuarios.AddRange(
+                    usuarios.Select(u =>
+                        new NotificacaoUsuario
+                        {
+                            Notificacao = aviso,
+                            UsuarioId = u
+                        }));
+
+                // Prepara os envios push na mesma transação da notificação e dos destinatários.
+
+                await filaPush.Preparar(aviso, ct);
+
                 await db.SaveChangesAsync(ct);
+
             }
             await tx.CommitAsync(ct);
         }
@@ -65,7 +79,6 @@ public class NotificacaoDispatcher(AppDbContext db, CupomService cupons, TimePro
             throw;
         }
     }
-
     private static (string? Titulo, string? Mensagem) Texto(EventoNotificacao e)
     {
         var pedido = $"Pedido #{e.PedidoId}";

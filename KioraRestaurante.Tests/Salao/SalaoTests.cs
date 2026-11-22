@@ -238,17 +238,73 @@ public class SalaoConcorrenciaTests
         }
         finally{SqliteConnection.ClearAllPools();File.Delete(arquivo);}
     }
-    [Fact] public async Task AvisoProntoTemDonoEFuncionarioTransferidoNaoLeAvisosDaMesaAnterior()
+
+
+    [Fact]
+    public async Task AvisoProntoTemDonoEFuncionarioTransferidoNaoLeAvisosDaMesaAnterior()
     {
-        using var b=new BancoSalao();var id=await b.Abrir();await b.Adicionar(id,1);await b.PrepararItem(id);
-        var avisos=new KioraRestaurante.Services.Notificacoes.NotificacaoService(b.Db,new EphemeralDataProtectionProvider(),b.Relogio);
-        var aviso=Assert.Single((await avisos.Listar(b.Garcom.Id,1)).Itens);
-        Assert.Equal(id,aviso.AtendimentoId);Assert.Contains("Mesa",aviso.Titulo);
-        Assert.Empty((await avisos.Listar(b.Cliente.Id,1)).Itens);Assert.Empty((await avisos.Listar(b.Portaria.Id,1)).Itens);Assert.Empty((await avisos.Listar(b.Cozinheiro.Id,1)).Itens);
-        var a=await b.Detalhe(id);await b.Comandas.Transferir(b.Gerente.Id,new(){AtendimentoId=id,Versao=a.Versao,ChaveSolicitacao=Guid.NewGuid(),GarcomId=b.OutroGarcom.Id});
-        await Assert.ThrowsAsync<KeyNotFoundException>(()=>avisos.Detalhe(b.Garcom.Id,aviso.Id));
-        Assert.Single((await avisos.Listar(b.OutroGarcom.Id,1)).Itens);
+        using var b = new BancoSalao();
+
+        var id = await b.Abrir();
+
+        await b.Adicionar(id, 1);
+
+        await b.PrepararItem(id);
+
+        var filaPush =
+            new KioraRestaurante.Services.Notificacoes.FilaPushService(
+                b.Db,
+                b.Relogio,
+                Microsoft.Extensions.Options.Options.Create(
+                    new KioraRestaurante.Options.FirebaseOptions
+                    {
+                        Ativado = false
+                    }));
+
+        var avisos =
+            new KioraRestaurante.Services.Notificacoes.NotificacaoService(
+                b.Db,
+                new EphemeralDataProtectionProvider(),
+                b.Relogio,
+                filaPush);
+
+        var aviso = Assert.Single(
+            (await avisos.Listar(b.Garcom.Id, 1)).Itens);
+
+        Assert.Equal(id, aviso.AtendimentoId);
+
+        Assert.Contains("Mesa", aviso.Titulo);
+
+        Assert.Empty(
+            (await avisos.Listar(b.Cliente.Id, 1)).Itens);
+
+        Assert.Empty(
+            (await avisos.Listar(b.Portaria.Id, 1)).Itens);
+
+        Assert.Empty(
+            (await avisos.Listar(b.Cozinheiro.Id, 1)).Itens);
+
+        var a = await b.Detalhe(id);
+
+        await b.Comandas.Transferir(
+            b.Gerente.Id,
+            new()
+            {
+                AtendimentoId = id,
+                Versao = a.Versao,
+                ChaveSolicitacao = Guid.NewGuid(),
+                GarcomId = b.OutroGarcom.Id
+            });
+
+        await Assert.ThrowsAsync<KeyNotFoundException>(
+            () => avisos.Detalhe(
+                b.Garcom.Id,
+                aviso.Id));
+
+        Assert.Single(
+            (await avisos.Listar(b.OutroGarcom.Id, 1)).Itens);
     }
+
     [Fact] public async Task CancelamentoDeliveryDurantePreparoImpedeAcaoDaTelaAntiga()
     {
         using var b=new BancoSalao();var p=b.Delivery(true);b.Db.Add(p);await b.Db.SaveChangesAsync();

@@ -24,16 +24,59 @@ public class SalaoPermissoesApiTests
         Assert.Contains(metodo.GetCustomAttributes<ServiceFilterAttribute>(),a=>a.ServiceType==typeof(KioraRestaurante.Filters.LimitarTentativasLogin));
         Assert.NotNull(metodo.GetParameters()[0].GetCustomAttribute<FromFormAttribute>());
     }
-    [Fact] public async Task DetalhesDeAvisoNaoPermiteIdDeOutraPessoaOuFuncao()
+
+    [Fact]
+    public async Task DetalhesDeAvisoNaoPermiteIdDeOutraPessoaOuFuncao()
     {
-        using var b=new BancoSalao();var id=await b.Abrir();await b.Adicionar(id,1);await b.PrepararItem(id);
-        var avisos=new KioraRestaurante.Services.Notificacoes.NotificacaoService(b.Db,new Microsoft.AspNetCore.DataProtection.EphemeralDataProtectionProvider(),b.Relogio);
-        var aviso=Assert.Single((await avisos.Listar(b.Garcom.Id,1)).Itens);
-        Assert.True((await avisos.Detalhe(b.Garcom.Id,aviso.Id)).NaoLida);
-        await Assert.ThrowsAsync<KeyNotFoundException>(()=>avisos.Detalhe(b.OutroGarcom.Id,aviso.Id));
-        await Assert.ThrowsAsync<KeyNotFoundException>(()=>avisos.Detalhe(b.Cliente.Id,aviso.Id));
-        Assert.Equal(1,await avisos.NaoLidas(b.Garcom.Id));
+        using var b = new BancoSalao();
+
+        var id = await b.Abrir();
+
+        await b.Adicionar(id, 1);
+
+        await b.PrepararItem(id);
+
+        var filaPush =
+            new KioraRestaurante.Services.Notificacoes.FilaPushService(
+                b.Db,
+                b.Relogio,
+                Microsoft.Extensions.Options.Options.Create(
+                    new KioraRestaurante.Options.FirebaseOptions
+                    {
+                        Ativado = false
+                    }));
+
+        var avisos =
+            new KioraRestaurante.Services.Notificacoes.NotificacaoService(
+                b.Db,
+                new Microsoft.AspNetCore.DataProtection
+                    .EphemeralDataProtectionProvider(),
+                b.Relogio,
+                filaPush);
+
+        var aviso = Assert.Single(
+            (await avisos.Listar(b.Garcom.Id, 1)).Itens);
+
+        Assert.True(
+            (await avisos.Detalhe(
+                b.Garcom.Id,
+                aviso.Id)).NaoLida);
+
+        await Assert.ThrowsAsync<KeyNotFoundException>(
+            () => avisos.Detalhe(
+                b.OutroGarcom.Id,
+                aviso.Id));
+
+        await Assert.ThrowsAsync<KeyNotFoundException>(
+            () => avisos.Detalhe(
+                b.Cliente.Id,
+                aviso.Id));
+
+        Assert.Equal(
+            1,
+            await avisos.NaoLidas(b.Garcom.Id));
     }
+
     [Fact] public async Task AcessoRevogadoDepoisDaConsultaNaoConfirmaComandoPendente()
     {
         using var b=new BancoSalao();await b.Acesso.Exigir(b.Garcom.Id,default,KioraRestaurante.Models.Enums.TipoUsuario.Garcom);
