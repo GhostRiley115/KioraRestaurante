@@ -11,7 +11,7 @@ using KioraRestaurante.Helpers;
 
 namespace KioraRestaurante.Services.Notificacoes;
 
-public class NotificacaoService(AppDbContext db, IDataProtectionProvider protecao, TimeProvider relogio)
+public class NotificacaoService(AppDbContext db, IDataProtectionProvider protecao, TimeProvider relogio, FilaPushService filaPush)
 {
     private readonly IDataProtector _protetor = protecao.CreateProtector("Kiora.Notificacoes.Previa.v1");
     private DateTime Agora => relogio.GetUtcNow().UtcDateTime;
@@ -135,9 +135,24 @@ public class NotificacaoService(AppDbContext db, IDataProtectionProvider proteca
         if (ids.Count == 0) throw new ValidationException("Não há contas ativas no público selecionado.");
         var n = new Notificacao { Id = previa.Chave, AutorId = adminId, Titulo = previa.Titulo, Mensagem = previa.Mensagem,
             Publico = previa.Publico, CupomId = previa.CupomId, Tipo = previa.CupomId.HasValue ? TipoNotificacao.CupomPromocional : TipoNotificacao.Comunicado, CriadaEmUtc = Agora };
+
         db.Notificacoes.Add(n);
-        db.NotificacoesUsuarios.AddRange(ids.Select(id => new NotificacaoUsuario { Notificacao = n, UsuarioId = id }));
-        try { await db.SaveChangesAsync(ct); }
+        db.NotificacoesUsuarios.AddRange(
+            ids.Select(id =>
+                new NotificacaoUsuario
+                {
+                    Notificacao = n,
+                    UsuarioId = id
+                }));
+
+        try
+        {
+            // Inclui os dispositivos autorizados na fila antes de confirmar a publicação.
+
+            await filaPush.Preparar(n, ct);
+            await db.SaveChangesAsync(ct);
+        }
+
         catch (DbUpdateException)
         {
             db.ChangeTracker.Clear();
@@ -146,7 +161,6 @@ public class NotificacaoService(AppDbContext db, IDataProtectionProvider proteca
         }
         return n.Id;
     }
-
     public async Task<List<ComunicadoAdminDTO>> Comunicados(int adminId, CancellationToken ct = default)
     {
         await ExigirAdministrador(adminId, ct);

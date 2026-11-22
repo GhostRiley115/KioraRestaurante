@@ -34,7 +34,6 @@ using KioraRestaurante.Services.Imagens;
 using KioraRestaurante.Services.Produtos;
 using KioraRestaurante.Services.Usuarios;
 using KioraRestaurante.Services.Admin;
-using KioraRestaurante.Options;
 using KioraRestaurante.Services.Pedidos;
 using KioraRestaurante.Services.Enderecos;
 using KioraRestaurante.Services.Entrega;
@@ -207,7 +206,8 @@ internal sealed class HostMobile : IAsyncDisposable
         // Aplica o padrão JSON do Kiora após registrar os serviços MVC. Mantém a mesma ordem do Program.cs.
         builder.Services.AddRespostasApiKiora();
         builder.Services.AddAntiforgery(o => o.HeaderName = "X-CSRF-TOKEN"); builder.Services.AddScoped<ValidarSessaoUsuario>(); builder.Services.AddScoped<IUsuarioService, UsuarioService>(); builder.Services.AddScoped<IJwtService, JwtService>(); builder.Services.AddSingleton(new LimitadorLogin()); builder.Services.AddScoped<LimitarTentativasLogin>();
-        builder.Services.AddOptions<ReservaOptions>(); builder.Services.AddScoped<HorariosReserva>(); builder.Services.AddScoped<ReservaService>(); builder.Services.AddScoped<IdentidadeReserva>(); builder.Services.AddScoped<PortariaService>(); builder.Services.AddScoped<AcessoSalaoService>(); builder.Services.AddScoped<ComandoSalaoService>(); builder.Services.AddScoped<ComandaService>(); builder.Services.AddScoped<ConsultaSalaoService>(); builder.Services.AddScoped<AvisosSalaoService>(); builder.Services.AddScoped<CozinhaService>(); builder.Services.AddScoped<NotificacaoService>(); builder.Services.AddScoped<MaisPedidosService>();
+        builder.Services.AddOptions<ReservaOptions>(); builder.Services.AddScoped<HorariosReserva>(); builder.Services.AddScoped<ReservaService>(); builder.Services.AddScoped<IdentidadeReserva>(); builder.Services.AddScoped<PortariaService>(); builder.Services.AddScoped<AcessoSalaoService>(); builder.Services.AddScoped<ComandoSalaoService>(); builder.Services.AddScoped<ComandaService>(); 
+        builder.Services.AddScoped<ConsultaSalaoService>(); builder.Services.AddScoped<AvisosSalaoService>(); builder.Services.AddScoped<CozinhaService>(); builder.Services.AddOptions<FirebaseOptions>(); builder.Services.AddScoped<FilaPushService>(); builder.Services.AddScoped<NotificacaoService>(); builder.Services.AddScoped<MaisPedidosService>();
         builder.Services.AddScoped<IProdutoService, ProdutoService>(); builder.Services.AddScoped<ICategoriaService, CategoriaService>(); builder.Services.AddScoped<CategoriaAdminService>(); builder.Services.AddScoped<CupomService>(); builder.Services.AddSingleton<IImagemProdutoService, ImagensProibidas>();
         // Reutiliza os limites reais de recuperacao de senha nos testes HTTP.
         builder.Services.AddSingleton(_ => new LimitadorRecuperacaoSenha());

@@ -91,7 +91,23 @@ public class CancelamentoAdminTests
         using var b=new GerenciarPedidoTests.Banco(false);var admin=await Conta(b);var cozinha=await Conta(b,TipoUsuario.Cozinha);var gerente=await Conta(b,TipoUsuario.Gerente);var cliente=await Conta(b,TipoUsuario.Cliente);var portaria=await Conta(b,TipoUsuario.Portaria);var inativo=await Conta(b,TipoUsuario.Cozinha,false);
         await b.Service.CancelarPeloAdministrador(admin,await Dados(b));var aviso=await b.Db.Notificacoes.SingleAsync();Assert.Equal(TipoNotificacao.CorrecaoCozinha,aviso.Tipo);Assert.Contains("Ingrediente indisponível",aviso.Mensagem);
         var ids=await b.Db.NotificacoesUsuarios.Select(n=>n.UsuarioId).OrderBy(i=>i).ToListAsync();Assert.Equal(new[]{admin,cozinha,gerente}.OrderBy(i=>i),ids);
-        var service=new NotificacaoService(b.Db,new EphemeralDataProtectionProvider(),TimeProvider.System);var destino=await service.Abrir(cozinha,aviso.Id);Assert.Equal("Restaurante",destino!.Controller);Assert.Equal("Cozinha",destino.Action);
+        var filaPush = new FilaPushService(b.Db,TimeProvider.System,
+            Microsoft.Extensions.Options.Options.Create(
+                new KioraRestaurante.Options.FirebaseOptions
+                {
+                    Ativado = false
+                }));
+        var service = new NotificacaoService(b.Db, new EphemeralDataProtectionProvider(), TimeProvider.System, filaPush);
+        var destino = await service.Abrir(cozinha,aviso.Id);
+
+        Assert.Equal(
+            "Restaurante",
+            destino!.Controller);
+
+        Assert.Equal(
+            "Cozinha",
+            destino.Action);
+
         await Assert.ThrowsAsync<KeyNotFoundException>(()=>service.Detalhe(cliente,aviso.Id));Assert.Empty(await service.Comunicados(admin));
     }
     [Fact] public async Task MudancaDuranteConsultaNaoCancelaPedidoQueJaSaiu()

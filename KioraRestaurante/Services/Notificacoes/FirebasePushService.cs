@@ -152,7 +152,11 @@ public sealed class FirebasePushService
 
         var mensagem = new Message
         {
+            // Compatibilidade com o registro FCM legado.
+            // Migrar para FID quando o Mobile estiver preparado.
+            #pragma warning disable CS0618
             Token = tokenFcm,
+            #pragma warning restore CS0618
 
             Data = new Dictionary<string, string>
             {

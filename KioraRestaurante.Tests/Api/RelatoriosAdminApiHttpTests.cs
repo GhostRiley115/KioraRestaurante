@@ -732,9 +732,9 @@ public sealed class RelatoriosAdminApiHttpTests
             .ToList();
 
         var cupom = Assert.Single(
-            cupons.Where(c =>
-                c.GetProperty("codigo")
-                    .GetString() == "MOBILETESTE"));
+            cupons,
+            c => c.GetProperty("codigo")
+                .GetString() == "MOBILETESTE");
 
         Assert.Equal(
             1,

@@ -35,6 +35,7 @@ namespace KioraRestaurante.Data
         public DbSet<KioraRestaurante.Models.Notificacoes.Notificacao> Notificacoes { get; set; }
         public DbSet<KioraRestaurante.Models.Notificacoes.NotificacaoUsuario> NotificacoesUsuarios { get; set; }
         public DbSet<KioraRestaurante.Models.Notificacoes.DispositivoPush> DispositivosPush { get; set; }
+        public DbSet<KioraRestaurante.Models.Notificacoes.EnvioPush> EnviosPush { get; set; }
         public DbSet<KioraRestaurante.Models.Salao.ConviteFuncionario> ConvitesFuncionarios { get; set; }
         public DbSet<KioraRestaurante.Models.Salao.AtendimentoMesa> AtendimentosMesa { get; set; }
         public DbSet<KioraRestaurante.Models.Salao.ItemComanda> ItensComanda { get; set; }
@@ -130,6 +131,73 @@ namespace KioraRestaurante.Data
                 .WithMany()
                 .HasForeignKey(d => d.UsuarioId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // FILA PERSISTENTE DE NOTIFICAÇÕES PUSH
+            var envioPush = modelBuilder
+                .Entity<KioraRestaurante.Models.Notificacoes.EnvioPush>();
+
+            envioPush.ToTable("EnviosPush");
+
+            envioPush.HasKey(e => e.Id);
+
+            envioPush.Property(e => e.Id)
+                .ValueGeneratedNever();
+
+            // Impede a criação de dois registros de envio para a mesma notificação e o mesmo dispositivo.
+            envioPush.HasIndex(e => new
+            {
+                e.NotificacaoId,
+                e.DispositivoId
+            })
+            .IsUnique();
+
+            // Facilita a localização dos envios pendentes que já podem ser processados.
+            envioPush.HasIndex(e => new
+            {
+                e.Situacao,
+                e.ProximaTentativaEmUtc
+            });
+
+            // Facilita a identificação de notificações que ultrapassaram seu prazo de envio.
+            envioPush.HasIndex(e => new
+            {
+                e.Situacao,
+                e.ExpiraEmUtc
+            });
+
+            // Facilita a recuperação dos processamentos interrompidos.
+            envioPush.HasIndex(e => e.ProcessandoAteUtc);
+
+            // Facilita a consulta do histórico de notificações por usuário.
+            envioPush.HasIndex(e => new
+            {
+                e.UsuarioId,
+                e.CriadoEmUtc
+            });
+
+            // Relacionamento com a notificação original.
+            envioPush.HasOne(e => e.Notificacao)
+                .WithMany()
+                .HasForeignKey(e => e.NotificacaoId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Relacionamento com o dispositivo destinatário.
+            envioPush.HasOne(e => e.Dispositivo)
+                .WithMany()
+                .HasForeignKey(e => e.DispositivoId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Relacionamento opcional com o usuário.
+            // Visitantes não possuem UsuarioId.
+            envioPush.HasOne(e => e.Usuario)
+                .WithMany()
+                .HasForeignKey(e => e.UsuarioId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Controle de concorrência otimista.
+            envioPush.Property(e => e.Versao)
+                .IsConcurrencyToken();
+
 
             modelBuilder.Entity<OperacaoPedido>().HasOne(o => o.Pedido).WithMany(p => p.Operacoes)
                 .HasForeignKey(o => o.PedidoId).OnDelete(DeleteBehavior.Restrict);

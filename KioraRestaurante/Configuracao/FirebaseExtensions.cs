@@ -10,7 +10,7 @@ public static class FirebaseExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        // Carrega a seção Firebase do appsettings e permite sobrescrever os valores utilizando variáveis de ambiente.
+        // Configurações do Firebase.
 
         services.AddOptions<FirebaseOptions>()
             .Bind(
@@ -28,11 +28,23 @@ public static class FirebaseExtensions
 
             .ValidateOnStart();
 
-        // Uma única instância durante a execução da aplicação.
+        // Comunicação com o Firebase.
 
         services.AddSingleton<
             IEnvioPushService,
             FirebasePushService>();
+
+        // Inclusão das notificações na fila.
+
+        services.AddScoped<FilaPushService>();
+
+        // Processamento e segurança dos envios.
+
+        services.AddScoped<ProcessadorPushService>();
+
+        // Processamento automático em segundo plano.
+
+        services.AddHostedService<PushBackgroundService>();
 
         return services;
     }
