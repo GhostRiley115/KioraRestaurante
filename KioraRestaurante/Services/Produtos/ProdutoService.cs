@@ -451,12 +451,21 @@ namespace KioraRestaurante.Services.Produtos
 
             return produto.Id;
         }
-
-        public async Task AlterarAtivo(int administradorId, int produtoId, bool ativo)
+        public async Task AlterarAtivo(
+            int administradorId,
+            int produtoId,
+            bool ativo)
         {
             await ExigirAdministrador(administradorId);
 
             var produto = await ExigirProduto(produtoId);
+
+            // Não permite reativar um produto pertencente a uma categoria inativa.
+            if (ativo)
+            {
+                await ExigirCategoriaAtiva(
+                    produto.CategoriaId);
+            }
 
             produto.Ativo = ativo;
 
