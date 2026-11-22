@@ -55,6 +55,7 @@ builder.Services.AddHttpClient<IEmailService, EmailService>(
     http => http.Timeout = TimeSpan.FromSeconds(15));
 
 builder.Services.AddDataProtection();
+builder.Services.AddFirebaseKiora(builder.Configuration);
 builder.Services.AddScoped<CarrinhoCookie>();
 builder.Services.AddHostedService<LimpezaCarrinhosService>();
 

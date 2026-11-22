@@ -768,6 +768,13 @@ namespace KioraRestaurante.Migrations
                     b.Property<int?>("UsuarioId")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("Versao")
+                        .IsConcurrencyToken()
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid?>("VersaoSessaoUsuario")
+                        .HasColumnType("char(36)");
+
                     b.Property<string>("VisitanteHash")
                         .HasMaxLength(64)
                         .HasColumnType("varchar(64)");
