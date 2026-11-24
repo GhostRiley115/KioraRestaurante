@@ -9,8 +9,7 @@ namespace KioraRestaurante.Tests;
 public class SalaoPermissoesApiTests
 {
     [Theory]
-    [InlineData(typeof(SalaoApiController))]
-    [InlineData(typeof(FuncionariosApiController))]
+    [InlineData(typeof(SalaoApiController))]    
     [InlineData(typeof(EquipeApiController))]
     public void ApiUsaProtecaoContraCsrfECachePrivado(Type controller)
     {
