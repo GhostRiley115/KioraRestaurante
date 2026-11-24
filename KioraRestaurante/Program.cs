@@ -19,6 +19,9 @@ using KioraRestaurante.Services.Imagens;
 using KioraRestaurante.Services.Pedidos;
 using KioraRestaurante.Services.Produtos;
 using KioraRestaurante.Services.Usuarios;
+using Microsoft.AspNetCore.DataProtection;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,7 +57,39 @@ builder.Services.AddScoped<ICarrinhoService, CarrinhoService>();
 builder.Services.AddHttpClient<IEmailService, EmailService>(
     http => http.Timeout = TimeSpan.FromSeconds(15));
 
-builder.Services.AddDataProtection();
+
+// Carrega o certificado utilizado para proteger as chaves Data Protection.
+var certificadoBase64 = builder.Configuration[
+    "DataProtection:CertificateBase64"];
+
+var senhaCertificado = builder.Configuration[
+    "DataProtection:CertificatePassword"];
+
+if (string.IsNullOrWhiteSpace(certificadoBase64) ||
+    string.IsNullOrWhiteSpace(senhaCertificado))
+{
+    throw new InvalidOperationException(
+        "Certificado Data Protection não configurado.");
+}
+
+var dadosCertificado = Convert.FromBase64String(certificadoBase64);
+
+var certificadoDataProtection = X509CertificateLoader.LoadPkcs12(
+    dadosCertificado,
+    senhaCertificado,
+    X509KeyStorageFlags.EphemeralKeySet);
+
+if (!certificadoDataProtection.HasPrivateKey)
+{
+    throw new InvalidOperationException(
+        "O certificado Data Protection não possui chave privada.");
+}
+
+// Persiste as chaves no MySQL e protege seu conteúdo com o certificado.
+builder.Services.AddDataProtection()
+    .PersistKeysToDbContext<AppDbContext>()
+    .ProtectKeysWithCertificate(certificadoDataProtection);
+
 builder.Services.AddFirebaseKiora(builder.Configuration);
 builder.Services.AddScoped<CarrinhoCookie>();
 builder.Services.AddHostedService<LimpezaCarrinhosService>();

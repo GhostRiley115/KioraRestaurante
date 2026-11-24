@@ -1,13 +1,17 @@
 ﻿using KioraRestaurante.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 
 namespace KioraRestaurante.Data
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : DbContext, IDataProtectionKeyContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) 
         { 
         }
+
+        // Armazena as chaves Data Protection no banco de dados.
+        public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = null!;
 
         //Cada DbSet vai virar uma tabela no MySQL, então pra cada classe é preciso adicionar do mesmo jeito do usuario
         public DbSet<Usuario> Usuarios { get; set; }

@@ -11,6 +11,7 @@
     <PackageReference Include="CloudinaryDotNet" Version="1.29.3" />
     <PackageReference Include="FirebaseAdmin" Version="3.7.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.13" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="9.0.19" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.19">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
