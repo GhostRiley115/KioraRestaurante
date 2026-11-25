@@ -95,10 +95,34 @@ public sealed class FilaPushService(
                 .Distinct()
                 .ToArray();
 
-        if (destinatarios.Length == 0)
+
+        string? visitanteHash = null;
+
+        // Somente notificações de atualização de reservas
+        // podem ser encaminhadas a visitantes sem login.
+        if (notificacao.Tipo == TipoNotificacao.ReservaAtualizada &&
+            notificacao.Publico == PublicoNotificacao.Cliente &&
+            notificacao.ReservaId.HasValue)
+        {
+            visitanteHash = await db.Reservas
+                .AsNoTracking()
+                .Where(r =>
+                    r.Id == notificacao.ReservaId.Value &&
+                    r.UsuarioId == null &&
+                    r.VisitanteHash != null &&
+                    r.VisitanteHash != "")
+                .Select(r => r.VisitanteHash)
+                .SingleOrDefaultAsync(ct);
+        }
+
+        // Sem usuário destinatário e sem visitante identificado,
+        // não existe ninguém autorizado para o envio.
+        if (destinatarios.Length == 0 &&
+            string.IsNullOrWhiteSpace(visitanteHash))
         {
             return 0;
         }
+
 
         // LOCALIZAR DISPOSITIVOS AUTORIZADOS
 
@@ -164,6 +188,31 @@ public sealed class FilaPushService(
                     d.Versao
                 })
                 .ToListAsync(ct);
+
+
+        // Inclui dispositivos pertencentes ao visitante da reserva.
+        if (!string.IsNullOrWhiteSpace(visitanteHash))
+        {
+            var dispositivosVisitante = await db.DispositivosPush
+                .AsNoTracking()
+                .Where(d =>
+                    d.Ativo &&
+                    d.Versao != Guid.Empty &&
+                    d.UsuarioId == null &&
+                    d.VersaoSessaoUsuario == null &&
+                    d.VisitanteHash == visitanteHash)
+                .Select(d => new
+                {
+                    d.Id,
+                    d.UsuarioId,
+                    d.VisitanteHash,
+                    d.VersaoSessaoUsuario,
+                    d.Versao
+                })
+                .ToListAsync(ct);
+
+            dispositivos.AddRange(dispositivosVisitante);
+        }
 
         if (dispositivos.Count == 0)
         {

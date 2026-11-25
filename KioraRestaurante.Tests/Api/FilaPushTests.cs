@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
+using KioraRestaurante.Models;
 
 namespace KioraRestaurante.Tests;
 
@@ -937,4 +938,222 @@ public sealed class FilaPushTests
 
         Assert.True(atual.Ativo);
     }
+
+
+    [Fact]
+    public async Task VisitanteRecebePushDaPropriaReserva()
+    {
+        await using var host = await HostMobile.Criar();
+        var relogio = new RelogioTeste();
+
+        await using var scope =
+            host.App.Services.CreateAsyncScope();
+
+        var db = scope.ServiceProvider
+            .GetRequiredService<AppDbContext>();
+
+        var protecao = scope.ServiceProvider
+            .GetRequiredService<IDataProtectionProvider>();
+
+        var protetor = protecao.CreateProtector(
+            "Kiora.Push.FcmToken.v1");
+
+        var visitanteHash = Convert.ToHexString(
+            SHA256.HashData(
+                Encoding.UTF8.GetBytes("visitante-teste")));
+
+        // Reserva feita por visitante sem conta.
+        var reserva = new Reserva
+        {
+            UsuarioId = null,
+            VisitanteHash = visitanteHash,
+            Nome = "Visitante Teste",
+            Telefone = "11999999999",
+            Pessoas = 2,
+            Tipo = TipoReserva.Agendada,
+            Situacao = SituacaoReserva.Confirmada,
+            ChaveSolicitacao = Guid.NewGuid(),
+            CriadaEmUtc = relogio.Atual.UtcDateTime,
+            ExpiraEmUtc = relogio.Atual.UtcDateTime.AddHours(5)
+        };
+
+        db.Reservas.Add(reserva);
+        await db.SaveChangesAsync();
+
+        // Dispositivo vinculado ao mesmo visitante.
+        var dispositivo = new DispositivoPush
+        {
+            TokenHash = Convert.ToHexString(
+                SHA256.HashData(Encoding.UTF8.GetBytes(Token))),
+            TokenFcm = protetor.Protect(Token),
+            UsuarioId = null,
+            VisitanteHash = visitanteHash,
+            VersaoSessaoUsuario = null,
+            Ativo = true,
+            Versao = Guid.NewGuid()
+        };
+
+        db.DispositivosPush.Add(dispositivo);
+        await db.SaveChangesAsync();
+
+        var notificacao = new Notificacao
+        {
+            Id = Guid.NewGuid(),
+            Tipo = TipoNotificacao.ReservaAtualizada,
+            Publico = PublicoNotificacao.Cliente,
+            ReservaId = reserva.Id,
+            Titulo = "Reserva atualizada",
+            Mensagem = "Confira sua reserva.",
+            CriadaEmUtc = relogio.Atual.UtcDateTime
+        };
+
+        db.Notificacoes.Add(notificacao);
+
+        var fila = CriarFila(db, relogio);
+
+        Assert.Equal(1, await fila.Preparar(notificacao));
+        Assert.Equal(0, await fila.Preparar(notificacao));
+
+        await db.SaveChangesAsync();
+
+        var envio = await db.EnviosPush
+            .AsNoTracking()
+            .SingleAsync();
+
+        Assert.Null(envio.UsuarioId);
+        Assert.Equal(visitanteHash, envio.VisitanteHash);
+        Assert.Equal(dispositivo.Id, envio.DispositivoId);
+
+        // Simula o processamento e envio.
+        var firebase = new FirebaseSimulado();
+
+        Assert.Equal(
+            1,
+            await Processar(host, firebase, relogio));
+
+        Assert.Equal(1, firebase.Chamadas);
+        Assert.Equal(Token, firebase.UltimoToken);
+
+        var envioFinal = await LerEnvio(host);
+
+        Assert.Equal(
+            SituacaoFilaPush.AceitoPeloFirebase,
+            envioFinal.Situacao);
+    }
+
+    [Fact]
+    public async Task VisitanteNaoRecebePushAposTrocaDeIdentidade()
+    {
+        await using var host = await HostMobile.Criar();
+        var relogio = new RelogioTeste();
+
+        await using var scope =
+            host.App.Services.CreateAsyncScope();
+
+        var db = scope.ServiceProvider
+            .GetRequiredService<AppDbContext>();
+
+        var protecao = scope.ServiceProvider
+            .GetRequiredService<IDataProtectionProvider>();
+
+        var protetor = protecao.CreateProtector(
+            "Kiora.Push.FcmToken.v1");
+
+        var visitanteHash = Convert.ToHexString(
+            SHA256.HashData(
+                Encoding.UTF8.GetBytes("visitante-teste")));
+
+        // Reserva feita por visitante sem conta.
+        var reserva = new Reserva
+        {
+            UsuarioId = null,
+            VisitanteHash = visitanteHash,
+            Nome = "Visitante Teste",
+            Telefone = "11999999999",
+            Pessoas = 2,
+            Tipo = TipoReserva.Agendada,
+            Situacao = SituacaoReserva.Confirmada,
+            ChaveSolicitacao = Guid.NewGuid(),
+            CriadaEmUtc = relogio.Atual.UtcDateTime,
+            ExpiraEmUtc = relogio.Atual.UtcDateTime.AddHours(5)
+        };
+
+        db.Reservas.Add(reserva);
+        await db.SaveChangesAsync();
+
+        // Dispositivo vinculado ao mesmo visitante.
+        var dispositivo = new DispositivoPush
+        {
+            TokenHash = Convert.ToHexString(
+                SHA256.HashData(Encoding.UTF8.GetBytes(Token))),
+            TokenFcm = protetor.Protect(Token),
+            UsuarioId = null,
+            VisitanteHash = visitanteHash,
+            VersaoSessaoUsuario = null,
+            Ativo = true,
+            Versao = Guid.NewGuid()
+        };
+
+        db.DispositivosPush.Add(dispositivo);
+        await db.SaveChangesAsync();
+
+        var notificacao = new Notificacao
+        {
+            Id = Guid.NewGuid(),
+            Tipo = TipoNotificacao.ReservaAtualizada,
+            Publico = PublicoNotificacao.Cliente,
+            ReservaId = reserva.Id,
+            Titulo = "Reserva atualizada",
+            Mensagem = "Confira sua reserva.",
+            CriadaEmUtc = relogio.Atual.UtcDateTime
+        };
+
+        db.Notificacoes.Add(notificacao);
+
+        var fila = CriarFila(db, relogio);
+
+        Assert.Equal(1, await fila.Preparar(notificacao));
+        Assert.Equal(0, await fila.Preparar(notificacao));
+
+        await db.SaveChangesAsync();
+
+        // Simula a troca de identidade do dispositivo
+        // depois que a notificação entrou na fila.
+        dispositivo.VisitanteHash = Convert.ToHexString(
+            SHA256.HashData(
+                Encoding.UTF8.GetBytes("outro-visitante")));
+
+        await db.SaveChangesAsync();
+
+        var envio = await db.EnviosPush
+            .AsNoTracking()
+            .SingleAsync();
+
+        Assert.Null(envio.UsuarioId);
+        Assert.Equal(visitanteHash, envio.VisitanteHash);
+        Assert.Equal(dispositivo.Id, envio.DispositivoId);
+
+
+        var firebase = new FirebaseSimulado();
+
+        Assert.Equal(
+            1,
+            await Processar(host, firebase, relogio));
+
+        // O Firebase não deve receber nenhuma notificação.
+        Assert.Equal(0, firebase.Chamadas);
+
+        // O envio deve ser descartado por segurança.
+        var envioFinal = await LerEnvio(host);
+
+        Assert.Equal(
+            SituacaoFilaPush.Descartado,
+            envioFinal.Situacao);
+
+        Assert.Equal(
+            "DESTINATARIO_NAO_AUTORIZADO",
+            envioFinal.UltimoCodigoErro);
+
+    }
+
 }

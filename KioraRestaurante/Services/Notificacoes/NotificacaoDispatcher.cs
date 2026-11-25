@@ -40,12 +40,23 @@ public class NotificacaoDispatcher(AppDbContext db, CupomService cupons, TimePro
             var dono = evento.Pedido?.UsuarioId ?? evento.Reserva?.UsuarioId;
             var usuarios = await db.Usuarios.Where(u => u.Ativo && (u.Tipo == tipoUsuario || evento.Tipo == TipoNotificacao.NovaReservaAdmin && u.Tipo == TipoUsuario.Gerente) && (admin || u.Id == dono)).Select(u => u.Id).ToListAsync(ct);
             var (titulo, mensagem) = Texto(evento);
+            // Identifica reservas de visitantes sem conta autenticada.
+            // O VisitanteHash será usado para localizar os dispositivos autorizados.
+            var reservaVisitante =
+                !admin &&
+                evento.Tipo == TipoNotificacao.ReservaAtualizada &&
+                evento.Reserva != null &&
+                evento.Reserva.UsuarioId == null &&
+                !string.IsNullOrWhiteSpace(evento.Reserva.VisitanteHash);
             await using var tx = await db.Database.BeginTransactionAsync(ct);
             // Só a instância que ainda possui a concessão pode confirmar a distribuição.
             var concluido = await db.EventosNotificacao.Where(e => e.Id == id && e.Concessao == concessao && e.ProcessadoEmUtc == null)
                 .ExecuteUpdateAsync(s => s.SetProperty(e => e.ProcessadoEmUtc, (DateTime?)agora)
                     .SetProperty(e => e.ProcessandoAteUtc, (DateTime?)null), ct);
-            if (concluido == 1 && titulo != null && usuarios.Count > 0 && !await db.Notificacoes.AnyAsync(x => x.Id == id, ct))
+            if (concluido == 1 &&
+                titulo != null &&
+                (usuarios.Count > 0 || reservaVisitante) &&
+                !await db.Notificacoes.AnyAsync(x => x.Id == id, ct))
             {
                 var aviso = new Notificacao { Id = id, Tipo = evento.Tipo, PedidoId = evento.PedidoId, ReservaId = evento.ReservaId,
                     Publico = admin ? PublicoNotificacao.Administrador : PublicoNotificacao.Cliente,

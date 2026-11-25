@@ -158,13 +158,13 @@ public sealed class FirebasePushService
             Token = tokenFcm,
             #pragma warning restore CS0618
 
+
             Data = new Dictionary<string, string>
             {
                 ["tipo"] = "nova_notificacao",
 
-                ["notificacaoId"] =
-                    notificacaoId.ToString("D"),
-
+                ["notificacaoId"] = notificacaoId.ToString("D"),
+                                
                 ["origem"] = "kiora"
             },
 

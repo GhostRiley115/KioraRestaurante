@@ -319,6 +319,60 @@ public sealed class ProcessadorPushService(
             EnvioPush envio,
             CancellationToken ct)
     {
+        // VALIDAR DISPOSITIVO DE VISITANTE SEM LOGIN
+
+        if (!envio.UsuarioId.HasValue)
+        {
+            // Visitantes não possuem versão de sessão autenticada.
+            // A identificação e a versão do dispositivo são obrigatórias.
+
+            if (string.IsNullOrWhiteSpace(envio.VisitanteHash) ||
+                envio.VersaoSessaoUsuario.HasValue ||
+                envio.VersaoDispositivo == Guid.Empty)
+            {
+                return null;
+            }
+
+            // Confirma que o dispositivo continua vinculado
+            // ao mesmo visitante e não foi desativado ou alterado.
+
+            var dispositivoVisitante = await db.DispositivosPush
+                .AsNoTracking()
+                .SingleOrDefaultAsync(
+                    d =>
+                        d.Id == envio.DispositivoId &&
+                        d.Ativo &&
+                        d.UsuarioId == null &&
+                        d.VersaoSessaoUsuario == null &&
+                        d.VisitanteHash == envio.VisitanteHash &&
+                        d.Versao == envio.VersaoDispositivo,
+                    ct);
+
+            if (dispositivoVisitante == null)
+            {
+                return null;
+            }
+
+            // Confirma que a notificação pertence a uma
+            // reserva do mesmo visitante.
+
+            var reservaAutorizada = await db.Notificacoes
+                .AsNoTracking()
+                .AnyAsync(
+                    n =>
+                        n.Id == envio.NotificacaoId &&
+                        n.Tipo == TipoNotificacao.ReservaAtualizada &&
+                        n.Publico == PublicoNotificacao.Cliente &&
+                        n.Reserva != null &&
+                        n.Reserva.UsuarioId == null &&
+                        n.Reserva.VisitanteHash == envio.VisitanteHash,
+                    ct);
+
+            return reservaAutorizada
+                ? dispositivoVisitante
+                : null;
+        }
+
         // Nesta versão, somente destinatários autenticados são processados.
         // O suporte aos visitantes será incluído na integração específica de reservas.
 
@@ -696,11 +750,15 @@ public sealed class ProcessadorPushService(
 
                     d.UsuarioId == envio.UsuarioId &&
 
+                    // Garante que a identidade do visitante não mudou.
+                    d.VisitanteHash == envio.VisitanteHash &&
+
                     d.Versao ==
                         envio.VersaoDispositivo &&
 
                     d.VersaoSessaoUsuario ==
                         envio.VersaoSessaoUsuario)
+
                 .ExecuteUpdateAsync(
                     s => s
                         .SetProperty(
